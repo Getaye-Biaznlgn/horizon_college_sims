@@ -1,0 +1,3 @@
+<template>
+    Dean dashboard
+</template>

@@ -1,0 +1,36 @@
+<template>
+    <li>
+      <div>
+          <a class="nav-link collapsible-link text-white py-2 px-3 d-flex justify-content-between" data-bs-toggle="collapse" :href="`#${label}`" role="button" aria-expanded="false" aria-controls="collapseExample">
+            <span> <slot name="icon"/>{{label}}</span>
+            <span class="dropdown-icon"><i class="fas fa-chevron-up"></i></span>
+          </a>
+       </div>
+       <div class="collapse collapse-item" :id="label">
+           <slot/>
+       </div>
+     </li>
+</template>
+<script>
+export default {
+    props:['label'],
+    computed:{
+ 
+      
+    }
+}
+</script>
+<style scoped>
+ span{
+     font-size: 16px;
+ }
+ .dropdown-icon{
+  transition: all ease 0.23s;
+}
+.collapsible-link[aria-expanded="true"] .dropdown-icon{
+  transform:rotate(180deg)
+}
+.collapse-item{
+  background-color: #F5F6FA;
+}
+</style>

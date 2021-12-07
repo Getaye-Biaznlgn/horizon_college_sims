@@ -5,4 +5,7 @@ import store from './store'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-createApp(App).use(store).use(router).mount('#app')
+import BaseCard from './components/BaseCard'
+const app = createApp(App)
+app.component('BaseCard',BaseCard)
+app.use(store).use(router).mount('#app')
