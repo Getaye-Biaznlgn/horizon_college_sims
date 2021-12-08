@@ -30,11 +30,8 @@
             <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
    
-       <div class="form-check">
-           <input class="form-check-input" @change="regularChecked" type="checkbox" value="" id="regualr">
-           <label class="form-check-label" for="regular">Regular</label>
-       </div>
-        <div v-if="isRegularChecked" class="d-flex justify-content-between">
+        <div>Regular</div>
+        <div class="d-flex justify-content-between">
            <div class="mb-3">
               <label class="form-label" for="#departmentName">How many years?</label>
               <input class="form-control form-control-sm" v-model.trim="department.regular.year" id="departmentName"  type="number" min="1" max="10" aria-label=".form-control-lg">
@@ -44,11 +41,8 @@
               <input class="form-control form-control-sm" v-model.trim="department.regular.semester" id="semesters" type="number"  min="1" max="30" aria-label=".form-control-lg">
            </div> 
       </div>
-       <div class="form-check">
-           <input class="form-check-input" @change="extensionChecked" type="checkbox"  id="extension">
-           <label class="form-check-label" for="extension">Extension</label>
-       </div>
-        <div v-if="isExtensionChecked" class="d-flex justify-content-between">
+           <div>Extension</div>
+        <div class="d-flex justify-content-between">
            <div class="mb-3">
               <label class="form-label" for="#departmentName">How many years?</label>
               <input class="form-control form-control-sm" v-model.trim="department.extension.year" id="departmentName" type="number"  min="1" max="10" aria-label=".form-control-lg">
@@ -77,8 +71,6 @@ export default {
       v$:useValidate(),
       baseModal:null,
       isSaving:false,
-      isExtensionChecked:false,
-      isRegularChecked:false,
       //department
       department:{
       name:'',
@@ -117,12 +109,7 @@ export default {
          console.log('form  validation faild')
        }
       },
-      regularChecked(){
-        this.isRegularChecked=!this.isRegularChecked
-      },
-      extensionChecked(){
-        this.isExtensionChecked=!this.isExtensionChecked;
-      }
+     
     },
   mounted() {
    this.baseModal = new Modal(document.getElementById('baseModal'));

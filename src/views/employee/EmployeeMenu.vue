@@ -29,7 +29,7 @@ export default {
       },
     },
     created(){
-
+      this.$store.dispatch('fetchPrograms')
     }
 }
 </script>

@@ -2,11 +2,15 @@ import apiClient from "../baseUrl"
 
 export default {
     state: {
-        degreeDepartments:[]
+        degreeDepartments:[],
+        programs:[]
     },
     mutations: {
         setDegreeDepatments(state, degreeDepartments) {
             state.degreeDepartments = degreeDepartments
+        },
+        setPrograms(state, programs) {
+            state.programs = programs
         },
     },
     getters: {
