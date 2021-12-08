@@ -23,6 +23,12 @@ export default {
       background-color: #1f3f49;
       /* border-top: 2px solid #f1f1f1; */
   }
+  a:focus{
+background-color: #fff;
+  }
+  a:hover{
+   background-color: #fff;   
+  }
   /* a.router-link-active{
       background-color: red;
   } */
