@@ -1,12 +1,17 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
 <div class="d-flex justify-content-between">
-    <div>
-       <div class="ms-auto"> 
-          <select class="px-3 py-1 mx-3" aria-label="select perspective" @change="filterByPerspective($event)">
-            <option selected value="lebel">perspective</option>
-            <option value="all">All</option>
-            <option v-for="perspective in perspectives" :key="perspective.id" :value="perspective.id">{{perspective.title}}</option> 
+
+    <div class="d-flex">
+      
+       <div> 
+          <select class="px-3 py-1 mx-3" aria-label="select by department">
+            <option selected value="here we go">All Department</option>
+          </select>
+       </div>
+      <div> 
+          <select class="px-3 py-1 mx-3" aria-label="select by level">
+            <option selected value="here we go">Occupation Level</option>
           </select>
        </div>
     </div>

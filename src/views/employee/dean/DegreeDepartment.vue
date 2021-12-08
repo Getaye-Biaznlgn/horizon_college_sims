@@ -1,7 +1,7 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
 <div class="d-flex justify-content-end">
-   <button class="btn btn-add text-white shadow-sm" @click="show()"> 
+   <button class="btn btn-add text-white shadow-sm" @click="showModal()"> 
      Add New Department
    </button> 
 </div>
@@ -21,32 +21,45 @@
   </tr>
  </table>
  </base-card>
-<base-modal>
+<base-modal @save="save" :isLoading="isSaving">
    <template #modalBody>
       <form @submit.prevent>
-        <div class="mb-3">
+        <div class="mb-3" :class="{warining:v$.department.name.$error}">
            <label for="#departmentName" class="form-label">Department Name</label>
-           <input class="form-control form-control-sm" id="departmentName" type="text" aria-label=".form-control">
+           <input class="form-control form-control-sm" v-model.trim="department.name" @blur="v$.department.name.$touch" id="departmentName" type="text" placeholder="Eg. Accounting" aria-label=".form-control">
+            <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
+   
        <div class="form-check">
-           <input class="form-check-input" type="checkbox" value="" id="regualr">
+           <input class="form-check-input" @change="regularChecked" type="checkbox" value="" id="regualr">
            <label class="form-check-label" for="regular">Regular</label>
        </div>
-        <div class="d-flex justify-content-between">
+        <div v-if="isRegularChecked" class="d-flex justify-content-between">
            <div class="mb-3">
               <label class="form-label" for="#departmentName">How many years?</label>
-              <input class="form-control form-control-sm" id="departmentName" type="number" min="1" max="10" aria-label=".form-control-lg">
+              <input class="form-control form-control-sm" v-model.trim="department.regular.year" id="departmentName"  type="number" min="1" max="10" aria-label=".form-control-lg">
+           </div> 
+           <div class="mb-3">
+              <label class="form-label" for="#semesters">How many semesters?</label>
+              <input class="form-control form-control-sm" v-model.trim="department.regular.semester" id="semesters" type="number"  min="1" max="30" aria-label=".form-control-lg">
+            </div> 
+      </div>
+       <div class="form-check">
+           <input class="form-check-input" @change="extensionChecked" type="checkbox"  id="extension">
+           <label class="form-check-label" for="extension">Extension</label>
+       </div>
+        <div v-if="isExtensionChecked" class="d-flex justify-content-between">
+           <div class="mb-3">
+              <label class="form-label" for="#departmentName">How many years?</label>
+              <input class="form-control form-control-sm" v-model.trim="department.extension.year" id="departmentName" type="number"  min="1" max="10" aria-label=".form-control-lg">
            </div> 
            <div class="mb-3">
               <label class="form-label " for="#semesters">How many semesters?</label>
-              <input class="form-control form-control-sm" id="semesters" type="number" min="1" max="30" aria-label=".form-control-lg">
+              <input class="form-control form-control-sm" v-model.trim="department.extension.semester" id="semesters" type="number"  min="1" max="30" aria-label=".form-control-lg">
             </div> 
       </div>
+      
       </form>
-   </template>
-    <template #modalFooter>
-      <button type="button" class="btn btn-cancel border border-secondary ms-auto"  data-bs-dismiss="modal">CANCEL</button>
-      <button type="button" class="btn btn-save text-white mx-3">SAVE</button>
    </template>
 </base-modal>
 
@@ -54,27 +67,65 @@
 </template>
 <script>
 import { Modal } from 'bootstrap';
-import BaseModal from '../../../components/BaseModal.vue'
+import useValidate from '@vuelidate/core'
+import { required,alpha,helpers} from '@vuelidate/validators'
+
 export default {
-  components:{
-    BaseModal
-  },
+
   data(){
-    return{
-      baseModal:null
+    return{ 
+      v$:useValidate(),
+      baseModal:null,
+      isSaving:false,
+      isExtensionChecked:false,
+      isRegularChecked:false,
+      //department
+      department:{
+      name:'',
+      regular:{
+        year:'',
+        semester:''
+      },
+      extension:{
+        year:'',
+        semester:''
+      }
+      }
+      
     }
   },
+  validations(){
+     return{
+      department:{
+             name:{required: helpers.withMessage('department name can not be empty',required),
+               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)
+               },
+              }
+     }
+  },
   methods:{
-      closeBtn(){
-        this.baseModal.hide()
-      },
-      show(){
+      showModal(){
         this.baseModal.show()
+      },
+      save(){
+       this.isSaving=true
+       this.v$.$validate()
+       if(!this.v$.error){
+         this.isSaving=false
+       }
+       else{
+         console.log('form  validation faild')
+       }
+      },
+      regularChecked(){
+        this.isRegularChecked=!this.isRegularChecked
+      },
+      extensionChecked(){
+        this.isExtensionChecked=!this.isExtensionChecked;
       }
     },
   mounted() {
    this.baseModal = new Modal(document.getElementById('baseModal'));
-   console.log('base modal', this.baseModal)
   }
 }
 </script>
@@ -99,21 +150,29 @@ td{
   padding: 8px;
   vertical-align: top;
 }
-.btn-save,.btn-add{
+.btn-add{
     background-color: #ff9500;
-    border-radius: 0;
 }
-.btn-save:hover, .btn-add:hover{
+.btn-add:hover{
   background-color: #eca643;
 }
-.btn-cancel{
-  border-radius: 0;  
-}
+
 .action{
   cursor: pointer;
 }
 .action:hover{
   color: #fcc561;
 }
-
+input[type="checkbox"]:checked{
+ background-color: #ff9500;
+ border: none;
+}
+.warining input{
+    border: 1px red solid;
+  }
+  .warining span{
+    display: inline;
+    color: red;
+    font-size: 14px;
+  }
 </style>

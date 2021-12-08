@@ -3,20 +3,20 @@
     <div class="d-flex justify-content-between">
     <div class="d-flex justify-content-between">
    <div class="form-check ms-5 me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="all" id="all" checked v-model="teacherType">
-  <label class="form-check-label" for="teachertype1">
+  <input class="form-check-input" type="radio" name="teachertyperadio" value="all" id="all" checked v-model="teacherType">
+  <label class="form-check-label" for="all">
     All
   </label>
 </div>
     <div class="form-check me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="regular" id="regular" v-model="teacherType">
-  <label class="form-check-label" for="teachertype1">
+  <input class="form-check-input" type="radio" name="teachertyperadio" value="regular" id="regular" v-model="teacherType">
+  <label class="form-check-label" for="regular">
     Regular
   </label>
 </div>
     <div class="form-check me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="partime" id="partime" v-model="teacherType">
-  <label class="form-check-label" for="teachertype1">
+  <input class="form-check-input" type="radio" name="teachertyperadio" value="partime" id="partime" v-model="teacherType">
+  <label class="form-check-label" for="partime">
     Partime
   </label>
 </div>
@@ -25,25 +25,27 @@
     <button @click="addTeacher()" class="btn addbtn">Add New Teacher</button>
     </div>
     </div>
-    <table class="table table-bordered mt-3">
+    <table class="mt-3">
   <thead>
-    <tr>
-      <th scope="col">NO</th>
-      <th scope="col">Full Name</th>
-      <th scope="col">Phone Number</th>
-      <th scope="col">Email Address</th>
-      <th scope="col">Type</th>
-      <th scope="col">Profession</th>
+    <tr class="table-header">
+      <th class="text-white">NO</th>
+      <th class="text-white">Full Name</th>
+      <th class="text-white">Phone Number</th>
+      <th class="text-white">Email Address</th>
+      <th class="text-white">Type</th>
+      <th class="text-white">Profession</th>
+      <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="n in 10" :key="n">
       <td>1</td>
-      <td>Endalu Belachew</td>
+      <td>Kassahun Worku</td>
       <td>0912345221</td>
       <td>endalu@gmail.com</td>
       <td>Regular</td>
       <td>Database Teacher</td>
+      <td>edit</td>
     </tr>
   </tbody>
 </table>
@@ -87,14 +89,10 @@
   </base-modal>
 </template>
 <script>
-import BaseModal from '../../../components/BaseModal.vue'
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
 import { required, email, minLength,alpha,numeric,helpers, maxLength} from '@vuelidate/validators'
 export default {
-  components:{
-    BaseModal
-  },
    data() {
        return {
          v$:useValidate(),
@@ -103,6 +101,7 @@ export default {
            isSuccessed:true,
            isFaild:false,
            resultNotifier:'',
+           teacherType:null,
            teacher:{
              fname:'',
              lname:'',
@@ -147,14 +146,14 @@ export default {
            this.isSuccessed = true
            this.resultNotifier = 'You register one teacher succesfully'
          }
+          else{
+         console.log('form faild validation ')
+       }
        }).catch(e=>{
          this.isSuccessed = false
          this.isFaild = true
          this.resultNotifier = e.error
        })
-       }
-       else{
-         console.log('form faild validation ')
        }
       },
       cancelDialog(){
@@ -181,9 +180,25 @@ export default {
 .btn:hover{
     background-color:#eca643 ;
 }
-thead{
-    background-color: #4285f4;
-    border-color: #4285f4;
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+.table-header{
+    background-color:#4285fa ;
+    border-radius: 5px;
+}
+th{
+  text-align: left;
+  padding: 8px;
+  
+}
+td{
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  vertical-align: top;
 }
 .warining input{
     border: 1px red solid;
