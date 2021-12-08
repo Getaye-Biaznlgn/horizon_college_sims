@@ -10,11 +10,26 @@
               <span><i class="fas fa-tachometer-alt pe-3"></i></span>
             </template>
             <template #default>
-               <sidebar-item :isSubItem="true" :to="{}">
-                 <span>TVET</span>
+              <sidebar-item :isSubItem="true" :to="{name:'DegreeDepartment'}">
+                <span>Degree Department</span>
+              </sidebar-item> 
+              <sidebar-item :isSubItem="true" :to="{name:'TVETDepartment'}">
+                <span>TVET Department</span>
                </sidebar-item> 
             </template>
-            
+         </collapse-sidebar-item>
+         <collapse-sidebar-item label="Curriculum"> 
+            <template #icon>
+              <span><i class="fas fa-tachometer-alt pe-3"></i></span>
+            </template>
+            <template #default>
+              <sidebar-item :isSubItem="true" :to="{name:'CourseCurriculum'}">
+                <span>Course</span>
+              </sidebar-item> 
+              <sidebar-item :isSubItem="true" :to="{name:'ModuleCurriculum'}">
+                <span>Module</span>
+               </sidebar-item> 
+            </template>
          </collapse-sidebar-item>
           <collapse-sidebar-item label="Employee"> 
             <template #icon>

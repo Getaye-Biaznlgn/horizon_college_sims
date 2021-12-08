@@ -3,9 +3,9 @@
        <div class="sidebar">
           <the-sidebar ></the-sidebar>
         </div>
-        <div class="content container-fluid p-0">
-          <the-header  class="position-sticky header top-0"></the-header>
-           <router-view></router-view>    
+        <div class="content container-fluid p-0 m-0">
+          <the-header  class="position-sticky header top-0 p-0 m-0"></the-header>
+           <router-view ></router-view>    
         </div>
     </div>   
  

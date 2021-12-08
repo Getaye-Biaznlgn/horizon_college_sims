@@ -1,7 +1,7 @@
 <template>
     <li>
       <div>
-          <a class="nav-link collapsible-link text-white py-2 px-3 d-flex justify-content-between" data-bs-toggle="collapse" :href="`#${label}`" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <a class="nav-link collapsible-link text-white py-2 ps-3 pe-2 d-flex justify-content-between" data-bs-toggle="collapse" :href="`#${label}`" role="button" aria-expanded="false" aria-controls="collapseExample">
             <span> <slot name="icon"/>{{label}}</span>
             <span class="dropdown-icon"><i class="fas fa-chevron-up"></i></span>
           </a>

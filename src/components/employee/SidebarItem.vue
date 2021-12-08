@@ -1,9 +1,9 @@
 <template>
       <li>
-          <router-link :to="to" :class="{asSubItem:isSubItem}" class="nav-link text-white ps-3 py-2">
+         <router-link :to="to" :class="{asSubItem:isSubItem}" class="nav-link text-white ps-3 py-2">
              <slot/>
           </router-link>
-       </li>
+     </li>
 </template>
 <script>
 export default {
@@ -13,14 +13,18 @@ export default {
 <style scoped>
   .asSubItem{
       margin: 0;
-      padding:5px 0 5px 32px !important;
+      padding:10px 0 10px 32px !important;
       color: #000 !important;
+      font-size: 12px;
+      border-top: 1px solid darkgray;
   }
   span{
       font-size: 16px;
   }
   .active{
-      background-color: #1f3f49;
+      background-color: #fff;
+      color:#000 !important;
+      
       /* border-top: 2px solid #f1f1f1; */
   }
   a:focus{

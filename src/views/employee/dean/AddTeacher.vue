@@ -50,8 +50,10 @@
 
     </div>
     <!-- teracher registration form dialog-->
-    <fixed-dialog v-if="newTeacher">
-    <div class="addTeacherDialog shadow-sm ms-auto me-auto p-5 mt-5 mb-5 bg-white">
+    <base-modal @save="registerTeacher" :is-loading="isLoading">
+    <template #modalBody>
+    <div class="bg-white p-3">
+
     <form>
     <div class="mb-3" :class="{warining:v$.teacher.fname.$error}">
   <label for="fname" class="form-label">First Name</label>
@@ -78,23 +80,29 @@
   <input type="email" class="form-control" id="exampleFormControlInput1" v-model="teacher.email" @blur="v$.teacher.email.$touch">
   <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.email.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="d-flex justify-content-between mt-5">
-<button type="button" class="btn commenbtn" @click="cancelDialog()">Cancel</button>
-<button type="button" class="btn commenbtn" @click="registerTeacher()">Add</button>
-</div>
-    </form>
+</form>
     </div>
-    </fixed-dialog>
+    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">This is Errors from server</p>
+</template>    
+  </base-modal>
 </template>
 <script>
+import BaseModal from '../../../components/BaseModal.vue'
+import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
-import { required, email, minLength,alpha,numeric,helpers} from '@vuelidate/validators'
+import { required, email, minLength,alpha,numeric,helpers, maxLength} from '@vuelidate/validators'
 export default {
+  components:{
+    BaseModal
+  },
    data() {
        return {
          v$:useValidate(),
-           teacherType:'',
-           newTeacher:false,
+           basemodal:null,
+           isLoading:false,
+           isSuccessed:true,
+           isFaild:false,
+           resultNotifier:'',
            teacher:{
              fname:'',
              lname:'',
@@ -107,34 +115,50 @@ export default {
    validations(){
      return {
       teacher:{
-        fname:{required: helpers.withMessage('first name cannot be empty',required),
+        fname:{required: helpers.withMessage('first name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        lname:{required: helpers.withMessage('last name cannot be empty',required),
+        lname:{required: helpers.withMessage('last name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-               profession:{required: helpers.withMessage('profession cannot be empty',required)},
-               phoneNo:{required: helpers.withMessage('phone number can not be empty',required),
-               numeric,min:minLength(13)},
-               email:{required:helpers.withMessage('email is required',required),email}
+               profession:{required: helpers.withMessage('profession can not be empty',required)},
+               phoneNo:{
+              required: helpers.withMessage('phone number can not be empty',required),
+               numeric,
+               min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
+               max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
+               },
+               email:{required:helpers.withMessage('email can not be empty',required),email}
 
       }
      }
    },
-   watch:{},
+   mounted() {
+     this.basemodal = new Modal(document.getElementById('baseModal'))
+   },
    methods: {
       addTeacher(){
-         this.newTeacher = true;
+         this.basemodal.show();
       } ,
       registerTeacher(){
        this.v$.$validate()
        if(!this.v$.error){
-       this.$store.dispatch('setTeacher',JSON.stringify(this.teacher))
+       this.$store.dispatch('setTeacher',JSON.stringify(this.teacher)).then((response)=>{
+         if(response.status === 200){
+           this.isFaild = false
+           this.isSuccessed = true
+           this.resultNotifier = 'You register one teacher succesfully'
+         }
+       }).catch(e=>{
+         this.isSuccessed = false
+         this.isFaild = true
+         this.resultNotifier = e.error
+       })
        }
        else{
          console.log('form faild validation ')
        }
       },
       cancelDialog(){
-          this.newTeacher = false;
+          this.basemodal.hide();
       }
    }, 
 }
@@ -161,9 +185,6 @@ thead{
     background-color: #4285f4;
     border-color: #4285f4;
 }
-.addTeacherDialog{
-  width: 35%;
-}
 .warining input{
     border: 1px red solid;
   }
@@ -171,5 +192,11 @@ thead{
     display: inline;
     color: red;
 
+  }
+  .success{
+    color: green;
+  }
+  .faild{
+    color: red;
   }
 </style>
