@@ -1,11 +1,9 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
 <div class="d-flex justify-content-between">
-
     <div class="d-flex">
-      
        <div> 
-          <select class="px-3 py-1 mx-3" aria-label="select by department">
+          <select class="px-3 py-1" aria-label="select by department">
             <option selected value="here we go">All Department</option>
           </select>
        </div>

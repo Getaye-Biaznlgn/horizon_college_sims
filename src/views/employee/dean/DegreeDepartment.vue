@@ -42,7 +42,7 @@
            <div class="mb-3">
               <label class="form-label" for="#semesters">How many semesters?</label>
               <input class="form-control form-control-sm" v-model.trim="department.regular.semester" id="semesters" type="number"  min="1" max="30" aria-label=".form-control-lg">
-            </div> 
+           </div> 
       </div>
        <div class="form-check">
            <input class="form-check-input" @change="extensionChecked" type="checkbox"  id="extension">
