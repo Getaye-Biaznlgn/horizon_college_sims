@@ -1,12 +1,12 @@
 import { createStore } from 'vuex'
+import dean from '../store/employee/dean/index.js'
 
 export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+    modules: {
+        dean
+    },
+    state: {},
+    mutations: {},
+    actions: {},
+
 })

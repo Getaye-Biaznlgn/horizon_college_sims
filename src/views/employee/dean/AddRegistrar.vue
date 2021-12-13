@@ -1,29 +1,7 @@
 <template>
     <div class="wraper border rounded shadow-sm p-3 m-2 bg-white">
-    <div class="d-flex justify-content-between">
-    <div class="d-flex justify-content-between">
-   <div class="form-check ms-5 me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="all" id="all" checked v-model="teacherType">
-  <label class="form-check-label" for="teachertype1">
-    All
-  </label>
-</div>
-    <div class="form-check me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="regular" id="regular" v-model="teacherType">
-  <label class="form-check-label" for="teachertype1">
-    Regular
-  </label>
-</div>
-    <div class="form-check me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="partime" id="partime" v-model="teacherType">
-  <label class="form-check-label" for="teachertype1">
-    Partime
-  </label>
-</div>
-    </div>
-    <div>
-    <button @click="addTeacher()" class="btn addbtn">Add New Teacher</button>
-    </div>
+    <div class="d-flex justify-content-end">
+    <button @click="addregistrar()" class="btn addbtn py-2 px-0">Add New registrar</button>
     </div>
    <table class="mt-3">
   <thead>
@@ -32,52 +10,63 @@
       <th class="text-white">Full Name</th>
       <th class="text-white">Phone Number</th>
       <th class="text-white">Email Address</th>
-      <th class="text-white">Type</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody>
-    <tr v-for="n in 10" :key="n">
-      <td>1</td>
-      <td>Endalu Belachew</td>
-      <td>0912345221</td>
-      <td>endalu@gmail.com</td>
-      <td>Regular</td>
-      <td>edit</td>
+  <tbody v-if="registrars.length">
+     <tr v-for="(registrar,index) in registrars" :key="registrar.id">
+      <td>{{index+1}}</td>
+      <td>{{registrar.first_name+" "+registrar.last_name}}</td>
+      <td>{{registrar.phone_no}}</td>
+      <td>{{registrar.email}}</td>
+      <td>
+        <div class="dropdown">
+          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><i class="fas fa-ellipsis-v"></i></span>
+          </a>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
+                 <li><span @click="editRegistrar(registrar)" class="dropdown-item px-4 py-2">edit</span></li>
+                 <hr class="w-100 mb-0 mt-0">
+             <li><span @click="deleteRegistrar(registrar.id)" class="dropdown-item px-4 py-2">delete</span></li>
+          </ul>
+        </div>
+    </td>
     </tr>
-  </tbody>
+     </tbody>
+     <div v-else class="errorcase mt-5 mb-5 text-danger">faild to access registrars</div>
 </table>
 
     </div>
-    <!-- teracher registration form dialog-->
-    <base-modal @save="registerTeacher" :is-loading="isLoading">
+    <!-- registrar registration form dialog-->
+    <base-modal :is-loading="isLoading" :btn-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar">
     <template #modalBody>
     <div class="bg-white p-3">
 
     <form>
-    <div class="mb-3" :class="{warining:v$.teacher.fname.$error}">
+    <div class="mb-3" :class="{warining:v$.registrar.first_name.$error}">
   <label for="fname" class="form-label">First Name</label>
-  <input type="text" class="form-control" id="fname" v-model.trim="teacher.fname" @blur="v$.teacher.fname.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.fname.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="text" class="form-control" id="fname" v-model.trim="registrar.first_name" @blur="v$.registrar.first_name.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.first_name.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.teacher.lname.$error}">
+<div class="mb-3" :class="{warining:v$.registrar.last_name.$error}">
   <label for="lname" class="form-label">Last Name</label>
-  <input type="text" class="form-control" id="lname" v-model.trim="teacher.lname" @blur="v$.teacher.lname.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.lname.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="text" class="form-control" id="lname" v-model.trim="registrar.last_name" @blur="v$.registrar.last_name.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.teacher.phoneNo.$error}">
+<div class="mb-3" :class="{warining:v$.registrar.phone_no.$error}">
   <label for="phoneNo" class="form-label">Phone Number</label>
-  <input type="tel" class="form-control" id="phoneNo" v-model="teacher.phoneNo" @blur="v$.teacher.phoneNo.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.phoneNo.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="tel" class="form-control" id="phoneNo" v-model="registrar.phone_no" @blur="v$.registrar.phone_no.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.phone_no.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.teacher.email.$error}">
+<div class="mb-3" :class="{warining:v$.registrar.email.$error}">
   <label for="exampleFormControlInput1" class="form-label">Email address</label>
-  <input type="email" class="form-control" id="exampleFormControlInput1" v-model="teacher.email" @blur="v$.teacher.email.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.email.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="email" class="form-control" id="exampleFormControlInput1" v-model="registrar.email" @blur="v$.registrar.email.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.email.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">This is Errors from server</p>
+    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 </template>    
   </base-modal>
 </template>
@@ -94,23 +83,26 @@ export default {
            isSuccessed:true,
            isFaild:false,
            resultNotifier:'',
-           teacherType:null,
-           teacher:{
-             fname:'',
-             lname:'',
-             phoneNo:'',
-             email:''
+           registrarType:'',
+           buttonType:'',
+           registrarId:'',
+           registrar:{
+             first_name:'',
+             last_name:'',
+             phone_no:'',
+             email:'',
+             role:'registrar'
            }
        }
    },
    validations(){
      return {
-      teacher:{
-        fname:{required: helpers.withMessage('first name can not be empty',required),
+      registrar:{
+        first_name:{required: helpers.withMessage('first name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        lname:{required: helpers.withMessage('last name can not be empty',required),
+        last_name:{required: helpers.withMessage('last name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-               phoneNo:{
+               phone_no:{
               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
@@ -124,18 +116,24 @@ export default {
    mounted() {
      this.basemodal = new Modal(document.getElementById('baseModal'))
    },
+   computed:{
+     registrars(){
+       return this.$store.getters['dean/registrars']
+     }
+   },
    methods: {
-      addTeacher(){
+      addregistrar(){
          this.basemodal.show();
+         this.buttonType = 'add'
       } ,
-      registerTeacher(){
+      registerRegistrar(){
        this.v$.$validate()
-       if(!this.v$.error){
-       this.$store.dispatch('setTeacher',JSON.stringify(this.teacher)).then((response)=>{
-         if(response.status === 200){
+       if(!this.v$.$error){
+       this.$store.dispatch('dean/addRegistrar',this.registrar).then((response)=>{
+         if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You register one teacher succesfully'
+           this.resultNotifier = 'You have register one registrar succesfully'
          }
           else{
          console.log('form faild validation ')
@@ -149,7 +147,47 @@ export default {
       },
       cancelDialog(){
           this.basemodal.hide();
+      },
+      editRegistrar(registrar){
+        this.basemodal.show();
+        this.buttonType = 'edit'        
+        this.registrar.first_name = registrar.first_name
+        this.registrar.last_name = registrar.last_name
+        this.registrar.phone_no = registrar.phone_no
+        this.registrar.profession = registrar.profession
+        this.registrar.email = registrar.email
+        this.registrarId = registrar.id
+      },
+      saveEditedRegistrar(){
+        this.v$.$validate()
+         if(!this.v$.$error){
+         console.log('edit registrar')
+         console.log(this.registrar)
+         this.registrar.id = this.registrarId
+       this.$store.dispatch('dean/updateRegistrar',this.registrar).then((response)=>{
+         console.log(response)
+         if(response.status === 200){
+           this.isFaild = false
+           this.isSuccessed = true
+           this.resultNotifier = 'You have updated one registrar succesfully'
+         }
+          else{
+         console.log('updated data faild validation ')
+       }
+       }).catch(e=>{
+         this.isSuccessed = false
+         this.isFaild = true
+         this.resultNotifier = e.error
+       })
+       }
+       else{
+         console.log('error occured')
+       }
+      },
+      deleteRegistrar(id){
+         this.$store.dispatch('dean/deleteRegistrar',id)
       }
+
    }, 
 }
 </script>
@@ -160,17 +198,20 @@ export default {
 .addbtn{
     background-color: #ff9500;
     color: #fff;
-    width: 10em;
-
+    width: 10em; 
 }
-.commenbtn{
-  background-color: #ff9500;
-    color: #fff;
-    width: 7em;  
-}
-.btn:hover{
+.addbtn:hover{
     background-color:#eca643 ;
 }
+.dropdown ul{
+  background-color: #f5f6fa;
+}
+ul li{
+    cursor: pointer;
+  }
+ a span:hover{
+   color: #ff9500;
+ }
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -204,5 +245,11 @@ td{
   }
   .faild{
     color: red;
+  }
+  a span:hover{
+    color: #eca643;
+  }
+  .errorcase{
+    text-align: center;
   }
 </style>

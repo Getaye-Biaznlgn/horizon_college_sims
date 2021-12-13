@@ -36,6 +36,30 @@ export default {
             component: () =>
                 import ( /* webpackChunkName: "AddCashier" */ '../../views/employee/dean/AddCashier.vue')
         },
+        {
+            path: '/degreestudent/',
+            name: 'DegreeStudent',
+            component: () =>
+                import ( /* webpackChunkName: "DegreeStudent" */ '../../views/employee/registrar/DegreeStudent.vue')
+        },
+        {
+            path: '/tvetstudent/',
+            name: 'TvetStudent',
+            component: () =>
+                import ( /* webpackChunkName: "DegreeStudent" */ '../../views/employee/registrar/TvetStudent.vue')
+        },
+        {
+            path: '/degreestudentregistration/',
+            name: 'DegreeStudentRegistration',
+            component: () =>
+                import ( /* webpackChunkName: "DegreeStudentRegistration" */ '../../views/employee/registrar/DegreeStudentRegistration.vue')
+        },
+        {
+            path: '/tvetstudentregistration/',
+            name: 'TvetStudentRegistration',
+            component: () =>
+                import ( /* webpackChunkName: "TvetStudentRegistration" */ '../../views/employee/registrar/TvetStudentRegistration.vue')
+        },
 
         {
             path: '/staff/degree-department',

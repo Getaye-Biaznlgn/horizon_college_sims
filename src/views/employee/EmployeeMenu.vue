@@ -29,7 +29,10 @@ export default {
       },
     },
     created(){
-
+      this.$store.dispatch('dean/fetchTeachers')
+      this.$store.dispatch('dean/fetchDepartmentHeads')
+      this.$store.dispatch('dean/fetchRegistrars')
+      this.$store.dispatch('dean/fetchCashiers')
     }
 }
 </script>

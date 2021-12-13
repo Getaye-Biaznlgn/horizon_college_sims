@@ -51,6 +51,20 @@
             </template>
             
          </collapse-sidebar-item>
+           <collapse-sidebar-item label="Student"> 
+            <template #icon>
+              <span><i class="fas fa-tachometer-alt pe-3"></i></span>
+            </template>
+            <template #default>
+               <sidebar-item :isSubItem="true" :to="{name:'DegreeStudent'}">
+                 <span>Degree Student</span>
+               </sidebar-item> 
+                <sidebar-item :isSubItem="true" :to="{name:'TvetStudent'}">
+                 <span>TVET Student</span>
+               </sidebar-item>  
+            </template>
+            
+         </collapse-sidebar-item>
       </ul>
    </nav>
 </template>

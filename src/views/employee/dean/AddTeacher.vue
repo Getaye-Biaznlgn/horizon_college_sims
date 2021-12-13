@@ -37,7 +37,8 @@
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody>
+  <tbody v-if="teacherList.length">
+  <!--
     <tr v-for="n in 10" :key="n">
       <td>1</td>
       <td>Kassahun Worku</td>
@@ -45,37 +46,78 @@
       <td>endalu@gmail.com</td>
       <td>Regular</td>
       <td>Database Teacher</td>
-      <td>edit</td>
+       <td>
+        <div class="dropdown">
+          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><i class="fas fa-ellipsis-v"></i></span>
+          </a>
+
+          <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
+              <li><span @click="editTeacher('edit')" class="dropdown-item px-4 py-2">edit</span></li>
+              <hr class="w-100 mb-0 mt-0">
+             <li><span @click="deleteTeacher()" class="dropdown-item px-4 py-2">delete</span></li>
+          </ul>
+        </div>
+    </td>
+    </tr>
+    -->
+     <tr v-for="(teacher,index) in teacherList" :key="teacher.id">
+      <td>{{index+1}}</td>
+      <td>{{teacher.first_name+" "+teacher.last_name}}</td>
+      <td>{{teacher.phone_no}}</td>
+      <td>{{teacher.email}}</td>
+      <td>{{teacher.type}}</td>
+      <td>{{teacher.profession}}</td>
+       <td>
+        <div class="dropdown">
+          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><i class="fas fa-ellipsis-v"></i></span>
+          </a>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
+             <li><span @click="editTeacher(teacher,'edit')" class="dropdown-item px-4 py-2">edit</span></li>
+             <li><span @click="deleteTeacher(teacher.id)" class="dropdown-item px-4 py-2">delete</span></li>
+          </ul>
+        </div>
+    </td>
     </tr>
   </tbody>
+   <div v-else class="mt-5 mb-5 text-center text-danger">faild to access teachers</div>
 </table>
 
     </div>
     <!-- teracher registration form dialog-->
-    <base-modal @save="registerTeacher" :is-loading="isLoading">
+    <base-modal :is-error= "isInvalid" :btn-type="buttonType" @edit="saveEditedTeacher" @save="registerTeacher" @empty="cancelDialog">
     <template #modalBody>
     <div class="bg-white p-3">
 
     <form>
-    <div class="mb-3" :class="{warining:v$.teacher.fname.$error}">
+    <div class="mb-3" :class="{warining:v$.teacher.first_name.$error}">
   <label for="fname" class="form-label">First Name</label>
-  <input type="text" class="form-control" id="fname" v-model.trim="teacher.fname" @blur="v$.teacher.fname.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.fname.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="text" class="form-control" id="fname" v-model.trim="teacher.first_name" @blur="v$.teacher.first_name.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.first_name.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.teacher.lname.$error}">
+<div class="mb-3" :class="{warining:v$.teacher.last_name.$error}">
   <label for="lname" class="form-label">Last Name</label>
-  <input type="text" class="form-control" id="lname" v-model.trim="teacher.lname" @blur="v$.teacher.lname.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.lname.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="text" class="form-control" id="lname" v-model.trim="teacher.last_name" @blur="v$.teacher.last_name.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 <div class="mb-3" :class="{warining:v$.teacher.profession.$error}">
   <label for="profession" class="form-label">Profession</label>
   <input type="text" class="form-control" id="profession" v-model.trim="teacher.profession" @blur="v$.teacher.profession.$touch">
   <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.profession.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.teacher.phoneNo.$error}">
+<div class="mb-3">
+<label for="profession" class="form-label">Type</label>
+<select class="form-select" aria-label="Default select example" v-model="teacher.type">
+  <option selected value="regular">Regular</option>
+  <option value="partime">Partime</option>
+  </select>
+</div>
+<div class="mb-3" :class="{warining:v$.teacher.phone_no.$error}">
   <label for="phoneNo" class="form-label">Phone Number</label>
-  <input type="tel" class="form-control" id="phoneNo" v-model="teacher.phoneNo" @blur="v$.teacher.phoneNo.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.phoneNo.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="tel" class="form-control" id="phoneNo" v-model="teacher.phone_no" @blur="v$.teacher.phone_no.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.phone_no.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 <div class="mb-3" :class="{warining:v$.teacher.email.$error}">
   <label for="exampleFormControlInput1" class="form-label">Email address</label>
@@ -84,7 +126,7 @@
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">This is Errors from server</p>
+    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 </template>    
   </base-modal>
 </template>
@@ -102,24 +144,29 @@ export default {
            isFaild:false,
            resultNotifier:'',
            teacherType:null,
+           buttonType:'',
+           isInvalid:null,
+           teacherId:null,
+           teacherList:[],
            teacher:{
-             fname:'',
-             lname:'',
-             phoneNo:'',
+             first_name:'',
+             last_name:'',
+             phone_no:'',
              email:'',
-             profession:''
+             profession:'',
+             type:'',
            }
        }
    },
    validations(){
      return {
       teacher:{
-        fname:{required: helpers.withMessage('first name can not be empty',required),
+        first_name:{required: helpers.withMessage('first name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        lname:{required: helpers.withMessage('last name can not be empty',required),
+        last_name:{required: helpers.withMessage('last name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
                profession:{required: helpers.withMessage('profession can not be empty',required)},
-               phoneNo:{
+               phone_no:{
               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
@@ -133,21 +180,40 @@ export default {
    mounted() {
      this.basemodal = new Modal(document.getElementById('baseModal'))
    },
+   computed:{
+     teachers(){
+       return this.$store.getters['dean/teachers']
+     },
+   },
+   created() {
+     this.teacherList = this.teachers
+   },
+   watch:{
+    teacherType(newValue){
+      this.filterTeacher(newValue)
+    }
+   },
    methods: {
       addTeacher(){
          this.basemodal.show();
+         this.buttonType='add'
       } ,
       registerTeacher(){
        this.v$.$validate()
-       if(!this.v$.error){
-       this.$store.dispatch('setTeacher',JSON.stringify(this.teacher)).then((response)=>{
-         if(response.status === 200){
+       if(!this.v$.$error){
+         console.log('new teacher')
+         console.log(this.teacher)
+       this.$store.dispatch('dean/addTeachers',this.teacher).then((response)=>{
+         console.log('the response from server')
+         console.log(response)
+         if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You register one teacher succesfully'
+           this.cleanForm()
          }
           else{
-         console.log('form faild validation ')
+             console.log('form faild validation ')
        }
        }).catch(e=>{
          this.isSuccessed = false
@@ -155,10 +221,78 @@ export default {
          this.resultNotifier = e.error
        })
        }
+       else{
+         console.log('error occured')
+       }
       },
       cancelDialog(){
+        this.cleanForm()
           this.basemodal.hide();
+      },
+      editTeacher(teacher){
+        this.basemodal.show();
+        this.buttonType = 'edit'        
+        this.teacher.first_name = teacher.first_name
+        this.teacher.last_name = teacher.last_name
+        this.teacher.phone_no = teacher.phone_no
+        this.teacher.profession = teacher.profession
+        this.teacher.email = teacher.email
+        this.teacherId = teacher.id
+         
+      },
+      saveEditedTeacher(){
+        this.v$.$validate()
+        if(!this.v$.$error){
+         console.log('edit teacher')
+         console.log(this.teacher)
+         this.teacher.id = this.teacherId
+       this.$store.dispatch('dean/updateTeacher',this.teacher).then((response)=>{
+         console.log(response)
+         if(response.status === 200){
+           this.isFaild = false
+           this.isSuccessed = true
+           this.resultNotifier = 'You have updated one teacher succesfully'
+           this.cleanForm()
+         }
+          else{
+         console.log('updated data faild validation ')
+       }
+       }).catch(e=>{
+         this.isSuccessed = false
+         this.isFaild = true
+         this.resultNotifier = e.error
+       })
+       }
+       else{
+         console.log('error occured')
+       }
+        console.log('you have edited teacher')
+      },
+      deleteTeacher(id){
+         this.$store.dispatch('dean/deleteTeacher',id)
+      },
+      filterTeacher(value){
+        if(value === 'all'){
+          this.teacherList = this.teachers
+        }
+        else{
+          this.teacherList = this.teachers.filter(teacher=>{
+          return value === teacher.type
+        })
+        }
+        
+      },
+      cleanForm(){
+         
+             this.teacher.first_name = '';
+             this.teacher.last_name = '';
+             this.teacher.phone_no = '';
+             this.teacher.email = '';
+             this.teacher.profession = '';
+             this.teacher.type = '';
+             this.v$.$error=false
       }
+           
    }, 
 }
 </script>
@@ -172,14 +306,18 @@ export default {
     width: 10em;
 
 }
-.commenbtn{
-  background-color: #ff9500;
-    color: #fff;
-    width: 7em;  
-}
-.btn:hover{
+.addbtn:hover{
     background-color:#eca643 ;
 }
+.dropdown ul{
+  background-color: #f5f6fa;
+}
+ul li{
+    cursor: pointer;
+  }
+ a span:hover{
+   color: #ff9500;
+ }
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
