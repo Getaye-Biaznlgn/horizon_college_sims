@@ -9,6 +9,13 @@ const routes = [
     path:'/',
     name:'home',
     component:Home
+  },
+  {
+    path:'/employee-login',
+    name:'EmployeeLogin',
+    component: () =>
+    import ( /* webpackChunkName: "EmployeeLogin" */ '../views/employee/EmployeeLogin')
+
   }
 ]
 

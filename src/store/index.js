@@ -1,19 +1,36 @@
 import { createStore } from 'vuex'
 import apiClient from "./baseUrl"
-
+import dean from './employee/dean'
 export default createStore({
+   modules: {
+    dean
+  },
   state: {
-    programs:[]
+    programs:[],// still im not using it
+    isItemLoading:'',
+    isLoading:'',//loading for entry page
   },
   mutations:{
     setPrograms(state, programs){
       state.programs = programs
+    },
+    setIsItemLoading(state, isItemLoading){
+      state.isItemLoading = isItemLoading
+    },
+    setIsLoading(state, isLoading){
+      state.isLoading = isLoading
     }
   },
   getters:{
      programs(state){
        return state.programs
-     }
+     },
+     isItemLoading(state){
+       return state.isItemLoading
+     },
+     isLoading(state){
+      return state.isLoading
+    }
   },
   actions: {
       async fetchPrograms({ commit }) {
@@ -33,6 +50,5 @@ export default createStore({
           }
       }
     },
-  modules: {
-  }
+  
 })
