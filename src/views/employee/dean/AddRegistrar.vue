@@ -39,7 +39,7 @@
 
     </div>
     <!-- registrar registration form dialog-->
-    <base-modal :is-loading="isLoading" :btn-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar">
+    <base-modal :is-loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -129,11 +129,13 @@ export default {
       registerRegistrar(){
        this.v$.$validate()
        if(!this.v$.$error){
+         this.isLoading = true
        this.$store.dispatch('dean/addRegistrar',this.registrar).then((response)=>{
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You have register one registrar succesfully'
+           this.isLoading = false
          }
           else{
          console.log('form faild validation ')
@@ -161,6 +163,7 @@ export default {
       saveEditedRegistrar(){
         this.v$.$validate()
          if(!this.v$.$error){
+           this.isLoading = true
          console.log('edit registrar')
          console.log(this.registrar)
          this.registrar.id = this.registrarId
@@ -170,6 +173,7 @@ export default {
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You have updated one registrar succesfully'
+           this.isLoading = false
          }
           else{
          console.log('updated data faild validation ')

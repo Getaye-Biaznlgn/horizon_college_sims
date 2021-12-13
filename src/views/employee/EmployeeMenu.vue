@@ -1,11 +1,16 @@
 <template>
     <div class="d-flex">
        <div class="sidebar">
-          <the-sidebar ></the-sidebar>
+          <the-sidebar  ></the-sidebar>
         </div>
-        <div class="content container-fluid p-0 m-0">
+        <div class="content container-fluid p-0 m-0 position-relative">
           <the-header  class="position-sticky header top-0 p-0 m-0"></the-header>
-           <router-view ></router-view>    
+           <router-view ></router-view> 
+            <div v-if="isItemLoading" class="loading-screen route-loading p-0  position-absolute top-0 start-0 w-100 h-100">
+               <div class="loading-spinner">
+                   <img src="../../assets/preloader.gif"   alt="slow connection">
+               </div>
+            </div>   
         </div>
     </div>   
  
@@ -18,21 +23,29 @@
 <script>
 import TheHeader from '../../components/employee/TheHeader.vue'
 import TheSidebar from '../../components/employee/Sidebar.vue'
+import { mapGetters } from 'vuex';
 export default {
     components:{
       TheHeader,
       TheSidebar
     },
+   
     computed:{
-      isLoading(){
-        return false;
-      },
+      ...mapGetters(['isLoading','isItemLoding'])
     },
     created(){
       this.$store.dispatch('dean/fetchTeachers')
       this.$store.dispatch('dean/fetchDepartmentHeads')
       this.$store.dispatch('dean/fetchRegistrars')
       this.$store.dispatch('dean/fetchCashiers')
+      // this.$store.dispatch('fetchPrograms')
+      this.$store.dispatch('dean/fetchDegreeDepartments')
+      this.$store.dispatch('dean/fetchTvetDepartments')
+      this.$store.dispatch('dean/fetchCourses')
+      this.$store.dispatch('dean/fetchModules')
+      this.$store.dispatch('dean/fetchDegreePrograms')
+      this.$store.dispatch('dean/fetchTvetPrograms')
+     // this.$store.dispatch('dean/fetchDepartmentHead')
     }
 }
 </script>
@@ -53,5 +66,8 @@ export default {
   position:absolute; 
   top: 10%;
   left: 40%;
+}
+.route-loading{
+  background-color: rgba(0, 0, 0, 0.5);;
 }
 </style>

@@ -49,7 +49,20 @@
                 <span>Cashier</span>
                </sidebar-item> 
             </template>
-            
+            <!-- //Registrar -->
+         </collapse-sidebar-item>
+                  <collapse-sidebar-item label="Student Fee"> 
+            <template #icon>
+              <span><i class="fas fa-tachometer-alt pe-3"></i></span>
+            </template>
+            <template #default>
+              <sidebar-item :isSubItem="true" :to="{name:'DegreeStudentFee'}">
+                <span>Degree Student Fee</span>
+              </sidebar-item> 
+              <sidebar-item :isSubItem="true" :to="{name:'TvetStudentFee'}">
+                <span>Tvet Student Fee</span>
+               </sidebar-item> 
+            </template>
          </collapse-sidebar-item>
            <collapse-sidebar-item label="Student"> 
             <template #icon>

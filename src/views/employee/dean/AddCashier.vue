@@ -14,27 +14,6 @@
     </tr>
   </thead>
   <tbody v-if="cashiers.length">
-  <!--
-    <tr v-for="n in 10" :key="n">
-      <td>1</td>
-      <td>Endalu Belachew</td>
-      <td>0912345221</td>
-      <td>endalu@gmail.com</td>
-       <td>
-        <div class="dropdown">
-          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-              <span><i class="fas fa-ellipsis-v"></i></span>
-          </a>
-
-          <ul class="dropdown-menu border rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span @click="editCashier()" class="dropdown-item px-4 py-2">edit</span></li>
-              <hr class="w-100 mb-0 mt-0">
-             <li><span @click="deleteCashier()" class="dropdown-item px-4 py-2">delete</span></li>
-          </ul>
-        </div>
-    </td>
-    </tr>
-    -->
      <tr v-for="(cashier,index) in cashiers" :key="cashier.id">
       <td>{{index+1}}</td>
       <td>{{cashier.first_name+" "+cashier.last_name}}</td>
@@ -59,7 +38,7 @@
 
     </div>
     <!-- cashier registration form dialog-->
-    <base-modal :is-error="isAnyError" :btn-type="buttonType" @edit="saveEditedCashier" @save="registerCashier">
+    <base-modal :is-Loading="isLoading" id="baseModal" :button-Type="buttonType" @edit="saveEditedCashier" @save="registerCashier">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -150,11 +129,13 @@ export default {
       registerCashier(){
        this.v$.$validate()
        if(!this.v$.$error){
+         this.isLoading = true
        this.$store.dispatch('dean/addCashier',JSON.stringify(this.cashier)).then((response)=>{
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You register one Cashier succesfully'
+           this.isLoading = false
          }
          else{
          console.log('form faild validation ')
@@ -179,6 +160,7 @@ export default {
      saveEditedCashier(){
        this.v$.$validate()
         if(!this.v$.$error){
+          this.isLoading = true
          console.log('edit cashier')
          console.log(this.cashier)
          this.cashier.id = this.cashierId
@@ -188,6 +170,7 @@ export default {
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You have updated one cashier succesfully'
+           this.isLoading = false
          }
           else{
          console.log('updated data faild validation ')

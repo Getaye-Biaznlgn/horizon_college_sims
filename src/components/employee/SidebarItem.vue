@@ -29,9 +29,11 @@ export default {
   }
   a:focus{
 background-color: #fff;
+color: #000;
   }
   a:hover{
-   background-color: #fff;   
+   background-color: #fff; 
+   color: #000!important;  
   }
   /* a.router-link-active{
       background-color: red;

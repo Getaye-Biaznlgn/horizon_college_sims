@@ -59,7 +59,7 @@
 
     </div>
     <!-- department head registration form dialog-->
-    <base-modal :is-loading="isLoading" :btn-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead">
+    <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -150,11 +150,13 @@ export default {
       registerDepartmentHead(){
        this.v$.$validate()
        if(!this.v$.$error){
+         this.isLoading = true
        this.$store.dispatch('dean/addDepartmentHead',this.departmentHead).then((response)=>{
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You register one departmentHead succesfully'
+           this.isLoading = false
          }
           else{
          console.log('form faild validation ')
@@ -179,6 +181,7 @@ export default {
       saveEditedDeptHead(){
         this.v$.$validate()
          if(!this.v$.$error){
+           this.isLoading = true
          console.log('edit departmentHead')
          console.log(this.departmentHead)
          this.departmentHead.id=this.deptHeadId
@@ -188,6 +191,7 @@ export default {
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You have update one departmentHead succesfully'
+           this.isLoading = false
          }
           else{
          console.log('updated data faild validation ')

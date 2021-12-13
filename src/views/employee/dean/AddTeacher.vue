@@ -37,30 +37,7 @@
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody v-if="teacherList.length">
-  <!--
-    <tr v-for="n in 10" :key="n">
-      <td>1</td>
-      <td>Kassahun Worku</td>
-      <td>0912345221</td>
-      <td>endalu@gmail.com</td>
-      <td>Regular</td>
-      <td>Database Teacher</td>
-       <td>
-        <div class="dropdown">
-          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-              <span><i class="fas fa-ellipsis-v"></i></span>
-          </a>
-
-          <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span @click="editTeacher('edit')" class="dropdown-item px-4 py-2">edit</span></li>
-              <hr class="w-100 mb-0 mt-0">
-             <li><span @click="deleteTeacher()" class="dropdown-item px-4 py-2">delete</span></li>
-          </ul>
-        </div>
-    </td>
-    </tr>
-    -->
+  <tbody v-if="teacherList?.length">
      <tr v-for="(teacher,index) in teacherList" :key="teacher.id">
       <td>{{index+1}}</td>
       <td>{{teacher.first_name+" "+teacher.last_name}}</td>
@@ -87,7 +64,7 @@
 
     </div>
     <!-- teracher registration form dialog-->
-    <base-modal :is-error= "isInvalid" :btn-type="buttonType" @edit="saveEditedTeacher" @save="registerTeacher" @empty="cancelDialog">
+    <base-modal :is-loading= "isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedTeacher" @save="registerTeacher">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -139,6 +116,7 @@ export default {
        return {
          v$:useValidate(),
            basemodal:null,
+           modalId:'',
            isLoading:false,
            isSuccessed:true,
            isFaild:false,
@@ -178,6 +156,7 @@ export default {
      }
    },
    mounted() {
+     this.modalId = 'baseModal'
      this.basemodal = new Modal(document.getElementById('baseModal'))
    },
    computed:{
@@ -201,6 +180,7 @@ export default {
       registerTeacher(){
        this.v$.$validate()
        if(!this.v$.$error){
+         this.isLoading = true
          console.log('new teacher')
          console.log(this.teacher)
        this.$store.dispatch('dean/addTeachers',this.teacher).then((response)=>{
@@ -210,6 +190,7 @@ export default {
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You register one teacher succesfully'
+           this.isLoading = false
            this.cleanForm()
          }
           else{
@@ -243,6 +224,7 @@ export default {
       saveEditedTeacher(){
         this.v$.$validate()
         if(!this.v$.$error){
+          this.isLoading = true
          console.log('edit teacher')
          console.log(this.teacher)
          this.teacher.id = this.teacherId
@@ -252,7 +234,7 @@ export default {
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You have updated one teacher succesfully'
-           this.cleanForm()
+           this.isLoading = false
          }
           else{
          console.log('updated data faild validation ')
@@ -282,16 +264,6 @@ export default {
         }
         
       },
-      cleanForm(){
-         
-             this.teacher.first_name = '';
-             this.teacher.last_name = '';
-             this.teacher.phone_no = '';
-             this.teacher.email = '';
-             this.teacher.profession = '';
-             this.teacher.type = '';
-             this.v$.$error=false
-      }
            
    }, 
 }
