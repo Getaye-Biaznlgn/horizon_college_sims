@@ -1,9 +1,11 @@
 import { createStore } from 'vuex'
 import apiClient from "./baseUrl"
 import dean from './employee/dean'
+import auth from './employee/auth'
 export default createStore({
    modules: {
-    dean
+    dean,
+    auth
   },
   state: {
     programs:[],// still im not using it
