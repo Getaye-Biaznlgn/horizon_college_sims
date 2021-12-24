@@ -1,69 +1,25 @@
 import registrar from './registrar'
-export default {
-    path: '/staff',
-    name: 'EmployeeMenu',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-        import ( /* webpackChunkName: "employeemenu" */ '../../views/employee/EmployeeMenu.vue'),
-      children: [{
-            path: '/staff/',
-            name: 'DeanDashboard',
-            component: () =>
-                import ( /* webpackChunkName: "DeanDashboard" */ '../../views/employee/dean/DeanDashboard')
-        },
-        {
-            path: '/addteacher/',
-            name: 'AddTeacher',
-            component: () =>
-                import ( /* webpackChunkName: "AddTeacher" */ '../../views/employee/dean/AddTeacher.vue')
-        },
-        {
-            path: '/adddepartmenthead/',
-            name: 'AddDepartmentHead',
-            component: () =>
-                import ( /* webpackChunkName: "AddDepartmentHead" */ '../../views/employee/dean/AddDepartmentHead.vue')
-        },
-        {
-            path: '/addregistrar/',
-            name: 'AddRegistrar',
-            component: () =>
-                import ( /* webpackChunkName: "AddRegistrar" */ '../../views/employee/dean/AddRegistrar.vue')
-        },
-        {
-            path: '/addcashier/',
-            name: 'AddCashier',
-            component: () =>
-                import ( /* webpackChunkName: "AddCashier" */ '../../views/employee/dean/AddCashier.vue')
-        },
-
-        {
-            path: '/staff/degree-department',
-            name: 'DegreeDepartment',
-            component: () =>
-                import ( /* webpackChunkName: "DeanDashboard" */ '../../views/employee/dean/DegreeDepartment')
-        },
-        {
-            path: '/staff/tvet-department',
-            name: 'TVETDepartment',
-            component: () =>
-                import ( /* webpackChunkName: "tvetdepartment" */ '../../views/employee/dean/TVETDepartment')
-        },
-        {
-            path: '/staff/course-curriculum',
-            name: 'CourseCurriculum',
-            component: () =>
-                import ( /* webpackChunkName: "coursecurriculum" */ '../../views/employee/dean/CourseCurriculum')
-        },
-        {
-            path: '/staff/module-curriculum',
-            name: 'ModuleCurriculum',
-            component: () =>
-                import ( /* webpackChunkName: "modulecurriculum" */ '../../views/employee/dean/ModuleCurriculum')
-        },
-        //registrar
-        ...registrar
-        
-    ]
-}
+import dean from './dean'
+import degree_head from './degree_head'
+export default{
+        path: '/staff/',
+        name: 'EmployeeMenu',
+        component: () =>
+            import ( /* webpackChunkName: "employeemenu" */ '../../views/employee/EmployeeMenu.vue'),
+            meta:{authRequired:true, typeRequired:'employee'},
+            children: [
+                {
+                  path:'/staff/setting',
+                  name:'AccountSetting',
+                  component: () =>
+            import ( /* webpackChunkName: "employeesetting" */ '../../views/employee/AccountSetting.vue'),
+            meta:{authRequired:true, typeRequired:'employee'},  
+                },
+            //registrar
+            ...registrar,
+            ...dean,
+            ...degree_head     
+        ]
+   }
+    
+     

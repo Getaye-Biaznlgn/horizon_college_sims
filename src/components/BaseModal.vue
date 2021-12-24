@@ -1,6 +1,6 @@
 <template>
-    <div class="modal fade" :id="id" tabindex="-1" data-bs-backdrop="static" aria-labelledby="degreeDepartmentLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
+<div class="modal  fade" :id="id" tabindex="-1" data-bs-backdrop="static" aria-labelledby="degreeDepartmentLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-body">
          <slot name="modalBody"/>
@@ -28,8 +28,14 @@
             </span>      
             <span v-else>Assign</span>   
           </button>
-          <!-- <button v-if="buttonType==='detail'" @click="showDetail" type="button" class="btn  px-4 btn-save text-white mx-3">Edit</button> -->
-
+          <button v-if="buttonType==='delete'" :disabled="isLoading" type="button" @click="deleteItem" class="btn  px-4 btn-save text-white mx-3">
+            <span v-if="isLoading">
+               <span   class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+               DELETING
+            </span>      
+            <span v-else>DELETE</span>   
+          </button>
+         
       </div>
     </div>
   </div>
@@ -58,21 +64,26 @@ export default {
     },
     assign(){
       this.$emit('assign')
-    }
+    },
+    deleteItem(){
+      this.$emit('deleteItem')
+    },
   },
 }
 </script>
 <style scoped>  
 .btn-save{
-    background-color: #ff9500;
+    background-color: #2f4587;
     border-radius: 0;
 }
 .btn-save:hover{
-  background-color: #eca643;
+  background-color: #425fb8;
 }
 .btn-cancel{
   border-radius: 0;  
 }
+
+
 </style>
 
 

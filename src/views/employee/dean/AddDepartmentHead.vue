@@ -1,29 +1,7 @@
 <template>
-    <div class="wraper border rounded shadow-sm p-3 m-2 bg-white">
-    <div class="d-flex justify-content-between">
-    <div class="d-flex justify-content-between">
-   <div class="form-check ms-5 me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="all" id="all" checked v-model="teacherType">
-  <label class="form-check-label" for="all">
-    All
-  </label>
-</div>
-    <div class="form-check me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="regular" id="regular" v-model="teacherType">
-  <label class="form-check-label" for="regular">
-    Regular
-  </label>
-</div>
-    <div class="form-check me-3">
-  <input class="form-check-input" type="radio" name="teachertype" value="partime" id="partime" v-model="teacherType">
-  <label class="form-check-label" for="partime">
-    Partime
-  </label>
-</div>
-    </div>
-    <div>
-    <button @click="addDepartmentHead()" class="btn addbtn">Add New Teacher</button>
-    </div>
+    <base-card class="px-3 mx-4 mt-3">
+    <div class="d-flex justify-content-end">
+    <button @click="addDepartmentHead()" class="btn addbtn py-2 px-0">Add Department Head</button>
     </div>
     <table class="mt-3">
   <thead>
@@ -32,43 +10,54 @@
       <th class="text-white">Full Name</th>
       <th class="text-white">Phone Number</th>
       <th class="text-white">Email Address</th>
-      <th class="text-white">Type</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody>
-    <tr v-for="n in 10" :key="n">
-      <td>1</td>
-      <td>Endalu Belachew</td>
-      <td>0912345221</td>
-      <td>endalu@gmail.com</td>
-      <td>Regular</td>
-      <td>edit</td>
+  <tbody v-if="deptHeads.length">
+ 
+    <tr v-for="(deptHead,index) in deptHeads" :key="deptHead.id">
+      <td>{{index+1}}</td>
+      <td>{{deptHead.first_name+" "+deptHead.last_name}}</td>
+      <td>{{deptHead.phone_no}}</td>
+      <td>{{deptHead.email}}</td>
+       <td>
+        <div class="dropdown">
+          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><i class="fas fa-ellipsis-v"></i></span>
+          </a>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm py-0">
+              <li><span @click="editDeptHead(deptHead)" class="dropdown-item px-4 py-2">edit</span></li>
+             <li><span @click="deleteDeptHead(deptHead.id)" class="dropdown-item px-4 py-2">delete</span></li>
+          </ul>
+        </div>
+    </td>
     </tr>
   </tbody>
+  <div v-else class="mt-5 mb-5 text-center text-danger">faild to access department heads</div>
 </table>
 
-    </div>
-    <!-- teracher registration form dialog-->
-    <base-modal @save="registerDepartmentHead" :is-loading="isLoading">
+    </base-card>
+    <!-- department head registration form dialog-->
+    <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead">
     <template #modalBody>
     <div class="bg-white p-3">
 
     <form>
-    <div class="mb-3" :class="{warining:v$.departmentHead.fname.$error}">
+    <div class="mb-3" :class="{warining:v$.departmentHead.first_name.$error}">
   <label for="fname" class="form-label">First Name</label>
-  <input type="text" class="form-control" id="fname" v-model.trim="departmentHead.fname" @blur="v$.departmentHead.fname.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.fname.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="text" class="form-control" id="fname" v-model.trim="departmentHead.first_name" @blur="v$.departmentHead.first_name.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.first_name.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.departmentHead.lname.$error}">
+<div class="mb-3" :class="{warining:v$.departmentHead.last_name.$error}">
   <label for="lname" class="form-label">Last Name</label>
-  <input type="text" class="form-control" id="lname" v-model.trim="departmentHead.lname" @blur="v$.departmentHead.lname.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.lname.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="text" class="form-control" id="lname" v-model.trim="departmentHead.last_name" @blur="v$.departmentHead.last_name.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.departmentHead.phoneNo.$error}">
+<div class="mb-3" :class="{warining:v$.departmentHead.phone_no.$error}">
   <label for="phoneNo" class="form-label">Phone Number</label>
-  <input type="tel" class="form-control" id="phoneNo" v-model="departmentHead.phoneNo" @blur="v$.departmentHead.phoneNo.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.phoneNo.$errors" :key="index">{{ error.$message+", " }}</span>
+  <input type="tel" class="form-control" id="phoneNo" v-model="departmentHead.phone_no" @blur="v$.departmentHead.phone_no.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.phone_no.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 <div class="mb-3" :class="{warining:v$.departmentHead.email.$error}">
   <label for="exampleFormControlInput1" class="form-label">Email address</label>
@@ -77,7 +66,7 @@
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">This is Errors from server</p>
+    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 </template>    
   </base-modal>
 </template>
@@ -95,23 +84,26 @@ export default {
            isSuccessed:true,
            isFaild:false,
            resultNotifier:'',
-           teacherType:null,
+           deptHeadType:null,
+           buttonType:'',
+           deptHeadId:null,
            departmentHead:{
-             fname:'',
-             lname:'',
-             phoneNo:'',
+              first_name:'',
+             last_name:'',
+             phone_no:'',
              email:'',
+             role:'department head'
            }
        }
    },
    validations(){
      return {
       departmentHead:{
-        fname:{required: helpers.withMessage('first name can not be empty',required),
+        first_name:{required: helpers.withMessage('first name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        lname:{required: helpers.withMessage('last name can not be empty',required),
+        last_name:{required: helpers.withMessage('last name can not be empty',required),
                alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-               phoneNo:{
+               phone_no:{
               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
@@ -125,18 +117,26 @@ export default {
    mounted() {
      this.basemodal = new Modal(document.getElementById('baseModal'))
    },
+   computed:{
+     deptHeads(){
+       return this.$store.getters['dean/departmentHeads']
+     }
+   },
    methods: {
       addDepartmentHead(){
          this.basemodal.show();
+         this.buttonType = 'add'
       } ,
       registerDepartmentHead(){
        this.v$.$validate()
-       if(!this.v$.error){
-       this.$store.dispatch('setDepartmentHead',JSON.stringify(this.departmentHead)).then((response)=>{
-         if(response.status === 200){
+       if(!this.v$.$error){
+         this.isLoading = true
+       this.$store.dispatch('dean/addDepartmentHead',this.departmentHead).then((response)=>{
+         if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You register one teacher succesfully'
+           this.resultNotifier = 'You register one departmentHead succesfully'
+           this.isLoading = false
          }
           else{
          console.log('form faild validation ')
@@ -148,6 +148,47 @@ export default {
        })
        }
       },
+      editDeptHead(departmentHead){
+        this.basemodal.show();
+        this.buttonType = 'edit'        
+        this.departmentHead.first_name = departmentHead.first_name
+        this.departmentHead.last_name = departmentHead.last_name
+        this.departmentHead.phone_no = departmentHead.phone_no
+        this.departmentHead.profession = departmentHead.profession
+        this.departmentHead.email = departmentHead.email
+        this.deptHeadId = departmentHead.id
+      },
+      saveEditedDeptHead(){
+        this.v$.$validate()
+         if(!this.v$.$error){
+           this.isLoading = true
+         console.log('edit departmentHead')
+         console.log(this.departmentHead)
+         this.departmentHead.id=this.deptHeadId
+       this.$store.dispatch('dean/updateDepartmentHead',this.departmentHead).then((response)=>{
+         console.log(response)
+         if(response.status === 200){
+           this.isFaild = false
+           this.isSuccessed = true
+           this.resultNotifier = 'You have update one departmentHead succesfully'
+           this.isLoading = false
+         }
+          else{
+         console.log('updated data faild validation ')
+       }
+       }).catch(e=>{
+         this.isSuccessed = false
+         this.isFaild = true
+         this.resultNotifier = e.error
+       })
+       }
+       else{
+         console.log('error occured')
+       }
+      },
+      deleteDeptHead(id){
+         this.$store.dispatch('dean/deleteDepartmentHead',id)
+      }
    }, 
 }
 </script>
@@ -158,17 +199,21 @@ export default {
 .addbtn{
     background-color: #ff9500;
     color: #fff;
-    width: 10em;
+    width: 11em;
 
 }
-.commenbtn{
-  background-color: #ff9500;
-    color: #fff;
-    width: 7em;  
-}
-.btn:hover{
+.addbtn:hover{
     background-color:#eca643 ;
 }
+.dropdown ul{
+  background-color: #f5f6fa;
+}
+ul li{
+    cursor: pointer;
+  }
+ a span:hover{
+   color: #ff9500;
+ }
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -203,4 +248,7 @@ td{
   .faild{
     color: red;
   }
+   a span:hover{
+   color: #ff9500;
+ }
 </style>

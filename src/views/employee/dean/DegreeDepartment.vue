@@ -24,8 +24,9 @@
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
+             <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
              <li ><span  @click="showEditModal(index)" class="dropdown-item">Edit</span></li>
+             <li ><span @click="showDeleteModal(index)"  class="dropdown-item">Delete</span></li>
              <li><span @click="showAssignModal(index)" class="dropdown-item" >Assign Head</span></li>
           </ul>
       </div>
@@ -73,7 +74,7 @@
 </base-modal>
 
 <!-- assign -->
-<base-modal  id="assignBaseModal"    :button-type="actionButtonType" :isLoading="isSaving" @assign="assignHead" @cancel="cancelAssignModal">
+<base-modal  id="assignBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @assign="assignHead" @cancel="cancelAssignModal">
    <template #modalBody>
      <div class="col mb-3">
           <div class="form-label" for="#department">Assign Department Head</div>
@@ -82,6 +83,17 @@
              </select>
       </div>
      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+   </template>
+</base-modal>
+
+<!-- delete -->
+<base-modal  id="deleteBaseModal"    :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem">
+   <template #modalBody>
+      
+          <div class="form-label fw-bold">Delete</div>
+             
+    
+      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
 
@@ -106,15 +118,17 @@
  </table>
  </template>
 </base-modal>
+
 </template>
 
 
 
 <script>
 import { Modal } from 'bootstrap';
-import useValidate from '@vuelidate/core'
+
 import {mapGetters} from 'vuex'
 import {required,helpers} from '@vuelidate/validators'
+import useValidate from '@vuelidate/core'
 import RequestStatusNotifier from '../../../components/RequestStatusNotifier.vue';
 import BaseModal from '../../../components/BaseModal.vue';
 
@@ -127,9 +141,13 @@ export default {
       addBaseModal:null,
       detailBaseModal:null,
       assignBaseModal:null,
+      deleteBaseModal:null,
+      //
       isSaving:false,
       detailShowingDepartment:null,
+      
       actionButtonType:'',
+
       //server response issue
       responseMessage:'',
       isNotSucceed:true,
@@ -154,7 +172,7 @@ export default {
     }
   },
   computed:{
-    ...mapGetters(['degreeDepartments','departmentHeads'])
+    ...mapGetters({degreeDepartments:'dean/degreeDepartments',departmentHeads:'dean/departmentHeads'})
   },
   created(){
    
@@ -178,6 +196,10 @@ export default {
       showAddModal(){
         this.actionButtonType="add"
         this.addBaseModal.show()
+      },
+      showDeleteModal(){
+        this.actionButtonType='delete'
+        this.deleteBaseModal.show()
       },
       showEditModal(index){
         this.department.id=this.degreeDepartments[index].id
@@ -214,7 +236,7 @@ export default {
      async assignHead(){
          this.responseMessage=''
           this.isSaving=true
-          await this.$store.dispatch('assignDepartmentHead',this.assignDepartmentHead)
+          await this.$store.dispatch('dean/assignDepartmentHead',this.assignDepartmentHead)
           .then(()=>{
            this.isNotSucceed=false,
            this.responseMessage='Department Head assigned successfully'
@@ -230,13 +252,13 @@ export default {
          this.assignBaseModal.hide()
        },
       async edit(){
-      this.request('updateDegreeDepartment','department updated successfully', 'Faild to update department')
+      this.request('dean/updateDegreeDepartment','department updated successfully', 'Faild to update department')
       },
       save() {
-          this.request('addDegreeDepartment','department added successfully', 'Faild to add department')
+          this.request('dean/addDegreeDepartment','department added successfully', 'Faild to add department')
       },
     async  request(action, successMessage, errorMessage){
-        this.responseMessage=''
+       this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
           this.isSaving=true
@@ -276,7 +298,7 @@ export default {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
    this.detailBaseModal = new Modal(document.getElementById('detailBaseModal'));
    this.assignBaseModal = new Modal(document.getElementById('assignBaseModal'));
-
+   this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
  }
 }
 </script>
