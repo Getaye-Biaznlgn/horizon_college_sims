@@ -134,7 +134,7 @@ export default {
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You have register one registrar succesfully'
+           this.resultNotifier = 'You have registered one registrar succesfully'
            this.isLoading = false
          }
           else{

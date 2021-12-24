@@ -151,7 +151,7 @@ export default {
      }
   },
   computed:{
-    ...mapGetters(['tvetDepartments','tvetLevels','departmentHeads'])
+    ...mapGetters('dean',['tvetDepartments','tvetLevels','departmentHeads'])
   },
   methods:{
       showAddModal(){

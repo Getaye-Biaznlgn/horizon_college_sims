@@ -35,4 +35,9 @@ export default {
 .collapse-item{
   background-color: #F5F6FA;
 }
+li:focus{
+  background-color: #2f4587!important;
+  margin: 2%;
+  border-radius: 2%;
+}
 </style>

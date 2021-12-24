@@ -155,7 +155,7 @@ export default {
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You register one departmentHead succesfully'
+           this.resultNotifier = 'You have registered one department Head succesfully'
            this.isLoading = false
          }
           else{
@@ -190,7 +190,7 @@ export default {
          if(response.status === 200){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You have update one departmentHead succesfully'
+           this.resultNotifier = 'You have updated one department Head succesfully'
            this.isLoading = false
          }
           else{

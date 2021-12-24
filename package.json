@@ -15,6 +15,7 @@
     "bootstrap": "^5.1.3",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
+    "vue-html-to-paper": "^1.4.4",
     "vue-router": "^4.0.0-0",
     "vuelidate": "^0.7.6",
     "vuex": "^4.0.0-0"

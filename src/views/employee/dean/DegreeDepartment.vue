@@ -154,7 +154,7 @@ export default {
     }
   },
   computed:{
-    ...mapGetters(['degreeDepartments','departmentHeads'])
+    ...mapGetters('dean',['degreeDepartments','departmentHeads'])
   },
   created(){
    

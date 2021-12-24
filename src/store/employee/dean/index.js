@@ -582,7 +582,7 @@ export default {
             }
         },
         async updateTeacher(context, teacher) {
-            console.log('inside update actions')
+            console.log('inside update teacher actions')
             try {
                 var response = await apiClient.put('api/teachers/' + teacher.id, teacher)
                 console.log('status code =' + response.status)

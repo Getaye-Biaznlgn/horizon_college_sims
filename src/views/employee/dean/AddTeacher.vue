@@ -181,17 +181,12 @@ export default {
        this.v$.$validate()
        if(!this.v$.$error){
          this.isLoading = true
-         console.log('new teacher')
-         console.log(this.teacher)
        this.$store.dispatch('dean/addTeachers',this.teacher).then((response)=>{
-         console.log('the response from server')
-         console.log(response)
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You register one teacher succesfully'
+           this.resultNotifier = 'You have registered one teacher succesfully'
            this.isLoading = false
-           this.cleanForm()
          }
           else{
              console.log('form faild validation ')
@@ -207,7 +202,6 @@ export default {
        }
       },
       cancelDialog(){
-        this.cleanForm()
           this.basemodal.hide();
       },
       editTeacher(teacher){

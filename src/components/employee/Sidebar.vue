@@ -78,6 +78,23 @@
             </template>
             
          </collapse-sidebar-item>
+         <sidebar-item :isSubItem="false" :to="{name:'payment'}">
+                 <span><i class="fas fa-coins me-3"></i>Payment</span>
+               </sidebar-item> 
+                <collapse-sidebar-item label="Tuition Fee"> 
+            <template #icon>
+              <span><i class="fas fa-money-check-alt me-3"></i></span>
+            </template>
+            <template #default>
+               <sidebar-item :isSubItem="true" :to="{name:'DegreeFee'}">
+                 <span>Degree</span>
+               </sidebar-item> 
+                <sidebar-item :isSubItem="true" :to="{name:'TvetFee'}">
+                 <span>TVET</span>
+               </sidebar-item>  
+            </template>
+            
+         </collapse-sidebar-item> 
       </ul>
    </nav>
 </template>

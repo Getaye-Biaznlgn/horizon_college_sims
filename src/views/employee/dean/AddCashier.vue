@@ -134,7 +134,7 @@ export default {
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You register one Cashier succesfully'
+           this.resultNotifier = 'You have registered one Cashier succesfully'
            this.isLoading = false
          }
          else{

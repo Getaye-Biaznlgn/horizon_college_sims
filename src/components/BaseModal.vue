@@ -51,9 +51,6 @@ export default {
     edit(){
       this.$emit('edit')
     },
-    cancel(){
-      this.$emit('cancel')
-    },
     assign(){
       this.$emit('assign')
     }

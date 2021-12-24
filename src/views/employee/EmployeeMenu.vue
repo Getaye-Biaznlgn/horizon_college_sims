@@ -38,14 +38,23 @@ export default {
       this.$store.dispatch('dean/fetchDepartmentHeads')
       this.$store.dispatch('dean/fetchRegistrars')
       this.$store.dispatch('dean/fetchCashiers')
-      // this.$store.dispatch('fetchPrograms')
       this.$store.dispatch('dean/fetchDegreeDepartments')
       this.$store.dispatch('dean/fetchTvetDepartments')
       this.$store.dispatch('dean/fetchCourses')
       this.$store.dispatch('dean/fetchModules')
       this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')
-     // this.$store.dispatch('dean/fetchDepartmentHead')
+    //  actions used oly in registrar mogule
+    this.$store.dispatch('registrar/fetchActiveYearSemister')
+     this.$store.dispatch('registrar/fetchAcadamicMounths')
+     this.$store.dispatch('registrar/fetchDegreeStudents')
+     this.$store.dispatch('registrar/fetchTvetStudents')
+     this.$store.dispatch('registrar/fetchAcadamicMounths')
+       this.$store.dispatch('registrar/fetchLevels')
+       //actions used by cashier
+      this.$store.dispatch('cashier/fetchCalender')
+       this.$store.dispatch('cashier/fetchPaymentTypes')
+       
     }
 }
 </script>

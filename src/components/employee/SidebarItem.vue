@@ -20,20 +20,10 @@ export default {
   }
   span{
       font-size: 16px;
-  }
+  }  
   .active{
-      background-color: #fff;
-      color:#000 !important;
-      
-      /* border-top: 2px solid #f1f1f1; */
-  }
-  a:focus{
-background-color: #fff;
-color: #000;
-  }
-  a:hover{
-   background-color: #fff; 
-   color: #000!important;  
+background-color: #366ad9;
+color: #fff;
   }
   /* a.router-link-active{
       background-color: red;

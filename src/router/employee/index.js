@@ -1,4 +1,5 @@
 import registrar from './registrar'
+import cashier from './cashier'
 export default {
     path: '/staff',
     name: 'EmployeeMenu',
@@ -7,7 +8,7 @@ export default {
     // which is lazy-loaded when the route is visited.
     component: () =>
         import ( /* webpackChunkName: "employeemenu" */ '../../views/employee/EmployeeMenu.vue'),
-      children: [{
+    children: [{
             path: '/staff/',
             name: 'DeanDashboard',
             component: () =>
@@ -87,7 +88,9 @@ export default {
                 import ( /* webpackChunkName: "modulecurriculum" */ '../../views/employee/dean/ModuleCurriculum')
         },
         //registrar
-        ...registrar
-        
+        ...registrar,
+        // cashier
+        ...cashier
+
     ]
 }

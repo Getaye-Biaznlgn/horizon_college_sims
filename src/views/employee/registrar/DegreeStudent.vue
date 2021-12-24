@@ -4,35 +4,23 @@
     <button @click="addStudent" class="btn me-1 p-2 addbtn">Add New Student</button>
     </div>
     <div class="d-flex justify-content-between">
-     <div class="input-group mt-3 search">
-  <span class="searchicon input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
-  <input type="text" class="form-control px-0" placeholder="Search By Student ID" aria-label="Username" aria-describedby="addon-wrapping">
+     <div class="input-group mt-3 search w-25">
+  <input type="text" class="form-control px-0" placeholder="Search By Student ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId">
+   <span @click="searchById()" class="searchicon input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
-  <div class="d-flex justify-content-end mt-3">
-    <div class="mb-3 me-4">
-<select class="form-select form-select-sm" aria-label="Default select example" ref="sex" @change="filterStudent($event,'sex')">
-  <option selected disabled>sex</option>
-  <option value="female">female</option>
-  <option value="male">male</option>
+  <div class="d-flex mt-3">
+ <div class="mb-3 me-4">
+<select class="form-select form-select-sm" aria-label="Default select example" v-model="program" @change="filterByProgram">
+  <option v-for="program in degreePrograms" :key="program.id" :value="program.id">{{program.name}}</option>
   </select>
 </div>
  <div class="mb-3 me-4">
-<select class="form-select form-select-sm" aria-label="Default select example" ref="programType" @change="filterStudent($event,'program_type')">
-  <option selected disabled>program</option>
-  <option value="regular">Regular</option>
-  <option value="extension">Extension</option>
+<select class="form-select form-select-sm" aria-label="Default select example" v-model="department" @change="filterByDepartment">
+  <option v-for="department in degreeDepartments" :key="department.id" :value="department.id">{{department.name}}</option>
   </select>
 </div>
  <div class="mb-3 me-4">
-<select class="form-select form-select-sm" aria-label="Default select example" ref="department" @change="filterStudent($event,'department')">
-  <option selected disabled>Department</option>
-  <option value="management">Management</option>
-  <option value="accounting">Accounting</option>
-  </select>
-</div>
- <div class="mb-3 me-4">
-<select class="form-select form-select-sm" aria-label="Default select example" ref="year" @change="filterStudent($event,'year')">
-  <option selected disabled>Year</option>
+<select class="form-select form-select-sm" aria-label="Default select example" v-model="year" @change="filterByYear">
   <option value="1">First</option>
   <option value="2">Second</option>
   <option value="3">Third</option>
@@ -40,14 +28,13 @@
   </select>
 </div>
 <div class="mb-3">
-<select class="form-select form-select-sm" aria-label="Default select example" ref="semester" @change="filterStudent($event,'semester')">
-  <option selected disabled>Semester</option>
-  <option value="first">First</option>
-  <option value="second">Second</option>
+<select class="form-select form-select-sm" aria-label="Default select example" v-model ="semester" @change="filterBySemester">
+  <option value="1">First</option>
+  <option value="2">Second</option>
   </select>
 </div>
   </div>
-    </div>
+  </div>
      <table class="mt-3">
   <thead>
     <tr class="table-header">
@@ -63,38 +50,16 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="n in 10" :key="n">
-      <td>1</td>
-      <td>HCM123</td>
-      <td>Kassahun Worku</td>
-      <td>Male</td>
-      <td>Regular</td>
-      <td>Management</td>
-      <td>Third</td>
-      <td>Second</td>
-       <td>
-        <div class="dropdown">
-          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-              <span><i class="fas fa-ellipsis-v"></i></span>
-          </a>
-
-          <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span @click="editTeacher('edit')" class="dropdown-item px-4 py-2">edit</span></li>
-              <hr class="w-100 mb-0 mt-0">
-             <li><span @click="deleteTeacher()" class="dropdown-item px-4 py-2">delete</span></li>
-          </ul>
-        </div>
-    </td>
-    </tr>
-    <!--
-     <tr v-for="(teacher,index) in teacherList" :key="teacher.id">
+     <tr v-for="(student,index) in degreeStudentList" :key="student.id">
       <td>{{index+1}}</td>
-      <td>{{teacher.first_name+" "+teacher.last_name}}</td>
-      <td>{{teacher.phone_no}}</td>
-      <td>{{teacher.email}}</td>
-      <td>{{teacher.type}}</td>
-      <td>{{teacher.profession}}</td>
-       <td>
+      <td>{{student.id}}</td>
+      <td>{{student.first_name+" "+student.last_name}}</td>
+      <td>{{student.sex}}</td>
+      <td>{{student.program.name}}</td>
+      <td>{{student.degree_department.name}}</td>
+      <td>{{student.current_year_no}}</td>
+      <td>{{student.current_semester_no}}</td>
+      <td>
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -107,43 +72,84 @@
         </div>
     </td>
     </tr>
-    -->
   </tbody>
    
 </table>
     </base-card>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 export default {
   data() {
     return {
-    //    sex:'',
-    // programType:'',
-    // department:'',
-    // year:'',
-    // semester:'',
      degreeStudentList:[],
+     sex:'male',
+     program:'5',
+     department:'4',
+     year:'1',
+     semester:'1',
+     studentList:[],
+     studentId:''
     }
   },
    computed:{
-    // degreeStudents(){
-    //   return this.$store.getters['student/degreeStudents']
-    // }
+    ...mapGetters('dean',['degreeDepartments','degreePrograms']),
+    semesters(){
+      return this.$store.getters['registrar/activeYearSemesters']
+    },
+    degreeStudents(){
+     return this.$store.getters['registrar/degreeStudents']
+    },
+//     filteredStudents(){
+//       var allStudents = this.degreeStudents
+//    var filteredByProgram =  allStudents.filter((student)=>{
+//             return this.program === student.program_id
+// })
+// var filteredByDepartment = filteredByProgram.filter((student)=>{
+//             return Number(this.department) === Number(student.degree_department_id)
+// })
+//  var filterdByYear = filteredByDepartment.filter((student)=>{
+//             return this.year === student.current_year_no
+// })
+// var filterdBySemester = filterdByYear.filter((student)=>{
+//             return this.semester === student.current_semester_no
+// });
+//       return filterdBySemester
+//     }
   },
   created() {
-    // this.degreeStudentList = this.degreeStudents
+    this.degreeStudentList = this.degreeStudents
   },
       methods: {
       addStudent(){
         this.$router.push({name:'DegreeStudentRegistration'})
       },
-         filterStudent(event,property){
-           console.log('value = '+event.target.value+' property = '+property)
-//            this.degreeStudentList = this.degreeStudents.filter((student)=>{
-//             return event.target.value === student[property]
-// })
+       filterByProgram(event){
+           this.degreeStudentList = this.degreeStudents.filter((student)=>{
+            return Number(event.target.value) === Number(student.program_id)
+})
+      },
+       filterByDepartment(event){
+           this.degreeStudentList = this.degreeStudents.filter((student)=>{
+            return Number(event.target.value) === Number(student.degree_department_id)
+})
+      },
+       filterByYear(event){
+           this.degreeStudentList = this.degreeStudents.filter((student)=>{
+            return event.target.value === student.current_year_no
+})
+      },
+       filterBySemester(event){
+           this.degreeStudentList = this.degreeStudents.filter((student)=>{
+            return event.target.value === student.current_semester_no
+})
+      },
+      searchById(){
+        this.degreeStudentList = this.degreeStudents.find(student=>{
+          return this.studentId === student.id
+        })
       }
-    },
+    }
 }
 </script>
 <style scoped>
@@ -178,23 +184,28 @@ td{
 }
 select{
     border-radius: 0;
-    border: 2px solid rgb(179, 176, 176);
 }
-.search{
-    width: 22%;
-    height: 40px;
-    border: 2px solid rgb(179, 176, 176);
-}
-.search input{
-   border-radius: 0;
-    border-left: 2px solid #fff;
-}
-.search span{
-    border-radius: 0;
-     background-color: #fff;
-     border-right: 2px solid #fff;
+.all{
+  border: 2px solid rgb(179, 176, 176);
+  width: 6em;
+  padding: 2px;
 }
 .searchicon{
   cursor: pointer;
+}
+.search{
+    height: 8px!important;
+    padding: 0;
+    background-color: #fff;
+}
+.search input{
+    border-right: none;
+}
+.search span{
+    background-color: #fff;
+    border-left: none;
+}
+.search span:hover{
+color: rgb(128, 128, 236);
 }
 </style>
