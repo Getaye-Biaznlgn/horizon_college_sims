@@ -44,15 +44,17 @@ export default {
      } 
      if(localStorage.getItem('user')){
         let user=localStorage.getItem('user')
+        console.log('user data',user)
         this.$store.dispatch('setUser', JSON.parse(user))
+        
      }
   },
     created(){
        this.$store.dispatch('fetchAcademicYears')
        .then(()=>{
            this.$store.getters.academicYears.forEach((year)=>{
-           if(year.status===1) {
-               this.$store.commit('setSelectedAcademicYearId', year.id)
+           if(year.is_current===1) {
+               this.$store.commit('setSelectedAcademicYear', year)
                }   
             })
            }
@@ -72,10 +74,7 @@ export default {
       else if(this.user.role==='department head'){
         this.$store.dispatch('degreeHead/fetchCourses')
         this.$store.dispatch('degreeHead/fetchSections')
-        this.$store.dispatch('degreeHead/fetchStudents')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
-        this.$store.dispatch('degreeHead/fetchSlips')
-        this.$store.dispatch('degreeHead/fetchGrades')
       }
 
       

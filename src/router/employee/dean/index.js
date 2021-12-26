@@ -6,8 +6,8 @@ export default[
         component: () =>
             import ( /* webpackChunkName: "DeanDashboard" */ '../../../views/employee/dean/DeanDashboard'),
            meta:{authRequired:true,  typeRequired:'employee'},
-      
-       beforeEnter(to, from, next){
+           
+         beforeEnter(to, from, next){
           if(store.getters.user.role!=='dean'){
               next(from.path)
           }

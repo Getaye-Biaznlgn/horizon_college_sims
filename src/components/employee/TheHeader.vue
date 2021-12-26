@@ -6,35 +6,33 @@
       </div>
       <div v-if="user.role==='department head'" class="ms-5 ps-4 pt-1 d-flex">
          <select class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">
-            <option  v-for="year in academicYears" :key="year.id" :value="year.id" :selected="year.status===selectedAcademicYearId">{{'Academic year '+year.year}}</option> 
+            <option  v-for="year in academicYears" :key="year.id" :value="year" :selected="year.is_current===1">{{'Academic year '+year.year}}</option> 
           </select>
       </div>
       <div class="dropdown shadow-sm  p-0 ms-auto">
-         <button class="btn  rounded dropdown-toggle p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+         <div class=" rounded dropdown-toggle p-1"  aria-expanded="false">
              <div class="d-flex">
                 <div class="d-flex flex-column">
-                   <span class="fw-bold small">{{user.first_name +' '+ user.last_name}}</span>
-                   <span class="job-title small align-self-start">{{user.role}}</span>
+                   <span class="fw-bold small text-center">{{user.first_name +' '+ user.last_name}}</span>
+                   <span v-if="user.role==='department head'">{{user.manage.name +' head'}}</span>
+                   <span v-else class="job-title small align-self-start">{{user.role}}</span>
                 </div>
              </div>
-         </button>
+         </div>
      </div>
    </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 export default {
-   data(){
-      return{
-      }
-   },
    computed:{
-   ...mapGetters(['user','academicYears','selectedAcademicYearId']),
-   
+   ...mapGetters(['user','academicYears','selectedAcademicYear']),
    },
    methods:{
       changeAcademicYear(event){
-         this.$store.commit('setSelectedAcademicYearId',event.target.value)
+         this.$store.commit('setSelectedAcademicYear',event.target.value)
+        this.$store.dispatch('degreeHead/fetchSections')
+        this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       }
    },
    created(){

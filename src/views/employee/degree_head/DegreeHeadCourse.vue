@@ -53,7 +53,7 @@
     <th class="">Course Code</th>
     <th class="">Course Title</th>
     <th class="">Credit hour</th>
-    <th class="">Department</th>
+    <!-- <th class="">Department</th> -->
     <th class="">Program</th>
     <th class="">Year</th>
     <th class="">Semester</th>
@@ -64,7 +64,7 @@
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
     <td>{{course.cp}}</td>
-    <td>{{course.department?.name}}</td>
+    <!-- <td>{{course.department?.name}}</td> -->
     <td>{{course.program}}</td>
     <td>{{course.year_no}}</td>
     <td>{{course.semester_no}}</td>

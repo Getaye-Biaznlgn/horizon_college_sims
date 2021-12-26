@@ -1,12 +1,12 @@
 export default{
-    courses(state){
+    modules(state){
         return state.courses
     },
     sections(state){
         return state.sections
     },
-    studentInSemesters(state){
-        return state.studentInSemesters
+    studentInLevel(state){
+        return state.studentInLevel
     },
     //
     studentForSlip(state){

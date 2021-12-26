@@ -3,18 +3,20 @@ import apiClient from "./baseUrl"
 import dean from './employee/dean'
 import auth from './employee/auth'
 import degreeHead from './employee/degree_head/index'
+import tvetHead from './employee/tvet_head/index'
 export default createStore({
     modules: {
         dean,
         auth,
         degreeHead,
+        tvetHead
     },
     state: {
         programs: [], // still im not using it
         isItemLoading: '',
         isLoading: null, //loading for entry page,
         academicYears:[],
-        selectedAcademicYearId:''
+        selectedAcademicYear:''
     },
     mutations: {
         setPrograms(state, programs) {
@@ -29,8 +31,8 @@ export default createStore({
         setAcademicYears(state, payload){
             state.academicYears=payload
         },
-        setSelectedAcademicYearId(state, payload){
-            state.selectedAcademicYearId=payload
+        setSelectedAcademicYear(state, payload){
+            state.selectedAcademicYear=payload
         }
     },
     getters: {
@@ -46,9 +48,10 @@ export default createStore({
         academicYears(state){
             return state.academicYears
         },
-        selectedAcademicYearId(state){
-            return state.selectedAcademicYearId
-        }
+        selectedAcademicYear(state){
+            return state.selectedAcademicYear
+        },
+     
 },
     actions: {
         async fetchPrograms({ commit }) {

@@ -1,12 +1,12 @@
 export default{
-    setCourses(state, payload){
-        state.courses=payload
+    setModules(state, payload){
+        state.modules=payload
     },
     setSections(state,payload){
         state.sections=payload
     },
-    setStudentInSemesters(state, payload){
-        state.studentInSemesters=payload
+    setStudentInLevel(state, payload){
+        state.studentInLevel=payload
     },
     //Just for store data for another use
     setStudentForSlip(state, payload){
