@@ -1,4 +1,4 @@
-import apiClient from "../../baseUrl"
+import apiClient from "../../../resources/baseUrl"
 export default{
     async fetchCourses(context) {
         context.rootState.isLoading = true

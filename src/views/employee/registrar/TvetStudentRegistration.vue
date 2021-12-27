@@ -422,7 +422,7 @@
     </div>
 </template>
 <script>
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
     data() {
         return {

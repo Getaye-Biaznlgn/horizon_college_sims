@@ -55,9 +55,7 @@
       <th>Full Name</th>
       <th>sex</th>
       <th>progarm</th>
-      <!-- <th>Department</th> -->
       <th>Year</th>
-      <!-- <th>Semester</th> -->
       <th>State</th>
       <th></th>
     </tr>
@@ -233,14 +231,7 @@ export default {
 }
 </script>
 <style scoped>
-.addbtn{
-    background-color: #ff9500;
-    color: #fff;
-    width: 10em;
-} 
-.addbtn:hover{
-    background-color:#eca643 ;
-}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;

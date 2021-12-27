@@ -90,7 +90,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 import VueModal from '../../../components/VueModal.vue'
 export default {
   components: { VueModal },

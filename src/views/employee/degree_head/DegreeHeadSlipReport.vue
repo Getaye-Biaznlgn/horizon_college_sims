@@ -148,8 +148,7 @@ export default {
 
 }
 input[type=checkbox] {
-transform: scale(1.4);
-
+ transform: scale(1.4);
 }
 
 input[type="checkbox"]:checked{

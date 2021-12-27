@@ -24,7 +24,7 @@
 <script>
 import TheHeader from '../../components/employee/TheHeader.vue'
 import TheSidebar from '../../components/employee/Sidebar.vue'
-import apiClient from '../../store/baseUrl'
+import apiClient from '../../resources/baseUrl'
 import { mapGetters } from 'vuex';
 export default {
     components:{

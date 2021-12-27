@@ -1,6 +1,4 @@
-import apiClient from "../../baseUrl"
-import axios from 'axios'
-import url from "../../url"
+import apiClient from "../../../resources/baseUrl"
 export default {
     namespaced: true,
     state: {
@@ -98,7 +96,7 @@ export default {
         async fetchDegreeDepartments(context) {
             context.rootState.isLoading = true
             try {
-                var response = await apiClient.get(url.baseUrl + "/api/degree_departments")
+                var response = await apiClient.get("/api/degree_departments")
                 if (response.status === 200) {
                     context.commit('setDegreeDepartments', response.data)
                     console.log('degree_department', response.data)
@@ -115,7 +113,7 @@ export default {
 
         async addDegreeDepartment(context, degreeDepartment) {
             try {
-                var response = await axios.post(url.baseUrl + '/api/degree_departments', JSON.stringify(degreeDepartment), {
+                var response = await apiClient.post('/api/degree_departments', JSON.stringify(degreeDepartment), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -136,7 +134,7 @@ export default {
         },
         async updateDegreeDepartment(context, paylode) {
             try {
-                var response = await axios.put(url.baseUrl + '/api/degree_departments/' + paylode.id, JSON.stringify(paylode), {
+                var response = await apiClient.put('/api/degree_departments/' + paylode.id, JSON.stringify(paylode), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -161,7 +159,7 @@ export default {
         },
         async deleteDegreeDepartment(context, paylode) {
             try {
-                var response = await apiClient.delete(url.baseUrl + '/api/degree_departments/' + paylode.id, JSON.stringify(paylode))
+                var response = await apiClient.delete('/api/degree_departments/' + paylode.id, JSON.stringify(paylode))
                 console.log('delete degree department response status' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.degreeDepartments
@@ -180,7 +178,7 @@ export default {
         },
         async assignDepartmentHead(context, paylode) {
             try {
-                var response = await axios.post(url.baseUrl + '/api/assign_degree_department_head', paylode, {
+                var response = await apiClient.post('/api/assign_degree_department_head', paylode, {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -206,7 +204,7 @@ export default {
         async fetchTvetDepartments(context) {
             try {
                 context.rootState.isLoading = true
-                var response = await apiClient.get(url.baseUrl + "/api/tvet_departments")
+                var response = await apiClient.get("/api/tvet_departments")
                 if (response.status === 200) {
                     context.commit('setTvetDepartments', response.data)
                     console.log('tvet_department', response.data)
@@ -222,7 +220,7 @@ export default {
         },
         async deleteTvetDepartment(context, paylode) {
             try {
-                var response = await apiClient.delete(url.baseUrl + '/api/tvet_departments/' + paylode.id, JSON.stringify(paylode))
+                var response = await apiClient.delete('/api/tvet_departments/' + paylode.id, JSON.stringify(paylode))
                 console.log('delete degree department response status' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.tvetDepartments
@@ -241,7 +239,7 @@ export default {
         },
         async addTvetDepartment(context, tvetDepartment) {
             try {
-                var response = await axios.post(url.baseUrl + '/api/tvet_departments', JSON.stringify(tvetDepartment), {
+                var response = await apiClient.post('/api/tvet_departments', JSON.stringify(tvetDepartment), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -264,7 +262,7 @@ export default {
         async updateTvetDepartment(context, paylode) {
 
             try {
-                var response = await axios.put(url.baseUrl + '/api/tvet_departments/' + paylode.id, JSON.stringify(paylode), {
+                var response = await apiClient.put('/api/tvet_departments/' + paylode.id, JSON.stringify(paylode), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -289,7 +287,7 @@ export default {
         },
         async assignTvetDepartmentHead(context, paylode) {
             try {
-                var response = await axios.post(url.baseUrl + '/api/assign_tvet_department_head', paylode, {
+                var response = await apiClient.post('/api/assign_tvet_department_head', paylode, {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -315,7 +313,7 @@ export default {
         async fetchCourses(context) {
             try {
                 context.rootState.isLoading = true
-                var response = await apiClient.get(url.baseUrl + "/api/courses")
+                var response = await apiClient.get("/api/courses")
                 if (response.status === 200) {
                     context.commit('setCourses', response.data)
                     console.log('tvet_courses', response.data)
@@ -331,7 +329,7 @@ export default {
         },
         async addCourse(context, course) {
             try {
-                var response = await axios.post(url.baseUrl + '/api/courses', JSON.stringify(course), {
+                var response = await apiClient.post('/api/courses', JSON.stringify(course), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -353,7 +351,7 @@ export default {
         },
         async deleteCourse(context, paylode) {
             try {
-                var response = await apiClient.delete(url.baseUrl + '/api/courses/' + paylode.id, JSON.stringify(paylode))
+                var response = await apiClient.delete('/api/courses/' + paylode.id, JSON.stringify(paylode))
                 console.log('delete courses response status' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.courses
@@ -373,7 +371,7 @@ export default {
 
         async updateCourse(context, paylode) {
             try {
-                var response = await axios.put(url.baseUrl + '/api/courses/' + paylode.id, JSON.stringify(paylode), {
+                var response = await apiClient.put( '/api/courses/' + paylode.id, JSON.stringify(paylode), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -398,7 +396,7 @@ export default {
         async fetchModules({ commit, rootState }) {
             try {
                 rootState.isLoading = true
-                var response = await apiClient.get(url.baseUrl + "/api/modules")
+                var response = await apiClient.get("/api/modules")
                 if (response.status === 200) {
                     commit('setModules', response.data)
                     console.log('modules', response.data)
@@ -414,7 +412,7 @@ export default {
         },
         async addModule(context, tvetModule) {
             try {
-                var response = await axios.post(url.baseUrl + '/api/modules', JSON.stringify(tvetModule), {
+                var response = await apiClient.post('/api/modules', JSON.stringify(tvetModule), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -435,7 +433,7 @@ export default {
         },
         async updateModule(context, paylode) {
             try {
-                var response = await axios.put(url.baseUrl + '/api/modules/' + paylode.id, JSON.stringify(paylode), {
+                var response = await apiClient.put( '/api/modules/' + paylode.id, JSON.stringify(paylode), {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
@@ -460,7 +458,7 @@ export default {
         },
         async deleteModule(context, paylode) {
             try {
-                var response = await apiClient.delete(url.baseUrl + '/api/modules/' + paylode.id, JSON.stringify(paylode))
+                var response = await apiClient.delete('/api/modules/' + paylode.id, JSON.stringify(paylode))
                 console.log('delete module response status' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.modules
@@ -480,7 +478,7 @@ export default {
         async fetchDegreePrograms({ commit, rootState }) {
             try {
                 rootState.isLoading = true
-                var response = await apiClient.get(url.baseUrl + "/api/degree_programs")
+                var response = await apiClient.get("/api/degree_programs")
                 if (response.status === 200) {
                     commit('setDegreePrograms', response.data)
                     console.log('DegreePrograms', response.data)
@@ -498,7 +496,7 @@ export default {
 
             try {
                 rootState.isLoading = true
-                var response = await apiClient.get(url.baseUrl + "/api/tvet_programs")
+                var response = await apiClient.get("/api/tvet_programs")
                 if (response.status === 200) {
                     commit('setTvetPrograms', response.data)
                     console.log('tvetPrograms', response.data)
@@ -584,7 +582,7 @@ export default {
             console.log('inside teacher registration actions')
             console.log(teacher)
             try {
-                var response = await axios.post('http://192.168.1.8:8000/api/teachers', teacher)
+                var response = await apiClient.post('/api/teachers', teacher)
                 if (response.status === 201) {
                     console.log('added teacher from server')
                     console.log(response.data)

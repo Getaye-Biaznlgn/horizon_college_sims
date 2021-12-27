@@ -1,4 +1,4 @@
-import apiClient from "../../baseUrl"
+import apiClient from "../../../resources/baseUrl"
 export default{
     async fetchModules(context) {
         context.rootState.isLoading = true
@@ -36,12 +36,12 @@ export default{
         }
     },
 
-    async fetchStudentInLevel(context) {
+    async fetchStudentInLevels(context) {
         context.rootState.isLoading = true
         try {
             var response = await apiClient.get("/api/students2")
             if (response.status === 200) {
-                context.commit('setStudentInLevel', response.data)
+                context.commit('setStudentInLevels', response.data)
                 console.log('set student in level', response.data)
             } else {
                 throw 'faild to load degree department'

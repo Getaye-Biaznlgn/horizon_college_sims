@@ -172,22 +172,8 @@ td{
   vertical-align: top;
 }
 /* end */
-.btn-add{
-    background-color: #ff9500;
-}
-.btn-add:hover{
-  background-color: #eca643;
-}
-
 .search, .action{
   cursor: pointer;
-}
-.action:hover{
-  color: #fcc561;
-}
-input[type="radio"]:checked{
- background-color: #ff9500;
- border: none;
 }
 
 .warining input{

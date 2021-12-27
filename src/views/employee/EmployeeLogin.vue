@@ -37,7 +37,7 @@
 <script>
 import {required,helpers} from '@vuelidate/validators'
 import useValidate from '@vuelidate/core'
-import apiClient from '../../store/baseUrl'
+import apiClient from '../../resources/baseUrl'
 export default {
     data(){
      return{

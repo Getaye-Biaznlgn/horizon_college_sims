@@ -74,7 +74,7 @@ import { Modal } from 'bootstrap';
 import { mapGetters } from 'vuex';
 import useValidate from '@vuelidate/core'
 import {required,helpers} from '@vuelidate/validators'
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
    props:['studentId'],
    data(){

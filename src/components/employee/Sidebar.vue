@@ -1,7 +1,7 @@
 <template>
    <nav class="navbar-dark">
       <ul class="navbar-nav">
-        <div class="mx-2 mt-2">Main</div>
+        <li class="mx-2 mt-2">Main</li>
         <!-- dean -->
          <sidebar-item v-if="user.role==='dean'" :isSubItem="false" :to="{name:'DeanDashboard'}">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
@@ -66,7 +66,7 @@
             </template>
          </collapse-sidebar-item>
 
-           <collapse-sidebar-item label="Student" v-if="user?.role==='registrar'"> 
+          <collapse-sidebar-item label="Student" v-if="user?.role==='registrar'"> 
             <template #icon>
               <span><i class="fas fa-tachometer-alt pe-3"></i></span>
             </template>
@@ -74,7 +74,7 @@
                <sidebar-item :isSubItem="true" :to="{name:'DegreeStudent'}">
                  <span>Degree Student</span>
                </sidebar-item> 
-                <sidebar-item :isSubItem="true" :to="{name:'TvetStudent'}">
+               <sidebar-item :isSubItem="true" :to="{name:'TvetStudent'}">
                  <span>TVET Student</span>
                </sidebar-item>  
             </template>
@@ -105,7 +105,34 @@
                </sidebar-item>  
             </template>
          </collapse-sidebar-item>
-         <div class="m-2">More</div>
+         
+         <!-- //tvet department head -->
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadDashboard'}" v-if="user.role==='department head'">
+            <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
+         </sidebar-item>
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadModule'}" v-if="user.role==='department head'" >
+            <span ><i class="fas  fa-align-justify pe-2"></i>Course</span>
+         </sidebar-item>
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadSection'}" v-if="user.role==='department head'" >
+            <span><i class="fas fa-layer-group pe-2"></i>Section</span>
+         </sidebar-item>
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadStudent'}" v-if="user.role==='department head'" >
+            <span><i class="fas fa-user-graduate pe-2"></i>Students</span>
+         </sidebar-item>
+         <collapse-sidebar-item label="Repor" v-if="user.role==='department head'" > 
+            <template #icon>
+              <span><i class="fas fa-exclamation-circle pe-2"></i></span>
+            </template>
+            <template #default>
+               <sidebar-item :isSubItem="true" :to="{name:'TvetHeadSlipReport'}">
+                 <span>Slip Report</span>
+               </sidebar-item> 
+                <sidebar-item :isSubItem="true" :to="{name:'TvetHeadGradeReport'}">
+                 <span>Grade Report</span>
+               </sidebar-item>  
+            </template>
+         </collapse-sidebar-item>
+         <li class="m-2">More</li>
          <sidebar-item  :to="{name:'AccountSetting'}" :isSubItem="false" >
             <span><i class="fas fa-cog pe-2"></i>Setting</span>
          </sidebar-item>
@@ -117,7 +144,7 @@
 <script>
 import SidebarItem from './SidebarItem.vue'
 import CollapseSidebarItem from './CollapseSidebarItem.vue'
-import apiClient from '../../store/baseUrl'
+import apiClient from '../../resources/baseUrl'
 export default {
     components:{
        SidebarItem,

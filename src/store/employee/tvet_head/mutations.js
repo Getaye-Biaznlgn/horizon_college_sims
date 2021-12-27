@@ -5,8 +5,8 @@ export default{
     setSections(state,payload){
         state.sections=payload
     },
-    setStudentInLevel(state, payload){
-        state.studentInLevel=payload
+    setStudentInLevels(state, payload){
+        state.studentInLevels=payload
     },
     //Just for store data for another use
     setStudentForSlip(state, payload){

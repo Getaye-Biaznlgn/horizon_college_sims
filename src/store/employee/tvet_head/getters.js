@@ -5,8 +5,8 @@ export default{
     sections(state){
         return state.sections
     },
-    studentInLevel(state){
-        return state.studentInLevel
+    studentInLevels(state){
+        return state.studentInLevels
     },
     //
     studentForSlip(state){

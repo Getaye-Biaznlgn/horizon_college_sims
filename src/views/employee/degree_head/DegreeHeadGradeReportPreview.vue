@@ -72,7 +72,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
     props:['program_id','year_no','semester_no'],
     data(){

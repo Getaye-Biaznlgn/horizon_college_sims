@@ -11,7 +11,7 @@ export default {
     studentForSlip:[],
     studentsForGrade:[],
     //students in accadamic year
-    studentInLevel:[]
+    studentInLevels:[]
   },
    mutations,
    getters,

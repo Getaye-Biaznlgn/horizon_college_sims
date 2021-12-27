@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import apiClient from "./baseUrl"
+import apiClient from "../resources/baseUrl"
 import dean from './employee/dean'
 import auth from './employee/auth'
 import degreeHead from './employee/degree_head/index'

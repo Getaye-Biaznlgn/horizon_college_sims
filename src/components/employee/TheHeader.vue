@@ -9,8 +9,8 @@
             <option  v-for="year in academicYears" :key="year.id" :value="year" :selected="year.is_current===1">{{'Academic year '+year.year}}</option> 
           </select>
       </div>
-      <div class="dropdown shadow-sm  p-0 ms-auto">
-         <div class=" rounded dropdown-toggle p-1"  aria-expanded="false">
+      <div class=" shadow-sm  p-0 ms-auto">
+         <div class=" rounded-lg  p-1"  aria-expanded="false">
              <div class="d-flex">
                 <div class="d-flex flex-column">
                    <span class="fw-bold small text-center">{{user.first_name +' '+ user.last_name}}</span>
@@ -41,10 +41,3 @@ export default {
   
 }
 </script>
-<style scoped>
- .dropdown-toggle::after {
-      display: none;
-   }
-
-
-</style>
