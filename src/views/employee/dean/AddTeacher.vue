@@ -22,18 +22,18 @@
 </div>
     </div>
     <div>
-    <button @click="addTeacher()" class="btn addbtn">Add New Teacher</button>
+    <button @click="addTeacher()" class="btn btn-add text-white px-2">Add New Teacher</button>
     </div>
     </div>
     <table class="mt-3">
   <thead>
-    <tr class="table-header">
-      <th class="text-white">NO</th>
-      <th class="text-white">Full Name</th>
-      <th class="text-white">Phone Number</th>
-      <th class="text-white">Email Address</th>
-      <th class="text-white">Type</th>
-      <th class="text-white">Profession</th>
+    <tr>
+      <th>NO</th>
+      <th>Full Name</th>
+      <th>Phone Number</th>
+      <th>Email Address</th>
+      <th>Type</th>
+      <th>Profession</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
@@ -59,8 +59,9 @@
     </td>
     </tr>
   </tbody>
-   <div v-else class="mt-5 mb-5 text-center text-danger">faild to access teachers</div>
  </table>
+    <div v-if="!teacherList.length" class="text-center">There isnot added teacher</div>
+
 </base-card>
 
     <!-- teracher registration form dialog-->
@@ -103,7 +104,7 @@
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
+<p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 </template>    
   </base-modal>
 </template>
@@ -151,7 +152,6 @@ export default {
                max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
                },
                email:{required:helpers.withMessage('email can not be empty',required),email}
-
       }
      }
    },
@@ -268,60 +268,3 @@ export default {
    }, 
 }
 </script>
-<style scoped>
-.wraper{
-    position: relative;
-}
-.addbtn{
-    background-color: #ff9500;
-    color: #fff;
-    width: 10em;
-
-}
-.addbtn:hover{
-    background-color:#eca643 ;
-}
-.dropdown ul{
-  background-color: #f5f6fa;
-}
-ul li{
-    cursor: pointer;
-  }
- a span:hover{
-   color: #ff9500;
- }
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-
-  }
-  .success{
-    color: green;
-  }
-  .faild{
-    color: red;
-  }
-</style>

@@ -1,12 +1,12 @@
 <template>
-    <the-header  class="position-sticky top-0 shadow p-0 m-0"></the-header>
+    <the-header  class="position-sticky top-0 header shadow p-0 m-0"></the-header>
     <div class="d-flex">
        <div class="sidebar shadow">
           <the-sidebar></the-sidebar>
         </div>
         <div class="container-fluid content">
            <router-view ></router-view> 
-            <div v-if="isItemLoading" class="loading-screen route-loading p-0  position-absolute top-0 start-0 w-100 h-100">
+            <div v-if="isItemLoading" class="loading-screen route-loading p-0  position-fixed top-0 start-0 bottom-0 end-0 w-100 h-100">
                <div class="loading-spinner">
                    <img src="../../assets/preloader.gif"   alt="slow connection">
                </div>
@@ -46,7 +46,6 @@ export default {
         let user=localStorage.getItem('user')
         console.log('user data',user)
         this.$store.dispatch('setUser', JSON.parse(user))
-        
      }
   },
     created(){
@@ -54,8 +53,8 @@ export default {
        .then(()=>{
            this.$store.getters.academicYears.forEach((year)=>{
            if(year.is_current===1) {
-               this.$store.commit('setSelectedAcademicYear', year)
-               }   
+               this.$store.commit('setSelectedAcademicYear', year.id)
+              }   
             })
            }
           )
@@ -76,10 +75,7 @@ export default {
         this.$store.dispatch('degreeHead/fetchSections')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       }
-
-      
        this.$store.dispatch('fetchPrograms')
-    
     }
 }
 </script>
@@ -94,11 +90,70 @@ export default {
   position:absolute; 
   top: 10%;
   left: 40%;
+  /* z-index: 1; */
 }
 .route-loading{
   background-color: rgba(0, 0, 0, 0.5);;
+  z-index: 1;
 }
 .content{
   background-color: #f5f6fa !important;
+}
+.loading-screen{
+  z-index: 1;
+}
+.header{
+  z-index: 1;
+}
+</style>
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+/* new design change start*/
+tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
+th{
+  text-align: left;
+  padding: 8px;
+}
+tr{
+  border-top: 2px solid hsl(231, 16%, 91%)
+}
+td{
+  text-align: left;
+  padding: 8px;
+  vertical-align: top;
+}
+/* end */
+.btn-add{
+    background-color: #2f4587;
+}
+.btn-add:hover{
+  background-color: #425fb8;
+}
+.fa-sign-out-alt{
+  transform: rotate(-90deg);
+}
+.warining input, .warining textarea{
+    border: 1px red solid;
+  }
+.warining span{
+    display: inline;
+    color: red;
+    font-size: 14px;
+  }
+  .search-input{
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+  .input-group{
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  input[type="radio"]:checked{
+ background-color: #2f4587;
+ border: none;
 }
 </style>

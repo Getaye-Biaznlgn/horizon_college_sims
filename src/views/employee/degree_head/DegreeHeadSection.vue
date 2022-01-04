@@ -61,6 +61,7 @@
  </table>
  </div>
 </base-card>
+
 <base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType">
    <template #modalBody>
       <form @submit.prevent>
@@ -106,6 +107,7 @@
        <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
+
 <!-- delete base modal -->
 <base-modal @deleteItem="deleteSection" :isLoading="isSaving" id="deleteBaseModal" :button-type="actionButtonType">
    <template #modalBody>
@@ -115,7 +117,6 @@
           section {{this.selectedSectionForDelete?.name}}?
       </div>
         <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
-
    </template>
 </base-modal>
 </template>
@@ -253,7 +254,7 @@ export default {
          }).catch((e)=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
-           console.log('response with status'+e)
+           console.log('add section'+e.errorMessage)
          }).finally(()=>{
           this.isSaving=false
          })
@@ -293,11 +294,9 @@ export default {
 
 <style scoped>
 table {
-  font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
 }
-
 /* new design change start*/
 tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
 th{

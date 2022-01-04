@@ -4,10 +4,11 @@
       <div class="pt-3">
          <h5 class="d-inline fw-bold ms-3">HORIZON</h5>
       </div>
-      <div v-if="user.role==='department head'" class="ms-5 ps-4 pt-1 d-flex">
+      <!-- v-if="user.role==='department head'" -->
+      <div  class="ms-5 ps-4 pt-1 d-flex">
          <select class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">
-            <option  v-for="year in academicYears" :key="year.id" :value="year" :selected="year.is_current===1">{{'Academic year '+year.year}}</option> 
-          </select>
+            <option  v-for="year in academicYears" :key="year.id" :selected="selectedAcademicYear===year.id" :value="year.id" >{{'Academic year '+year.year}}</option> 
+         </select>
       </div>
       <div class=" shadow-sm  p-0 ms-auto">
          <div class=" rounded-lg  p-1"  aria-expanded="false">
@@ -27,17 +28,15 @@ import { mapGetters } from 'vuex'
 export default {
    computed:{
    ...mapGetters(['user','academicYears','selectedAcademicYear']),
+   
    },
    methods:{
       changeAcademicYear(event){
-         this.$store.commit('setSelectedAcademicYear',event.target.value)
+        this.$store.commit('setSelectedAcademicYear',event.target.value)
         this.$store.dispatch('degreeHead/fetchSections')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       }
    },
-   created(){
-   
-   }
   
 }
 </script>

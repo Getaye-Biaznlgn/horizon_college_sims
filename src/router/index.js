@@ -1,15 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store'
 import studentMenu from './student'
-import Home from '../views/home/Home'
+import index from './home'
 import employeeMenu from './employee'
 const routes = [
   employeeMenu,
   studentMenu,
+  index,
   {
-    path:'/',
-    name:'home',
-    component:Home
+    path:'/student-login',
+    name:'StudentLogin',
+    component: () =>
+    import ( /* webpackChunkName: "EmployeeLogin" */ '../views/student/StudentLogin.vue'),
+  //   beforeEnter: (to, from, next) => {
+  //     console.log('authenticated',store.getters.isAuthenticated)
+  //     if (store.getters.isAuthenticated) {
+  //         next(from.path)
+  //     } else
+  //         next()
+  // }
+
   },
   {
     path:'/employee-login',

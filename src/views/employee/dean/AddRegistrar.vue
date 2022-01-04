@@ -1,15 +1,15 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
-    <button @click="addregistrar()" class="btn addbtn py-2 px-0">Add New registrar</button>
+    <button @click="addregistrar()" class="btn btn-add text-white py-2 px-2">Add New registrar</button>
     </div>
    <table class="mt-3">
   <thead>
-    <tr class="table-header">
-      <th class="text-white">NO</th>
-      <th class="text-white">Full Name</th>
-      <th class="text-white">Phone Number</th>
-      <th class="text-white">Email Address</th>
+    <tr>
+      <th>NO</th>
+      <th>Full Name</th>
+      <th>Phone Number</th>
+      <th>Email Address</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
@@ -34,8 +34,9 @@
     </td>
     </tr>
      </tbody>
-     <div v-else class="errorcase mt-5 mb-5 text-danger">faild to access registrars</div>
 </table>
+     <div v-if="!registrars.length" class="text-center">There is no added registrar</div>
+
 </base-card>
     
     <!-- registrar registration form dialog-->
@@ -195,65 +196,3 @@ export default {
    }, 
 }
 </script>
-<style scoped>
-.wraper{
-    position: relative;
-}
-.addbtn{
-    background-color: #ff9500;
-    color: #fff;
-    width: 10em; 
-}
-.addbtn:hover{
-    background-color:#eca643 ;
-}
-.dropdown ul{
-  background-color: #f5f6fa;
-}
-ul li{
-    cursor: pointer;
-  }
- a span:hover{
-   color: #ff9500;
- }
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-
-  }
-  .success{
-    color: green;
-  }
-  .faild{
-    color: red;
-  }
-  a span:hover{
-    color: #eca643;
-  }
-  .errorcase{
-    text-align: center;
-  }
-</style>

@@ -2,6 +2,7 @@ import registrar from './registrar'
 import dean from './dean'
 import degree_head from './degree_head'
 import tvet_head from './tvet_head'
+import teacher from './teacher'
 export default{
         path: '/staff/',
         name: 'EmployeeMenu',
@@ -20,7 +21,8 @@ export default{
             ...registrar,
             ...dean,
             ...degree_head,
-            ...tvet_head
+            ...tvet_head,
+            ...teacher
         ]
    }
     

@@ -30,17 +30,17 @@
 </div>
 
 <table class="mt-3">
-  <tr class="table-header">
-    <th class="text-white">No</th>
-    <th class="text-white">Module Code</th>
-    <th class="text-white">Module Title</th>
-    <th class="text-white">Training Hour</th>
-    <th class="text-white">Department</th>
-    <th class="text-white">Occupation Level</th>
+  <tr>
+    <th>No</th>
+    <th>Module Code</th>
+    <th>Module Title</th>
+    <th>Training Hour</th>
+    <th>Department</th>
+    <th>Occupation Level</th>
     <th><span class="sr-only">action</span></th>
   </tr>
   
-  <tr v-for="(modul, index) in filteredModules" :key="modul.id" class="border border-secondary rounded">
+  <tr v-for="(modul, index) in filteredModules" :key="modul.id">
     <td>{{index+1}}</td>
     <td>{{modul.code}}</td>
     <td>{{modul.title}}</td>
@@ -253,7 +253,7 @@ export default {
 </script>
 
 <style scoped>
-table {
+/* table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
@@ -303,5 +303,5 @@ input[type="radio"]:checked{
     display: inline;
     color: red;
     font-size: 14px;
-  }
+  } */
 </style>

@@ -4,12 +4,14 @@ import dean from './employee/dean'
 import auth from './employee/auth'
 import degreeHead from './employee/degree_head/index'
 import tvetHead from './employee/tvet_head/index'
+import studentAuth from './student/auth'
 export default createStore({
     modules: {
+        studentAuth,
         dean,
-        auth,
+        auth,//staff auth
         degreeHead,
-        tvetHead
+        tvetHead,
     },
     state: {
         programs: [], // still im not using it
@@ -33,7 +35,8 @@ export default createStore({
         },
         setSelectedAcademicYear(state, payload){
             state.selectedAcademicYear=payload
-        }
+        },
+
     },
     getters: {
         programs(state) {
@@ -51,6 +54,16 @@ export default createStore({
         selectedAcademicYear(state){
             return state.selectedAcademicYear
         },
+        getYearById(state){
+            return function(id){
+                let year
+            state.academicYears.forEach((item)=>{
+              if(item.id===Number(id))
+                year=item
+            })
+            return year
+            }
+        }
      
 },
     actions: {

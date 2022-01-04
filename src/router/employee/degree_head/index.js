@@ -7,8 +7,12 @@ export default[
             import ( /* webpackChunkName: "DegreeHeadCourse" */ '../../../views/employee/degree_head/DegreeHeadCourse.vue'),
             meta:{authRequired:true, typeRequired:'employee'},
             beforeEnter(to, from, next){
-                if(store.getters.user.role!=='department head'){
-                    next(from.path)
+                console.log('hello fom before enter', store.getters.user.role)
+                if(store.getters.user.role==='department head'){
+                    next()
+                }
+                else{
+                    next('/')
                 }
             }
    },
@@ -21,7 +25,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -36,7 +42,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -48,7 +56,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -60,7 +70,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -72,7 +84,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -87,7 +101,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -99,7 +115,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -112,7 +130,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -125,7 +145,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 {
@@ -138,7 +160,9 @@ export default[
         beforeEnter(to, from, next){
             if(store.getters.user.role!=='department head'){
                 next(from.path)
+                return;
             }
+            next()
         }
 },
 ]

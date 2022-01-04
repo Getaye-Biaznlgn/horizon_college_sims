@@ -2,26 +2,31 @@
    <nav class="navbar-dark">
       <ul class="navbar-nav">
         <li class="mx-2 mt-2">Main</li>
+           <sidebar-item :isSubItem="false" :to="{name:'MyClass'}">
+            <span><i class="fas fa-tachometer-alt pe-2" ></i>MyClass</span>
+         </sidebar-item>
         <!-- dean -->
          <sidebar-item v-if="user.role==='dean'" :isSubItem="false" :to="{name:'DeanDashboard'}">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
+
          <collapse-sidebar-item v-if="user?.role==='dean'" label="Department"> 
             <template #icon>
-              <span><i class="bi bi-justify-left"></i></span>
+              <span><i class="fas fa-layer-group pe-2"></i></span>
             </template>
             <template #default>
               <sidebar-item :isSubItem="true" :to="{name:'DegreeDepartment'}">
-                <span>Degree Department</span>
+                <span>Degree</span>
               </sidebar-item> 
               <sidebar-item :isSubItem="true" :to="{name:'TVETDepartment'}">
-                <span>TVET Department</span>
+                <span>TVET</span>
                </sidebar-item> 
             </template>
          </collapse-sidebar-item>
+
          <collapse-sidebar-item label="Curriculum" v-if="user.role==='dean'"> 
             <template #icon>
-              <span><i class="fas fa-tachometer-alt pe-3"></i></span>
+              <span><i class="fas  fa-align-justify pe-2"></i></span>
             </template>
             <template #default>
               <sidebar-item :isSubItem="true" :to="{name:'CourseCurriculum'}">
@@ -32,13 +37,14 @@
                </sidebar-item> 
             </template>
          </collapse-sidebar-item>
+
           <collapse-sidebar-item label="Employee" v-if="user.role==='dean'"> 
             <template #icon>
-              <span><i class="fas fa-tachometer-alt pe-3"></i></span>
+              <span><i class="fas fa-user-friends pe-2"></i></span>
             </template>
             <template #default>
                <sidebar-item :isSubItem="true" :to="{name:'AddTeacher'}">
-                 <span>Teatcher</span>
+                 <span>Teacher</span>
                </sidebar-item> 
                 <sidebar-item :isSubItem="true" :to="{name:'AddDepartmentHead'}">
                  <span>Department head</span>
@@ -50,8 +56,44 @@
                 <span>Cashier</span>
                </sidebar-item> 
             </template>
-            <!-- //Registrar -->
+          </collapse-sidebar-item>
+
+        <sidebar-item v-if="user.role==='dean'" :isSubItem="false" :to="{name:'ManageFeeAmount'}">
+            <span><i class="fas fa-receipt pe-2"></i> Fee</span>
+         </sidebar-item>
+
+         <collapse-sidebar-item label="User" v-if="user.role==='dean'"> 
+            <template #icon>
+              <span><i class="fas fa-user-circle pe-2"></i></span>
+            </template>
+            <template #default>
+              <sidebar-item :isSubItem="true" :to="{name:'EmployeeAccount'}">
+                <span>Employee</span>
+              </sidebar-item> 
+              <sidebar-item :isSubItem="true" :to="{name:'StudentAccount'}">
+                <span>Student</span>
+               </sidebar-item> 
+            </template>
          </collapse-sidebar-item>
+          
+        <collapse-sidebar-item label="Website" v-if="user.role==='dean'"> 
+            <template #icon>
+              <span><i class="fas fa-tachometer-alt pe-3"></i></span>
+            </template>
+            <template #default>
+              <sidebar-item :isSubItem="true" :to="{name:'ManageEvent'}">
+                <span>Event</span>
+              </sidebar-item> 
+              <sidebar-item :isSubItem="true" :to="{name:'ManageNews'}">
+                <span>News</span>
+               </sidebar-item> 
+               <sidebar-item :isSubItem="true" :to="{name:'StudentGallery'}">
+                <span>Student Gallery</span>
+               </sidebar-item> 
+            </template>
+        </collapse-sidebar-item>
+
+         <!-- //Registrar -->
         <collapse-sidebar-item label="Student Fee" v-if="user.role==='registrar'"> 
             <template #icon>
               <span><i class="fas fa-tachometer-alt pe-3"></i></span>
@@ -84,7 +126,7 @@
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
          <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadCourse'}" v-if="user.role==='department head'" >
-            <span ><i class="fas  fa-align-justify pe-2"></i>Course</span>
+            <span><i class="fas  fa-align-justify pe-2"></i>Course</span>
          </sidebar-item>
          <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadSection'}" v-if="user.role==='department head'" >
             <span><i class="fas fa-layer-group pe-2"></i>Section</span>
