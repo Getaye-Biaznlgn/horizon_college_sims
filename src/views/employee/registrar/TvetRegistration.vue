@@ -1,0 +1,3 @@
+<template>
+    TVET Registration
+</template>

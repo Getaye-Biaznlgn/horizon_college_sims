@@ -1,6 +1,16 @@
 <template>
     <base-card>
-    <div class="d-flex justify-content-between align-item-center">
+    <div class="d-flex justify-content-between">
+       <div class="mt-2 col-sm-3">
+   <select class="form-select form-select-sm" aria-label=".form-select-sm example" ref="yearId" @change="changeYear($event)">
+  <option v-for="calender in academicYears" :key="calender.id" :value="calender.id">{{'Academic Year '+calender.year}}</option>   
+</select>
+   </div>
+    <div class="mt-2">
+   <button @click="addNewPayment" class="paymentbtn btn">Add New Payment</button>
+   </div>
+    </div>
+    <div class="d-flex justify-content-between align-item-center mt-3">
     <div class="d-flex justify-content-start">
      <div class="input-group search p-0 me-4">
   <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByIdNo()">
@@ -26,7 +36,7 @@
     </button>
     </div>
   </div>
-     <table class="mt-3">
+     <table class="mt-3" id="studentspaid">
   <thead>
     <tr class="table-header">
       <th class="text-white">NO</th>
@@ -51,13 +61,13 @@
   </tbody>
    
 </table>
-<div v-if="paidStudents.length" class="d-flex justify-content-end mt-3 me-5">
+<div v-if="paidStudents.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
-  <option v-for="n in 14" :key="n" :value="n" selected>{{n}}</option>
+  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
   
 </select>
 </div>
@@ -107,6 +117,9 @@ export default {
      paymentTypes(){
           return  this.$store.getters['cashier/paymentTypes']
           },
+           academicYears(){
+          return  this.$store.getters['cashier/calenders']
+          },
   },
   created() {  
   this.StudentsPaid(this.queryObject)
@@ -129,33 +142,30 @@ rowNumber(newValue){
  },
 studentId(newValue){
   this.queryObject.search_id = newValue
-}
+},
+  startDate(newValue){
+this.queryObject.date_between = this.endDate+','+newValue
+this.StudentsPaid(this.queryObject)
+ },
+ endDate(newValue){
+   this.queryObject.date_between = this.startDate+','+newValue
+ }
   },
       methods: {
         StudentsPaid(queryObject){
 this.$store.dispatch('cashier/fetchPaidStudents',queryObject)
         },
-      exportData(){},
+          addNewPayment(){
+         this.$router.push({name:'AddNewPayment'})
+      },
+      async exportData(){
+         await this.$htmlToPaper('studentspaid');
+      },
        searchByIdNo(){
          this.queryObject.search_id = this.studentId
           this.StudentsPaid(this.queryObject)
 
  },
-       filterByDepartment(event){
-           this.degreeStudentList = this.degreeStudents.filter((student)=>{
-            return Number(event.target.value) === Number(student.degree_department_id)
-})
-      },
-       filterByYear(event){
-           this.degreeStudentList = this.degreeStudents.filter((student)=>{
-            return event.target.value === student.current_year_no
-})
-      },
-       filterBySemester(event){
-           this.degreeStudentList = this.degreeStudents.filter((student)=>{
-            return event.target.value === student.current_semester_no
-})
-      },
       forWardChivron(){
         this.queryObject.page = this.queryObject.page +1
        this.StudentsPaid(this.queryObject)
@@ -175,6 +185,16 @@ var day = date.getDate()
 }
 </script>
 <style scoped>
+ .paymentbtn{
+    background-color: #2f4587;
+    color: #fff;
+    width: 12em;
+    height: 30px;
+    vertical-align: middle;
+} 
+.paymentbtn:hover{
+    background-color:#1e3fa3 ;
+}
 .addbtn{
     background-color: #2f4587;
     color: #fff;
@@ -191,7 +211,7 @@ table {
   width: 100%;
 }
 .table-header{
-    background-color:#4285fa ;
+    background-color:#366ad9 ;
     border-radius: 5px;
 }
 th{
@@ -220,6 +240,7 @@ td{
 }
 .search input{
     border-right: none;
+    box-shadow: none !important;
 }
 .search span{
     background-color: #fff;

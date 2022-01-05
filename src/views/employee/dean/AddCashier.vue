@@ -1,9 +1,9 @@
 <template>
-    <div class="wraper border rounded shadow-sm p-3 m-2 bg-white">
+    <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
     <button @click="addCashier()" class="btn addbtn">Add New Cashier</button>
     </div>
-    <table class="mt-3">
+<table class="mt-3">
   <thead>
     <tr class="table-header">
       <th class="text-white">NO</th>
@@ -13,7 +13,7 @@
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody v-if="cashiers.length">
+  <tbody>
      <tr v-for="(cashier,index) in cashiers" :key="cashier.id">
       <td>{{index+1}}</td>
       <td>{{cashier.first_name+" "+cashier.last_name}}</td>
@@ -33,10 +33,12 @@
     </td>
     </tr>
   </tbody>
-  <div v-else class="mt-5 mb-5 text-center text-danger">faild to access cashiers</div>
+    <div v-if="!cashiers.length" class="mt-2">There is no Cashiers found please try again</div>
+
 </table>
 
-    </div>
+</base-card>
+
     <!-- cashier registration form dialog-->
     <base-modal :is-Loading="isLoading" id="baseModal" :button-Type="buttonType" @edit="saveEditedCashier" @save="registerCashier">
     <template #modalBody>
@@ -66,7 +68,7 @@
 </form>
     </div>
     <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
-</template>    
+ </template>    
   </base-modal>
 </template>
 <script>
@@ -196,13 +198,13 @@ export default {
     position: relative;
 }
 .addbtn{
-    background-color: #ff9500;
+    background-color: #2f4587;
     color: #fff;
     width: 10em;
 
 } 
 .addbtn:hover{
-    background-color:#eca643 ;
+    background-color:#366da9;
 }
 .dropdown ul{
   background-color: #f5f6fa
@@ -211,7 +213,7 @@ ul li{
     cursor: pointer;
   }
  a span:hover{
-   color: #ff9500;
+   color: #366da9;
  }
 table {
   font-family: arial, sans-serif;
@@ -219,7 +221,7 @@ table {
   width: 100%;
 }
 .table-header{
-    background-color:#4285fa ;
+    background-color:#366da9 ;
     border-radius: 5px;
 }
 th{

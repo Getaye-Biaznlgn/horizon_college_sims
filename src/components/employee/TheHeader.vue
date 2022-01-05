@@ -1,61 +1,62 @@
 <template>
    <div class="p-2 bg-white shadow-sm d-flex">
-   <div class="calender ms-5 mt-2">
-   <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-  <option selected>2014</option>
-  <option value="1">2015</option>
-  <option value="2">2016</option>
-  <option value="3">2017</option>
-</select>
-   </div>
-   <div class="newpayment ms-3 mt-2">
-   <button @click="addNewPayment" class="paymentbtn btn ms-3 p-0">Add New Payment</button>
-   </div>
-      <div class="dropdown  p-0 ms-auto">
-         <button class="btn shadow-sm rounded dropdown-toggle p-1" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      <img src="../../assets/school.png" class="ms-3" height="40">
+      <div class="pt-3">
+         <h5 class="d-inline fw-bold ms-3">HORIZON</h5>
+      </div>
+      <div v-if="user.role==='department head'" class="ms-5 ps-4 pt-1 d-flex">
+         <select class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">
+            <option  v-for="year in academicYears" :key="year.id" :value="year.id" :selected="year.status===selectedAcademicYearId">{{'Academic year '+year.year}}</option> 
+          </select>
+      </div>
+        <div v-if="user.role==='registrar'" class="ms-5 ps-4 pt-1 d-flex">
+         <select class="form-select" @change="changeAcYear($event)"  aria-label="select ">
+            <option  v-for="year in academicYears" :key="year.id" :value="year.id" :selected="Number(year.is_current)=== Number(1)">{{'Academic year '+year.year}}</option> 
+          </select>
+      </div>
+      <div class="dropdown shadow-sm  p-0 ms-auto">
+         <button class="btn  rounded dropdown-toggle p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
              <div class="d-flex">
                 <div class="d-flex flex-column">
-                   <span class="small">Tigist Tewachew</span>
-                   <span class="job-title small align-self-start">Dean</span>
+                   <span class="fw-bold small">{{user.first_name +' '+ user.last_name}}</span>
+                   <span class="job-title small align-self-start">{{user.role}}</span>
                 </div>
-                <span class="px-3 pt-2">
-                    <i class="fas fa-chevron-down"></i>
-                </span>
              </div>
          </button>
-
-         <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-            <li><span  class="dropdown-item">Account</span></li>
-            <li><span @click="logout" class="dropdown-item">Logout</span></li>
-         </ul>
      </div>
    </div>
 </template>
-<script>
+<script> 
+import { mapGetters } from 'vuex'
 export default {
-   methods: {
-      addNewPayment(){
-         this.$router.push({name:'AddNewPayment'})
-         console.log('go to new payment')
+   data(){
+      return{
       }
    },
+   computed:{
+   ...mapGetters(['user','academicYears','selectedAcademicYearId','acYearId'])  
+   },
+      methods:{
+      changeAcademicYear(event){
+         this.$store.commit('setSelectedAcademicYearId',event.target.value)
+      },
+      changeAcYear(event){
+           this.$store.commit('setSelectedAcYearId',event.target.value) 
+    this.$store.dispatch('registrar/fetchDegreeStudents',event.target.value)
+     this.$store.dispatch('registrar/fetchTvetStudents',event.target.value)
+      //this.$store.dispatch('registrar/fetchCocs',event.target.value)
+      }
+    
+   },
+  
 }
 </script>
 <style scoped>
  .dropdown-toggle::after {
       display: none;
    }
-   .paymentbtn{
-    background-color: #2f4587;
-    color: #fff;
-    width: 10em;
-    height: 30px;
-    vertical-align: middle;
-} 
-.paymentbtn:hover{
-    background-color:#1e3fa3 ;
-}
-.calender{
-   width: 12%;
-}
+  
+
+
+
 </style>

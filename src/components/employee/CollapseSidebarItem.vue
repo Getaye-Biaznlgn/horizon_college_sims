@@ -1,9 +1,9 @@
 <template>
-    <li>
+    <li class="here">
       <div>
-          <a class="nav-link collapsible-link text-white py-2 ps-3 pe-2 d-flex justify-content-between" data-bs-toggle="collapse" :href="`#${id}`" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <a class="nav-link collapsible-link py-2 ps-3 fw-bold text-dark pe-2 d-flex justify-content-between" data-bs-toggle="collapse" :href="`#${id}`" role="button" aria-expanded="false" aria-controls="collapseExample">
             <span> <slot name="icon"/>{{label}}</span>
-            <span class="dropdown-icon"><i class="fas fa-chevron-up"></i></span>
+            <span class="dropdown-icon pt-1"><i class="fas fa-chevron-right"></i></span>
           </a>
        </div>
        <div class="collapse collapse-item" :id="id">
@@ -27,17 +27,15 @@ export default {
      font-size: 16px;
  }
  .dropdown-icon{
+   
   transition: all ease 0.23s;
 }
 .collapsible-link[aria-expanded="true"] .dropdown-icon{
-  transform:rotate(180deg)
+  transform:rotate(90deg)
 }
 .collapse-item{
-  background-color: #F5F6FA;
-}
-li:focus{
-  background-color: #2f4587!important;
-  margin: 2%;
-  border-radius: 2%;
+  /* background-color: #b6c3e6; */
+  margin: 0 2em;
+  border-radius: 10px;
 }
 </style>

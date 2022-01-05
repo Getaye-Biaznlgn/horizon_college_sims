@@ -66,10 +66,10 @@ export default {
         }
     },
     actions: {
-        async fetchDegreeStudentFee({ commit, rootState }) {
+        async fetchDegreeStudentFee({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get('api/degree_student_fees')
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id)
                 if (response.status === 200) {
                     console.log('fetchDegreeStudent fee')
                     console.log(response.data)
@@ -83,10 +83,10 @@ export default {
                 rootState.isLoading = false
             }
         },
-        async fetchTvetStudentFee({ commit, rootState }) {
+        async fetchTvetStudentFee({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get('api/tvet_student_fees')
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id)
                 if (response.status === 200) {
                     console.log('fetchTvetStudent fee')
                     console.log(response.data)
@@ -134,8 +134,7 @@ export default {
                 rootState.isLoading = false
             }
         },
-        async fetchStudentFeelist({ commit, rootState }, student) {
-            rootState.isLoading = true
+        async fetchStudentFeelist({ commit }, student) {
             try {
                 var response = await apiClient.post('api/student_tuition_detail/' + student.id, student)
                 if (response.status === 200) {
@@ -145,10 +144,9 @@ export default {
                 } else {
                     throw 'faild to load StudentFeelist'
                 }
+                return response
             } catch (e) {
                 console.log('error occurd')
-            } finally {
-                rootState.isLoading = false
             }
         },
         async addNewStudentFee(context, studentFee) {
@@ -165,8 +163,7 @@ export default {
                 console.log('error occurd')
             }
         },
-        async fetchPaidStudents({ commit, rootState }, queryObject) {
-            rootState.isLoading = true
+        async fetchPaidStudents({ commit }, queryObject) {
             try {
                 var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_query=' + queryObject.search_id + '&date_between_query=' + queryObject.date_between + '&payment_type_query=' + queryObject.payment_type + '&date_query=' + queryObject.date_query)
                 if (response.status === 200) {
@@ -179,8 +176,6 @@ export default {
                 return response
             } catch (e) {
                 console.log('error occurd')
-            } finally {
-                rootState.isLoading = false
             }
         },
         async fetchCalender({ commit, rootState }) {

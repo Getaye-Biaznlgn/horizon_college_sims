@@ -1,5 +1,5 @@
 <template>
-    <div class="wraper border rounded shadow-sm p-3 m-2 bg-white">
+    <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
     <button @click="addregistrar()" class="btn addbtn py-2 px-0">Add New registrar</button>
     </div>
@@ -34,10 +34,10 @@
     </td>
     </tr>
      </tbody>
-     <div v-else class="errorcase mt-5 mb-5 text-danger">faild to access registrars</div>
+     <div v-else class="errorcase mt-5 mb-5 text-danger">There is no Registrar found please try again</div>
 </table>
-
-    </div>
+</base-card>
+    
     <!-- registrar registration form dialog-->
     <base-modal :is-loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar">
     <template #modalBody>
@@ -200,12 +200,12 @@ export default {
     position: relative;
 }
 .addbtn{
-    background-color: #ff9500;
+    background-color: #2f4587;
     color: #fff;
     width: 10em; 
 }
 .addbtn:hover{
-    background-color:#eca643 ;
+    background-color:#366ad9 ;
 }
 .dropdown ul{
   background-color: #f5f6fa;
@@ -214,7 +214,7 @@ ul li{
     cursor: pointer;
   }
  a span:hover{
-   color: #ff9500;
+   color: #366ad9;
  }
 table {
   font-family: arial, sans-serif;
@@ -222,7 +222,7 @@ table {
   width: 100%;
 }
 .table-header{
-    background-color:#4285fa ;
+    background-color:#366ad9 ;
     border-radius: 5px;
 }
 th{

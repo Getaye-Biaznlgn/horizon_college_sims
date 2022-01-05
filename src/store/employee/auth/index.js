@@ -19,7 +19,7 @@ export default{
       setIsAuthenticated(state, isAuth){
             state.isAuthenticated = isAuth
         },
-        setUserData(state, data){
+      setUserData(state, data){
             state.userData=data
         },
       setToken(state, token){

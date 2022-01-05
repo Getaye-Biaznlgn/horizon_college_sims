@@ -1,42 +1,58 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
+<div class="mb-2 d-flex">
+     <button @click="showAddModal" class="btn ms-auto btn-add text-white shadow-sm"> Add New Course</button> 
+</div>
 
-<div class="d-flex justify-content-between">
+<div>
     <div class="d-flex">
        <div class="d-flex border rounded">
-          <input type="text" class="form-control search-input" placeholder="Course code" aria-label="search" aria-describedby="basic-addon2"/>
+          <input type="text" v-model="searchValue" class="form-control search-input" placeholder="Course code" aria-label="search" aria-describedby="basic-addon2"/>
              <span  class="input-group-text search rounded-0" id="basic-addon2">
                 <i class="fas fa-search"></i>
              </span>           
        </div>
-        <div class="px-2"> 
-        <select class="form-select" aria-label="select by department">
-           <option selected value="here we go">Department</option>
+    <div class="px-2 ms-auto"> 
+        <select v-model="departmentIdForFilter" class="form-select" aria-label="select by department">
+           <option selected value="all">All Department</option>
+           <option v-for="dep in degreeDepartments" :key="dep.id" :value="dep.id">{{dep.name}}</option>
         </select>
-       </div>
+    </div>
      <div class="pe-2"> 
-        <select class="form-select" aria-label="select by program">
-           <option selected value="here we go">Program</option>
+        <select v-model="programForFilter" class="form-select" aria-label="select by program">
+           <option selected value="all">All Program</option>
+           <option selected value="regular">Regular</option>
+           <option selected value="extension">Extension</option>
         </select>
      </div>
      
        <div class="pe-2"> 
-          <select class="form-select " aria-label="select by year">
-            <option selected value="here we go">Year</option>
+          <select v-model="yearForFilter" class="form-select " aria-label="select by year">
+            <option selected value="all">All Year</option>
+            <option selected value="1">Year 1</option>
+            <option selected value="2">Year 2</option>
+            <option selected value="3">Year 3</option>
+            <option selected value="4">Year 4</option>
+            <option selected value="5">Year 5</option>
           </select>
        </div>
        <div class="pe-2"> 
-          <select class="form-select" aria-label="select by semester">
-            <option selected value="here we go">Semester</option>
+          <select v-model="semesterForFilter" class="form-select" aria-label="select by semester">
+            <option selected value="all">All Semester</option>
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
           </select>
        </div>
-       <div class="pe-2"> 
-        <select class="form-select" aria-label="select by program">
-           <option selected value="here we go">Type</option>
+       <div class=""> 
+        <select v-model="typeForFilter" class="form-select" aria-label="select by program">
+           <option selected value="all">All Type</option>
+           <option value="major">Major</option>
+           <option value="common">Common</option>
+           <option value="supporting">Supporting</option>
         </select>
      </div>
     </div>
-       <button @click="showAddModal" class="btn ms-auto btn-add text-white shadow-sm"> Add New Course</button> 
 </div>
 
 <table class="mt-3">
@@ -52,12 +68,12 @@
     <th class="text-white">Type</th>
     <th><span class="sr-only">action</span></th>
   </tr>
-  <tr v-for="(course,index) in courses" :key="course.id" class="border border-secondary rounded">
+  <tr v-for="(course,index) in filteredCourses" :key="course.id" class="border border-secondary rounded">
     <td>{{index+1}}</td>
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
     <td>{{course.cp}}</td>
-    <td>{{course.department.name}}</td>
+    <td>{{course.department?.name}}</td>
     <td>{{course.program}}</td>
     <td>{{course.year_no}}</td>
     <td>{{course.semester_no}}</td>
@@ -70,10 +86,15 @@
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showEditModal(index)"><span  class="dropdown-item">Edit</span></li>
+             <li ><span   class="dropdown-item">Delete</span></li>
+
           </ul>
       </div>
     </td>
   </tr>
+   <p v-if="!courses.length" class="my-2">There is no added course</p>
+  <p v-if="courses.length && !filteredCourses.length" class="my-2">There is no filtered course</p>
+ 
  </table>
 </base-card>
 <base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="removeModalValue">
@@ -164,6 +185,16 @@ export default {
       actionButtonType:'',
       responseMessage:'',
       isNotSucceed:'',
+       ////////////////////////|
+      //for filter and search/ |
+     ////////////////////////  |
+ //                         | 
+      searchValue:'',
+      departmentIdForFilter:'all',
+      programForFilter:'all',
+      yearForFilter:'all',
+      semesterForFilter:'all',
+      typeForFilter:'all',
 
  course:{
       id:'',
@@ -179,9 +210,56 @@ export default {
       
     }
   },
-   computed:{
-    ...mapGetters(['degreeDepartments','courses','degreePrograms'])
-  },
+computed:{
+    ...mapGetters({degreeDepartments:'dean/degreeDepartments',courses:'dean/courses',degreePrograms:'dean/degreePrograms'}),
+  filteredCourses(){
+      //search
+      let tempCourses=[...this.courses]
+      if(this.searchValue!=''&& this.searchValue){
+        tempCourses=tempCourses.filter((item)=>{
+          return item.code
+                  .toLowerCase()
+                  .startsWith(this.searchValue.toLowerCase())
+       })
+     }
+  
+  //filter by department//
+     if(this.departmentIdForFilter !=='all'){
+            tempCourses=tempCourses.filter((item)=>{
+              return Number(item.department.id)===Number(this.departmentIdForFilter)
+            })
+       }
+      
+  //filter by program//
+      if(this.programForFilter !=='all'){
+            tempCourses=tempCourses.filter((item)=>{
+              return item.program.toLowerCase()===this.programForFilter.toLowerCase()
+            })
+       }
+   
+   //filter by year//
+      if(this.yearForFilter !=='all'){
+            tempCourses=tempCourses.filter((item)=>{
+              return Number(item.year_no)===Number(this.yearForFilter)
+            })
+       }
+     
+   //filter by semester//
+      if(this.semesterForFilter !=='all'){
+            tempCourses=tempCourses.filter((item)=>{
+              return Number(item.semester_no)===Number(this.semesterForFilter)
+            })
+       }
+
+   //filter by type//
+      if(this.typeForFilter !=='all'){
+            tempCourses=tempCourses.filter((item)=>{
+              return item.type.toLowerCase()===this.typeForFilter.toLowerCase()
+            })
+       }   
+    return tempCourses
+   }
+ },
   validations(){
      return{
       course:{
@@ -231,10 +309,10 @@ export default {
         this.addBaseModal.show()
       },
       edit(){
-        this.request('updateCourse','Course updated successfully','Faild to add update')
+        this.request('dean/updateCourse','Course updated successfully','Faild to add update')
       },
       save(){
-        this.request('addCourse','Course added successfully','Faild to add course')
+        this.request('dean/addCourse','Course added successfully','Faild to add course')
       },
      async request(action, successMessage, errorMessage){
        
@@ -244,8 +322,7 @@ export default {
           await this.$store.dispatch(action,this.course)
           .then(()=>{
            this.isNotSucceed=false,
-           this.responseMessage=successMessage
-           
+           this.responseMessage=successMessage  
          }).catch((e)=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
@@ -264,8 +341,10 @@ export default {
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
   }
-}
-</script>
+   
+ }
+ </script>
+
 <style scoped>
 table {
   font-family: arial, sans-serif;

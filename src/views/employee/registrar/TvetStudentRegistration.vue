@@ -328,7 +328,7 @@
   </base-card>
   <div class="mt-3 ms-3 p-2">CLASIFFICATION OF ADMISSION</div>
   <base-card>
-  <span>{{levelAtZeroIndex(tvetDepartments[0]?.id)}}</span>
+  <!-- <span>{{levelAtZeroIndex(tvetDepartments[0]?.id)}}</span> -->
    <div class="d-flex justify-content-start align-items-center">
   <div class="p-3 col-sm-4">
   <span>Department</span>
@@ -593,11 +593,11 @@ finally{
             return Number(event.target.value) === Number(level.tvet_department_id)
           })
         },
-         levelAtZeroIndex(deptId){
-          this.levelList = this.levels.filter(level=>{
-            return Number(deptId) === Number(level.tvet_department_id)
-          })
-        }
+        //  levelAtZeroIndex(deptId){
+        //   this.levelList = this.levels.filter(level=>{
+        //     return Number(deptId) === Number(level.tvet_department_id)
+        //   })
+        // }
     },
 }
 </script>

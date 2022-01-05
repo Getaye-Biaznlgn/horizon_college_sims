@@ -1,0 +1,14 @@
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+.table-header{
+    background-color:#6ab187 ;
+}
+th,td{
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding:2px 8px;
+  vertical-align: top;
+}

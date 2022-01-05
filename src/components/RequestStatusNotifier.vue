@@ -1,5 +1,5 @@
 <template>
-    <p :class="{warning:isNotSucceed}">{{notificationMessage}}</p>
+    <p class="text-success" :class="{warning:isNotSucceed}">{{notificationMessage}}</p>
 </template>
 <script>
 export default {
@@ -10,7 +10,5 @@ export default {
 .warning{
     color: red !important;
 }
-p{
-    color: darkgreen;
-}
+
 </style>

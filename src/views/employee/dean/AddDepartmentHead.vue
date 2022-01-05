@@ -1,5 +1,5 @@
 <template>
-    <div class="wraper border rounded shadow-sm p-3 m-2 bg-white">
+    <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
     <button @click="addDepartmentHead()" class="btn addbtn py-2 px-0">Add Department Head</button>
     </div>
@@ -14,27 +14,7 @@
     </tr>
   </thead>
   <tbody v-if="deptHeads.length">
-  <!--
-    <tr v-for="n in 10" :key="n">
-      <td>1</td>
-      <td>Endalu Belachew</td>
-      <td>0912345221</td>
-      <td>endalu@gmail.com</td>
-       <td>
-        <div class="dropdown">
-          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-              <span><i class="fas fa-ellipsis-v"></i></span>
-          </a>
-
-          <ul class="dropdown-menu border rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span @click="editDeptHead()" class="dropdown-item px-4 py-2">edit</span></li>
-              <hr class="w-100 mb-0 mt-0">
-             <li><span @click="deleteDeptHead()" class="dropdown-item px-4 py-2">delete</span></li>
-          </ul>
-        </div>
-    </td>
-    </tr>
-    -->
+ 
     <tr v-for="(deptHead,index) in deptHeads" :key="deptHead.id">
       <td>{{index+1}}</td>
       <td>{{deptHead.first_name+" "+deptHead.last_name}}</td>
@@ -54,10 +34,10 @@
     </td>
     </tr>
   </tbody>
-  <div v-else class="mt-5 mb-5 text-center text-danger">faild to access department heads</div>
+  <div v-else class="mt-5 mb-5 text-center text-danger">There is no Department heads found please try again</div>
 </table>
 
-    </div>
+    </base-card>
     <!-- department head registration form dialog-->
     <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead">
     <template #modalBody>
@@ -217,13 +197,13 @@ export default {
     position: relative;
 }
 .addbtn{
-    background-color: #ff9500;
+    background-color: #2f4587;
     color: #fff;
     width: 11em;
 
 }
 .addbtn:hover{
-    background-color:#eca643 ;
+    background-color:#366ad9 ;
 }
 .dropdown ul{
   background-color: #f5f6fa;
@@ -232,7 +212,7 @@ ul li{
     cursor: pointer;
   }
  a span:hover{
-   color: #ff9500;
+   color: #366ad9;
  }
 table {
   font-family: arial, sans-serif;
@@ -240,7 +220,7 @@ table {
   width: 100%;
 }
 .table-header{
-    background-color:#4285fa ;
+    background-color:#366ad9 ;
     border-radius: 5px;
 }
 th{

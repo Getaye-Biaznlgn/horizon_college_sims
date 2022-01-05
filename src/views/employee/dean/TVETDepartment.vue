@@ -25,6 +25,7 @@
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
              <li @click="showEditModal(index)"><span  class="dropdown-item" >Edit</span></li>
+             <li ><span   class="dropdown-item">Delete</span></li>
              <li @click="showAssignModal(index)"><span  class="dropdown-item">Assign Head</span></li>
           </ul>
         </div>
@@ -37,32 +38,34 @@
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.department.name.$error}">
            <label for="#departmentName" class="form-label">Department Name</label>
-           <input class="form-control form-control-sm" v-model.trim="department.name" @blur="v$.department.name.$touch" id="departmentName" type="text" placeholder="Eg. Accounting" aria-label=".form-control">
+           <input class="form-control" v-model.trim="department.name" @blur="v$.department.name.$touch" id="departmentName" type="text" placeholder="Eg. Accounting" aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
        
        <div class="mb-3" :class="{warining:v$.department.sector.$error}">
            <label for="#departmentSector" class="form-label">Sector</label>
-           <input class="form-control form-control-sm" v-model.trim="department.sector" @blur="v$.department.sector.$touch" id="departmentSector" type="text" aria-label=".form-control">
+           <input class="form-control" v-model.trim="department.sector" @blur="v$.department.sector.$touch" id="departmentSector" type="text" aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.department.sector.$errors" :key="index">{{ error.$message+", " }}</span>
        </div> 
            <div class="mb-3">
               <label class="form-label" for="#level1">Level I Occupation Name</label>
-              <input class="form-control form-control-sm" v-model.trim="department.levelOneOccupationName" id="level1"  type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelOneOccupationName" id="level1"  type="text"  aria-label=".form-control-lg">
            </div> 
 
            <div class="mb-3">
               <label class="form-label" for="#level2">Level II Occupation Name</label>
-              <input class="form-control form-control-sm" v-model.trim="department.levelTwoOccupationName" id="level2" type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelTwoOccupationName" id="level2" type="text"  aria-label=".form-control-lg">
            </div> 
         
            <div class="mb-3">
               <label class="form-label" for="#level3">Level III Occupation Name</label>
-              <input class="form-control form-control-sm" v-model.trim="department.levelThreeOccupationName" id="level3" type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelThreeOccupationName" id="level3" type="text"  aria-label=".form-control-lg">
            </div> 
            <div class="mb-3">
               <label class="form-label " for="#level4">Level VI Occupation Name</label>
-              <input class="form-control form-control-sm" v-model.trim="department.levelFourOccupationName" id="level4" type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelFourOccupationName" id="level4" type="text"  aria-label=".form-control-lg">
+
+
            </div> 
       </form>
       <request-status-notifier :notificationMessage="responseMessage" :isNotSucceed="isNotSucceed" ></request-status-notifier>
@@ -151,7 +154,7 @@ export default {
      }
   },
   computed:{
-    ...mapGetters('dean',['tvetDepartments','tvetLevels','departmentHeads'])
+    ...mapGetters({tvetDepartments:'dean/tvetDepartments',tvetLevels:'dean/tvetLevels',departmentHeads:'dean/departmentHeads'})
   },
   methods:{
       showAddModal(){
@@ -170,9 +173,7 @@ export default {
       },
 
       showEditModal(index){
-
         let department=this.tvetDepartments[index]
-        console.log('show edit tvet department', department)
         this.actionButtonType="edit"
         this.department.id=department['id']
         this.department.name=department.name
@@ -181,13 +182,12 @@ export default {
         this.department.levelTwoOccupationName=department.levels[1].occupation_name
         this.department.levelThreeOccupationName=department.levels[2].occupation_name
         this.department.levelFourOccupationName=department.levels[3].occupation_name
-      
         this.addBaseModal.show()
       },
         async assignHead(){
          this.responseMessage=''
           this.isSaving=true
-          await this.$store.dispatch('assignTvetDepartmentHead',this.assignDepartmentHead)
+          await this.$store.dispatch('dean/assignTvetDepartmentHead',this.assignDepartmentHead)
           .then(()=>{
            this.isNotSucceed=false,
            this.responseMessage='Department Head assigned successfully'
@@ -203,10 +203,10 @@ export default {
          this.assignBaseModal.hide()
        },
       edit(){
-        this.request('updateTvetDepartment','department updated successfully', 'Faild to update department')
+        this.request('dean/updateTvetDepartment','department updated successfully', 'Faild to update department')
       },
       save(){
-        this.request('addTvetDepartment','department added successfully', 'Faild to add department')
+        this.request('dean/addTvetDepartment','department added successfully', 'Faild to add department')
       },
      async request(action,successMessage, errorMessage){
        this.v$.$validate()
@@ -233,7 +233,8 @@ export default {
              level_no:4,
            },
           ]
-         }).then(()=>{
+         })
+         .then(()=>{
            this.isNotSucceed=false,
            this.responseMessage=successMessage
            console.log('response with status')

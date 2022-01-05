@@ -2,7 +2,7 @@
 <base-card>
  <div class="d-flex justify-content-between">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-1" placeholder="Search By pad number" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId">
+  <input type="text" class="form-control p-1" placeholder="Search By pad number" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByPadNo()">
    <span @click="searchByPadNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
   <div>
@@ -98,27 +98,23 @@
   </tbody>
    
 </table>
-<div class="d-flex justify-content-end mt-3 me-3">
+<div v-if="tvetStudentFee.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
-<select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber" @change="valueChanged">
-  <option value="1" selected>1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-   <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
+<select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
+  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
+  
 </select>
 </div>
 <div class="pageno me-3">
-1-14 of 50 pages
+{{tvetStudentFee.from+'-'+tvetStudentFee.to+' of '+tvetStudentFee.total+' pages'}}
 </div>
 <div class="leftchivron ms-3 me-3">
-<button @click="backChivron()" class="chivronbtn"><i class="fas fa-chevron-left"></i></button>
+<button @click="backChivron()" class="chivronbtn" :class="{active:tvetStudentFee.from !== 1}" :disabled="tvetStudentFee.from === 1"><i class="fas fa-chevron-left"></i></button>
 </div>
-<div class="rightchivron"><button @click="forWardChivron" class="chivronbtn"><i class="fas fa-chevron-right"></i></button></div>
+<div class="rightchivron"><button @click="forWardChivron()" class="chivronbtn" :class="{active:tvetStudentFee.to !==tvetStudentFee.total}" :disabled="tvetStudentFee.to ===tvetStudentFee.total"><i class="fas fa-chevron-right"></i></button></div>
 </div>
 </base-card>
 <!--for detail dialog -->
@@ -213,7 +209,15 @@ Rows per Page
 export default {
     data() {
         return {
-            isDetail:false
+            isDetail:false,
+            rowNumber:5,
+            studentId:null,
+            queryObject:{
+            page:1,
+            per_page:5,
+            search_id:'',
+            path:'api/tvet_student_fees'
+            }
         }
     },
       created() {
@@ -228,7 +232,22 @@ export default {
         return this.$store.getters['cashier/tvetStudentFeeDetails']
       }
     },
+    watch:{
+      studentId(newValue){
+  this.queryObject.search_id = newValue
+},
+rowNumber(newValue){
+  this.queryObject.per_page = newValue
+  this.degreeStudentsPaid(this.queryObject)
+}
+    },
     methods: {
+        tvetStudentsPaid(queryObject){
+this.$store.dispatch('cashier/fetchTvetStudentFee',queryObject)
+        },
+      searchByPadNo(){
+this.tvetStudentsPaid(this.queryObject)
+      },
         showDetail(id){
           this.$store.dispatch('cashier/fetchTvetStudentFeeDetails',id)
             this.isDetail = true
@@ -236,7 +255,16 @@ export default {
         },
         cancelDetailDialog(){
             this.isDetail = false
-        }
+             document.documentElement.style.overflow = "scroll"
+        },
+          forWardChivron(){
+        this.queryObject.page = this.queryObject.page +1
+       this.tvetStudentsPaid(this.queryObject)
+      },
+      backChivron(){
+        this.queryObject.page = this.queryObject.page -1
+       this.tvetStudentsPaid(this.queryObject)
+      },
     },
 }
 </script>

@@ -1,6 +1,7 @@
 <template>
 <base-card>
-<div class="pb-5 mb-5">
+<span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span>
+<div class="pb-5 mb-5 mt-3">
     <div class="feetype d-flex ms-3 mt-3">
     <button @click="tuitionFeeType" class="btn tuition me-0" :class="{tuitionfee:isTuitionFee}">Tuition Type</button>
     <button @click="otherFeeType" class="btn other ms-0" :class="{otherFee:isOtherFee}">Other Payment</button>
@@ -15,7 +16,7 @@
     </div>
     <div class="studenttype col-sm-3 ms-3 me-5">
     <span class="mt-3 mb-3">Student Type</span>
-    <select class="form-select form-select-sm mt-1" aria-label=".form-select-sm example" v-model="student_type" @change="studentType($event)">
+    <select class="form-select form-select-sm mt-1" aria-label=".form-select-sm example" v-model="student_type">
   <option selected value="degree"><strong>Degree</strong></option>
   <option value="tvet"><strong>TVET</strong></option>
 </select>
@@ -24,7 +25,10 @@
      <span>Student ID</span>
     <div class="input-group input-group-sm mt-1 searchdiv">
   <input type="text" class="form-control searchinput" aria-label="Sizing example input" placeholder="Student ID" aria-describedby="inputGroup-sizing-sm" v-model="studId" @keyup.enter="searchStudentById()">
-  <span @click="searchStudentById()" class="input-group-text searchbtn" id="inputGroup-sizing-sm">Search</span>
+  <span @click="searchStudentById()" class="input-group-text searchbtn" id="inputGroup-sizing-sm">
+        <span v-if="isLoading"><span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Searching</span>      
+            <span v-else>Search</span>
+    </span>
 </div>
     </div>
     </div>
@@ -89,7 +93,7 @@
      <table class="monthtable">
   <thead>
     <tr class="table-header">
-      <th class="text-white text-center" :colspan="semesters.months.length+1">{{'Year '+studentFeelists.year_no+' Semester '+semesters.semester_no}}</th>
+      <th class="text-white text-center" :colspan="semesters.months.length + 1">{{'Year '+studentFeelists.year_no+' Semester '+semesters.semester_no}}</th>
     </tr>
      <tr class="table-header">
       <th class="text-white text-center" :colspan="semesters.months.length">Months</th>
@@ -144,7 +148,7 @@
      <table class="w-100">
   <thead>
     <tr class="table-header">
-      <th class="text-white text-center" :colspan="studentFeelists.months.length">Months</th>
+      <th class="text-white text-center" :colspan="studentFeelists.months?.length">Months</th>
       <th class="text-white text-center" rowspan="2">Total</th>
     </tr>
       <tr class="table-header">
@@ -157,7 +161,7 @@
   <td>{{studentFeelists.total}}</td>
   </tr>
   <tr>
-  <td :colspan="studentFeelists.months.length">
+  <td :colspan="studentFeelists.months?.length">
   <div class="d-flex justify-content-end py-2">
   <button @click="tvetPayment(studentFeelists.month_payment,studentFeelists.id,studentFeelists.months)" class="btn paybtn mt-1 me-3">Pay</button>
   </div>
@@ -185,21 +189,27 @@
     </div>
     <div class="mt-2 ms-auto me-3 search">
      <span>Pad Number</span>
-    <div class="mt-1">
+    <div class="mt-1" :class="{warining:v$.padNumber.$error}">
   <input type="text" class="form-control form-control-sm" aria-label="Sizing example input" placeholder="Ex 134" v-model="padNumber">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.padNumber.$errors" :key="index">{{ error.$message}}</span>
 </div>
     </div>
     <div class="d-flex align-items-center">
-    <div class="form-group mt-4 mb-3 me-5 w-25">
+    <div class="form-group mt-4 mb-3 me-5 w-25" :class="{warining:v$.paidDate.$error}">
 <label for="otherpayeddate" class="form-label">Paid Date</label>
 <input class="form-control form-control-sm" type="date" id="otherpayeddate" aria-label=".form-control-sm example" v-model="paidDate">
+ <span class="error-msg mt-1"  v-for="(error, index) of v$.paidDate.$errors" :key="index">{{ error.$message}}</span>
 </div>
-<div class="form-group ms-5 me-5">
+<div class="form-group ms-5 me-5" :class="{warining:v$.studId.$error}">
 <label for="idno" class="form-label">Student ID</label>
 <input class="form-control form-control-sm" type="text" id="idno" placeholder="Ex HCR1013" aria-label=".form-control-sm example" v-model="studId">
+<span class="error-msg mt-1"  v-for="(error, index) of v$.studId.$errors" :key="index">{{ error.$message}}</span>
 </div>
     <div class="d-flex justify-content-end mt-5 ms-5">
-    <button @click="otherPayment()" class="btn addbtn me-3 p-1">PAY</button>
+    <button @click="otherPayment()" class="btn addbtn me-3 p-1"><span v-if="isLoading" class="btn  py-1">
+ <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>PAYING</span>      
+  <span v-else>PAY</span>
+    </button>
     </div>
     </div>
      <div class="d-flex mt-3 ms-2">
@@ -216,6 +226,7 @@
 <div v-if="newPayment" class="editwraper">
 <div class="dialogcontent">
 <base-card>
+<div v-if="student_type === 'degree'">
 <div class="p-2"> Select Payment Method</div>
 <div class="paymenttype d-flex mt-2 p-1">
 <div class="form-check me-5">
@@ -231,22 +242,30 @@
   </label>
 </div>
 </div>
+</div>
 <div v-if="paymentType === 'cp'" class="pb-3">
 <div class="d-flex mt-4">
 <span>Amount:</span>
 <span class="ms-3"><strong>{{monthlyPayment*monthsIds.length}}</strong></span>
 </div>
-<div class="form-group mt-4 mb-3">
+<div class="form-group mt-4 mb-3" :class="{warining:v$.padNumber.$error}">
 <label for="padno" class="form-label">Pad Number</label>
 <input class="form-control form-control-sm" type="text" id="padno" placeholder="Ex 1034" aria-label=".form-control-sm example" v-model="padNumber">
+<span class="error-msg mt-1"  v-for="(error, index) of v$.padNumber.$errors" :key="index">{{ error.$message}}</span>
 </div>
-<div class="form-group mt-4 mb-3">
+<div class="form-group mt-4 mb-3" :class="{warining:v$.paidDate.$error}">
 <label for="paiddate" class="form-label">Paid Date</label>
 <input class="form-control form-control-sm" type="date" id="paiddate" aria-label=".form-control-sm example" v-model="paidDate">
+ <span class="error-msg mt-1"  v-for="(error, index) of v$.paidDate.$errors" :key="index">{{ error.$message}}</span>
 </div>
+ <p class=" mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 <div class="d-flex justify-content-between mt-5">
 <button @click="cancelPaymentDialog()" class="btn cancelbtn optionbtn py-1">CANCEL</button>
-<button @click="payByCp()" class="btn optionbtn paybtn py-1">PAY</button>
+<button @click="payByCp()" class="btn optionbtn paybtn py-1">
+  <span v-if="isLoading" class="btn  py-1">
+ <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>PAYING</span>      
+            <span v-else>PAY</span>
+</button>
 </div>
 </div>
 <div v-else-if="paymentType === 'monthly'">
@@ -273,21 +292,31 @@
 </div>
 </div>
 </div>
-<div class="d-flex">
+<span class="error-msg mt-1 ms-5" :class="{checkmonth:v$.monthsIds.$error}"  v-for="(error, index) of v$.monthsIds.$errors" :key="index">{{ error.$message}}</span>
+<div class="d-flex mt-3">
 <span>Amount:</span>
 <span class="ms-3"><strong>{{monthlyPayment*monthsIds.length}}</strong></span>
 </div>
-<div class="form-group mb-3">
+<div class="form-group mb-3 mt-3" :class="{warining:v$.padNumber.$error}">
 <label for="padno" class="form-label">Pad Number</label>
 <input class="form-control form-control-sm" type="text" id="padno" placeholder="Ex 1034" aria-label=".form-control-sm example" v-model="padNumber">
+ <span class="error-msg mt-1"  v-for="(error, index) of v$.padNumber.$errors" :key="index">{{ error.$message}}</span>
 </div>
-<div class="form-group mb-3">
+<div class="form-group mb-3 mt-3" :class="{warining:v$.paidDate.$error}">
 <label for="datepaid" class="form-label">Paid Date</label>
 <input class="form-control form-control-sm" type="date" id="datepaid" placeholder="Ex 1034" aria-label=".form-control-sm example" v-model="paidDate">
+ <span class="error-msg mt-1"  v-for="(error, index) of v$.paidDate.$errors" :key="index">{{ error.$message}}</span>
 </div>
+ <p class=" mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 <div class="d-flex justify-content-between mt-3">
 <button @click="cancelPaymentDialog()" class="btn cancelbtn optionbtn py-1">CANCEL</button>
-<button @click="payByMonth()" class="btn optionbtn paybtn py-1">PAY</button>
+   <button  @click="payByMonth()" class="btn optionbtn paybtn py-1">
+  <span v-if="isLoading" class="btn py-1">
+               <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+               PAYING
+            </span>      
+            <span v-else>PAY</span> 
+  </button>
 </div>
 </div>
 </base-card>
@@ -295,18 +324,22 @@
 </div>
 </template>
 <script>
+
+import useValidate from '@vuelidate/core'
+import { required,helpers} from '@vuelidate/validators'
 import apiClient from '../../../store/baseUrl'
 export default {
     data() {
         return {
+          v$:useValidate(),
             isTuitionFee:true,
             isOtherFee:false,
             newPayment:false,
-            paymentType:'cp',
+            paymentType:'monthly',
             padNumber:'',
             monthsIds:[],
             studId:null,
-            student_type:'degree',
+            student_type:'tvet',
             monthlyPayment:'',
             semesterPayment:'',
             semester_id:'',
@@ -322,6 +355,15 @@ export default {
            otherFeeAmount:null,
            paymentTypeId:null
         }
+    },
+    validations(){
+      return{
+        padNumber:{required:helpers.withMessage('please enter Pad number',required)},
+        paidDate:{required:helpers.withMessage('please enter Paid Date',required)},
+        monthsIds:{required:helpers.withMessage('please check paid months',required)},
+        studId:{required:helpers.withMessage('student ID number is required',required)}
+        
+      }
     },
     computed:{
       studentFeelists(){
@@ -361,6 +403,9 @@ typeOfPayment(){
     },
     
     methods: {
+      back(){
+        this.$router.back()
+      },
         tuitionFeeType(){
             this.isTuitionFee = true
             this.isOtherFee = false
@@ -371,10 +416,18 @@ typeOfPayment(){
         },
         async searchStudentById(){
           var student = {};
+          this.isLoading = true
           student.id = this.studId
           student.type = this.student_type
           student.academic_year_id = this.$refs.acYearId.value
-          await this.$store.dispatch('cashier/fetchStudentFeelist',student)
+          await this.$store.dispatch('cashier/fetchStudentFeelist',student).then((response)=>{
+            if(response.status === 200){
+              this.isLoading = false
+            }
+          })
+          .catch(()=>{
+            this.isLoading=false
+          })
         },
          tvetPayment(monthlyPayment,studId,months){
           this.monthlyPayment = monthlyPayment
@@ -419,7 +472,10 @@ typeOfPayment(){
             document.documentElement.style.overflow = "scroll"
         },
         payByMonth(){
-           var studentFee = {};
+           this.v$.$validate()
+           if(!this.v$.$error){
+             this.isLoading = true
+              var studentFee = {};
           studentFee.receipt_no = this.padNumber
          studentFee.tuition_type = this.paymentType
          studentFee.academic_year_id = this.activeACyear
@@ -431,19 +487,40 @@ typeOfPayment(){
          studentFee.amount = this.monthlyPayment*this.monthsIds.length
          console.log('student fee data')
          console.log(studentFee)
-          this.$store.dispatch('cashier/addNewStudentFee',studentFee).then(()=>{
+         try{
+          this.$store.dispatch('cashier/addNewStudentFee',studentFee).then((response)=>{
+             if(response.status === 200){
+               studentFee.months=[]
+              console.log(response.data)
+               this.isFaild = false
+           this.isSuccessed = true
+           this.resultNotifier = 'Your payment is succesfully done'
+           this.isLoading = false
+             }
             var student = {};
-            student.id = this.student_id
+            student.id = this.studId
               student.type = this.student_type
           student.academic_year_id = this.$refs.acYearId.value
-          this.$store.dispatch('cashier/fetchStudentFeelist',student).then(()=>{
-            this.semesterMonths.forEach((month)=>{
-    document.getElementById(month.id).checked = false
-            })
+          this.$store.dispatch('cashier/fetchStudentFeelist',student).then((response1)=>{
+            console.log('after adding payment')
+            console.log(response1.data)
+      
+                })
           })
-          })
+           }
+           catch(e){
+             this.resultNotifier = 'some thing went wrong'
+           }
+           finally{
+            this.resultNotifier = '' 
+           }
+           }
+          
         },
         payByCp(){
+           this.v$.$validate()
+           if(!this.v$.$error){
+             this.isLoading = true
           var studentFee = {};
           studentFee.receipt_no = this.padNumber
          studentFee.tuition_type = this.paymentType
@@ -454,13 +531,36 @@ typeOfPayment(){
          studentFee.amount = this.semesterPayment
          console.log('student fee datas')
          console.log(studentFee)
-          this.$store.dispatch('cashier/addNewStudentFee',studentFee).then(()=>{
+         try{
+          this.$store.dispatch('cashier/addNewStudentFee',studentFee).then((response)=>{
+             if(response.status === 200){
+              console.log(response.data)
+               this.isFaild = false
+           this.isSuccessed = true
+           this.resultNotifier = 'Your payment is succesfully done'
+           this.isLoading = false
+             }
             var student = {};
-            student.id = this.student_id
-              student.type = this.student_type
-          student.academic_year_id = this.activeACyear
+          student.id = this.studId
+          student.type = this.student_type
+          student.academic_year_id = this.$refs.acYearId.value
           this.$store.dispatch('cashier/fetchStudentFeelist',student)
+
           })
+          . catch(()=>{ 
+          this.isFaild = true
+           this.isSuccessed = false
+            this.resultNotifier = 'some thing went wrong'
+          })
+         }
+          catch(e){
+            this.resultNotifier = 'some thing went wrong'
+          }
+          finally{
+            this.resultNotifier = ''
+          }
+           
+           }
         },
        async  otherPayment(){
          this.isLoading = true
@@ -504,6 +604,13 @@ typeOfPayment(){
 }
 </script>
 <style scoped>
+.backarrow{
+  cursor: pointer;
+  font-size: 22px;
+}
+.backarrow:hover{
+  color: #1142ac;
+}
 .tuition,.other{
     background-color: #ecf1fe;
     color: #000;
@@ -638,6 +745,17 @@ td{
     color: green;
   }
   .faild{
+    color: red;
+  }
+  .warining input{
+    border: 1px red solid;
+  }
+  .warining span{
+    display: inline;
+    color: red;
+
+  }
+  .checkmonth{
     color: red;
   }
 </style>

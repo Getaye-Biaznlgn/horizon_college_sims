@@ -1,0 +1,159 @@
+<template>
+<base-card class="px-3 mx-4 mt-3">
+     <span @click="back" class="back pe-2 fw-bold" role="button"><i class="fas  fa-arrow-left"></i>Back</span>
+        <div class="d-flex">
+            <button  @click="printGradeReport" class="btn btn-add ms-auto text-white me-2 mb-3 shadow-sm"><i class="fas fa-print me-2"></i>Print Grade Report</button> 
+        </div>
+         <!-- <div  class="mt-2">Faild to preview Students slip. Select Students and try again please!</div>  -->
+    <div id="slip">
+       <div v-for="student in studentCourses" :key="student"  style="height:260mm; overflow-y:hidden;">
+           <div class="d-flex justify-content-between fw-bold">
+             <div>
+                Horizon College<br>
+                College of the Registrar <br>
+                Student Academic Record
+              </div>
+              <div>
+                  P.O.Box:927 Bahir Dar, Ethiopia<br>
+                  Tel: +251583208997<br>
+                  E-mail: horizoncollege@gmail.com <br>
+                  Medium of Instruction: English
+              </div>
+           </div>
+           <div class="basic-info">
+               <div class="d-flex">
+                  <span class="">Full Name: {{student.first_name+' '+student.middle_name}}</span> 
+                  <span class="ms-auto">Sex: {{student.sex}}</span>
+                  <span class="ms-auto">ID No: {{student.student_id}}</span>
+                  <span class="ms-auto">Admission Classification: {{student.progarm}}</span>
+               </div>
+           </div>
+           <div class="d-flex">
+              <span class="pe-2">Department: </span> 
+              <span class=" ms-auto">Date of Admission: {{student.addmission_year}}</span> 
+              <span class=" ms-auto">Date of Award: </span>  
+              <span class=" ms-auto">Program: Degree</span> 
+           </div>
+           <table class="mt-1">
+              <tr>
+                 <th>No</th>
+                 <th>Course code</th>
+                 <th>Title</th>
+                 <th>Letter Grade</th>
+                 <th>Cr.hr</th>
+                 <th>Grade Point</th>
+               </tr>
+               <tr>
+                  <th class="text-center" colspan="6">Year {{year_no}} Semester {{semester_no}} A Year: </th>
+               </tr>
+               <tbody>
+                   <tr v-for="(course,index) in student.courses" :key="course.id">
+                     <td>{{index+1}}</td>
+                     <td>{{course.code}}</td>
+                     <td>{{course.title}}</td>
+                     <td>{{course.grade_point}}</td>
+                     <td>{{course.cp}}</td>
+                     <td>Letter point</td>
+                   </tr>
+               </tbody>
+           </table>
+           <div>
+               Total Grade Point: {{}}<br>
+               Total Cr.Hr: {{student.totalCreditHour}}<br>
+               Semester Average: {{student.semester_average}}<br>
+               Previous Total: {{student.previousTotal}}<br>
+               Comulative Average: {{}}<br>  
+           </div>
+       </div>
+    </div>
+</base-card>  
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import apiClient from '../../../store/baseUrl'
+export default {
+    props:['program_id','year_no','semester_no'],
+    data(){
+        return{
+            studentCourses:[],
+        }
+    },
+    computed:{
+       ...mapGetters({studentsForGrade:'degreeHead/studentsForGrade', }),
+       totalCP(){
+           let totalCP=0
+           this.slipCourses.forEach((course)=>{
+              totalCP+=course.cp
+          })
+          return totalCP
+       },
+    selectedAcademicYearId(){
+      return this.$store.getters.selectedAcademicYearId
+  }
+  },
+    methods:{
+        back(){
+            this.$router.back()
+        },
+        printGradeReport(){
+          this.$htmlToPaper('slip')
+        },
+    async fetchGradeForSemester(payload){
+       this.$store.commit('setIsItemLoading', true)
+        try {
+            var response = await apiClient.post("/api/grade_reports",payload)
+            if (response.status === 200) {
+              this.studentCourses=response.data
+              
+              console.log('grade report', response.data)
+            } else {
+                throw 'faild to load course for slip'
+            }
+        } catch (e) {
+            console.log(e.response)
+            throw e
+        } finally {
+            this.$store.commit('setIsItemLoading', false)
+        }
+      }
+    },
+    created(){
+        this.fetchGradeForSemester({program_id:this.program_id,
+                                   year_no:this.year_no,
+                                   semester_no:this.semester_no,
+                                   academic_year_id:this.selectedAcademicYearId,
+                                   student_ids:this.studentsForGrade
+                                   })
+    }
+
+}
+</script>
+<style scoped>
+.btn-add{
+    background-color: #2f4587;
+}
+.btn-add:hover{
+  background-color: #425fb8;
+
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+.table-header{
+    background-color:#6ab187 ;
+}
+.back{
+  font-size: 20px;
+  color: #366ad3;
+}
+th,
+td{
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  vertical-align: top;
+}
+</style>

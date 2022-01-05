@@ -1,5 +1,5 @@
 <template>
-    <div class="wraper border rounded shadow-sm p-3 m-2 bg-white">
+    <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-between">
     <div class="d-flex justify-content-between">
    <div class="form-check ms-5 me-3">
@@ -59,10 +59,10 @@
     </td>
     </tr>
   </tbody>
-   <div v-else class="mt-5 mb-5 text-center text-danger">faild to access teachers</div>
-</table>
+   <div v-else class="mt-5 mb-5 text-center text-danger">There is no Teachers found please try again</div>
+ </table>
+</base-card>
 
-    </div>
     <!-- teracher registration form dialog-->
     <base-modal :is-loading= "isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedTeacher" @save="registerTeacher">
     <template #modalBody>
@@ -267,13 +267,13 @@ export default {
     position: relative;
 }
 .addbtn{
-    background-color: #ff9500;
+    background-color: #2f4587;
     color: #fff;
     width: 10em;
 
 }
 .addbtn:hover{
-    background-color:#eca643 ;
+    background-color:#366ad9 ;
 }
 .dropdown ul{
   background-color: #f5f6fa;

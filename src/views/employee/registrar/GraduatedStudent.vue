@@ -1,0 +1,3 @@
+<template>
+    Graduated Student
+</template>

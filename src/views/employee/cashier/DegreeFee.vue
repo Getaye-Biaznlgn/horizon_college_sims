@@ -2,10 +2,10 @@
 <base-card>
  <div class="d-flex justify-content-between">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId">
-   <span @click="searchByStudId()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
+  <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByStudId()">
+   <span @click="searchByStudId()" class="searchicon  input-group-text" id="searchby_id"><i class="fas fa-search"></i></span>
 </div>
-  <div>
+  <div class="exportbtn">
     <button @click="printStudentFeeList" class="btn me-1 addbtn">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
@@ -13,7 +13,7 @@
     </div>
     </div>
     <div id="degreefee">
-    <table class="mt-3">
+    <table class="mt-2">
   <thead>
     <tr class="table-header">
       <th class="text-white" rowspan="2">NO</th>
@@ -100,27 +100,23 @@
    
 </table>
     </div>
-<div class="d-flex justify-content-end mt-2 me-3">
+<div v-if="studentFee.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
-<select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber" @change="valueChanged">
-  <option value="1" selected>1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-   <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
+<select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
+  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
+  
 </select>
 </div>
 <div class="pageno me-3">
-1-14 of 50 pages
+{{studentFee.from+'-'+studentFee.to+' of '+studentFee.total+' pages'}}
 </div>
 <div class="leftchivron ms-3 me-3">
-<button @click="backChivron()" class="chivronbtn"><i class="fas fa-chevron-left"></i></button>
+<button @click="backChivron()" class="chivronbtn" :class="{active:studentFee.from !== 1}" :disabled="studentFee.from === 1"><i class="fas fa-chevron-left"></i></button>
 </div>
-<div class="rightchivron"><button @click="forWardChivron" class="chivronbtn"><i class="fas fa-chevron-right"></i></button></div>
+<div class="rightchivron"><button @click="forWardChivron()" class="chivronbtn" :class="{active:studentFee.to !==studentFee.total}" :disabled="studentFee.to ===studentFee.total"><i class="fas fa-chevron-right"></i></button></div>
 </div>
 </base-card>
 <!-- student detail view-->
@@ -212,7 +208,16 @@ Rows per Page
 export default {
     data() {
       return {
-        isDetail:false
+        isDetail:false,
+        studentId:null,
+        rowNumber:5,
+         queryObject:{
+            page:1,
+            per_page:5,
+            search_id:'',
+            path:'api/degree_student_fees',
+            }
+        
       }
     },
     created() {
@@ -226,7 +231,19 @@ export default {
         return this.$store.getters['cashier/degreeStudentFeeDetails']
       }
     },
+     watch:{
+      studentId(newValue){
+  this.queryObject.search_id = newValue
+},
+rowNumber(newValue){
+  this.queryObject.per_page = newValue
+  this.degreeStudentsPaid(this.queryObject)
+}
+    },
     methods: {
+    degreeStudentsPaid(queryObject){
+          this.$store.dispatch('cashier/fetchDegreeStudentFee',queryObject)
+        },
       showDetail(id){
         this.$store.dispatch('cashier/degreeStudentFeeDetails',id)
         this.isDetail = true
@@ -238,7 +255,15 @@ export default {
         printStudentFeeList(){
          this.$htmlToPaper('degreefee');
          console.log('you have print your tabel')
-      }
+      },
+      forWardChivron(){
+        this.queryObject.page = this.queryObject.page +1
+       this.degreeStudentsPaid(this.queryObject)
+      },
+      backChivron(){
+        this.queryObject.page = this.queryObject.page -1
+       this.degreeStudentsPaid(this.queryObject)
+      },
     },
 }
 </script>
@@ -250,8 +275,9 @@ export default {
     vertical-align: middle;
 } 
 .addbtn:hover{
-    background-color:#1e3fa3 ;
+    background-color:#2f4587 ;
 }
+
 .searchicon{
   cursor: pointer;
 }
@@ -276,19 +302,19 @@ table {
   width: 100%;
 }
 .table-header{
-    background-color:#4285fa ;
+    background-color:#366ad9 ;
     border-radius: 5px;
 }
 th{
   text-align: left;
-  padding: 8px;
+  padding: 5px;
   border: 1px solid #fff;
   
 }
 td{
   border: 1px solid #dddddd;
   text-align: left;
-  padding: 8px;
+  padding: 5px;
   vertical-align: top;
 }
 .chivronbtn{
