@@ -4,13 +4,13 @@
     <div class="d-flex">
  <div class="ms-4 mb-2">
  <span>Department</span>
-  <select class="form-select form-select-sm" aria-label=".form-select-sm example" ref="degreeDptId" @change="fetchSpecificDegreeGraduats()">
+  <select class="form-select form-select-sm" aria-label=".form-select-sm example" ref="degreeDptId">
   <option v-for="department in degreeDepartments" :key="department.id" :value="department.id">{{department.name}}</option>
 </select>
 </div>
- <div class="ms-4 mb-2">
+ <div class="ms-5 mb-2">
 <span>Program</span>
-  <select class="form-select form-select-sm" aria-label=".form-select-sm example" ref="programId" @change="fetchSpecificDegreeGraduats()">
+  <select class="form-select form-select-sm" aria-label=".form-select-sm example" ref="programId">
   <option v-for="Program in degreePrograms" :key="Program.id" :value="Program.id">{{Program.name}}</option>
 </select>
 </div>
@@ -22,6 +22,8 @@
     </button>
       </div>
      </div>
+     <div id="degreeGraguate">
+       <div class="ms-5 mt-3"></div>
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -31,30 +33,30 @@
       <th class="text-white py-2">Sex</th>
       <th class="text-white py-2">Department</th>
       <th class="text-white py-2">Program</th>
-      <th class="text-white py-2">Year</th>
-       <th class="text-white py-2">Semester</th>
       </tr>
       </thead>
   <tbody>
-  <tr v-for="(student, index) in degreeGraduates.students" :key="student.id">
-  <td class="px-3">{{index+1}}</td>
+  <tr v-for="(student, index) in degreeGraduates.data" :key="student.id">
+  <td class="px-3">{{queryObject.per_page*degreeGraduates.current_page +index+1 - queryObject.per_page}}</td>
   <td class="py-2">{{student.student_id}}</td>
   <td class="py-2">{{student.first_name+' '+student.last_name}}</td>
   <td class="py-2">{{student.sex}}</td>
-  <td class="py-2">{{student.department.name}}</td>
+  <td class="py-2">{{student.degree_department.name}}</td>
   <td class="py-2">{{student.program.name}}</td>
-  <td class="py-2">{{student.year_no}}</td>
-  <td class="py-2">{{degreeGraduates.semester_no}}</td>
-  </tr>
+   </tr>
   </tbody>
     </table>
+     </div>
     <div class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
-  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
   
 </select>
 </div>
@@ -70,16 +72,15 @@ Rows per Page
   
 </template>
 <script>
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 import {mapGetters} from 'vuex'
 export default {
     data() {
         return {
-         rowNumber:'',
+         rowNumber:'10',
           queryObject:{
           page:1,
           per_page:5,
-          path:'api/coc_students',
 
         }
         }
@@ -93,24 +94,28 @@ export default {
         return this.$store.getters['registrar/degreeGraduates']
     },
        },
-      //  created() {
-      //    var deptId = this.degreeDepartments[0]?.id
-      //     var progId = this.degreePrograms[0]?.id
-      //   this.fetchDegreeGraduates(this.academicYearId,deptId,progId)
-      //  },
+       created() {
+        this.queryObject.acId = this.academicYearId
+        this.fetchDegreeGraduat(this.queryObject)
+       },
        watch:{
          academicYearId(newValue){
-            var deptId = this.$refs.degreeDptId.value
-          var progId = this.$refs.programId.value
-           this.fetchDegreeGraduates(newValue,deptId,progId)
-         }
-       },
+         this.queryObject.acId = newValue
+           this.fetchDegreeGraduat(this.queryObject)
+         },
+         rowNumber(newValue){
+           this.queryObject.per_page = newValue
+        this.fetchDegreeGraduat(this.queryObject)
+                },
+       },  
     methods: {
-        printGraduatedTvetStudent(){},
-        async fetchDegreeGraduates(yearId,dptId,progId){
-          this.$store.state.isLoading = true
+        async printGraduatedTvetStudent(){
+            await this.$htmlToPaper('degreeGraguate');
+            },
+        async fetchDegreeGraduat(queryObject){
+          this.$store.state.isItemLoading = true
             try{
-              var response = await apiClient.get(`api/registrar_graduated_degree_students?academic_year_id=${yearId}&department_id=${dptId}&program_id=${progId}`)
+              var response = await apiClient.get(`api/registrar_graduated_degree_students?academic_year_id=${queryObject.acId}&per_page=${queryObject.per_page}`)
               if(response.status === 200){
                 console.log('graduated degree students = ',response.data)
                 this.$store.commit('registrar/setDegreeGraduates',response.data)
@@ -120,16 +125,17 @@ export default {
               console.log('error')
             }
             finally{
-              this.$store.state.isLoading = false
+              this.$store.state.isItemLoading = false
             }
         },
-        fetchSpecificDegreeGraduats(){
-            var deptId = this.$refs.degreeDptId.value
-          var progId = this.$refs.programId.value
-           this.fetchDegreeGraduates(this.academicYearId,deptId,progId)
-        }
+        // fetchSpecificDegreeGraduats(){
+        //     var deptId = this.$refs.degreeDptId.value
+        //   var progId = this.$refs.programId.value
+        //    this.fetchDegreeGraduat(this.queryObject)
+        // }
     }
-       }
+       
+}
 </script>
 <style scoped>
 table {

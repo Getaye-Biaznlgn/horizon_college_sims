@@ -1,5 +1,5 @@
 <template>
-     <div class="w-25 ms-auto me-auto border rounded-1 px-3 pt-3 mt-5">
+     <div class="col-md-3 ms-auto me-auto border rounded-1 px-3 pt-3 mt-5">
         <h3 class=" d-flex justify-content-center">Login </h3>
        <form class="py-5" @submit.prevent="login">
         <div class="mb-2" :class="{warining:v$.userCrediantail.user_name.$error}">
@@ -37,7 +37,7 @@
 <script>
 import {required,helpers} from '@vuelidate/validators'
 import useValidate from '@vuelidate/core'
-import apiClient from '../../store/baseUrl'
+import apiClient from '../../resources/baseUrl'
 export default {
     data(){
      return{
@@ -76,9 +76,7 @@ export default {
       var response= await apiClient.post('/api/login', this.userCrediantail)
       if(response.status === 200){
         // let toPath= this.$route.query.to || '/staff'
-         let toPath= '/staff'
-
-        this.$router.push(toPath)
+        
         console.log('user----')
         console.log(response.data.user)
         
@@ -91,7 +89,8 @@ export default {
         localStorage.setItem('token', response.data.access_token)
         localStorage.setItem('user', JSON.stringify(user)) 
        
-      
+        let toPath= '/staff'
+        this.$router.push(toPath)
       }else{
         throw 'faild'+response.status
       }

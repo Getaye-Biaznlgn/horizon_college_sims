@@ -2,16 +2,30 @@
 <base-card>
  <div class="d-flex justify-content-between">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-1" placeholder="Search By pad number" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchId()">
-   <span @click="searchByPadNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
+  <input type="text" class="form-control p-1" placeholder="Search By studdent ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByIdNo()">
+   <span @click="searchByIdNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
+</div>
+ <div class="mb-3 me-4">
+<select class="form-select form-select-sm" aria-label="Default select example" v-model="paid" @change="fetchPaidStudents($event)">
+  <option value="paid">paid</option>
+  <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
+  </select>
+</div>
+  <div class="mb-3 me-4">
+   <select class="form-select form-select-sm" aria-label="Default select example" v-model="unpaid" @change="fetchUnpaidStudents($event)">
+  <option value="unpaid">Unpaid</option>
+  <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
+  </select>
 </div>
   <div>
-    <button @click="addStudent" class="btn me-1 addbtn">
+    <button @click="exportTvetStudent()" class="btn me-1 addbtn">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
     </div>
     </div>
+    <div id="tvetStudentFee">
+      <div class="ms-5 mt-3">TVET Student tuition fee list</div>
     <table class="mt-3">
   <thead>
     <tr class="table-header">
@@ -38,9 +52,9 @@
     </tr>
   </thead>
   <tbody>
-     <tr v-for="(student,index) in tvetStudentFees" :key="student.id">
-      <td>{{index+1}}</td>
-      <td>{{student.id}}</td>
+     <tr v-for="(student,index) in tvetStudentFees.data" :key="student.id">
+      <td class="px-3">{{queryObject.per_page*tvetStudentFees.current_page +index+1 - queryObject.per_page}}</td>
+      <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
       <td>
@@ -98,13 +112,17 @@
   </tbody>
    
 </table>
-<div v-if="tvetStudentFees?.length" class="d-flex justify-content-end mt-3 me-5">
+    </div>
+<div v-if="tvetStudentFees.data.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
-  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
   
 </select>
 </div>
@@ -206,21 +224,25 @@ Rows per Page
 
 </template>
 <script>
+import apiClient from '../../../resources/baseUrl'
 export default {
     data() {
         return {
             isDetail:false,
             rowNumber:5,
             studentId:null,
+              paid:'paid',
+        unpaid:'unpaid',
             queryObject:{
             page:1,
-            per_page:5,
+            per_page:10,
             search_id:'',
             path:'api/tvet_student_fees'
-            }
+            },
         }
     },
       created() {
+        this.queryObject.academic_year_id=this.acYearId
     this.tvetStudentsPaid(this.queryObject)
      // this.$store.dispatch('registrar/fetchTvetStudentFees')
     },
@@ -230,11 +252,22 @@ export default {
       },
        tvetStudentFeeDetails(){
         return this.$store.getters['cashier/tvetStudentFeeDetails']
-      }
+      },
+      acYearId(){
+        return this.$store.getters.acYearId
+      },
+       months(){
+     return this.$store.getters['registrar/acadamicYearMounths']
+    },
     },
     watch:{
-      studentId(newValue){
-  this.queryObject.search_id = newValue
+//       studentId(newValue){
+//   this.queryObject.search_id = newValue
+//   this.tvetStudentsPaid(this.queryObject)
+// },
+acYearId(newValue){
+  this.queryObject.academic_year_id = newValue
+  this.tvetStudentsPaid(this.queryObject)
 },
 rowNumber(newValue){
   this.queryObject.per_page = newValue
@@ -245,8 +278,51 @@ rowNumber(newValue){
         tvetStudentsPaid(queryObject){
 this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
         },
-      searchId(){
+          async fetchPaidStudents(event){
+           this.queryObject.month_query = event.target.value
+           this.queryObject.academic_year_id = this.acYearId
+           if(event.target.value !== 'paid'){
+          try{
+            console.log('paid students outside')
+             var response = await apiClient.get(`api/tvet_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
+            if(response.status ===200){
+              console.log(response.data)
+                this.$store. commit('registrar/setTvetStudentFees', response.data)
+                console.log('paid students')
+            }
+          }
+          catch(e){
+            console.log('error')
+          }
+          }
+          else{
+            this.tvetStudentsPaid(this.queryObject)
+          }
+        },
+       async fetchUnpaidStudents(event){
+         this.queryObject.month_query = event.target.value
+          this.queryObject.academic_year_id = this.acYearId
+          if(event.target.value !== 'unpaid'){
+          try{
+             var response = await apiClient.get(`api/tvet_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
+            if(response.status ===200){
+                this.$store. commit('registrar/setTvetStudentFees', response.data)
+            }
+          }
+          catch(e){
+            console.log('error')
+          }
+          }
+           else{
+            this.tvetStudentsPaid(this.queryObject)
+          }
+        },
+      searchByIdNo(){
+        this.queryObject.search_id = this.studentId
 this.tvetStudentsPaid(this.queryObject)
+      },
+      exportTvetStudent(){
+        this.$htmlToPaper('tvetStudentFee')
       },
         showDetail(id){
           this.$store.dispatch('cashier/fetchTvetStudentFeeDetails',id)

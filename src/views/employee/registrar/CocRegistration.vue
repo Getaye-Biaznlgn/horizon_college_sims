@@ -29,6 +29,7 @@
     </button>
       </div>
      </div>
+     <div id="coctakers">
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -70,6 +71,7 @@
   </tr>
   </tbody>
     </table>
+     </div>
     <div class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
@@ -162,7 +164,9 @@ cocId(newValue){
         addStudentToCoc(){
             this.$router.push({name:'AddStudentTococ'})
         },
-        printCocTakerList(){},
+        async printCocTakerList(){
+          await this.$htmlToPaper('coctakers')
+        },
         cancelDialog(){
         },
         saveCoc(){
@@ -259,7 +263,7 @@ cursor: pointer;
 }
 .content{
     border-radius: 3%;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 .chivronbtn{
     border: none;

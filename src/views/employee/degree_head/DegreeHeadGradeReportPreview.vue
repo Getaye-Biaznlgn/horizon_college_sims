@@ -1,12 +1,13 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
      <span @click="back" class="back pe-2 fw-bold" role="button"><i class="fas  fa-arrow-left"></i>Back</span>
-        <div class="d-flex">
+        <div class="d-flex" v-if="studentCourses.length">
             <button  @click="printGradeReport" class="btn btn-add ms-auto text-white me-2 mb-3 shadow-sm"><i class="fas fa-print me-2"></i>Print Grade Report</button> 
         </div>
-         <!-- <div  class="mt-2">Faild to preview Students slip. Select Students and try again please!</div>  -->
+    <div v-else class="mt-2">Faild to preview Students grade report. Select Students and try again please!</div> 
+       
     <div id="slip">
-       <div v-for="student in studentCourses" :key="student"  style="height:260mm; overflow-y:hidden;">
+       <div v-for="student in studentCourses" :key="student.id"  style="height:260mm; overflow-y:hidden;">
            <div class="d-flex justify-content-between fw-bold">
              <div>
                 Horizon College<br>
@@ -29,7 +30,7 @@
                </div>
            </div>
            <div class="d-flex">
-              <span class="pe-2">Department: </span> 
+              <span class="pe-2">Department: {{student.department_name}}</span> 
               <span class=" ms-auto">Date of Admission: {{student.addmission_year}}</span> 
               <span class=" ms-auto">Date of Award: </span>  
               <span class=" ms-auto">Program: Degree</span> 
@@ -51,18 +52,18 @@
                      <td>{{index+1}}</td>
                      <td>{{course.code}}</td>
                      <td>{{course.title}}</td>
-                     <td>{{course.grade_point}}</td>
+                     <td>{{course.letter_grade}}</td>
                      <td>{{course.cp}}</td>
-                     <td>Letter point</td>
+                     <td>{{course.grade_point}}</td>
                    </tr>
                </tbody>
            </table>
            <div>
                Total Grade Point: {{}}<br>
-               Total Cr.Hr: {{student.totalCreditHour}}<br>
+               Total Cr.Hr: {{student.total_credit_hour}}<br>
                Semester Average: {{student.semester_average}}<br>
-               Previous Total: {{student.previousTotal}}<br>
-               Comulative Average: {{}}<br>  
+               Previous Total: {{student.previous_total}}<br>
+               Comulative Average: {{student.CGPA}}<br>  
            </div>
        </div>
     </div>
@@ -71,7 +72,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
     props:['program_id','year_no','semester_no'],
     data(){
@@ -88,8 +89,8 @@ export default {
           })
           return totalCP
        },
-    selectedAcademicYearId(){
-      return this.$store.getters.selectedAcademicYearId
+    selectedAcademicYear(){
+      return this.$store.getters.selectedAcademicYear
   }
   },
     methods:{
@@ -122,7 +123,7 @@ export default {
         this.fetchGradeForSemester({program_id:this.program_id,
                                    year_no:this.year_no,
                                    semester_no:this.semester_no,
-                                   academic_year_id:this.selectedAcademicYearId,
+                                   academic_year_id:this.selectedAcademicYear.id,
                                    student_ids:this.studentsForGrade
                                    })
     }

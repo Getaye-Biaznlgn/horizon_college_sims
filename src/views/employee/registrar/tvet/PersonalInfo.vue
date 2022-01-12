@@ -219,7 +219,7 @@ export default {
          first_name:{required:helpers.withMessage('first name is required',required)},
         middle_name:{required:helpers.withMessage('middle name is required',required)},
         last_name:{required:helpers.withMessage('last name is required',required)},
-            phone_no:{required:helpers.withMessage('Mobile number  is required',required)},
+           // phone_no:{required:helpers.withMessage('Applicants Mobile number  is required',required)},
         birthDay:{required:helpers.withMessage('Birth Date  is required',required)},
         contact_phone_no:{required:helpers.withMessage('Emergency Contacte Person phone Number  is required',required)},
         residence_phone_no:{required:helpers.withMessage('Mobile number  is required',required)}
@@ -241,16 +241,18 @@ export default {
     methods: {
         gotoEducationInfo(){
          this.v$.$validate()
-         if(!this.v$.$error){
-           this.studentInfo.sex = this.sex
+         this.studentInfo.sex = this.sex
            this.studentInfo.contact_full_name = this.emergency_contact_first_name+' '+this.emergency_contact_last_name
            this.studentInfo.contact_relationship = this.emergency_contact_relationship
             this.studentInfo.birth_address = this.birth_address
             this.studentInfo.residential_address = this.residential_address
             this.studentInfo.maritial_status = this.maritial_status
             this.studentInfo.emergency_address = this.emergency_address
-            this.personalDetail(this.studentInfo,'educational-info')
-         }
+             console.log('goto education detail')
+            // console.log(this.v$.$errors[0]?.$message)
+           if(!this.v$.$error){
+            this.personalDetail(this.studentInfo)
+        }
         }
     },
 }

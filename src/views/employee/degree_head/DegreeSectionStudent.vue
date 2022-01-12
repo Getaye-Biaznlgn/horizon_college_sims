@@ -97,7 +97,7 @@
 </transition>
 </template>
 <script>
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 import { mapGetters } from 'vuex'
 import BaseCard from '../../../components/BaseCard.vue'
 
@@ -115,22 +115,13 @@ export default {
     }
   },
    computed:{
-   ...mapGetters({sections:'degreeHead/sections',selectedAcademicYearId:'selectedAcademicYearId'}),
+   ...mapGetters({sections:'degreeHead/sections'}),
    section(){
      return this.sections.find((section)=>{
        return section.id===Number(this.sectionId)
      })
    },
-    // section2(){
-    // return this.$store.getters['degreeHead/sectionById'](Number(this.sectionId));
-    // },
-  //  suggestedStudents(){
-  //    console.log('department students', this.departmentStudents)
-  //    return this.departmentStudents.filter((student)=>{
-  //        return Number(student.current_semester_no)===Number(this.section.semester.number)
-  //               && Number(student.current_year_no)===Number(this.section.year_no)
-  //    })
-  //  }
+
   },
   created() {
    this.fetchSectionStudent(this.sectionId)
@@ -298,7 +289,6 @@ input[type="checkbox"]:checked{
     background-color: #2f4587;
     border: none;
 }
-
 .modalm{
   background-color: rgba(0,0,0,0.5);
   z-index: 10;

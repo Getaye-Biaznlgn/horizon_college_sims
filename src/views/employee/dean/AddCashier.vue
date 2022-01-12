@@ -1,15 +1,15 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
-    <button @click="addCashier()" class="btn addbtn">Add New Cashier</button>
+    <button @click="addCashier()" class="btn btn-add text-white">Add New Cashier</button>
     </div>
 <table class="mt-3">
   <thead>
-    <tr class="table-header">
-      <th class="text-white">NO</th>
-      <th class="text-white">Full Name</th>
-      <th class="text-white">Phone Number</th>
-      <th class="text-white">Email Address</th>
+    <tr>
+      <th>NO</th>
+      <th>Full Name</th>
+      <th>Phone Number</th>
+      <th>Email Address</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
@@ -36,6 +36,7 @@
     <div v-if="!cashiers.length" class="mt-2">There is no Cashiers found please try again</div>
 
 </table>
+    <div v-if="!cashiers.length" class="text-center">There is no added cashier</div>
 
 </base-card>
 

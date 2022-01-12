@@ -78,7 +78,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
     props:['program_id','year_no','semester_no'],
     data(){
@@ -97,8 +97,8 @@ export default {
           })
           return totalCP
        },
-    selectedAcademicYearId(){
-      return this.$store.getters.selectedAcademicYearId
+    selectedAcademicYear(){
+      return this.$store.getters.selectedAcademicYear
   }
   },
     methods:{
@@ -132,8 +132,8 @@ export default {
         this.fetchSlipForSemester({program_id:this.program_id,
                                    year_no:this.year_no,
                                    semester_no:this.semester_no,
-                                   academic_year_id:this.selectedAcademicYearId
-                                   })
+                                   academic_year_id:this.selectedAcademicYear.id
+                            })
     }
 
 }
@@ -144,7 +144,6 @@ export default {
 }
 .btn-add:hover{
   background-color: #425fb8;
-
 }
 table {
   font-family: arial, sans-serif;

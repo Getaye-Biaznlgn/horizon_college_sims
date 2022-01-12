@@ -8,6 +8,8 @@ import BaseCard from './components/BaseCard'
 import BaseModal from './components/BaseModal'
 import RequestStatusNotifier from './components/RequestStatusNotifier'
 import VueHtmlToPaper from './plugin/VueHtmlToPager'
+import Datepicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css'
 let basePath = 'http://localhost:8080'
 const options = {
     name: '_blank',
@@ -21,8 +23,8 @@ const options = {
         `${basePath}/printing.css`
     ]
 }
-
-const app = createApp(App)
+const app = createApp(App);
+app.component('Datepicker', Datepicker);
 app.component('BaseCard', BaseCard)
 app.component('BaseModal', BaseModal)
 app.component('RequestStatusNotifier', RequestStatusNotifier)

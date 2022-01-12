@@ -1,4 +1,4 @@
-import apiClient from "../../baseUrl"
+import apiClient from "../../../resources/baseUrl"
 export default{
     async fetchCourses(context) {
         context.rootState.isLoading = true
@@ -35,67 +35,16 @@ export default{
             context.rootState.isLoading = false
         }
     },
-    async fetchStudents(context) {
-        context.rootState.isLoading = true
-        try {
-            var response = await apiClient.get("/api/degree_students_by_department")
-            if (response.status === 200) {
-                context.commit('setStudents', response.data)
-                console.log('set courses head', response.data)
-            } else {
-                throw 'faild to load degree department'
-            }
-        } catch (e) {
-            console.log(e.response)
-            throw e
-        } finally {
-            context.rootState.isLoading = false
-        }
-    },
+
     async fetchStudentInSemesters(context) {
         context.rootState.isLoading = true
         try {
-            var response = await apiClient.get("/api/student2")
+            var response = await apiClient.get("/api/students2")
             if (response.status === 200) {
                 context.commit('setStudentInSemesters', response.data)
-                console.log('set student head', response.data)
+                console.log('set student in semester', response.data)
             } else {
                 throw 'faild to load degree department'
-            }
-        } catch (e) {
-            console.log(e.response)
-            throw e
-        } finally {
-            context.rootState.isLoading = false
-        }
-    },
-    async fetchSlips(context) {
-        context.rootState.isLoading = true
-        try {
-            var response = await apiClient.get("/api/degree_departments")
-            if (response.status === 200) {
-                context.commit('setSlips', response.data)
-                console.log('set slips head', response.data)
-            } else {
-                throw 'faild to load degree department'
-            }
-        } catch (e) {
-            console.log(e.response)
-            throw e
-        } finally {
-            context.rootState.isLoading = false
-        }
-    },
-    //grade reports
-    async fetchGrades(context) {
-        context.rootState.isLoading = true
-        try {
-            var response = await apiClient.get("/api/degree_departments")
-            if (response.status === 200) {
-                context.commit('setGrades', response.data)
-                console.log('set grades', response.data)
-            } else {
-                throw 'faild to load grades'
             }
         } catch (e) {
             console.log(e.response)

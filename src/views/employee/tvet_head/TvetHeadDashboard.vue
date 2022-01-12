@@ -1,3 +1,3 @@
 <template>
-    section
+    here we go
 </template>

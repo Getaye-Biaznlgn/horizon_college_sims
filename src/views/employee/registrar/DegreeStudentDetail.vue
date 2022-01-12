@@ -23,11 +23,11 @@
     </div>
     <div class="d-flex mt-2">
     <span><strong>Program : </strong></span>
-    <span>{{studentSemesters.program.name}}</span>
+    <span>{{studentSemesters.program?.name}}</span>
     </div>
         <div class="d-flex mt-2">
     <span><strong>Year : </strong></span>
-    <span>{{studentSemesters.current_year_number}}</span>
+    <span>{{studentSemester?.current_year_number}}</span>
     </div>
     </div>
     </div>
@@ -42,7 +42,7 @@
       <th class="text-white p-3"></th>
       </tr>
       </thead>
-  <tbody v-if="studentSemesters.semesters.length">
+  <tbody v-if="studentSemesters.semesters?.length">
   <tr v-for="semester in studentSemesters.semesters" :key="semester.start_date">
   <td>{{semester.year_no+' year '+semester.semester_no+' semester'}}</td>
   <td>{{semester.year}}</td>
@@ -71,18 +71,18 @@
     <button @click="registerForSemester()" class="btn ms-3 me-1 p-1 register addbtn">Register for New Semester</button>
     </div>
 </base-card>
-  <div v-if="isNewSemester" class="editwraper mb-4">
-<div class="dialogcontent ms-auto me-auto pt-5 w-50">
+  <div v-if="isNewSemester" class="editwraper mb-3">
+<div class="dialogcontent ms-auto me-auto pt-3 w-50">
   <base-card>
   <div class="ms-4 mb-3 me-4">
     <span>Academic Year</span>
-<select class="form-select form-select-sm mt-1" aria-label="Default select example" v-model="acYearId">
+<select class="form-select mt-1" aria-label="Default select example" v-model="acYearId">
 <option v-for="acYear in academicYears" :key="acYear.id" :value="acYear.id">{{acYear.year}}</option>
   </select>
 </div>
   <div class="ms-4 mb-3 me-4">
     <span>Year Number</span>
-<select class="form-select form-select-sm mt-1" aria-label="Default select example" ref="year_no">
+<select class="form-select mt-1" aria-label="Default select example" ref="year_no">
   <option value="1">First</option>
   <option value="2">Second</option>
   <option value="3">Third</option>
@@ -92,7 +92,7 @@
 </div>
   <div class="mb-3 ms-4 me-4">
     <span>Semester</span>
-<select class="form-select form-select-sm mt-1" aria-label="Default select example" ref="semester_id">
+<select class="form-select mt-1" aria-label="Default select example" ref="semester_id">
   <option v-for="semester in filterdSemesters" :key="semester.id" :value="semester.id">{{semester.number}}</option>
   </select>
 </div>
@@ -107,7 +107,7 @@
   </base-card>
 </div>
     </div>
-    <div v-if="isViewCourse" class="editwraper mb-4">
+    <div v-if="isViewCourse" class="editwraper pt-5 mb-4">
       <div class="w-75 ms-auto me-auto mt-5">
       <base-card>
     <div class="courseview border rounded shadow-lg  py-5">
@@ -141,7 +141,7 @@
       </base-card>
       </div>
     </div>
-     <div v-if="isEnterResult" class="editwraper mb-4">
+     <!-- <div v-if="isEnterResult" class="editwraper mb-4">
        <div class="w-75 m-5 ms-auto me-auto">
        <base-card>
       <div class="d-flex justify-content-end">
@@ -178,10 +178,10 @@
     </div>
        </base-card>
        </div>
-    </div>
+    </div> -->
 </template>
 <script>
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
   props:['degreeStudId'],
     data() {
@@ -203,11 +203,11 @@ export default {
       isFaild:false,
       resultNotifier:'',
       programId:'',
-      isEnterResult:false,
+      //isEnterResult:false,
       isViewCourse:false,
       semesterCourses:'',
       total:'',
-      courses:[]
+      courses:[],
         }
     },
     computed:{
@@ -255,6 +255,7 @@ export default {
         this.isNewSemester = true
          this.resultNotifier=''
          this.programId = this.studentSemesters.program.id
+         this.studentId= this.studentSemesters.id
       },
       async finishToRegister(){
         this.isLoading = true
@@ -266,12 +267,19 @@ export default {
 try{
   console.log(semester)
 var response = await apiClient.post('api/register_student_for_semester',semester)
+if(response.status === 201){
 console.log('students registerd to new semester')
 console.log(response.data)
 this.studentSemesters.semesters.push(response.data)
 this.isFaild = false
 this.isSuccessed = true
 this.resultNotifier = 'You have registereda student succesfully'
+}
+else if(response.status === 200){
+  this.isFaild = true
+this.isSuccessed = false
+this.resultNotifier = 'This student is Already registerd for this Semester'
+}
            
 }
 catch(e){
@@ -307,34 +315,34 @@ this.isNewSemester = false
           this.$store.commit('setIsItemLoading',false)
        }
       },
-     async enterResult(id){
-      this.$store.commit('setIsItemLoading',true)
-      this.student_id = this.studentSemesters.id
-       try{
-         var response = await apiClient.get(`api/semester_courses/${this.student_id}?semester_id=${id}`)
-         if(response.status === 200){
-           this.semesterCourses = response.data
-            this.isEnterResult = true
-            console.log('semester courses ='+this.studentId)
-            console.log(response.data)
-         }
-       }
-         catch(e){
-         console .log('error')
-       }
-       finally{
-          this.$store.commit('setIsItemLoading',false)
-       }
-      },
-      setResult(id,cp){
-        var result = {}
-        result.id = id
-        result.cp = cp
-        result.total_mark = this.$refs['result'+id].value
-        this.courses.push(result)
-          console.log('result added=')
-          console.log(this.courses)
-      },
+    //  async enterResult(id){
+    //   this.$store.commit('setIsItemLoading',true)
+    //   this.student_id = this.studentSemesters.id
+    //    try{
+    //      var response = await apiClient.get(`api/semester_courses/${this.student_id}?semester_id=${id}`)
+    //      if(response.status === 200){
+    //        this.semesterCourses = response.data
+    //         this.isEnterResult = true
+    //         console.log('semester courses ='+this.studentId)
+    //         console.log(response.data)
+    //      }
+    //    }
+    //      catch(e){
+    //      console .log('error')
+    //    }
+    //    finally{
+    //       this.$store.commit('setIsItemLoading',false)
+    //    }
+    //   },
+    //   setResult(id,cp){
+    //     var result = {}
+    //     result.id = id
+    //     result.cp = cp
+    //     result.total_mark = this.$refs['result'+id].value
+    //     this.courses.push(result)
+    //       console.log('result added=')
+    //       console.log(this.courses)
+    //   },
     },
 }
 </script>

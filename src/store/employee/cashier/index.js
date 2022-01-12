@@ -1,4 +1,4 @@
-import apiClient from "../../baseUrl"
+import apiClient from "../../../resources/baseUrl"
 export default {
     namespaced: true,
     state() {
@@ -69,7 +69,7 @@ export default {
         async fetchDegreeStudentFee({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id)
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id + '&academic_year_id=' + queryObject.academic_year_id)
                 if (response.status === 200) {
                     console.log('fetchDegreeStudent fee')
                     console.log(response.data)
@@ -86,7 +86,7 @@ export default {
         async fetchTvetStudentFee({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id)
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id + '&academic_year_id=' + queryObject.academic_year_id)
                 if (response.status === 200) {
                     console.log('fetchTvetStudent fee')
                     console.log(response.data)
@@ -149,23 +149,12 @@ export default {
                 console.log('error occurd')
             }
         },
-        async addNewStudentFee(context, studentFee) {
-            try {
-                var response = await apiClient.post('api/add_tuition_payment/' + studentFee.id, studentFee)
-                if (response.status === 200) {
-                    console.log('Add new Student Fee ')
-                    console.log(response.data)
-                } else {
-                    throw 'faild to add StudentFee'
-                }
-                return response
-            } catch (e) {
-                console.log('error occurd')
-            }
-        },
+        // async addNewStudentFee(context, studentFee) {
+
+        // },
         async fetchPaidStudents({ commit }, queryObject) {
             try {
-                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_query=' + queryObject.search_id + '&date_between_query=' + queryObject.date_between + '&payment_type_query=' + queryObject.payment_type + '&date_query=' + queryObject.date_query)
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_query=' + queryObject.search_id + '&date_between_query=' + queryObject.date_between + '&payment_type_query=' + queryObject.payment_type + '&date_query=' + queryObject.date_query + '&academic_year_id=' + queryObject.academic_year_id + '&date_interval=' + queryObject.interval)
                 if (response.status === 200) {
                     console.log('fetch paid months and semesters ')
                     console.log(response.data)
@@ -195,10 +184,10 @@ export default {
                 rootState.isLoading = false
             }
         },
-        async fetchPaymentTypes({ commit, rootState }) {
+        async fetchPaymentTypes({ commit, rootState }, yearId) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get('api/academic_fees')
+                var response = await apiClient.get(`api/get_academic_fees?academic_year_id=${yearId}`)
                 if (response.status === 200) {
                     console.log('fetch fee types')
                     console.log(response.data)

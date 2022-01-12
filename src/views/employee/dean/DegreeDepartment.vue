@@ -7,13 +7,13 @@
 </div>
 
 <table class="mt-3">
-  <tr class="table-header">
-    <th class="text-white">No</th>
-    <th class="text-white">Department Name</th>
-    <th class="text-white">Department Head</th>
+  <tr>
+    <th>No</th>
+    <th>Department Name</th>
+    <th>Department Head</th>
     <th><span class="sr-only">action</span></th>
   </tr>
-  <tr class="border border-secondary rounded" v-for="(department, index) in degreeDepartments" :key="department.id">
+  <tr v-for="(department, index) in degreeDepartments" :key="department.id">
     <td>{{index+1}}</td>
     <td>{{department.name}}</td>
     <td>{{department.department_head}}</td>
@@ -33,6 +33,7 @@
     </td>
   </tr>
  </table>
+   <div v-if="!degreeDepartments.length" class="text-center">Degree Department isn't added yet!</div>
  </base-card>
 
  <!--Add-->
@@ -303,7 +304,7 @@ export default {
 }
 </script>
 <style scoped>
-table {
+/* table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
@@ -347,5 +348,5 @@ input[type="checkbox"]:checked{
     display: inline;
     color: red;
     font-size: 14px;
-  }
+  } */
 </style>

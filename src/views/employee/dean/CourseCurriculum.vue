@@ -56,19 +56,19 @@
 </div>
 
 <table class="mt-3">
-  <tr class="table-header">
-    <th class="text-white">No</th>
-    <th class="text-white">Course Code</th>
-    <th class="text-white">Course Title</th>
-    <th class="text-white">Credit hour</th>
-    <th class="text-white">Department</th>
-    <th class="text-white">Program</th>
-    <th class="text-white">Year</th>
-    <th class="text-white">Semester</th>
-    <th class="text-white">Type</th>
+  <tr >
+    <th>No</th>
+    <th>Course Code</th>
+    <th>Course Title</th>
+    <th>Credit hour</th>
+    <th>Department</th>
+    <th>Program</th>
+    <th>Year</th>
+    <th>Semester</th>
+    <th>Type</th>
     <th><span class="sr-only">action</span></th>
   </tr>
-  <tr v-for="(course,index) in filteredCourses" :key="course.id" class="border border-secondary rounded">
+  <tr v-for="(course,index) in filteredCourses" :key="course.id">
     <td>{{index+1}}</td>
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
@@ -83,11 +83,9 @@
           <a class="btn py-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li @click="showEditModal(index)"><span  class="dropdown-item">Edit</span></li>
-             <li ><span   class="dropdown-item">Delete</span></li>
-
+             <li @click="showEditModal(index)"><span role="button"  class="dropdown-item">Edit</span></li>
+             <li ><span  role="button"  class="dropdown-item">Delete</span></li>
           </ul>
       </div>
     </td>
@@ -345,59 +343,4 @@ computed:{
  }
  </script>
 
-<style scoped>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.btn-add{
-    background-color: #ff9500;
-}
-.btn-add:hover{
-  background-color: #eca643;
-}
 
-.search, .action{
-  cursor: pointer;
-}
-.action:hover{
-  color: #fcc561;
-}
-input[type="radio"]:checked{
- background-color: #ff9500;
- border: none;
-}
-.search-input{
-    border-bottom-right-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-  }
-
-  .input-group{
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-</style>

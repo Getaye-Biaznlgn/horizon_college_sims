@@ -97,7 +97,7 @@
         <div class="ms-4 mb-3 me-4">
           <span>Academic Year</span>
           <select
-            class="form-select form-select-sm mt-1"
+            class="form-select mt-1"
             aria-label="Default select example"
             ref="acYearId"
           >
@@ -113,7 +113,7 @@
         <div class="ms-4 mb-3 me-4">
           <span>Level</span>
           <select
-            class="form-select form-select-sm mt-1"
+            class="form-select mt-1"
             aria-label="Default select example"
             ref="levelId"
           >
@@ -222,7 +222,7 @@
     </div>
 </template>
 <script>
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 import {mapGetters} from 'vuex'
 export default {
     props:['tvetStudId'],
@@ -286,16 +286,21 @@ export default {
       try {
         var response = await apiClient.post("api/register_student_for_level",level);
         console.log("status code = " + response.status);
-        if (response.status === 200) {
+        if (response.status === 201) {
           console.log(response.data);
           this.isFaild = false;
           this.isSuccessed = true;
           this.resultNotifier = "You have registered student succesfully";
         }
+        else if(response.status === 200){
+           this.isFaild = true;
+          this.isSuccessed = false;
+          this.resultNotifier = "This Student is already registerd for this Level";
+        }
       } catch (e) {
         this.isFaild = true;
         this.isSuccessed = false;
-        this.resultNotifier = "registration is faild";
+        this.resultNotifier = "registration for this level is faild";
         console.log("error");
       } finally {
         this.isLoading = false;

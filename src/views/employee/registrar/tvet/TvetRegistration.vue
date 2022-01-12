@@ -1,5 +1,6 @@
 <template>
   <base-card>
+  <span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i>Back</span>
     <div class="ms-3 me-3 p-2 text-center">
       HORIZON COLLEGE OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATIONS
     </div>
@@ -43,7 +44,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import apiClient from "../../../../store/baseUrl";
+import apiClient from "../../../../resources/baseUrl";
 import PersonalInfo from "./PersonalInfo.vue";
 import EducationalInfo from "./EducationalInfo.vue";
 import AdmissionInfo from "./AdmissionInfo.vue";
@@ -86,6 +87,9 @@ export default {
     };
   },
   methods: {
+ back(){
+        this.$router.back()
+      },
     // personal(){
     //   this.isPersonal = true
     //   this.componentName = 'personal-info'
@@ -188,15 +192,15 @@ export default {
      this.$store.commit('registrar/setIsSuccessed',true)
       this.$store.commit('registrar/setIsFaild',false)
   }
-  else{
-    this.$store.commit('registrar/setResultNotifier','Faild to register a student')
-         this.$store.commit('registrar/setIsSuccessed',true)
-      this.$store.commit('registrar/setIsFaild',false)
+  else if(response.status === 200){
+    this.$store.commit('registrar/setResultNotifier',response.data.error)
+         this.$store.commit('registrar/setIsSuccessed',false)
+      this.$store.commit('registrar/setIsFaild',true)
 
   }
 }
 catch(e){
-    this.$store.commit('registrar/setResultNotifier','Faild to register a degree student')
+    this.$store.commit('registrar/setResultNotifier','Faild to register a TVET student')
          this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)
 }
@@ -208,6 +212,13 @@ finally{
 };
 </script>
 <style scoped>
+  .backarrow{
+  cursor: pointer;
+  font-size: 22px;
+}
+.backarrow:hover{
+  color: #1142ac;
+}
 .pointer {
   width: 23%;
   height: 40px;

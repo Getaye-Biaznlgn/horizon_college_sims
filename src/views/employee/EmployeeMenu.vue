@@ -1,12 +1,12 @@
 <template>
-    <the-header  class="position-sticky top-0 shadow p-0 m-0"></the-header>
+    <the-header  class="position-sticky top-0 header shadow p-0 m-0"></the-header>
     <div class="d-flex">
        <div class="sidebar shadow">
           <the-sidebar></the-sidebar>
         </div>
         <div class="container-fluid content">
            <router-view ></router-view> 
-            <div v-if="isItemLoading" class="loading-screen route-loading p-0  position-absolute top-0 start-0 w-100 h-100">
+            <div v-if="isItemLoading" class="loading-screen route-loading p-0  position-fixed top-0 start-0 bottom-0 end-0 w-100 h-100">
                <div class="loading-spinner">
                    <img src="../../assets/preloader.gif"   alt="slow connection">
                </div>
@@ -24,7 +24,7 @@
 <script>
 import TheHeader from '../../components/employee/TheHeader.vue'
 import TheSidebar from '../../components/employee/Sidebar.vue'
-import apiClient from '../../store/baseUrl'
+import apiClient from '../../resources/baseUrl'
 import { mapGetters } from 'vuex';
 export default {
     components:{
@@ -39,11 +39,13 @@ export default {
      if(localStorage.getItem('token')){
          let token=localStorage.getItem('token')
          this.$store.dispatch('setToken', token)
+         console.log('token', token)
          this.$store.dispatch('setIsAuthenticated', true)
          apiClient.defaults.headers.common['Authorization'] =`Bearer ${token}`
      } 
      if(localStorage.getItem('user')){
         let user=localStorage.getItem('user')
+        console.log('user data',user)
         this.$store.dispatch('setUser', JSON.parse(user))
      }
   },
@@ -51,12 +53,12 @@ export default {
        this.$store.dispatch('fetchAcademicYears')
        .then(()=>{
            this.$store.getters.academicYears.forEach((year)=>{
-           if(year.is_current === 1) {
+           if(Number(year.is_current) === 1) {
              console.log('active year id yyy  = '+year.id)
                this.$store.commit('setSelectedAcademicYearId', year.id)
                   this.$store.commit('setSelectedAcYearId',year.id) 
-                // console.log('active acyearr id from state',this.$store.getters['acYearId'])
-               }   
+                console.log('active acyearr id from state',this.$store.getters['acYearId'])
+               }     
             })
            }
           )
@@ -80,35 +82,25 @@ export default {
       else if(this.user.role==='department head'){
         this.$store.dispatch('degreeHead/fetchCourses')
         this.$store.dispatch('degreeHead/fetchSections')
-        this.$store.dispatch('degreeHead/fetchStudents')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
-        this.$store.dispatch('degreeHead/fetchSlips')
-        this.$store.dispatch('degreeHead/fetchGrades')
       }
       else if(this.user.role === 'cashier'){
     //actions used by cashier
-      this.$store.dispatch('cashier/fetchCalender')
-       this.$store.dispatch('cashier/fetchPaymentTypes')
       }
       //actions used by registrar
       else if(this.user.role === 'registrar'){
+        this.$store.dispatch('registrar/fetchAcadamicMounths')
       this.$store.dispatch('dean/fetchDegreeDepartments')
       this.$store.dispatch('dean/fetchTvetDepartments')
       this.$store.dispatch('registrar/fetchActiveYearSemisters')
-     this.$store.dispatch('registrar/fetchDegreeStudents',this.acYearId)
-     this.$store.dispatch('registrar/fetchTvetStudents',this.acYearId)
        this.$store.dispatch('registrar/fetchLevels')
          this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')
-     // this.$store.dispatch('registrar/fetchTvetStudentFees')
-       this.$store.dispatch('registrar/fetchDegreeStudentFees')
-      // this.$store.dispatch('registrar/fetchCocs',this.acYearId)
         
       }
 
       
        this.$store.dispatch('fetchPrograms')
-    
     }
 }
 </script>
@@ -123,11 +115,70 @@ export default {
   position:absolute; 
   top: 10%;
   left: 40%;
+  /* z-index: 1; */
 }
 .route-loading{
   background-color: rgba(0, 0, 0, 0.5);;
+  z-index: 1;
 }
 .content{
   background-color: #f5f6fa !important;
+}
+.loading-screen{
+  z-index: 1;
+}
+.header{
+  z-index: 1;
+}
+</style>
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+/* new design change start*/
+tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
+th{
+  text-align: left;
+  padding: 8px;
+}
+tr{
+  border-top: 2px solid hsl(231, 16%, 91%)
+}
+td{
+  text-align: left;
+  padding: 8px;
+  vertical-align: top;
+}
+/* end */
+.btn-add{
+    background-color: #2f4587;
+}
+.btn-add:hover{
+  background-color: #425fb8;
+}
+.fa-sign-out-alt{
+  transform: rotate(-90deg);
+}
+.warining input, .warining textarea{
+    border: 1px red solid;
+  }
+.warining span{
+    display: inline;
+    color: red;
+    font-size: 14px;
+  }
+  .search-input{
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+  .input-group{
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  input[type="radio"]:checked{
+ background-color: #2f4587;
+ border: none;
 }
 </style>

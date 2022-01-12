@@ -6,12 +6,14 @@ export default[
         component: () =>
             import ( /* webpackChunkName: "DeanDashboard" */ '../../../views/employee/dean/DeanDashboard'),
            meta:{authRequired:true,  typeRequired:'employee'},
-      
-       beforeEnter(to, from, next){
+           
+         beforeEnter(to, from, next){
           if(store.getters.user.role!=='dean'){
               next(from.path)
           }
-              
+         else{
+             next()
+         }  
 
         }
     
@@ -72,5 +74,47 @@ export default[
             import ( /* webpackChunkName: "modulecurriculum" */ '../../../views/employee/dean/ModuleCurriculum'),
             meta:{authRequired:true,  typeRequired:'employee'}
         },
-
+        {
+            path: '/staff/manage-fee',
+            name: 'ManageFeeAmount',
+            component: () =>
+                import ( /* webpackChunkName: "managefee" */ '../../../views/employee/dean/ManageFeeAmount'),
+                meta:{authRequired:true,  typeRequired:'employee'}
+         },
+      
+         {
+            path: '/staff/manage-news',
+            name: 'ManageNews',
+            component: () =>
+                import ( /* webpackChunkName: "ManageNews" */ '../../../views/employee/dean/ManageNews'),
+                meta:{authRequired:true,  typeRequired:'employee'}
+         },
+         {
+            path: '/staff/manage-event',
+            name: 'ManageEvent',
+            component: () =>
+                import ( /* webpackChunkName: "ManageEvent" */ '../../../views/employee/dean/ManageEvent'),
+                meta:{authRequired:true,  typeRequired:'employee'}
+         },
+         {
+            path: '/staff/manage-employee-account',
+            name: 'EmployeeAccount',
+            component: () =>
+                import ( /* webpackChunkName: "EmployeeAccount" */ '../../../views/employee/dean/EmployeeAccount'),
+                meta:{authRequired:true,  typeRequired:'employee'}
+         },
+         {
+            path: '/staff/manage-student-account',
+            name: 'StudentAccount',
+            component: () =>
+                import ( /* webpackChunkName: "StudentAccount" */ '../../../views/employee/dean/StudentAccount'),
+                meta:{authRequired:true,  typeRequired:'employee'}
+         },
+         {
+            path: '/staff/student-gallery',
+            name: 'StudentGallery',
+            component: () =>
+                import ( /* webpackChunkName: "StudentGallery" */ '../../../views/employee/dean/StudentGallery'),
+                meta:{authRequired:true,  typeRequired:'employee'}
+         },
 ]

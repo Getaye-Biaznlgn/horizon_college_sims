@@ -1,5 +1,6 @@
 <template>
 <base-card>
+ <span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i>Back</span>
      <div class="ms-3 me-3 p-2 text-center">HORIZON COLLEGE OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATIONS</div>
       <div class="text-center mb-3"> FORM FOR DEGREE STUDENT</div>
       <div class="d-flex justify-content-center mt-3">
@@ -17,7 +18,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import apiClient from '../../../../store/baseUrl'
+import apiClient from '../../../../resources/baseUrl'
 import PersonalInfo from './PersonalInfo.vue'
 import EducationalInfo from './EducationalInfo.vue'
 import AdmissionInfo from './AdmissionInfo.vue'
@@ -54,6 +55,9 @@ export default {
     }
   },
     methods: {
+       back(){
+        this.$router.back()
+      },
       // personal(){
       //   this.isPersonal = true
       //   this.componentName = 'personal-info'
@@ -146,7 +150,7 @@ export default {
           this.$store.commit('registrar/setIsUploading',true)
   var response = await apiClient.post('api/degree_students',this.studentInfo)
   console.log('status code '+response.status)
-  if(response.status === 200){
+  if(response.status === 201){
     console.log('response from adding degree student')
     console.log(response.data)
      var previousStudent = this.$store.getters['registrar/degreeStudents']
@@ -155,14 +159,14 @@ export default {
      })
   previousStudent[index].students.push(response.data)
   this.$store.commit('registrar/setDegreeStudent',previousStudent)
-  this.$store.commit('registrar/setResultNotifier','You have registered a student successfully')
+  this.$store.commit('registrar/setResultNotifier','You have registered a Degree student successfully')
      this.$store.commit('registrar/setIsSuccessed',true)
       this.$store.commit('registrar/setIsFaild',false)
   }
-  else{
-    this.$store.commit('registrar/setResultNotifier','Faild to register a degree student')
-         this.$store.commit('registrar/setIsSuccessed',true)
-      this.$store.commit('registrar/setIsFaild',false)
+  else if(response.status === 200){
+    this.$store.commit('registrar/setResultNotifier',response.data.error)
+         this.$store.commit('registrar/setIsSuccessed',false)
+      this.$store.commit('registrar/setIsFaild',true)
 
   }
 }
@@ -180,6 +184,13 @@ finally{
 }
 </script>
 <style scoped>
+  .backarrow{
+  cursor: pointer;
+  font-size: 22px;
+}
+.backarrow:hover{
+  color: #1142ac;
+}
 .pointer {
   width: 23%;
   height: 40px;

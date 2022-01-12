@@ -181,7 +181,7 @@
      </div>
 </template>
 <script>
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
     props:['cocId'],
     data() {
@@ -366,7 +366,7 @@ input{
 }
 .content{
     background-color: #fff!important;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 .submitbtn{

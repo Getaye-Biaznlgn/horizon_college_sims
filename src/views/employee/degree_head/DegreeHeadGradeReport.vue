@@ -44,16 +44,16 @@
       <td><input type="checkbox" v-model="studentsForGrade"  @change="checkSelected($event)" :value="student.id" class="form-check-input p-1"></td>  
       <td>{{index+1}}</td>
       <td>{{student.student_id}}</td>
-      <td>{{student.first_name+' '+student.middle_name}}</td>
+      <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
       <td>{{student.program?.name}}</td>
-      <td>{{student.degree_department?.name}}</td>
-      <td>{{student.current_semester_no}}</td>
-      <td>{{student.current_year_no}}</td>
+      <td>{{student.department?.name}}</td>
+      <td>{{semesterForFilter}}</td>
+      <td>{{student.year_no}}</td>
     </tr>
   </tbody> 
   </table>
-  <p v-if="!students.length"> Students don't register for this department!</p>
+  <p v-if="!filteredInSemester.length"> Students  don't register for this semester!</p>
 <p v-else-if="!filteredStudents.length">There is no matching student</p>
 </base-card>
 </template>
@@ -70,12 +70,24 @@ export default {
     }
   },
    computed:{
-     ...mapGetters({students:'degreeHead/students',   programs:'programs'}),
+     ...mapGetters({
+       studentInSemesters:'degreeHead/studentInSemesters',
+        programs:'programs'}),
+
+     filteredInSemester(){
+      let students=[];
+        this.studentInSemesters.forEach((semester)=>{
+         if(semester.semester_no?.toString()===this.semesterForFilter.toString()){
+           students=semester.students
+         }
+       })
+       return students
+    },
      filteredStudents(){
-      let tempStudents=[...this.students]
+      let tempStudents=[...this.filteredInSemester]
       if(this.yearForFilter!==''){
          tempStudents=tempStudents.filter((student)=>{
-            return student.current_year_no.toString()===this.yearForFilter.toString()
+            return student.year_no.toString()===this.yearForFilter.toString()
          })
       }
       if(this.programForFilter!==''){
@@ -83,11 +95,7 @@ export default {
             return student.program.id===this.programForFilter
           })
       }
-      if(this.semesterForFilter!==''){
-          tempStudents=tempStudents.filter((student)=>{
-              return student.current_semester_no.toString()===this.semesterForFilter.toString()
-          })
-      }
+ 
       return tempStudents 
      },
      degreePrograms(){

@@ -108,4 +108,20 @@ export default [{
             import ( /* webpackChunkName: "AddStudentTococ" */ '../../../views/employee/registrar/AddStudentTococ.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' }
     },
+    {
+        path: '/cocrequestform/:cocId',
+        name: 'CocRequestForm',
+        props: true,
+        component: () =>
+            import ( /* webpackChunkName: "CocRequestForm" */ '../../../views/employee/registrar/CocRequest.vue'),
+        meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' }
+    },
+    {
+        path: '/registrardashboard',
+        name: 'RegistrarDashboard',
+        props: true,
+        component: () =>
+            import ( /* webpackChunkName: "RegistrarDashboard" */ '../../../views/employee/registrar/RegistrarDashboard.vue'),
+        meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' }
+    },
 ]

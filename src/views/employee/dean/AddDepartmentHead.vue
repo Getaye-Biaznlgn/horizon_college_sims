@@ -1,15 +1,15 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
-    <button @click="addDepartmentHead()" class="btn addbtn py-2 px-0">Add Department Head</button>
+    <button @click="addDepartmentHead()" class="btn btn-add text-white py-2 px-2">Add Department Head</button>
     </div>
     <table class="mt-3">
   <thead>
-    <tr class="table-header">
-      <th class="text-white">NO</th>
-      <th class="text-white">Full Name</th>
-      <th class="text-white">Phone Number</th>
-      <th class="text-white">Email Address</th>
+    <tr>
+      <th>NO</th>
+      <th>Full Name</th>
+      <th>Phone Number</th>
+      <th>Email Address</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
@@ -36,6 +36,7 @@
   </tbody>
   <div v-else class="mt-5 mb-5 text-center text-danger">There is no Department heads found please try again</div>
 </table>
+  <div v-if="!deptHeads.length" class="text-center">There isno added department head</div>
 
     </base-card>
     <!-- department head registration form dialog-->

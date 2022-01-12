@@ -1,4 +1,4 @@
-import apiClient from "../../baseUrl"
+import apiClient from "../../../resources/baseUrl"
 
 //import apiClient from '../../baseUrl'
 export default {
@@ -134,11 +134,11 @@ export default {
 
     },
     actions: {
-        async fetchDegreeStudents({ commit, rootState }, yearId) {
+        async fetchDegreeStudents({ commit, rootState }, queryData) {
             rootState.isLoading = true
-            console.log('academic year id =inside action=' + yearId)
+            console.log('academic year id =inside action=')
             try {
-                var response = await apiClient.get(`api/degree_yearly_arranged_students?academic_year_id=${yearId}`)
+                var response = await apiClient.get(`api/degree_yearly_arranged_students?academic_year_id=${queryData.academic_year_id}&year_no=${queryData.year_no}`)
                 if (response.status === 200) {
                     console.log('setDegreeStudent')
                     console.log(response.data)
@@ -152,10 +152,10 @@ export default {
                 rootState.isLoading = false
             }
         },
-        async fetchTvetStudents({ commit, rootState }, yearId) {
+        async fetchTvetStudents({ commit, rootState }, queryData) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get(`api/tvet_yearly_arranged_students?academic_year_id=${yearId }`)
+                var response = await apiClient.get(`api/tvet_yearly_arranged_students?academic_year_id=${queryData.academic_year_id}&level_no=${queryData.level_no}`)
                 if (response.status === 200) {
                     console.log('setTvetStudent')
                     console.log(response.data)
@@ -220,10 +220,10 @@ export default {
                 rootState.isLoading = false
             }
         },
-        async fetchDegreeStudentFees({ commit, rootState }) {
+        async fetchDegreeStudentFeesLists({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get('api/degree_student_fees')
+                var response = await apiClient.get(`${queryObject.path}?page=${queryObject.page}&per_page=${queryObject.per_page}&search_id=${queryObject.search_id}&academic_year_id=${queryObject.academic_year_id}`)
                 if (response.status === 200) {
                     console.log('degree student fee list')
                     console.log(response.data)
@@ -240,7 +240,7 @@ export default {
         async fetchTvetStudentFees({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id=' + queryObject.search_id)
+                var response = await apiClient.get(`${queryObject.path}?page=${queryObject.page}&per_page=${queryObject.per_page}&search_id=${queryObject.search_id}&academic_year_id=${queryObject.academic_year_id}`)
                 if (response.status === 200) {
                     console.log('tvet student fee list')
                     console.log(response.data)
@@ -259,6 +259,7 @@ export default {
             try {
                 var response = await apiClient.get('api/student_semesters/' + id)
                 if (response.status === 200) {
+                    console.log('response student semester  ', response.data)
                     commit('setDegreeStudentDetails', response.data)
                 }
             } catch (e) {
@@ -357,25 +358,6 @@ export default {
                 console.log('error occurd')
             }
         },
-        // async addNewInternalStudent(context, newStudent) {
-        //     try {
-        //         console.log('registerd student')
-        //         console.log(newStudent)
-        //         var response = await apiClient.post('api/register_internal_student/' + newStudent.id, newStudent)
-        //         if (response.status === 201) {
-        //             console.log('Add new coc taker ')
-        //             console.log(response.data)
-        //             var previousCocs = context.getters.cocTakerStudents
-        //             previousCocs.push(response.data)
-        //             context.commit('setCocTakerStudents', previousCocs)
-        //         } else {
-        //             throw 'faild to register student to coc'
-        //         }
-        //         return response
-        //     } catch (e) {
-        //         console.log('error occurd')
-        //     }
-        //},
         async addNewExternalStudent(context, newExternalStudent) {
             try {
                 console.log('registerd student sent to server')

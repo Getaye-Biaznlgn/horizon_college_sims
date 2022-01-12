@@ -7,22 +7,15 @@ export default {
   state:{
     courses:[],
     sections:[],
-    students:[],
-    //grade reports
-    grades:[],
     //to pass data to slip review page only
     studentForSlip:[],
     studentsForGrade:[],
     //students in accadamic year
     studentInSemesters:[]
-    
   },
-  mutations,
+   mutations,
    getters,
    actions,
-    
-    
-    
    }
 
   

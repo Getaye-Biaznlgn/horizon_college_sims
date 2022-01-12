@@ -9,7 +9,7 @@
    </div>
   <div class="me-3">
    <select v-model="programForFilter" class="form-select" aria-label="year select">
-     <option value="all">Program</option>
+     <option value="all">All Program</option>
      <option v-for="program in degreePrograms" :key="program.id" :value="program.id" v-text="program.name"></option>
    </select>
  </div>
@@ -24,7 +24,6 @@
  </div>
   <div class="me-3">
    <select v-model="semesterForFilter" class="form-select" aria-label="year select">
-     <option value="all">All Semester</option>
      <option value="1">First semester</option>
      <option value="2">Second semester</option>
      <option value="3">Third semester</option>
@@ -36,9 +35,19 @@
      <option value="1">Waiting</option>
    </select>
  </div>
-</div>  
+      <button class="btn btn-add ms-auto text-white me-2 shadow-sm" @click="exportStudentData"><i class="fas fa-print me-2"></i>Print</button> 
+</div>
 
-<table class="mt-2">
+<div id="departmentStudent">
+ <div class="sr-only">
+   {{ selectedAcademicYear.year+' '}}
+   {{ user.manage.name+' Department '}} 
+  <span v-show="programForFilter!=='all'">{{ programById(programForFilter)?.name}}</span> 
+  <span v-show="yearForFilter!=='all'">{{'Year '+ yearForFilter}}</span> 
+  <span>{{' Semester '+semesterForFilter}}</span>
+   students
+   </div>
+ <table class="mt-2">
   <thead>
     <tr>
       <th>NO</th>
@@ -46,24 +55,22 @@
       <th>Full Name</th>
       <th>sex</th>
       <th>progarm</th>
-      <th>Department</th>
       <th>Year</th>
-      <th>Semester</th>
-      <th>Current State</th>
+      <th>State</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(student,index) in filteredInSemester" :key="student.id">
+    <tr v-for="(student,index) in filteredStudents" :key="student.id">
       <td>{{index+1}}</td>
       <td>{{student.student_id}}</td>
-      <td>{{student.first_name+' '+student.middle_name}}</td>
+      <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
       <td>{{student.program?.name}}</td>
-      <td>{{student.degree_department?.name}}</td>
-      <td>{{student.current_semester_no}}</td>
-      <td>{{student.current_year_no}}</td>
-      <td>Loading</td>
+      <!-- <td>{{student.department?.name}}</td> -->
+      <td>{{student.year_no}}</td>
+      <!-- <td>{{semesterForFilter}}</td> -->
+      <td>{{student.status}}</td>
       <td>
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -77,7 +84,8 @@
     </tr>
  </tbody>  
 </table>
-<div v-if="filteredStudents.length && students.length" class="pagination d-flex justify-content-end mt-2">
+</div>
+<!-- <div v-if="filteredStudents.length && students.length" class="pagination d-flex justify-content-end mt-2">
     <span class="me-3 mt-1">Rows per page </span> 
     <div class="me-3">
       <select v-model="perPage" class="form-select">
@@ -93,9 +101,8 @@
       <span @click="nextPage" role="button" class="me-3 mt-2">
         <i  class="fas fa-chevron-right"></i>
      </span>
-    
-</div>
-<p v-if="!students.length"> Students don't register for this department!</p>
+</div> -->
+<p v-if="!filteredInSemester.length"> Students don't register for this semester!</p>
 <p v-else-if="!filteredStudents.length">There is no matching student</p>
     </base-card>
 </template>
@@ -106,29 +113,40 @@ export default {
     return {
      searchValue:'',
      programForFilter:'all',
-     semesterForFilter:'all',
+     semesterForFilter:'1',
      stateForFilter:'all', 
      yearForFilter:'all',
-    //  for pagination
-     currentPage:1,
-     perPage:1,
+     
+      //  for pagination
+   //////  currentPage:1,
+    //  perPage:1,
     }
   },
    computed:{
-     totalPages(){
-        return Math.ceil(this.filteredStudents.length/this.perPage)
-     },
-     displayPaginatedData(){
-      let data=[...this.filteredStudents]
-      let page=this.currentPage
-      let perPage=this.perPage
-      let from=(page*perPage) - perPage
-      let to=page*perPage
-      return data.splice(from,to)
-      //  return this.paginateData(this.filteredStudents)
-      //studentInSemesters
-     },
-     ...mapGetters({studentInSemesters:'degreeHead/studentInSemesters', programs:'programs'}),
+    //  totalPages(){
+    //     return Math.ceil(this.filteredStudents.length/this.perPage)
+    //  },
+    //  displayPaginatedData(){
+    //   let data=[...this.filteredStudents]
+    //   let page=this.currentPage
+    //   let perPage=this.perPage
+    //   let from=(page*perPage) - perPage
+    //   let to=page*perPage
+    //   return data.splice(from,to)
+    //   //  return this.paginateData(this.filteredStudents)
+    //   //studentInSemesters
+    //  },
+     ...mapGetters({
+       studentInSemesters:'degreeHead/studentInSemesters',
+       selectedAcademicYear:'selectedAcademicYear',
+        programs:'programs',
+        user:'user'
+        }),
+        
+        // selectedAcademicYear(){
+        //   return this.$store.getters.selectedAcademicYear(this.selectedAcademicYearId)
+        // },
+        
       degreePrograms(){
       return this.programs.filter((program)=>{
         return program.type==='degree'
@@ -137,14 +155,14 @@ export default {
     filteredInSemester(){
       let students=[];
         this.studentInSemesters.forEach((semester)=>{
-         if(semester.semester_no.toString()===1){
+         if(semester.semester_no?.toString()===this.semesterForFilter.toString()){
            students=semester.students
          }
        })
        return students
     },
      filteredStudents(){
-      let tempStudents=[...this.students]
+      let tempStudents=[...this.filteredInSemester]
       if(this.searchValue!==''){
          tempStudents=tempStudents.filter((student)=>{
             return student?.student_id?.toLowerCase().startsWith(this.searchValue.toLowerCase())
@@ -152,37 +170,44 @@ export default {
       }
       if(this.yearForFilter!=='all'){
          tempStudents=tempStudents.filter((student)=>{
-            return student.current_year_no.toString()===this.yearForFilter.toString()
+            return student.year_no.toString()===this.yearForFilter.toString()
          })
       }
-      if(this.semesterForFilter!=='all'){
-         tempStudents=tempStudents.filter((student)=>{
-            return student.current_semester_no.toString()===this.semesterForFilter.toString()
-         })
-      }
+   
       if(this.programForFilter!=='all'){
          tempStudents=tempStudents.filter((student)=>{
-            return student.program_id===this.programForFilter
+            return student.program.id===this.programForFilter
          })
       }
       return tempStudents 
      }
-     
   },
   methods:{
+    exportStudentData(){
+       this.$htmlToPaper('departmentStudent')
+    },
     previousPage(){
        if(this.currentPage>1){
           this.currentPage--
        }
     },
+    programById(id){
+      let prog;
+     this.programs.forEach((program)=>{
+       if(program.id.toString()===id.toString())
+        prog=program
+     })
+     return prog       
+    },                
+
     nextPage(){
      if(this.currentPage<this.totalPages){
        this.currentPage++
      }
     },
-    //  setNumebrPages(){
+     //  setNumebrPages(){
     //   this.cu Math.ceil(this.filteredStudents.length/this.perPage)
-    //  },
+   //  },
    showDetail(id){
      this.$router.push({name:'DegreeHeadStudentDetail', params:{studentId:id}})
    },
@@ -195,9 +220,9 @@ export default {
    }
   },
  watch:{
-  //  perPage(newPerPage){
+   //  perPage(newPerPage){
   //    this.totalPages= Math.ceil(this.filteredStudents.length/newPerPage)
-  //    this.currentPage=1
+   //    this.currentPage=1
   //  }
  },
  created(){
@@ -206,14 +231,7 @@ export default {
 }
 </script>
 <style scoped>
-.addbtn{
-    background-color: #ff9500;
-    color: #fff;
-    width: 10em;
-} 
-.addbtn:hover{
-    background-color:#eca643 ;
-}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -242,5 +260,10 @@ td{
     border-bottom-right-radius: 0 !important;
     border-top-right-radius: 0 !important;
 }
-
+.btn-add{
+    background-color: #2f4587;
+}
+.btn-add:hover{
+  background-color: #425fb8;
+}
 </style>

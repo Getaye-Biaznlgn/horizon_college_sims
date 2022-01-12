@@ -40,7 +40,7 @@
   <tbody>
      <tr v-for="(student,index) in tvetStudentFee" :key="student.id">
       <td>{{index+1}}</td>
-      <td>{{student.id}}</td>
+      <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
       <td>
@@ -84,7 +84,7 @@
       <span v-else>{{student.pads.Jun}}</span>
       </td>
       <td>
-     <span v-if="student.pads.Julay === null">X</span>
+     <span v-if="student.pads.July === null">X</span>
       <span v-else>{{student.pads.Julay}}</span>
       </td>
       <td>
@@ -104,7 +104,10 @@ Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
-  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
   
 </select>
 </div>
@@ -118,92 +121,6 @@ Rows per Page
 </div>
 </base-card>
 <!--for detail dialog -->
-<div v-if="isDetail" class="editwraper mb-4">
-<div class="dialogcontent">
-<base-card>
-<div class="d-flex justify-content-end">
- <button @click="addStudent" class="btn me-1 addbtn">
-    <span class="me-3"><i class="fas fa-upload"></i></span>
-    <span>Export</span>
-    </button>
-    </div>
-    <div class="d-flex justify-content-between mt-3 me-5">
-    <div class="studentInfo ms-5">
-    <div class="name d-flex">
-<span class="me-2">Full Name :</span>
-<span>{{tvetStudentFeeDetails.full_name}}</span>
-</div>
-<div class="name d-flex">
-<span class="me-2">ID NO :</span>
-<span>{{tvetStudentFeeDetails.id}}</span>
-</div>
-<div class="name d-flex">
-<span class="me-2">Sex :</span>
-<span>{{tvetStudentFeeDetails.sex}}</span>
-</div>
-    </div>
-     <div class="me-5">
-<div class="name d-flex">
-<span class="me-2">Department :</span>
-<span>{{tvetStudentFeeDetails.department}}</span>
-</div>
-<div class="name d-flex">
-<span class="me-2">Program :</span>
-<span>{{tvetStudentFeeDetails.program}}</span>
-</div>
-<div class="name d-flex">
-<span class="me-2">Level :</span>
-<span>{{tvetStudentFeeDetails.level_no}}</span>
-</div>
-    </div>
-    </div>
-  <table class="mt-3">
-   <tr class="table-header">
-    <th rowspan="2" class="text-white">Year</th>
-    <th colspan="12" class="text-white text-center">Months</th>
-    <th rowspan="2" class="text-white">Total</th>
-  </tr>
-  <tr class="table-header">
-    <th class="text-white">sept</th>
-    <th class="text-white">Oct</th>
-    <th class="text-white">Nov</th>
-    <th class="text-white">Dec</th>
-     <th class="text-white">Jan</th>
-    <th class="text-white">Feb</th>
-    <th class="text-white">Mar</th>
-    <th class="text-white">Apr</th>
-     <th class="text-white">May</th>
-    <th class="text-white">Jun</th>
-    <th class="text-white">Jul</th>
-    <th class="text-white">Aug</th>
-    
-  </tr>
- <tbody>
- <tr v-for="(acYear,index) in tvetStudentFeeDetails.years" :key="index">
- <td>{{acYear.year}}</td>
- <td>{{acYear.months.September}}</td>
- <td>{{acYear.months.October}}</td>
- <td>{{acYear.months.November}}</td>
- <td>{{acYear.months.December}}</td>
- <td>{{acYear.months.January}}</td>
- <td>{{acYear.months.February}}</td>
- <td>{{acYear.months.March}}</td>
- <td>{{acYear.months.April}}</td>
- <td>{{acYear.months.May}}</td>
- <td>{{acYear.months.Jun}}</td>
- <td>{{acYear.months.Julay}}</td>
- <td>{{acYear.months.August}}</td>
- <td>{{acYear.total}}</td>
- </tr>
-  </tbody>
- </table>
-<div class="d-flex justify-content-end mt-3 me-1 p-3">
-     <button @click="cancelDetailDialog" class="ms-auto btn addbtn">CANCEL</button>
-    </div>
-    </base-card>
-</div>
-</div>
-
 </template>
 <script>
 export default {
@@ -220,19 +137,28 @@ export default {
             }
         }
     },
-      created() {
-      this.$store.dispatch('cashier/fetchTvetStudentFee')
-      this.$store.dispatch('cashier/fetchTvetStudentFeeDetails')
-    },
     computed:{
       tvetStudentFee(){
         return this.$store.getters['cashier/tvetStudentFees']
       },
        tvetStudentFeeDetails(){
         return this.$store.getters['cashier/tvetStudentFeeDetails']
+      },
+      acYearId(){
+        return this.$store.getters.acYearId
       }
     },
+          created() {
+     // this.$store.dispatch('cashier/fetchTvetStudentFee')
+      //this.$store.dispatch('cashier/fetchTvetStudentFeeDetails')
+        this.queryObject.academic_year_id = this.acYearId
+        this.tvetStudentsPaid(this.queryObject)
+    },
     watch:{
+      acYearId(newValue){
+        this.queryObject.academic_year_id = newValue
+        this.tvetStudentsPaid(this.queryObject)
+      },
       studentId(newValue){
   this.queryObject.search_id = newValue
 },
@@ -249,9 +175,7 @@ this.$store.dispatch('cashier/fetchTvetStudentFee',queryObject)
 this.tvetStudentsPaid(this.queryObject)
       },
         showDetail(id){
-          this.$store.dispatch('cashier/fetchTvetStudentFeeDetails',id)
-            this.isDetail = true
-            document.documentElement.style.overflow = "hidden"
+            this.$router.push({name:'TvetFeedetail',params:{id:id}})
         },
         cancelDetailDialog(){
             this.isDetail = false
@@ -330,26 +254,5 @@ td{
 }
 .chivronbtn:focus{
     color: rgb(15, 15, 15);
-}
-.viewdetail{
-    cursor: pointer;
-
-}
-.viewdetail:hover{
-    color: rgb(124, 124, 221);
-}
-.editwraper{
- position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 100vh!important;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
-.dialogcontent{
-   margin: 3% 5% 5% 5%;
-   height: 90vh;
-   overflow-y: scroll;
 }
 </style>

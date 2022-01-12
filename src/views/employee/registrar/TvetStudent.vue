@@ -96,7 +96,7 @@
         </div>
       </div>
     </div>
-    <table class="mt-3" id="tvetstu">
+    <table v-if="filteredStudents?.length" class="mt-3" id="tvetstu">
       <thead>
         <tr class="table-header">
           <th class="text-white">NO</th>
@@ -119,9 +119,12 @@
           <td>{{ student.sex }}</td>
           <td>{{ student.department.name }}</td>
           <td>{{ student.program.name }}</td>
-          <td>{{ levelNumber }}</td>
+          <td>{{ tvetStudents.level_no }}</td>
           <td>{{ student.scholarship }}</td>
-          <td>{{ student.status }}</td>
+          <td>
+        <span v-if="student === 'approved'">{{student.status}}</span>
+        <span v-else><button @click="approveStudent(student)" class="btn approved">approve</button></span>
+      </td>
           <td>
             <div class="dropdown">
               <a
@@ -155,35 +158,13 @@
         </tr>
       </tbody>
     </table>
-    <div
-      v-if="filteredStudents.length"
-      class="d-flex justify-content-end mt-3 me-5"
-    >
-      <div class="rowsperpage me-3">Rows per Page</div>
-      <div class="limit col-sm-1 me-3">
-        <select
-          class="form-select form-select-sm"
-          aria-label=".form-select-sm example"
-          v-model="rowNumber"
-        >
-          <option v-for="n in 14" :key="n" :value="n">{{ n }}</option>
-        </select>
-      </div>
-      <div class="pageno me-3">1-10 of 50</div>
-      <div class="leftchivron ms-3 me-3">
-        <button @click="backChivron()" class="chivronbtn">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-      </div>
-      <div class="rightchivron">
-        <button @click="forWardChivron()" class="chivronbtn">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
+    <div v-else class="text-center error">
+      Students  not found
     </div>
   </base-card>
 </template>
 <script>
+import apiClient from '../../../resources/baseUrl'
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -203,6 +184,9 @@ export default {
       stateForFilter: "all",
       scholarForFilter: "all",
       levelNumber: "",
+      queryData:{
+        level_no:1,
+      }
      
     };
   },
@@ -217,6 +201,9 @@ export default {
     levels() {
       return this.$store.getters["registrar/levels"];
     },
+    academicYearId(){
+      return this.$store.getters.acYearId
+    },
     departmentBasedLevels() {
       var levels = this.levels.filter((level) => {
         return this.studentLevels.department.id === level.tvet_department_id;
@@ -224,15 +211,8 @@ export default {
       return levels;
     },
     filteredStudents() {
-      var tempStudents = [];
-      this.tvetStudents.forEach((student) => {
-        if (Number(student.level_no) === Number(this.levelForFilter)) {
-          tempStudents = student.students;
-          this.levelNumber = student.level_no;
-        }
-      });
-
-      if (this.searchValue !== "") {
+      var tempStudents = this.tvetStudents.students
+        if (this.searchValue !== "") {
         tempStudents = tempStudents.filter((student) => {
           return student?.student_id
             ?.toLowerCase()
@@ -264,6 +244,22 @@ export default {
       return tempStudents;
     },
   },
+  created() {     
+    this.queryData.academic_year_id = this.academicYearId
+     this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
+  },
+  watch:{
+    academicYearId(newValue){
+      this.queryData.academic_year_id = newValue
+     // this.queryData.level_no = this.levelForFilter
+ this.$store.dispatch('registrar/fetchTvetStudents',newValue)
+    },
+        levelForFilter(newValue){
+     // this.queryData.academic_year_id = this.academicYearId
+      this.queryData.level_no = newValue
+ this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
+    }
+  },
   methods: {
     addStudent() {
       this.$router.push({ name: "TvetStudentRegistration" });
@@ -275,6 +271,21 @@ export default {
             this.$store.dispatch('registrar/fetchTvetStudentDetail',id).then(()=>{
             this.$router.push({name:'TvetStudentDetail',params:{tvetStudId:id}})
       })
+      },
+     async approveStudent(studentvalue){
+         var student={}
+         student.student_id= studentvalue.id,
+         student.semester_id= studentvalue.semester_id
+         
+          try{
+         var response = await apiClient.post('api/degree_approve',student)
+         if(response.status === 200){
+           studentvalue.status = 'approved'
+         }
+          }
+          catch(e){
+            console.log(e)
+          }
       }
   }
 }
@@ -345,5 +356,8 @@ cursor: pointer;
 .fas:hover{
   color: #366ad9;
   cursor: pointer;
+}
+.error{
+  color: red;
 }
 </style>

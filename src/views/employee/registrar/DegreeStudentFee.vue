@@ -5,6 +5,19 @@
   <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByStudId()">
    <span @click="searchByStudId()" class="searchicon  input-group-text" id="searchby_id"><i class="fas fa-search"></i></span>
 </div>
+<div class="d-flex">
+  <div class="mb-3 me-4">
+<select class="form-select form-select-sm" aria-label="Default select example" v-model="paid" @change="fetchPaidStudents($event)">
+  <option value="paid">paid</option>
+  <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
+  </select>
+</div>
+  <div class="mb-3 me-4">
+   <select class="form-select form-select-sm" aria-label="Default select example" v-model="unpaid" @change="fetchUnpaidStudents($event)">
+  <option value="unpaid">Unpaid</option>
+  <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
+  </select>
+</div>
   <div>
     <button @click="printStudentFeeList()" class="btn me-1 addbtn p-1">
     <span class="me-3"><i class="fas fa-upload"></i></span>
@@ -12,7 +25,9 @@
     </button>
     </div>
     </div>
+    </div>
     <div id="degreefee">
+      <div class="ms-5 mt-5 sr-only">Degree Student Fee lists</div>
     <table class="mt-2">
   <thead>
     <tr class="table-header">
@@ -39,9 +54,9 @@
     </tr>
   </thead>
   <tbody>
-     <tr v-for="(student,index) in studentFee" :key="student.id">
-      <td>{{index+1}}</td>
-      <td>{{student.id}}</td>
+     <tr v-for="(student,index) in studentFee.data" :key="student.id">
+      <td class="px-3">{{queryObject.per_page*studentFee.current_page +index+1 - queryObject.per_page}}</td>
+      <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
       <td>
@@ -100,13 +115,16 @@
    
 </table>
     </div>
-<div v-if="studentFee.length" class="d-flex justify-content-end mt-3 me-5">
+<div v-if="studentFee.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
-  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
   
 </select>
 </div>
@@ -142,7 +160,7 @@ Rows per Page
 </div>
 <div class="name d-flex">
 <span class="me-2">Sex :</span>
-<span>male</span>
+<span>{{degreeStudentFeeDetails['sex']}}</span>
 </div>
     </div>
      <div class="me-5">
@@ -205,33 +223,49 @@ Rows per Page
 </div>
 </template>
 <script>
+import apiClient from '../../../resources/baseUrl'
 export default {
     data() {
       return {
         isDetail:false,
         studentId:null,
         rowNumber:5,
+        paid:'paid',
+        unpaid:'unpaid',
          queryObject:{
             page:1,
             per_page:5,
             search_id:'',
+            month_query:'',
             path:'api/degree_student_fees',
             }
         
       }
     },
-    created() {
-      this.$store.dispatch('cashier/fetchDegreeStudentFee',this.queryObject)
-    },
     computed:{
       studentFee(){
-        return this.$store.getters['cashier/degreeStudentFees']
+        return this.$store.getters['registrar/degreeStudentFees']
       },
       degreeStudentFeeDetails(){
         return this.$store.getters['cashier/degreeStudentFeeDetails']
-      }
+      },
+      acYearId(){
+        return this.$store.getters.acYearId
+      },
+         months(){
+     return this.$store.getters['registrar/acadamicYearMounths']
     },
+    },
+      created() {
+      this.queryObject.academic_year_id = this.acYearId
+      this.degreeStudentsPaid(this.queryObject)
+    },
+
      watch:{
+       acYearId(newValue){
+         this.queryObject.academic_year_id = newValue
+         this.degreeStudentsPaid(this.queryObject)
+       },
       studentId(newValue){
   this.queryObject.search_id = newValue
   this.degreeStudentsPaid(this.queryObject)
@@ -243,7 +277,46 @@ rowNumber(newValue){
     },
     methods: {
     degreeStudentsPaid(queryObject){
-          this.$store.dispatch('cashier/fetchDegreeStudentFee',queryObject)
+          this.$store.dispatch('registrar/fetchDegreeStudentFeesLists',queryObject)
+        },
+       async fetchPaidStudents(event){
+           this.queryObject.month_query = event.target.value
+           this.queryObject.academic_year_id = this.acYearId
+           if(event.target.value !== 'paid'){
+          try{
+            console.log('paid students outside')
+             var response = await apiClient.get(`api/degree_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
+            if(response.status ===200){
+              console.log(response.data)
+                this.$store. commit('registrar/setDegreeStudentFees', response.data)
+                console.log('paid students')
+            }
+          }
+          catch(e){
+            console.log('error')
+          }
+          }
+          else{
+            this.degreeStudentsPaid(this.queryObject)
+          }
+        },
+       async fetchUnpaidStudents(event){
+         this.queryObject.month_query = event.target.value
+          this.queryObject.academic_year_id = this.acYearId
+          if(event.target.value !== 'unpaid'){
+          try{
+             var response = await apiClient.get(`api/degree_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
+            if(response.status ===200){
+                this.$store. commit('registrar/setDegreeStudentFees', response.data)
+            }
+          }
+          catch(e){
+            console.log('error')
+          }
+          }
+           else{
+            this.degreeStudentsPaid(this.queryObject)
+          }
         },
       showDetail(id){
         this.$store.dispatch('cashier/degreeStudentFeeDetails',id)

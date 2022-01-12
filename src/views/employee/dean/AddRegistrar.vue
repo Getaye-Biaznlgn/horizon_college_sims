@@ -1,15 +1,15 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
-    <button @click="addregistrar()" class="btn addbtn py-2 px-0">Add New registrar</button>
+    <button @click="addregistrar()" class="btn btn-add text-white py-2 px-2">Add New registrar</button>
     </div>
    <table class="mt-3">
   <thead>
-    <tr class="table-header">
-      <th class="text-white">NO</th>
-      <th class="text-white">Full Name</th>
-      <th class="text-white">Phone Number</th>
-      <th class="text-white">Email Address</th>
+    <tr>
+      <th>NO</th>
+      <th>Full Name</th>
+      <th>Phone Number</th>
+      <th>Email Address</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
@@ -36,6 +36,8 @@
      </tbody>
      <div v-else class="errorcase mt-5 mb-5 text-danger">There is no Registrar found please try again</div>
 </table>
+     <div v-if="!registrars.length" class="text-center">There is no added registrar</div>
+
 </base-card>
     
     <!-- registrar registration form dialog-->

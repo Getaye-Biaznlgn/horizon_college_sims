@@ -7,6 +7,8 @@
     <span>Export</span>
     </button>
       </div>
+      <div id="coclist">
+
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -43,6 +45,7 @@
   </tbody>
     </table>
     </div>
+    </div>
     <div v-if="isAddCoc" class="editwraper border shadow-sm">
       <div class="w-50 ms-auto content me-auto mt-5 p-5 bg-white">
         <span class="mb-3">Select Academic Year</span>
@@ -68,7 +71,7 @@
 <div class="d-flex justify-content-end mt-3 pt-3">
   <button @click="cancelDialog()" class="btn cancel me-4">CANCEL</button>
   <button @click="saveCoc()" class="btn addbtn me-4">
-    <span v-if="isLoading" class="btn  py-1">
+    <span v-if="isUploading" class="btn  py-1">
  <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>ADDING</span>      
   <span v-else>ADD</span>
     </button>
@@ -79,7 +82,7 @@
 <script>
 import useValidate from '@vuelidate/core'
 import {required,helpers} from '@vuelidate/validators'
-import apiClient from '../../../store/baseUrl'
+import apiClient from '../../../resources/baseUrl'
 export default {
     data() {
         return {
@@ -89,8 +92,9 @@ export default {
             start_date:null,
             end_date:null,
             exam_week:null,
+            isCocRequest:false,
            },
-              isLoading:false,
+              isUploading:false,
                isSuccessed:false,
               isFaild:false,
                resultNotifier:'',
@@ -149,16 +153,20 @@ export default {
                 this.$store.state.isItemLoading = false
             }
         },
-        printCocList(){},
+       async printCocList(){
+         await this.$htmlToPaper('coclist')
+       },
         cancelDialog(){
             this.isAddCoc = false
             this.cocData = {}
              this.resultNotifier = ''
         },
-        generateCocRequest(){},
+        generateCocRequest(id){
+        this.$router.push({name:'CocRequestForm',params:{cocId:id}})
+        },
         saveCoc(){
           this.v$.$validate()
-               this.isLoading = true
+               this.isUploading = true
                if(!this.v$.$error){
           if(this.add_or_edit === 'add'){
             this.cocData.academic_year_id = this.$refs.acYearId.value
@@ -185,7 +193,7 @@ export default {
            this.resultNotifier = 'Adding COC is faild'
      }
        finally{
-      this.isLoading = false
+      this.isUploading = false
       }
           }
           else if(this.add_or_edit === 'edit'){
@@ -203,7 +211,7 @@ export default {
            this.resultNotifier = 'editing COC is faild'
      }
        finally{
-      this.isLoading = false
+      this.isUploading = false
       setTimeout(function(){
         this.isAddCoc = false},2000)
       }

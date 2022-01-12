@@ -11,12 +11,12 @@
     </button>
     </div>
     </div>
-    <div class="d-flex justify-content-between">
-     <div class="input-group mt-3 search w-25">
+    <div class="d-flex justify-content-between mt-4">
+     <div class="input-group mt-3 search">
   <input type="text" class="form-control px-0" placeholder="Search By Student ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue">
    <span class="searchicon input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
-  <div class="d-flex mt-3">
+  <div class="d-flex">
   <div class="mb-3 me-4">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="departmentForFilter">
   <option value="all">All Department</option>
@@ -31,7 +31,6 @@
 </div>
  <div class="mb-3 me-4">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="yearForFilter">
-  <option value="all">All Batch</option>
   <option value="1">First year</option>
   <option value="2">Second year</option>
   <option value="3">Third year</option>
@@ -46,6 +45,18 @@
    <option value="3">Semester 3</option>
   </select>
 </div>
+ <div class="ms-2 mb-3 me-3">
+          <select
+            class="form-select form-select-sm"
+            aria-label="Default select example"
+            v-model="scholarForFilter"
+          >
+            <option value="all">All Scholarship</option>
+            <option value="none">none</option>
+            <option value="fully">fully schlar</option>
+            <option value="partial">partialy scholar</option>
+          </select>
+        </div>
 <div class="mb-3">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model ="stateForFilter">
   <option value="all">All State</option>
@@ -55,9 +66,11 @@
 </div>
   </div>
   </div>
-  <div class="degreestudentlist">
-    <span>{{yearNo+' '+semesterName+' '+departmentName+' '+ programName+' '+stateName+' Students'}}</span>
-     <table class="mt-3">
+  <div class="degreestudentlist" id="degreestudentlist">
+    <div class="ms-5 mt-5">
+    <span class="sr-only">{{yearNo+' '+semesterName+' '+departmentName+' '+ programName+' '+stateName+' Students'}}</span>
+    </div>
+     <table v-if="filteredStudents.length" class="mt-3">
   <thead>
     <tr class="table-header">
       <th class="text-white px-2">NO</th>
@@ -78,11 +91,14 @@
       <td>{{student.student_id}}</td>
       <td>{{student.first_name+" "+student.last_name}}</td>
       <td>{{student.sex}}</td>
-      <td>{{student.program.name}}</td>
-      <td>{{student.department.name}}</td>
+      <td>{{student.program?.name}}</td>
+      <td>{{student.department?.name}}</td>
       <td>{{student.year_no}}</td>
       <td>{{semesterForFilter}}</td>
-      <td>{{semester?.status}}</td>
+      <td class="text-center">
+        <span v-if="student.status === 'approved'">{{student.status}}</span>
+        <span v-else class="approvebtn border rounded shadow-sm p-1"><button @click="approveStudent(student)" class="btn approvebtn error" id="approvebtn">approve</button></span>
+      </td>
       <td>
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -90,57 +106,42 @@
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-             <li><span @click="editTeacher(student,'edit')" class="dropdown-item px-4 py-2">edit</span></li>
+             <li><span @click="editStudents(student,'edit')" class="dropdown-item px-4 py-2">edit</span></li>
              <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
           </ul>
         </div>
     </td>
     </tr>
-  </tbody>   
+  </tbody>  
 </table>
-<div v-if="filteredStudents.length" class="d-flex justify-content-end mt-3 me-5">
-<div class="rowsperpage me-3">
-Rows per Page
-</div>
-<div class="limit col-sm-1 me-3">
-<select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
-  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
-  
-</select>
-</div>
-<div class="pageno me-3">
-1-10 of 50
-</div>
-<div class="leftchivron ms-3 me-3">
-<button @click="backChivron()" class="chivronbtn"><i class="fas fa-chevron-left"></i></button>
-</div>
-<div class="rightchivron"><button @click="forWardChivron()" class="chivronbtn"><i class="fas fa-chevron-right"></i></button></div>
-</div>
+ <div v-else class="error ms-5 mt-5"><span class="text-center">Students not found</span></div> 
 </div>
     </base-card>
    
 </template>
 <script>
 import {mapGetters} from 'vuex'
+import apiClient from '../../../resources/baseUrl'
 export default {
   data() {
     return {
-    //  degreeStudentList:[],
-    //  sex:'male',
-    //  program:'5',
-    //  department:'4',
-    //  year:'1',
-    //  semester:'1',
-    //  studentList:[],
-    //  studentId:'',
-        rowNumber:8,
+    rowNumber:8,
     searchValue:'',
     departmentForFilter:'all',
      programForFilter:'all',
      semesterForFilter:'1',
      stateForFilter:'all', 
-     yearForFilter:'all',
+     yearForFilter:'1',
+     semesterName:'',
+     yearNo:'',
+     stateName:'',
+     programName:'',
+     departmentName:'',
+     scholarForFilter:'all',
      //
+      queryData:{
+        year_no:1,
+      }
 
     }
   },
@@ -148,6 +149,10 @@ export default {
     ...mapGetters('dean',['degreeDepartments','degreePrograms']),
     degreeStudents(){
      return this.$store.getters['registrar/degreeStudents']
+    },
+    
+    academicYearId(){
+      return this.$store.getters.acYearId
     },
      filteredStudents(){
          var tempStudents=[]
@@ -162,11 +167,11 @@ export default {
             return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
          })
       }
-      if(this.yearForFilter!=='all'){
-         tempStudents=tempStudents.filter((student)=>{
-            return student.year_no.toString()===this.yearForFilter.toString()
-         })
-      }
+      // if(this.yearForFilter!=='all'){
+      //    tempStudents=tempStudents.filter((student)=>{
+      //       return student.year_no.toString()===this.yearForFilter.toString()
+      //    })
+      // }
        if(this.departmentForFilter!=='all'){
          tempStudents=tempStudents.filter((student)=>{
             return student.department.id===this.departmentForFilter
@@ -180,6 +185,11 @@ export default {
             if(this.stateForFilter!=='all'){
          tempStudents=tempStudents.filter((student)=>{
             return student?.status===this.stateForFilter
+         })
+      }
+             if(this.scholarForFilter!=='all'){
+         tempStudents=tempStudents.filter((student)=>{
+            return student?.scholarship===this.scholarForFilter
          })
       }
       return tempStudents 
@@ -218,6 +228,8 @@ this.degreePrograms.forEach(program=>{
 })
     },
     yearForFilter(newValue){
+        this.queryData.year_no = newValue
+           this.$store.dispatch('registrar/fetchDegreeStudents',this.queryData)
       if(newValue === '1'){
       this.yearNo = 'First year'
     }
@@ -247,6 +259,11 @@ this.degreePrograms.forEach(program=>{
     else{
       this.stateName = ''
     }
+  },
+  academicYearId(newValue){
+    this.queryData.year_no = this.yearForFilter
+    this.queryData.academic_year_id = newValue
+   this.$store.dispatch('registrar/fetchDegreeStudents',this.queryData)
   }
   },
   created() {
@@ -254,11 +271,13 @@ this.degreePrograms.forEach(program=>{
     if(Number(student.semester_no) === Number(this.semesterForFilter)){
       this.tempStudents= student
     }
-         })
+         }),
+         this.queryData.academic_year_id = this.academicYearId
+         this.$store.dispatch('registrar/fetchDegreeStudents',this.queryData)
   },
       methods: {
-        printDegreeStudent(){
-          this.$htmlToPaper('degreestudentlist');
+       async printDegreeStudent(){
+         await this.$htmlToPaper('degreestudentlist');
         },
       addStudent(){
         this.$router.push({name:'DegreeStudentRegistration'})
@@ -267,6 +286,22 @@ this.degreePrograms.forEach(program=>{
        this.$store.dispatch('registrar/fetchDegreeStudentDetail',id).then(()=>{
             this.$router.push({name:'DegreeStudentDetail',params:{degreeStudId:id}})
        })
+     },
+       async approveStudent(studentvalue){
+         var student={}
+         student.student_id= studentvalue.id,
+         student.semester_id= studentvalue.semester_id
+         
+          try{
+         var response = await apiClient.post('api/degree_approve',student)
+         if(response.status === 200){
+           studentvalue.status = 'approved'
+         }
+          }
+          catch(e){
+            console.log(e)
+          }
+       }
       //  try{
       //    this.studentId = id
       //    var response = await apiClient.get('api/student_semesters/'+id)
@@ -283,7 +318,6 @@ this.degreePrograms.forEach(program=>{
       //  finally{
       //     this.$store.commit('setIsItemLoading',false)
       //  }
-      },
 
     
     },
@@ -291,6 +325,9 @@ this.degreePrograms.forEach(program=>{
 }
 </script>
 <style scoped>
+.search{
+  width: 17%;
+}
 .addbtn{
     background-color: #2f4587;
     color: #fff;
@@ -439,5 +476,12 @@ ul li{
   }
   .error{
     color: rgb(253, 7, 7);
+  }
+  .approvebtn{
+    box-shadow: none!important;
+    color: rgb(253, 7, 7);
+  }
+  .approvebtn:hover{
+ background-color: #366ad9;
   }
 </style>

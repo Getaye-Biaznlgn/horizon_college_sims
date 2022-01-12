@@ -1,18 +1,24 @@
 import { createStore } from 'vuex'
-import apiClient from "./baseUrl"
+import apiClient from "../resources/baseUrl"
 import dean from './employee/dean'
 import auth from './employee/auth'
 import degreeHead from './employee/degree_head/index'
 import registrar from './employee/registrar'
 import cashier from './employee/cashier'
+import tvetHead from './employee/tvet_head/index'
+import studentAuth from './student/auth'
 export default createStore({
     modules: {
+        studentAuth,
         dean,
         registrar,
         cashier,
-        auth,
-        degreeHead,
+        // auth,
+        // degreeHead,
 
+        auth, //staff auth
+        degreeHead,
+        tvetHead,
     },
     state: {
         programs: [], // still im not using it
@@ -41,6 +47,7 @@ export default createStore({
         setSelectedAcYearId(state, year) {
             state.acYearId = year
         }
+
     },
     getters: {
         programs(state) {
@@ -60,7 +67,21 @@ export default createStore({
         },
         acYearId(state) {
             return state.acYearId
+        },
+        selectedAcademicYear(state) {
+            return state.selectedAcademicYear
+        },
+        getYearById(state) {
+            return function(id) {
+                let year
+                state.academicYears.forEach((item) => {
+                    if (item.id === Number(id))
+                        year = item
+                })
+                return year
+            }
         }
+
     },
     actions: {
         async fetchPrograms({ commit }) {

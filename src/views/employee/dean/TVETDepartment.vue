@@ -5,14 +5,14 @@
 </div>
 
 <table class="mt-3">
-  <tr class="table-header">
-    <th class="text-white">No</th>
-    <th class="text-white">Department Name</th>
-    <th class="text-white">Sector</th>
-    <th class="text-white">Department Head</th>
+  <tr>
+    <th>No</th>
+    <th>Department Name</th>
+    <th>Sector</th>
+    <th>Department Head</th>
     <th><span class="sr-only">action</span></th>
   </tr>
-  <tr v-for="(department, index) in tvetDepartments" :key="department.id" class="border border-secondary rounded">
+  <tr v-for="(department, index) in tvetDepartments" :key="department.id">
     <td>{{index +1 }}</td>
     <td>{{department.name}}</td>
     <td>{{department.sector}}</td>
@@ -32,8 +32,9 @@
     </td>
   </tr>
  </table>
+ <div v-if="!tvetDepartments.length" class="text-center">TVET Department isn't added yet!</div>
 </base-card>
-<base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @edit="edit">
+ <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @edit="edit">
    <template #modalBody>
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.department.name.$error}">
@@ -64,8 +65,6 @@
            <div class="mb-3">
               <label class="form-label " for="#level4">Level VI Occupation Name</label>
               <input class="form-control" v-model.trim="department.levelFourOccupationName" id="level4" type="text"  aria-label=".form-control-lg">
-
-
            </div> 
       </form>
       <request-status-notifier :notificationMessage="responseMessage" :isNotSucceed="isNotSucceed" ></request-status-notifier>
@@ -260,50 +259,5 @@ export default {
 }
 </script>
 <style scoped>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
 
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.btn-add{
-    background-color: #ff9500;
-    
-}
-.btn-add:hover{
-  background-color: #eca643;
-}
-.action{
-  cursor: pointer;
-}
-.action:hover{
-  color: #fcc561;
-}
-input[type="checkbox"]:checked{
- background-color: #ff9500;
- border: none;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-  }
 </style>

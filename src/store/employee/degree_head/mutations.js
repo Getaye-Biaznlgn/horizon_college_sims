@@ -5,23 +5,15 @@ export default{
     setSections(state,payload){
         state.sections=payload
     },
-    setStudents(state, payload){
-        state.students=payload
+    setStudentInSemesters(state, payload){
+        state.studentInSemesters=payload
     },
-    setSlips(state, payload){
-        state.slips=payload
-    },
-    //grade reports
-    setGrades(state, payload){
-        state.grades=payload
-    },
+    //Just for store data for another use
     setStudentForSlip(state, payload){
         state.studentForSlip=payload
     },
     setStudentsForGrade(state, payload){
         state.studentsForGrade=payload
     },
-    setStudentInSemesters(state, payload){
-        state.studentInSemesters=payload
-    }
+    
 }

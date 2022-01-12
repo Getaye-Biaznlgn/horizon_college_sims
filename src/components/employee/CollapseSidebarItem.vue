@@ -1,5 +1,5 @@
 <template>
-    <li class="here">
+    <li>
       <div>
           <a class="nav-link collapsible-link py-2 ps-3 fw-bold text-dark pe-2 d-flex justify-content-between" data-bs-toggle="collapse" :href="`#${id}`" role="button" aria-expanded="false" aria-controls="collapseExample">
             <span> <slot name="icon"/>{{label}}</span>
@@ -27,7 +27,6 @@ export default {
      font-size: 16px;
  }
  .dropdown-icon{
-   
   transition: all ease 0.23s;
 }
 .collapsible-link[aria-expanded="true"] .dropdown-icon{

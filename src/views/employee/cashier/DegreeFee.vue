@@ -13,7 +13,8 @@
     </div>
     </div>
     <div id="degreefee">
-    <table class="mt-2">
+      <div class="sr-only ms-5 mt-3">Degree student tuition fee lists</div>
+    <table class="mt-3">
   <thead>
     <tr class="table-header">
       <th class="text-white" rowspan="2">NO</th>
@@ -41,7 +42,7 @@
   <tbody>
      <tr v-for="(student,index) in studentFee" :key="student.id">
       <td>{{index+1}}</td>
-      <td>{{student.id}}</td>
+      <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
       <td>
@@ -106,7 +107,10 @@ Rows per Page
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
-  <option v-for="n in 14" :key="n" :value="n">{{n}}</option>
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
   
 </select>
 </div>
@@ -125,11 +129,12 @@ Rows per Page
 <base-card>
 <div class="innercontent">
 <div class="d-flex justify-content-end">
- <button @click="addStudent" class="btn me-1 addbtn">
+ <button @click="printStudentList()" class="btn me-1 addbtn">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
     </div>
+    <div id="studentDetail">
     <div class="d-flex justify-content-between mt-3">
     <div class="studentInfo ms-5">
     <div class="name d-flex">
@@ -196,6 +201,7 @@ Rows per Page
 </div>
 <hr class="w-100 mt-4 p-0">
 </div>
+    </div>
 <div class="d-flex justify-content-end me-1 p-3">
      <button @click="cancelDetailDialog" class="ms-auto btn addbtn">CANCEL</button>
     </div>
@@ -221,15 +227,16 @@ export default {
       }
     },
     created() {
-      this.$store.dispatch('cashier/fetchDegreeStudentFee')
+      this.queryObject.academic_year_id = this.acYearId
+      this.degreeStudentsPaid(this.queryObject)
     },
     computed:{
       studentFee(){
         return this.$store.getters['cashier/degreeStudentFees']
       },
-      degreeStudentFeeDetails(){
-        return this.$store.getters['cashier/degreeStudentFeeDetails']
-      }
+      acYearId(){
+  return this.$store.getters.acYearId
+}
     },
      watch:{
       studentId(newValue){
@@ -238,6 +245,10 @@ export default {
 rowNumber(newValue){
   this.queryObject.per_page = newValue
   this.degreeStudentsPaid(this.queryObject)
+},
+acYearId(newValue){
+  this.queryObject.academic_year_id = newValue
+  this.degreeStudentsPaid(this.queryObject)
 }
     },
     methods: {
@@ -245,17 +256,15 @@ rowNumber(newValue){
           this.$store.dispatch('cashier/fetchDegreeStudentFee',queryObject)
         },
       showDetail(id){
-        this.$store.dispatch('cashier/degreeStudentFeeDetails',id)
-        this.isDetail = true
-        document.documentElement.style.overflow = "hidden"
-      },
-      cancelDetailDialog(){
-        this.isDetail = false
+        this.$router.push({name:'DegreeFeedetail',params:{id:id}})
       },
         printStudentFeeList(){
          this.$htmlToPaper('degreefee');
          console.log('you have print your tabel')
       },
+printStudentList(){
+   this.$htmlToPaper('studentDetail');
+},
       forWardChivron(){
         this.queryObject.page = this.queryObject.page +1
        this.degreeStudentsPaid(this.queryObject)
@@ -277,7 +286,13 @@ rowNumber(newValue){
 .addbtn:hover{
     background-color:#2f4587 ;
 }
-
+.viewdetailbtn{
+  background-color: #fff;
+  border: none;
+}
+.viewdetailbtn:hover{
+  color: #366ad9;
+}
 .searchicon{
   cursor: pointer;
 }
@@ -324,32 +339,5 @@ td{
 }
 .chivronbtn:focus{
     color: rgb(15, 15, 15);
-}
-.viewdetailbtn{
-  border: none;
-  background-color: #fff;
-}
-.viewdetail{
-    cursor: pointer;
-
-}
-.viewdetail:hover{
-    color: rgb(124, 124, 221);
-}
-.editwraper{
- position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 100vh!important;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    overflow-y: hidden;
-}
-.dialogcontent{
-   margin: 3% 5% 5% 5%;
-   height: 90vh;
-   overflow-y: scroll;
-  
 }
 </style>

@@ -5,20 +5,8 @@ export default{
     sections(state){
         return state.sections
     },
-    studentsById(state){
-        return (id)=>{
-          return state.students.find((student)=>{
-              return student.id===id
-          })
-        }
-    },
-    students(state){
-        return state.students
-    },
-    
-    //grade reports
-    grades(state){
-        return state.grades
+    studentInSemesters(state){
+        return state.studentInSemesters
     },
     //
     studentForSlip(state){
@@ -26,8 +14,6 @@ export default{
     },
     studentsForGrade(state){
         return state.studentsForGrade
-    },
-    studentInSemesters(state){
-        return state.studentInSemesters
-    }
+    },  
+   
 }
