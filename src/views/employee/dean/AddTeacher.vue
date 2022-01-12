@@ -105,7 +105,7 @@
 </form>
     </div>
 <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
-</template>    
+  </template>    
   </base-modal>
 </template>
 <script>
@@ -113,6 +113,7 @@ import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
 import { required, email, minLength,alpha,numeric,helpers, maxLength} from '@vuelidate/validators'
 export default {
+  props:['type'],
    data() {
        return {
          v$:useValidate(),
@@ -166,6 +167,11 @@ export default {
    },
    created() {
      this.teacherList = this.teachers
+     if(this.type){
+       this.filterTeacher(this.type)
+       this.teacherType=this.type
+     }
+        
    },
    watch:{
     teacherType(newValue){

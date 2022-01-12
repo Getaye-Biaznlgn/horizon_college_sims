@@ -21,6 +21,9 @@ export default[
        {
         path: '/addteacher/',
         name: 'AddTeacher',
+        props(route) {
+            return  route.query || {}
+          },
         component: () =>
             import ( /* webpackChunkName: "AddTeacher" */ '../../../views/employee/dean/AddTeacher.vue'),
             meta:{authRequired:true,  typeRequired:'employee'}
@@ -117,4 +120,11 @@ export default[
                 import ( /* webpackChunkName: "StudentGallery" */ '../../../views/employee/dean/StudentGallery'),
                 meta:{authRequired:true,  typeRequired:'employee'}
          },
+         {
+            path: '/staff/add-new-academic-year',
+            name: 'AddNewAcademicYear',
+            component: () =>
+                import ( /* webpackChunkName: "AddNewAcademicYear" */ '../../../views/employee/dean/AddNewAcademicYear'),
+                meta:{authRequired:true,  typeRequired:'employee' } 
+          }, 
 ]

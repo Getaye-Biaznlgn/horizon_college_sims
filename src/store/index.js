@@ -5,6 +5,7 @@ import auth from './employee/auth'
 import degreeHead from './employee/degree_head/index'
 import tvetHead from './employee/tvet_head/index'
 import studentAuth from './student/auth'
+import teacher from './employee/teacher'
 export default createStore({
     modules: {
         studentAuth,
@@ -12,6 +13,7 @@ export default createStore({
         auth,//staff auth
         degreeHead,
         tvetHead,
+        teacher
     },
     state: {
         programs: [], // still im not using it

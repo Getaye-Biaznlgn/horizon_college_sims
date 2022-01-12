@@ -26,7 +26,7 @@
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
              <li ><span  @click="showEditModal(index)" class="dropdown-item">Edit</span></li>
-             <li ><span @click="showDeleteModal(index)"  class="dropdown-item">Delete</span></li>
+             <li ><span @click="showDeleteModal(department)"  class="dropdown-item">Delete</span></li>
              <li><span @click="showAssignModal(index)" class="dropdown-item" >Assign Head</span></li>
           </ul>
       </div>
@@ -37,7 +37,7 @@
  </base-card>
 
  <!--Add-->
-<base-modal @save="save" @cancel="cancelValuesOfActiveObject" :isLoading="isSaving" @edit="edit" id="addBaseModal" :button-type="actionButtonType">
+<base-modal @save="save" @cancel="clearAddModal" :isLoading="isSaving" @edit="edit" id="addBaseModal" :button-type="actionButtonType" >
    <template #modalBody>
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.department.name.$error}">
@@ -88,12 +88,10 @@
 </base-modal>
 
 <!-- delete -->
-<base-modal  id="deleteBaseModal"    :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem">
+<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem">
    <template #modalBody>
-      
-          <div class="form-label fw-bold">Delete</div>
-             
-    
+      <div class="form-label fw-bold">Delete</div>
+      <div class="my-3">Do you want to delete {{department?.name}} department?</div>
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
@@ -126,7 +124,6 @@
 
 <script>
 import { Modal } from 'bootstrap';
-
 import {mapGetters} from 'vuex'
 import {required,helpers} from '@vuelidate/validators'
 import useValidate from '@vuelidate/core'
@@ -168,7 +165,8 @@ export default {
       assignDepartmentHead:{
         department_id:'',
         employee_id:''
-      }
+      },
+      depForDelete:{}
       
     }
   },
@@ -198,7 +196,8 @@ export default {
         this.actionButtonType="add"
         this.addBaseModal.show()
       },
-      showDeleteModal(){
+      showDeleteModal(dep){
+        this.depForDelete=dep
         this.actionButtonType='delete'
         this.deleteBaseModal.show()
       },
@@ -220,20 +219,32 @@ export default {
       },
       showAssignModal(index){
         this.assignDepartmentHead.department_id=this.degreeDepartments[index].id
-        
         this.actionButtonType='assign'      
         this.assignBaseModal.show()
       },
-      cancelValuesOfActiveObject(){
-        //to close before validation
-        // this.addBaseModal.hide()
+      clearAddModal(){
         this.department.name=''
         this.department.regular.noYear=''
         this.department.regular.noSemester=''
         this.department.extension.noYear=''
         this.department.extension.noSemester=''
         this.responseMessage=''
+        this.v$.$reset()
       },
+        async deleteItem(){
+         this.responseMessage=''
+          this.isSaving=true
+          await this.$store.dispatch('dean/deleteDegreeDepartment',this.depForDelete.id)
+          .then(()=>{
+           this.isNotSucceed=false,
+           this.responseMessage='Department Head assigned successfully'
+         }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to assign Department Head'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+       },
      async assignHead(){
          this.responseMessage=''
           this.isSaving=true
@@ -277,10 +288,11 @@ export default {
              type:'extension'
            },
           ]
-         }).then((e)=>{
+         }).then(()=>{
            this.isNotSucceed=false,
            this.responseMessage=successMessage
-           console.log('response with status'+e)
+           this.addBaseModal.hide()
+           this.clearAddModal()
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage

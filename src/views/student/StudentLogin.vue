@@ -1,6 +1,7 @@
 <template>
      <div class=" col-sm-10 col-md-3 ms-auto me-auto border rounded-1 px-3 pt-3  mt-5">
-        <h3 class="d-flex justify-content-center">Login </h3>
+        <!-- <h3 class="d-flex justify-content-center">Login </h3> -->
+       <img src="../../assets/logo.png" class="mx-auto d-block" width="80" height="70" alt="">
        <form class="py-5" @submit.prevent="login">
         <div class="mb-2" :class="{warining:v$.userCrediantail.user_name.$error}">
           <label for="#name" class="form-label">Student ID</label>
@@ -23,7 +24,7 @@
              </span>
              <span v-else>Sign in</span> 
            </button>
-           <p class="text-danger">{{notify}}</p>
+           <p class="text-danger text-center small">{{notify}}</p>
         </div>
        </form>
     </div>

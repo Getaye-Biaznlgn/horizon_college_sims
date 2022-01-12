@@ -63,6 +63,7 @@ export default {
       },
   },
    created(){
+     this.$emit('title', 'My Section')
     if(this.student.role==='degree_student')
       this.fetchMySections('api/degree_my_section/'+this.student.id)
     else if(this.student.role==='tvet_student')

@@ -65,6 +65,7 @@ export default {
       },
   },
   created(){
+    this.$emit('title', 'My Status')
     if(this.student.role==='degree_student')
     this.fetchMyStatus('/api/degree_my_status/'+this.student.id)
     else if(this.student.role==='tvet_student')

@@ -12,8 +12,8 @@ export default {
         registrars: [],
         departmentHeads: [],
         cashiers: [],
-        news:[],
-        events:[]
+        yearMonths:[],
+        dashboardData:{}
     },
     getters: {
         teachers(state) {
@@ -52,14 +52,17 @@ export default {
         tvetPrograms(state) {
             return state.tvetPrograms
         },
-        news(state){
-            return state.news
+        dashboardData(state) {
+            return state.dashboardData
         },
-        events(state){
-            return state.events
-        }
+        yearMonths(state){
+           return state.yearMonths
+       }
     },
     mutations: {
+        setYearMonths(state, months){
+           state.yearMonths=months
+        },
         setDegreeDepartments(state, degreeDepartments) {
             state.degreeDepartments = degreeDepartments
         },
@@ -98,22 +101,35 @@ export default {
         setDegreeDepatments(state, degreeDepartments) {
             state.degreeDepartments = degreeDepartments
         },
-        setEvents(state, events){
-            state.events=events
+        setDashboardData(state, dashboardData){
+            state.dashboardData=dashboardData
         },
-        setNews(state, news){
-            state.news=news
-        }
+        
     },
 
     actions: {
+        async fetchDashboardData(context) {
+            context.rootState.isLoading = true
+            try {
+                var response = await apiClient.get("/api/dean_dashboard")
+                if (response.status === 200) {
+                    context.commit('setDashboardData', response.data)
+                } else {
+                    throw 'faild to load degree department'
+                }
+            } catch (e) {
+                console.log(e.response)
+                throw e
+            } finally {
+                context.rootState.isLoading = false
+            }
+        },
         async fetchDegreeDepartments(context) {
             context.rootState.isLoading = true
             try {
                 var response = await apiClient.get("/api/degree_departments")
                 if (response.status === 200) {
                     context.commit('setDegreeDepartments', response.data)
-                    console.log('degree_department', response.data)
                 } else {
                     throw 'faild to load degree department'
                 }
@@ -161,7 +177,6 @@ export default {
                         return department.id === paylode.id
                     })
                     previousData[editedIndex] = response.data
-                    console.log('response data DegDep', response.data)
                     context.commit('setDegreeDepartments', previousData)
                 } else {
                     throw 'faild to add update degree'
@@ -171,14 +186,14 @@ export default {
                 throw e
             }
         },
-        async deleteDegreeDepartment(context, paylode) {
+        async deleteDegreeDepartment(context, id) {
             try {
-                var response = await apiClient.delete('/api/degree_departments/' + paylode.id, JSON.stringify(paylode))
+                var response = await apiClient.delete('/api/degree_departments/' + id)
                 console.log('delete degree department response status' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.degreeDepartments
                     const deletedIndex =  previousData.findIndex((dep)=>{
-                      return dep.id === paylode.id
+                      return dep.id === id
                    })
                     previousData.splice(deletedIndex,1)
                     context.commit('setDegreeDepartments', previousData)
@@ -274,7 +289,6 @@ export default {
             }
         },
         async updateTvetDepartment(context, paylode) {
-
             try {
                 var response = await apiClient.put('/api/tvet_departments/' + paylode.id, JSON.stringify(paylode), {
                     headers: {
@@ -330,7 +344,7 @@ export default {
                 var response = await apiClient.get("/api/courses")
                 if (response.status === 200) {
                     context.commit('setCourses', response.data)
-                    console.log('tvet_courses', response.data)
+                    console.log('here courses', response.data)
                 } else {
                     throw 'faild to load degree department'
                 }
@@ -407,15 +421,13 @@ export default {
                 throw e
             }
         },
-        // news
-
-        //event
-        async fetchEvents(context) {
+        
+        async fetchYearMonths(context) {
             try {
                 context.rootState.isLoading = true
-                var response = await apiClient.get("/api/events")
+                var response = await apiClient.get("/api/months")
                 if (response.status === 200) {
-                    context.commit('setEvents', response.data)
+                    context.commit('setYearMonths', response.data)
                 } else {
                     throw 'faild to '
                 }
@@ -426,59 +438,10 @@ export default {
                 context.rootState.isLoading = false
             }
         },
-        async addEvent(context, payload) {
-            try {
-                var response = await apiClient.post('/api/events', JSON.stringify(payload))
-                if (response.status === 200) {
-                    var previousData = context.getters.events
-                    previousData.push(response.data)
-                    context.commit('setEvents', previousData)
-                } else {
-                    throw 'faild to add'
-                }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
-        },
-        async deleteEvent(context, paylode) {
-            try {
-                var response = await apiClient.delete('/api/payload/' + paylode, JSON.stringify(paylode))
-                if (response.status === 200) {
-                    var previousData = context.getters.events
-                    const deletedIndex =  previousData.findIndex((event)=>{
-                      return event.id === paylode.id
-                   })
-                    previousData.splice(deletedIndex,1)
-                    context.commit('setEvents', previousData)
-                } else {
-                    throw 'faild to delete courses'
-                }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
-        },
+   
+     
 
-        async updateEvent(context, payload) {
-            try {
-                var response = await apiClient.put( '/api/events/' + payload.id, JSON.stringify(payload))
-                if (response.status === 200) {
-                    var previousData = context.getters.events
-                    const editedIndex = previousData.findIndex((event) => {
-                        return event.id === payload.id
-                    })
-                    previousData[editedIndex] = response.data
-                    context.commit('setCourses', previousData)
-                } else {
-                    throw 'faild to update tvet course'
-                }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
-        },
-        //event end
+
         async fetchModules({ commit, rootState }) {
             try {
                 rootState.isLoading = true

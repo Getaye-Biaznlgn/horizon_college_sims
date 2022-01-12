@@ -1,7 +1,7 @@
 <template>
      <div class="col-md-3 ms-auto me-auto border rounded-1 px-3 pt-3 mt-5">
-        <h3 class=" d-flex justify-content-center">Login </h3>
-       <form class="py-5" @submit.prevent="login">
+       <img src="../../assets/logo.png" class="mx-auto d-block" width="80" height="70" alt="">
+       <form class="pb-5 pt-3" @submit.prevent="login">
         <div class="mb-2" :class="{warining:v$.userCrediantail.user_name.$error}">
           <label for="#name" class="form-label">Email</label>
           <input class="form-control" v-model="userCrediantail.user_name"  id="name" type="text" aria-label=".form-control-lg">
@@ -10,7 +10,6 @@
         </div>
          <div class="mb-4" :class="{warining:v$.userCrediantail.password.$error}">
           <label for="#password" class="form-label">Password</label>
-           
            <div class="d-flex position-relative">
                <input class="form-control" v-model="userCrediantail.password" id="password" :type="isPasswordVisible?'text':'password'"  aria-label=".form-control-lg">
                <i @click="toggleShowPassword" class="position-absolute end-0 mx-2 mt-2  far " :class="isPasswordVisible ? 'fa-eye': 'fa-eye-slash'"></i>
@@ -27,7 +26,7 @@
              </span>
              <span v-else>Sign in</span> 
            </button>
-           <p class="text-danger">{{notify}}</p>
+           <p class="text-danger text-center small">{{notify}}</p>
         </div>
        </form>
        

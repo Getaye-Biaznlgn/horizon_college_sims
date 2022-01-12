@@ -41,14 +41,17 @@ export default {
          this.$store.dispatch('setToken', token)
          this.$store.dispatch('setIsAuthenticated', true)
          apiClient.defaults.headers.common['Authorization'] =`Bearer ${token}`
+
      } 
      if(localStorage.getItem('user')){
         let user=localStorage.getItem('user')
         console.log('user data',user)
         this.$store.dispatch('setUser', JSON.parse(user))
+        
      }
   },
-    created(){
+ created(){      
+   //starter router
        this.$store.dispatch('fetchAcademicYears')
        .then(()=>{
            this.$store.getters.academicYears.forEach((year)=>{
@@ -59,6 +62,8 @@ export default {
            }
           )
       if(this.user.role==='dean'){  
+      this.$router.push({name:'DeanDashboard'})
+      this.$store.dispatch('dean/fetchDashboardData')
       this.$store.dispatch('dean/fetchTeachers')
       this.$store.dispatch('dean/fetchDepartmentHeads')
       this.$store.dispatch('dean/fetchRegistrars')
@@ -69,13 +74,19 @@ export default {
       this.$store.dispatch('dean/fetchModules')
       this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')
-      }
+    }
       else if(this.user.role==='department head'){
+        this.$router.push({name:'DegreeHeadDashboard'})
         this.$store.dispatch('degreeHead/fetchCourses')
         this.$store.dispatch('degreeHead/fetchSections')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       }
-       this.$store.dispatch('fetchPrograms')
+      
+      this.$store.dispatch('teacher/fetchMySections', this.user.id)
+      this.$store.dispatch('fetchPrograms')
+       
+       if(this.user.role==='admin')
+          this.$router.push({name:'AdminDashboard'})  
     }
 }
 </script>
@@ -152,7 +163,7 @@ td{
     margin: 0 !important;
   }
 
-  input[type="radio"]:checked{
+input[type="radio"]:checked{
  background-color: #2f4587;
  border: none;
 }

@@ -1,6 +1,7 @@
 <template>
-<base-card class="px-3 mx-4 mt-3">    
-<div class="d-flex">
+<base-card class="px-3 mx-4 mt-3"> 
+    <span @click="$router.back()" role="button" class="back  d-block pe-2 fw-bold fs-5"><i class="fas  fa-arrow-left"></i>Back</span>
+<div class="d-flex mt-2">
   <div class="d-flex border rounded">
       <input type="text" v-model="searchValue" class="form-control search-input" placeholder="Search by ID" aria-label="search" aria-describedby="basic-addon2"/>
          <span role="button" class="input-group-text search rounded-0" id="basic-addon2">
@@ -9,7 +10,11 @@
    </div>
  <button class="btn btn-add ms-auto text-white me-2 shadow-sm" @click="exportStudentResult"><i class="fas fa-print me-2"></i>Print</button> 
 </div>
+
 <div id="toPrint">
+  <div class="m-2 sr-only">
+    {{section?.department+' '+section?.program?.toLowerCase()+' section '+section?.name+' student result'}}
+  </div>
  <table class="mt-2">
   <thead>
     <tr>
@@ -27,24 +32,25 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(student,index) in 10" :key="student">
+    <tr v-for="(student,index) in filteredStudents" :key="student?.id">
+      <!-- {{student}} -->
       <td>{{index+1}}</td>
-      <td>200344345</td>
-      <td>Zmene Kassie</td>
-      <td>Male</td>
-      <td>10</td>
-      <td>12</td>
-      <td>12</td>
-      <td>24</td>
-      <td>23</td>
-      <td>83</td>
+      <td>{{student.student_id}}</td>
+      <td>{{student.first_name+' '+student.last_name}}</td>
+      <td>{{student.sex}}</td>
+      <td>{{student.from_11}}</td>
+      <td>{{student.from_12}}</td>
+      <td>{{student.from_12s}}</td>
+      <td>{{student.from_25}}</td>
+      <td>{{student.from_40}}</td>
+      <td>{{student.result}}</td>
       <td>
           <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span role="button" @click="showAddDialog()" class="dropdown-item px-4 py-2">Set Result</span></li>
+              <li><span role="button" @click="showAddDialog(student)" class="dropdown-item px-4 py-2">Set Result</span></li>
           </ul>
         </div>
       </td>
@@ -52,90 +58,62 @@
     </tbody>  
    </table>
   <div  v-if="!students.length" class="text-center">There is no added student</div>
+  <div  v-else-if="!filteredStudents.length" class="text-center">There is no search result</div>
 </div>
 </base-card>
 
  <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearModal">
    <template #modalBody>
       <form @submit.prevent>
-        <div class="mb-3" :class="{warining:v$.result.from11.$error}">
-           <label for="#from11" class="form-label">From 11%</label>
-           <input class="form-control" v-model.trim="result.from11" @blur="v$.result.from11.$touch" id="from11" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from11.$errors" :key="index">{{ error.$message+", " }}</span>
+        <div class="mb-3" :class="{warining:v$.result.from_11.$error}">
+           <label for="#from_11" class="form-label">From 11%</label>
+           <input class="form-control" v-model.trim="result.from_11" @blur="v$.result.from_11.$touch" id="from_11" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_11.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
-         <div class="mb-3" :class="{warining:v$.result.from12s.$error}">
-           <label for="#from12s" class="form-label">From 12%</label>
-           <input class="form-control" v-model.trim="result.from12s" @blur="v$.result.from12s.$touch" id="from12s" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from12s.$errors" :key="index">{{ error.$message+", " }}</span>
+         <div class="mb-3" :class="{warining:v$.result.from_12s.$error}">
+           <label for="#from_12s" class="form-label">From 12%</label>
+           <input class="form-control" v-model.trim="result.from_12s" @blur="v$.result.from_12s.$touch" id="from_12s" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_12s.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
-         <div class="mb-3" :class="{warining:v$.result.from12.$error}">
-           <label for="#from12" class="form-label">From 12%</label>
-           <input class="form-control" v-model.trim="result.from12" @blur="v$.result.from12.$touch" id="from12" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from12.$errors" :key="index">{{ error.$message+", " }}</span>
+         <div class="mb-3" :class="{warining:v$.result.from_12.$error}">
+           <label for="#from_12" class="form-label">From 12%</label>
+           <input class="form-control" v-model.trim="result.from_12" @blur="v$.result.from_12.$touch" id="from_12" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_12.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
-         <div class="mb-3" :class="{warining:v$.result.from25.$error}">
-           <label for="#from25" class="form-label">From 25%</label>
-           <input class="form-control" v-model.trim="result.from25" @blur="v$.result.from25.$touch" id="from25" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from25.$errors" :key="index">{{ error.$message+", " }}</span>
+         <div class="mb-3" :class="{warining:v$.result.from_25.$error}">
+           <label for="#from_25" class="form-label">From 25%</label>
+           <input class="form-control" v-model.trim="result.from_25" @blur="v$.result.from_25.$touch" id="from_25" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_25.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
-         <div class="mb-3" :class="{warining:v$.result.from40.$error}">
-           <label for="#from40" class="form-label">From 40%</label>
-           <input class="form-control" v-model.trim="result.from40" @blur="v$.result.from40.$touch" id="from40" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from40.$errors" :key="index">{{ error.$message+", " }}</span>
+         <div class="mb-3" :class="{warining:v$.result.from_40.$error}">
+           <label for="#from_40" class="form-label">From 40%</label>
+           <input class="form-control" v-model.trim="result.from_40" @blur="v$.result.from_40.$touch" id="from_40" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_40.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
       </form>
       <request-status-notifier :notificationMessage="requestStatus.message" :isNotSucceed="requestStatus.isNotSucceed" ></request-status-notifier>
    </template>
   </base-modal>
 
-
-   <vue-modal :modalState="modalState">
-   <div class="modal-content ms-auto me-auto bg-white m-4 px-2">
-     <div class="modal-header">
-        <button @click="dismissVueModal"  class="btn fs-5 position-absolute end-0 top-0"><i class="fas fa-times"></i></button>   
-      </div>
-     <div class="modal-body d-flex flex-column">
-       <div>
-         <input type="file" class="d-none w-0" @change="handleImage" ref="imgInput" id="">
-         <img v-if="imgUrl"  :src="imgUrl" alt="selected image" accept="image/png, image/gif, image/jpeg" height="200" width="250"  class=" mx-auto d-block">
-         <span v-else class="text-center d-block align-middle">Image Preview</span>
-       </div>
-       <div class="mt-auto">
-          <div v-if="imgUrl" class="progress mt-3">
-            <div class="progress-bar btn-add" role="progressbar" :style="{ width: uploadPercentage + '%'}" id="progress" :aria-valuenow="p" aria-valuemin="0" aria-valuemax="100"></div>
-         </div>
-         <request-status-notifier :notificationMessage='requestResponse.message' :isNotSucceed="requestResponse.isNotSucceed" ></request-status-notifier>
-       </div>
-      </div>
-       <div class="modal-footer">
-           <button type="button"  @click="$refs.imgInput.click()" class="btn  px-4 btn-add text-white border mx-3">Choose Image</button>
-           <button :disabled="imgUrl===''"  type="button" @click="uploadImage"  class="btn  px-4 btn-add text-white mx-3">
-            <span v-if="isSaving">
-               <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-               Uploading
-            </span>      
-            <span v-else> <i class="fas fa-upload pe-2"></i>Updload</span>   
-          </button>
-       </div>
-     </div>
-  </vue-modal>
 </template>
 <script>
 import {Modal} from 'bootstrap'
 import vuelidate from '@vuelidate/core'
-import {numeric, helpers, maxValue, minValue} from '@vuelidate/validators'
+import {numeric, helpers, maxValue, minValue, required} from '@vuelidate/validators'
 import apiClient from '../../../resources/baseUrl'
+import { mapGetters } from 'vuex'
 export default {
+  props:['id'],
     data(){
         return{
             v$:vuelidate(),
             students:[],
             result:{
-                from11:'',
-                from12:'',
-                from25:'',
-                from12s:'',
-                from40:''
+                from_11:'',
+                from_12:'',
+                from_25:'',
+                from_12s:'',
+                from_40:'',
             },
             requestStatus:{
                 message:'',
@@ -145,23 +123,37 @@ export default {
             actionButtonType:'',
             isSaving:false,
             searchValue:'',
-            
         }
+    },
+    computed:{
+       section(){
+         return this.$store.getters['teacher/sectionById'](this.id)
+       },
+       ...mapGetters(['user']),
+       filteredStudents(){
+         let tempStudents=[...this.students]
+         if(this.searchValue!==''){
+            tempStudents=  this.students.filter((student)=>{
+            return student.student_id.toLowerCase().startsWith(this.searchValue.toLowerCase())
+          })
+         }
+       
+        
+          return tempStudents
+       }
     },
     methods:{
         exportStudentResult(){
            this.$htmlToPaper('toPrint')
         },
-         showAddDialog(){
+         showAddDialog(result){
+           this.result={...result}
              this.actionButtonType='add'
              this.addBaseModal.show()
          },
          clearModal(){
-             this.result.from11=''
-             this.result.from12=''
-             this.result.from12s=''
-             this.result.from25=''
-             this.result.from40=''
+            //  this.result=''
+            this.requestStatus.message=''
              this.v$.$reset()
          },
         async save(){
@@ -169,17 +161,32 @@ export default {
              if(!this.v$.$error){
                  this.isSaving=true
                  try{
-                    let response= await apiClient.post('api/result', this.result)
+                    let response= await apiClient.post('api/teacher_set_result/'+this.result.id, {
+                      type:this.section.type,
+                      course_id:this.section.course_id,
+                      total_mark:Number(this.result.from_11)+Number(this.result.from_12)+Number(this.result.from_12s)+Number(this.result.from_25)+Number(this.result.from_40),
+                      from_11:this.result.from_11,
+                      from_12:this.result.from_12,
+                      from_12s:this.result.from_12s,
+                      from_25:this.result.from_25,
+                      from_40:this.result.from_40,
+                      
+                    })
+                    this.result.result=Number(this.result.from_11)+Number(this.result.from_12)+Number(this.result.from_12s)+Number(this.result.from_25)+Number(this.result.from_40)
                     if(response.status===200){
+                      const index=this.students.findIndex((student)=>{
+                          return student.id===this.result.id
+                      })
+                      this.students[index]=this.result
                        this.requestStatus.isNotSucceed=false,
-                       this.requestStatus.message="Password is changed successfully"
+                       this.requestStatus.message="Result is submitted successfully"
                     }else{
                         throw''
                     }
                   }
                  catch(e){
                     this.requestStatus.isNotSucceed=true,
-                    this.requestStatus.message="Failed to change password"
+                    this.requestStatus.message="Faild to submit result"
                    }
                  finally{
                    this.isSaving=false
@@ -189,10 +196,10 @@ export default {
                   console.log('form validation faild')
                 }
          },
-       async fetchStudentsResult(id){
+       async fetchStudentsResult(id, payload){
              this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get('/api/student/'+id)
+            var response = await apiClient.post('/api/teacher_section_students/'+id, payload)
             if (response.status === 200) {
               this.students=response.data
             
@@ -209,36 +216,54 @@ export default {
     validations(){
         return{
             result:{
-                from11:{
+                from_11:{
                     numeric:helpers.withMessage('Value should be number', numeric),
-                    maxValue:helpers.withMessage('Shouldn\'t be greater than 12', maxValue(11)),
-                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0))
-               },
-                 from12:{
-                    numeric:helpers.withMessage('Value should be number', numeric),
-                    maxValue:helpers.withMessage('Shouldn\'t be greater than 12', maxValue(12)),
-                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0))
-               },
-                 from12s:{
+                    maxValue:helpers.withMessage('Shouldn\'t be greater than 11', maxValue(11)),
+                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
+                     required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
+
+            },
+                 from_12:{
                     numeric:helpers.withMessage('Value should be number', numeric),
                     maxValue:helpers.withMessage('Shouldn\'t be greater than 12', maxValue(12)),
-                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0))
+                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
+                    required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
+
                },
-                 from25:{
+                 from_12s:{
+                    numeric:helpers.withMessage('Value should be number', numeric),
+                    maxValue:helpers.withMessage('Shouldn\'t be greater than 12', maxValue(12)),
+                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
+                    required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
+               },
+                 from_25:{
                     numeric:helpers.withMessage('Value should be number', numeric),
                     maxValue:helpers.withMessage('Shouldn\'t be greater than 25', maxValue(25)),
-                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0))
+                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
+                    required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
+
                },
-                 from40:{
+                 from_40:{
                     numeric:helpers.withMessage('Value should be number', numeric),
                     maxValue:helpers.withMessage('Shouldn\'t be greater than 40', maxValue(40)),
-                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0))
+                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
+                    required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
+
                }
             }
         }
     },
     mounted(){
         this.addBaseModal=new Modal(document.getElementById('addBaseModal'))
+    },
+    created(){
+      this.fetchStudentsResult(this.id, {teacher_id:this.user.id, type:this.section?.type, course_id:this.section?.course_id})
+    },
+    
+    watch:{
+      section(newValue){
+         this.fetchStudentsResult(this.id, {teacher_id:this.user.id, type:newValue.type, course_id:this.section?.course_id})
+      }
     }
 }
 </script>

@@ -4,7 +4,7 @@ export default{
     component: () => import(/* webpackChunkName: "studenthome" */ '../../views/student/StudentHome.vue'),
     children:[
       {
-        path: '/my-tution-fee',
+        path: '/student-home/',
         name: 'MyTutionFee',
         component: () => import(/* webpackChunkName: "MyTutionFee" */ '../../views/student/MyTutionFee.vue')
         

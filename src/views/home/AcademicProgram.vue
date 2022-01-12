@@ -10,18 +10,10 @@
                   <th>Department</th> 
                 </tr>
                 <tbody>
-                   <tr>
-                     <td>1</td>
-                     <td>Management</td>
-                   </tr>  
-                   <tr>
-                       <td>2</td>
-                       <td>Accounting and Finance</td>
-                   </tr>
-                    <tr>
-                      <td>3</td>
-                       <td>Database Adminstration</td>
-                    </tr> 
+                   <tr v-for="(dep,index) in degreeDepartments" :key="index">
+                     <td>{{index+1}}</td>
+                     <td>{{dep}}</td>
+                   </tr> 
                 </tbody>
             </table>
         </div>
@@ -36,28 +28,48 @@
                   <th>Department</th> 
                 </tr>
                 <tbody>
-                   <tr>
-                     <td>1</td>
-                     <td>Hardware and Networking</td>
+                   <tr v-for="(dep,index) in tvetDepartments" :key="index">
+                     <td>{{index+1}}</td>
+                     <td>{{dep}}</td>
                    </tr>  
-                   <tr>
-                       <td>2</td>
-                       <td>Accounting and Budget Service</td>
-                   </tr>
-                   <tr>
-                      <td>3</td>
-                       <td>Database Adminstration</td>
-                   </tr> 
-                    <tr>
-                      <td>4</td>
-                      <td>Customer Contact & Secretarial Operation Coordination</td>
-                    </tr> 
                 </tbody>
             </table>
         </div>    
        </div> 
     </div>
 </template>
+<script>
+import apiClient from '../../resources/baseUrl'
+export default {
+  data(){
+    return{
+       degreeDepartments:[],
+       tvetDepartments:[]
+    }
+  },
+  methods:{
+     async fetchDepartments(){
+         this.$store.commit('setIsItemLoading', true)
+        try {
+            var response = await apiClient.get("/api/get_home_departments")
+            if (response.status === 200) {
+              this.degreeDepartments=response.data.degree_departments
+              this.tvetDepartments=response.data.tvet_departments
+            } else {
+              throw 'Failed to fetch dep'
+            }
+        } catch (e) {
+            console.log(e.response)
+        } finally {
+            this.$store.commit('setIsItemLoading', false)
+        }
+    },
+  },
+  created(){
+    this.fetchDepartments()
+  }
+}
+</script>
 <style scoped>
 table {
   border-collapse: collapse;
@@ -68,13 +80,13 @@ tr{
   text-align: left;
   vertical-align: top;
 }
+
 th,td{
     padding: 8px;
 }
-tr:last-child{
+table:last-child{
     border-bottom: 2px solid #dddddd;
 }
-
 .vl{
     border-left: 2px solid #dddddd;
 }

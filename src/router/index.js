@@ -44,7 +44,6 @@ const router = createRouter({
   linkActiveClass: 'active'
 })
 router.beforeEach((to, from, next) => {
-
   if (to.matched.some(record => record.meta.authRequired) && !localStorage.getItem('token')) {
     if(to.meta.typeRequired==='employee')  
    return next({ name: 'EmployeeLogin', query: { to: to.path } })
@@ -53,6 +52,5 @@ router.beforeEach((to, from, next) => {
     }
   } 
   next()
-   
 })
 export default router
