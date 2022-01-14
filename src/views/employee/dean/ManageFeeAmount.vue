@@ -2,36 +2,40 @@
   <base-card class="px-3 mx-4 mt-3">
 <div class="d-flex justify-content-end">
     
-    <button class="btn btn-add text-white shadow-sm" @click="showAddModal()"> 
+    <button class="btn btn-add text-white shadow-sm" @click="printPaymentAmount()"> 
      Export
    </button> 
   
 </div>
-
-<table class="mt-3">
-  <tr>
-    <th>No</th>
-    <th>Fee Type</th>
-    <th>Amount</th>
-    <th><span class="sr-only">action</span></th>
-  </tr>
-  <tr v-for="(fee, index) in fees" :key="fee.id">
-    <td>{{index+1}}</td>
-    <td>{{fee.name}}</td>
-    <td>{{fee.amount}}</td>
-    <td>
-     <div class="dropdown">
+<div id="paymentPage">
+    <div class="sr-only text-center">
+     Horizon College  {{getYear?.year}} Payment Amount
+    </div> 
+   <table class="mt-3">
+   <tr>
+     <th>No</th>
+     <th>Fee Type</th>
+     <th>Amount</th>
+     <th><span class="sr-only"></span></th>
+   </tr>
+   <tr v-for="(fee, index) in fees" :key="fee.id">
+     <td>{{index+1}}</td>
+     <td>{{fee.name}}</td>
+     <td>{{fee.amount}}</td>
+     <td>
+       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li ><span  @click="showEditModal(fee)" class="dropdown-item">Edit</span></li>
           </ul>
-      </div>
-    </td>
-  </tr>
+       </div>
+     </td>
+   </tr>
  </table>
+</div>
+
   <div v-if="!fees.length">
     <span class="d-block text-center">Fee amount isn't added yet!</span>
   </div>
@@ -56,7 +60,6 @@
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
-
 </template>
 
 <script>
@@ -68,7 +71,6 @@ import apiClient from '../../../resources/baseUrl'
 import {mapGetters} from 'vuex'
 export default {
   components: { RequestStatusNotifier },
-
   data(){
     return{ 
       v$:useValidate(),
@@ -91,7 +93,11 @@ export default {
     }
   },
   computed:{
-     ...mapGetters({selectedYearId:'selectedAcademicYear'})
+     ...mapGetters({selectedYearId:'selectedAcademicYear'}),
+     getYear(){
+       return this.$store.getters.getYearById(this.selectedYearId)
+     }
+     
   },
   validations(){
      return{
@@ -107,7 +113,9 @@ export default {
   },
  
   methods:{
-
+      printPaymentAmount(){
+        this.$htmlToPaper('paymentPage') 
+      },
       showEditModal(fee){
         this.actionButtonType="edit"
         this.fee={...fee}

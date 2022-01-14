@@ -75,10 +75,6 @@ export default {
       var response= await apiClient.post('/api/login', this.userCrediantail)
       if(response.status === 200){
         // let toPath= this.$route.query.to || '/staff'
-        
-        console.log('user----')
-        console.log(response.data.user)
-        
         apiClient.defaults.headers.common['Authorization'] =`Bearer ${response.data.access_token}`
         this.$store.dispatch('setToken', response.data.access_token)
         this.$store.dispatch('setUser', response.data.user)
@@ -93,8 +89,7 @@ export default {
       }else{
         throw 'faild'+response.status
       }
-    }catch(e){
-      console.log(e)
+    }catch{
       this.notify= 'Faild to login'
     }finally{
       this.isLoging=false

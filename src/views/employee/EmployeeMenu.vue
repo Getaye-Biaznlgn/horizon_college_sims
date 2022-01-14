@@ -61,8 +61,9 @@ export default {
             })
            }
           )
-      if(this.user.role==='dean'){  
-      this.$router.push({name:'DeanDashboard'})
+    if(this.user.role==='dean'){  
+      // let path=this.$route.path || '/staff/dean-dashboard'
+      // this.$router.replace(path)
       this.$store.dispatch('dean/fetchDashboardData')
       this.$store.dispatch('dean/fetchTeachers')
       this.$store.dispatch('dean/fetchDepartmentHeads')
@@ -72,8 +73,8 @@ export default {
       this.$store.dispatch('dean/fetchTvetDepartments')
       this.$store.dispatch('dean/fetchCourses')
       this.$store.dispatch('dean/fetchModules')
-      this.$store.dispatch('dean/fetchDegreePrograms')
-      this.$store.dispatch('dean/fetchTvetPrograms')
+      // this.$store.dispatch('dean/fetchDegreePrograms')
+      // this.$store.dispatch('dean/fetchTvetPrograms')
     }
       else if(this.user.role==='department head'){
         this.$router.push({name:'DegreeHeadDashboard'})

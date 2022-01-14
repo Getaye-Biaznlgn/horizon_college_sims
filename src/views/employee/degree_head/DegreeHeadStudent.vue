@@ -219,15 +219,6 @@ export default {
      return data.splice(from,to)
    }
   },
- watch:{
-   //  perPage(newPerPage){
-  //    this.totalPages= Math.ceil(this.filteredStudents.length/newPerPage)
-   //    this.currentPage=1
-  //  }
- },
- created(){
-  //  this.totalPages=Math.ceil(this.filteredStudents.length/this.perPage)
- }
 }
 </script>
 <style scoped>

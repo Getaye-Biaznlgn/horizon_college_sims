@@ -11,7 +11,7 @@
             <div v-else-if="section.level" class="px-3 pb-1"><strong>Level :</strong>  <span class="ms-2">{{section.level}}</span></div>
             <div class="px-3 pb-1"><strong>Course Title : </strong> <span class="ms-2">{{section.course_title}}</span></div>
             <div class="px-3 pb-1"><strong><i class="fas fa-users"></i> </strong> <span class="ms-2">{{section.no_of_students}} Students</span></div>
-            <button @click="$router.push({name:'TeacherStudent', params:{id:section.id}})" class="btn btn-add text-white mt-2 py-0 mx-3">See All</button>
+            <button @click="showSectionStudent(section)" class="btn btn-add text-white mt-2 py-0 mx-3">See All</button>
          </base-card> 
         </div>
     </div>
@@ -23,6 +23,14 @@ import { mapGetters } from 'vuex'
 export default {
   computed:{
      ...mapGetters({mySections:'teacher/mySections'})
+  },
+  methods:{
+    showSectionStudent(section){
+      if(section.type==='degree')
+      this.$router.push({name:'TeacherDegreeStudent', params:{id:section.id}})
+      else(section.type==='tvet')
+      this.$router.push({name:'TeacherTvetStudent'})
+    }
   }
 }
 </script>

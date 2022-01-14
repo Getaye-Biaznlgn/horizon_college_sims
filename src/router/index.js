@@ -27,7 +27,6 @@ const routes = [
     component: () =>
     import ( /* webpackChunkName: "EmployeeLogin" */ '../views/employee/EmployeeLogin'),
     beforeEnter: (to, from, next) => {
-      console.log('authenticated',store.getters.isAuthenticated)
       if (store.getters.isAuthenticated) {
           next(from.path)
       } else

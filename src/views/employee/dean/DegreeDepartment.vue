@@ -22,12 +22,12 @@
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
-             <li ><span  @click="showEditModal(index)" class="dropdown-item">Edit</span></li>
+             <li @click="showDetailModal(department)"><span class="dropdown-item">Detail</span></li>
+             <li ><span  @click="showEditModal(department)" class="dropdown-item">Edit</span></li>
              <li ><span @click="showDeleteModal(department)"  class="dropdown-item">Delete</span></li>
-             <li><span @click="showAssignModal(index)" class="dropdown-item" >Assign Head</span></li>
+             <li v-if="!department.department_head" @click="showAssignModal(department)"><span  class="dropdown-item" >Assign Head</span></li>
+             <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign</span> </li>
           </ul>
       </div>
     </td>
@@ -88,10 +88,19 @@
 </base-modal>
 
 <!-- delete -->
-<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem">
+<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem" @cancel="clearDeleteModal">
    <template #modalBody>
       <div class="form-label fw-bold">Delete</div>
-      <div class="my-3">Do you want to delete {{department?.name}} department?</div>
+      <div class="my-3">Do you want to delete <i>{{depForDelete.name}}</i> department?</div>
+      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+   </template>
+</base-modal>
+
+<!-- unassign -->
+<base-modal  id="unassignBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="unAssign" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Unassign</div>
+      <div class="my-3">Do you want to remove <i>{{depForDelete.name}}'s </i> head?</div>
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
@@ -105,9 +114,9 @@
    </div>
 <table class="mt-3">
   <tr class="table-header">
-    <th class="text-white">Program</th>
-    <th class="text-white">Year</th>
-    <th class="text-white">Semester</th>
+    <th>Program</th>
+    <th>Year</th>
+    <th>Semester</th>
   </tr>
   <tr v-for="program in detailShowingDepartment?.programs"   :key="program.name">
     <td>{{program.name}}</td>
@@ -140,6 +149,7 @@ export default {
       detailBaseModal:null,
       assignBaseModal:null,
       deleteBaseModal:null,
+      unassignBaseModal:null,
       //
       isSaving:false,
       detailShowingDepartment:null,
@@ -201,26 +211,31 @@ export default {
         this.actionButtonType='delete'
         this.deleteBaseModal.show()
       },
-      showEditModal(index){
-        this.department.id=this.degreeDepartments[index].id
-        this.department.name=this.degreeDepartments[index].name
-        this.department.regular.noYear=this.degreeDepartments[index].programs[0].no_of_year
-        this.department.regular.noSemester=this.degreeDepartments[index].programs[0].no_of_semester
-        this.department.extension.noYear=this.degreeDepartments[index].programs[0].no_of_year
-        this.department.extension.noSemester=this.degreeDepartments[index].programs[0].no_of_semester
+      showEditModal(dep){
+        this.department.id=dep.id
+        this.department.name=dep.name
+        this.department.regular.noYear=dep.programs[0].no_of_year
+        this.department.regular.noSemester=dep.programs[0].no_of_semester
+        this.department.extension.noYear=dep.programs[0].no_of_year
+        this.department.extension.noSemester=dep.programs[0].no_of_semester
         this.actionButtonType="edit"
         //addBaseModal used for add and edit
         this.addBaseModal.show()
       },
-      showDetailModal(index){
+      showDetailModal(dep){
        this.actionButtonType="detail"
-       this.detailShowingDepartment=this.degreeDepartments[index] 
+       this.detailShowingDepartment=dep
        this.detailBaseModal.show()
       },
-      showAssignModal(index){
-        this.assignDepartmentHead.department_id=this.degreeDepartments[index].id
+      showAssignModal(dep){
+        this.assignDepartmentHead.department_id=dep.id
         this.actionButtonType='assign'      
         this.assignBaseModal.show()
+      },
+      showUnassignBaseModal(dep){
+         this.depForDelete=dep
+         this.actionButtonType='delete'
+         this.unassignBaseModal.show()
       },
       clearAddModal(){
         this.department.name=''
@@ -231,16 +246,33 @@ export default {
         this.responseMessage=''
         this.v$.$reset()
       },
+      clearDeleteModal(){
+        this.responseMessage=''
+      },
+      async unAssign(){
+         this.responseMessage=''
+          this.isSaving=true
+          await this.$store.dispatch('dean/unAssignDegreeHead',this.depForDelete.id)
+          .then(()=>{
+           this.isNotSucceed=false,
+          this.deleteBaseModal.hide()
+         }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to delete Department Head'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+      },
         async deleteItem(){
          this.responseMessage=''
           this.isSaving=true
           await this.$store.dispatch('dean/deleteDegreeDepartment',this.depForDelete.id)
           .then(()=>{
            this.isNotSucceed=false,
-           this.responseMessage='Department Head assigned successfully'
+          this.deleteBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
-           this.responseMessage='Faild to assign Department Head'
+           this.responseMessage='Faild to delete Department Head'
          }).finally(()=>{
           this.isSaving=false
          })
@@ -250,8 +282,7 @@ export default {
           this.isSaving=true
           await this.$store.dispatch('dean/assignDepartmentHead',this.assignDepartmentHead)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage='Department Head assigned successfully'
+           this.assignBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to assign Department Head'
@@ -312,6 +343,7 @@ export default {
    this.detailBaseModal = new Modal(document.getElementById('detailBaseModal'));
    this.assignBaseModal = new Modal(document.getElementById('assignBaseModal'));
    this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
+   this.unassignBaseModal = new Modal(document.getElementById('unassignBaseModal'));
  }
 }
 </script>

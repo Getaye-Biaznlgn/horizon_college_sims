@@ -33,7 +33,7 @@
                <span   class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                DELETING
             </span>      
-            <span v-else>DELETE</span>   
+            <span v-else>OK</span>   
           </button>
          
       </div>

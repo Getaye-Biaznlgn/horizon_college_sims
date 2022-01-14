@@ -2,7 +2,7 @@
 <base-card class="px-3 mx-4 mt-3">
 <div>
     <div class="d-flex mb-3">
-         <button class="btn btn-add ms-auto text-white shadow-sm" @click="showAddModal"> Add New Module</button> 
+        <button class="btn btn-add ms-auto text-white shadow-sm" @click="showAddModal"> Add New Module</button> 
     </div>
     <div class="d-flex me-3">
       <div class="d-flex border rounded me-3">
@@ -53,8 +53,8 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li><span @click="showEditModal(index)" class="dropdown-item">Edit</span></li>
-             <li ><span   class="dropdown-item">Delete</span></li>
+             <li @click="showEditModal(index)"><span  class="dropdown-item">Edit</span></li>
+             <li @click="showDeleteModal(modul)"><span class="dropdown-item">Delete</span></li>
           </ul>
       </div>
     </td>
@@ -106,6 +106,16 @@
        <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
+
+
+<!-- delete -->
+<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Delete</div>
+      <div class="my-3">Do you want to delete <i>{{moduleForDelete.title}}</i> module?</div>
+      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+   </template>
+</base-modal>
 </template>
 <script>
 import { Modal } from 'bootstrap';
@@ -134,7 +144,9 @@ export default {
          training_hour:'',
          tvet_department_id:'',
          level_id:'',
-      }
+      },
+      deleteBaseModal:'',
+      moduleForDelete:''
       
     }
   },
@@ -215,6 +227,30 @@ export default {
         })
         return dep
       },
+
+       
+       showDeleteModal(course){
+        this.moduleForDelete=course
+        this.actionButtonType='delete'
+        this.deleteBaseModal.show()
+      },
+       clearDeleteModal(){
+        this.responseMessage=''
+      },
+        async deleteItem(){
+         this.responseMessage=''
+          this.isSaving=true
+          await this.$store.dispatch('dean/deleteModule',this.moduleForDelete.id)
+          .then(()=>{
+           this.isNotSucceed=false,
+          this.deleteBaseModal.hide()
+         }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to delete Department Head'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+       },
       edit(){
          this.request('dean/updateModule', 'Course updated successfully', 'Faild to update course')
       },
@@ -248,6 +284,7 @@ export default {
     },
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
+   this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
   }
 }
 </script>

@@ -24,9 +24,11 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
-             <li @click="showEditModal(index)"><span  class="dropdown-item" >Edit</span></li>
-             <li ><span   class="dropdown-item">Delete</span></li>
-             <li @click="showAssignModal(index)"><span  class="dropdown-item">Assign Head</span></li>
+             <li @click="showEditModal(department)"><span  class="dropdown-item" >Edit</span></li>
+             <li @click="showDeleteModal(department)"><span   class="dropdown-item">Delete</span></li>
+             <li v-if="!department.department_head" @click="showAssignModal(department)"><span  class="dropdown-item">Assign Head</span></li>
+             <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign Head</span> </li>
+       
           </ul>
         </div>
     </td>
@@ -34,6 +36,8 @@
  </table>
  <div v-if="!tvetDepartments.length" class="text-center">TVET Department isn't added yet!</div>
 </base-card>
+
+<!-- //add -->
  <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @edit="edit">
    <template #modalBody>
       <form @submit.prevent>
@@ -70,8 +74,27 @@
       <request-status-notifier :notificationMessage="responseMessage" :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
+
+<!-- delete -->
+<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Delete</div>
+      <div class="my-3">Do you want to delete <i>{{depForDelete.name}}</i> department?</div>
+      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+   </template>
+</base-modal>
+
+<!-- unassign -->
+<base-modal  id="unassignBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="unAssign" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Unassign</div>
+      <div class="my-3">Do you want to remove <i>{{depForDelete.name}}'s </i> head?</div>
+      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+   </template>
+</base-modal>
+
 <!-- detail -->
-<base-modal @save="edit" id="detailBaseModal" :button-type="actionButtonType" @detail="forwardToEdit">
+<base-modal @save="edit" id="detailBaseModal" :button-type="actionButtonType">
 <template #modalBody>
    <div class="d-flex my-3 justify-content-between">
      <div>Department Name</div>
@@ -79,8 +102,8 @@
    </div>
 <table class="mt-3">
   <tr class="table-header">
-    <th class="text-white">Level</th>
-    <th class="text-white">Occupation</th>
+    <th >Level</th>
+    <th >Occupation</th>
   </tr>
   <tr v-for="level in detailShowingDepartment?.levels" :key="level?.level_no">
     <td>{{level.level_no}}</td>
@@ -111,7 +134,7 @@ import { required,helpers} from '@vuelidate/validators'
 import { mapGetters } from 'vuex'
 
 export default {
-    
+    //deleteTvetDepartment
   data(){
     return{ 
       v$:useValidate(),
@@ -123,6 +146,7 @@ export default {
       isNotSucceed:'',
       assignBaseModal:null,
       detailShowingDepartment:null,
+      unassignBaseModal:null,
       //department
       department:{
         id:'',
@@ -136,7 +160,8 @@ export default {
        assignDepartmentHead:{
         department_id:'',
         employee_id:''
-      }
+      },
+      depForDelete:''
       
     }
   },
@@ -170,17 +195,58 @@ export default {
         this.actionButtonType='assign'      
         this.assignBaseModal.show()
       },
-
-      showEditModal(index){
-        let department=this.tvetDepartments[index]
-        this.actionButtonType="edit"
-        this.department.id=department['id']
-        this.department.name=department.name
-        this.department.sector=department.sector
-        this.department.levelOneOccupationName=department.levels[0].occupation_name
-        this.department.levelTwoOccupationName=department.levels[1].occupation_name
-        this.department.levelThreeOccupationName=department.levels[2].occupation_name
-        this.department.levelFourOccupationName=department.levels[3].occupation_name
+        showDeleteModal(dep){
+        this.depForDelete=dep
+        this.actionButtonType='delete'
+        this.deleteBaseModal.show()
+      },
+       showUnassignBaseModal(dep){
+         this.depForDelete=dep
+         this.actionButtonType='delete'
+         this.unassignBaseModal.show()
+      },
+        clearDeleteModal(){
+        this.responseMessage=''
+      },
+        async unAssign(){
+         this.responseMessage=''
+          this.isSaving=true
+          await this.$store.dispatch('dean/unAssignTvetHead',this.depForDelete.id)
+          .then(()=>{
+           this.isNotSucceed=false,
+          this.deleteBaseModal.hide()
+         }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to delete Department Head'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+      },
+      async deleteItem(){
+         this.responseMessage=''
+          this.isSaving=true
+          await this.$store.dispatch('dean/deleteTvetDepartment',this.depForDelete.id)
+          .then(()=>{
+           this.isNotSucceed=false,
+          this.deleteBaseModal.hide()
+         }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to Delete Department Head'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+       },
+      showEditModal(dep){
+        console.log('dep for edit----',dep)
+        // let department=this.tvetDepartments[index]
+        // this.actionButtonType="edit"
+        // this.department.id=department['id']
+        // this.department.name=department.name
+        // this.department.sector=department.sector
+        // this.department.levelOneOccupationName=department?.levels[0].occupation_name
+        // this.department.levelTwoOccupationName=department?.levels[1].occupation_name
+        // this.department.levelThreeOccupationName=department?.levels[2].occupation_name
+        // this.department.levelFourOccupationName=department?.levels[3].occupation_name
         this.addBaseModal.show()
       },
         async assignHead(){
@@ -188,8 +254,8 @@ export default {
           this.isSaving=true
           await this.$store.dispatch('dean/assignTvetDepartmentHead',this.assignDepartmentHead)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage='Department Head assigned successfully'
+           this.assignBaseModal.hide()
+           
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to assign Department Head'
@@ -255,6 +321,8 @@ export default {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
    this.detailBaseModal=new Modal(document.getElementById('detailBaseModal'));
    this.assignBaseModal=new Modal(document.getElementById('assignBaseModal'))
+   this.deleteBaseModal=new Modal(document.getElementById('deleteBaseModal'))
+   this.unassignBaseModal=new Modal(document.getElementById('unassignBaseModal'))
   }
 }
 </script>

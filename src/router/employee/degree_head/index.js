@@ -7,8 +7,8 @@ export default[
             import ( /* webpackChunkName: "DegreeHeadCourse" */ '../../../views/employee/degree_head/DegreeHeadCourse.vue'),
             meta:{authRequired:true, typeRequired:'employee'},
             beforeEnter(to, from, next){
-                console.log('hello fom before enter', store.getters.user.role)
-                if(store.getters.user.role==='department head'){
+                console.log('hello fom before enter', store.getters.user.department_role)
+                if(store.getters.user.department_role==='degree_head'){
                     next()
                 }
                 else{
@@ -23,7 +23,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadGradeReport" */ '../../../views/employee/degree_head/DegreeHeadGradeReport.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -40,7 +40,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadGradeReportPreview" */ '../../../views/employee/degree_head/DegreeHeadGradeReportPreview.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -54,7 +54,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadDashboard" */ '../../../views/employee/degree_head/DegreeHeadDashboard.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -68,7 +68,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadSection" */ '../../../views/employee/degree_head/DegreeHeadSection.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -82,7 +82,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadSlipReport" */ '../../../views/employee/degree_head/DegreeHeadSlipReport.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -99,7 +99,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadSlipPreview" */ '../../../views/employee/degree_head/DegreeHeadSlipPreview.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -113,7 +113,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadStudent" */ '../../../views/employee/degree_head/DegreeHeadStudent.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -128,7 +128,7 @@ export default[
         import ( /* webpackChunkName: "DegreeHeadStudentDetail" */ '../../../views/employee/degree_head/DegreeHeadStudentDetail.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -143,7 +143,7 @@ export default[
         import ( /* webpackChunkName: "DegreeSectionStudent" */ '../../../views/employee/degree_head/DegreeSectionStudent.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }
@@ -158,7 +158,7 @@ export default[
         import ( /* webpackChunkName: "DegreeSectioncourse" */ '../../../views/employee/degree_head/DegreeSectionCourse.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='department head'){
+            if(store.getters.user.department_role!=='degree_head'){
                 next(from.path)
                 return;
             }

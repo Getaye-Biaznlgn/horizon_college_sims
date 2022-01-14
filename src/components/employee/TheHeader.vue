@@ -9,6 +9,7 @@
          <select class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">
             <option  v-for="year in academicYears" :key="year.id" :selected="selectedAcademicYear===year.id" :value="year.id" >{{'Academic year '+year.year}}</option> 
          </select>
+         
          <div v-if="user.role==='dean'" class="ms-2 mt-1" >
             <button @click="$router.push({name:'AddNewAcademicYear'})" class="btn btn-add text-white">
               <span style="white-space: nowrap!important; overflow: hidden;">Add New Calendar</span>
@@ -22,7 +23,7 @@
                 <div class="d-flex flex-column">
                    <span class="fw-bold small text-center">{{user.first_name +' '+ user.last_name}}</span>
                    <span v-if="user.role==='department head'">{{user.manage.name +' head'}}</span>
-                   <span v-else class="job-title small align-self-start">{{user.role}}</span>
+                   <span v-else class="job-title small align-self-start">{{user.role.split('_').join(' ')}}</span>
                 </div>
              </div>
          </div>

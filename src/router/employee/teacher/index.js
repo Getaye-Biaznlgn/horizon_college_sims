@@ -8,10 +8,18 @@
     }, 
     {
         path: '/staff/instructor-student/:id',
-        name: 'TeacherStudent',
+        name: 'TeacherDegreeStudent',
         props:true,
         component: () =>
-            import ( /* webpackChunkName: "TeacherStudent" */ '../../../views/employee/teacher/TeacherStudent'),
+            import ( /* webpackChunkName: "TeacherDegreeStudent" */ '../../../views/employee/teacher/TeacherDegreeStudent'),
             meta:{authRequired:true,  typeRequired:'employee' } 
-    }, 
+    },
+    {
+        path: '/staff/instructor-tvet-student/:id',
+        name: 'TeacherTvetStudent',
+        props:true,
+        component: () =>
+            import ( /* webpackChunkName: "TeacherTvetStudent" */ '../../../views/employee/teacher/TeacherTvetStudent'),
+            meta:{authRequired:true,  typeRequired:'employee' } 
+    },  
 ]

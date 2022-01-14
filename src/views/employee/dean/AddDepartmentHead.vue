@@ -92,7 +92,7 @@ export default {
              last_name:'',
              phone_no:'',
              email:'',
-             role:'department head'
+             role:'department_head'
            }
        }
    },
@@ -135,8 +135,8 @@ export default {
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You register one departmentHead succesfully'
            this.isLoading = false
+           this.basemodal.hide()
          }
           else{
          console.log('form faild validation ')
@@ -170,8 +170,8 @@ export default {
          if(response.status === 200){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You have update one departmentHead succesfully'
            this.isLoading = false
+           this.basemodal.hide()
          }
           else{
          console.log('updated data faild validation ')

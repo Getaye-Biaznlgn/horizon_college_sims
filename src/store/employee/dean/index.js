@@ -104,7 +104,6 @@ export default {
         setDashboardData(state, dashboardData){
             state.dashboardData=dashboardData
         },
-        
     },
 
     actions: {
@@ -117,9 +116,6 @@ export default {
                 } else {
                     throw 'faild to load degree department'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 context.rootState.isLoading = false
             }
@@ -133,16 +129,12 @@ export default {
                 } else {
                     throw 'faild to load degree department'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 context.rootState.isLoading = false
             }
         },
 
         async addDegreeDepartment(context, degreeDepartment) {
-            try {
                 var response = await apiClient.post('/api/degree_departments', JSON.stringify(degreeDepartment), {
                     headers: {
                         Accept: 'application/json',
@@ -157,13 +149,8 @@ export default {
                 } else {
                     throw 'faild to add'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
         },
         async updateDegreeDepartment(context, paylode) {
-            try {
                 var response = await apiClient.put('/api/degree_departments/' + paylode.id, JSON.stringify(paylode), {
                     headers: {
                         Accept: 'application/json',
@@ -181,13 +168,9 @@ export default {
                 } else {
                     throw 'faild to add update degree'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
+           
         },
         async deleteDegreeDepartment(context, id) {
-            try {
                 var response = await apiClient.delete('/api/degree_departments/' + id)
                 console.log('delete degree department response status' + response.status)
                 if (response.status === 200) {
@@ -200,34 +183,32 @@ export default {
                 } else {
                     throw 'faild to add delete degree'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
+        
         },
         async assignDepartmentHead(context, paylode) {
-            try {
-                var response = await apiClient.post('/api/assign_degree_department_head', paylode, {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
-                console.log('update degree department response status' + response.status)
+                var response = await apiClient.post('/api/assign_degree_department_head', paylode)
                 if (response.status === 200) {
                     var previousData = context.getters.degreeDepartments
                     const editedIndex = previousData.findIndex((department) => {
                         return department.id === paylode.department_id
                     })
                     previousData[editedIndex] = response.data
-                    console.log('response assign dep', response.data)
                     context.commit('setDegreeDepartments', previousData)
                 } else {
                     throw 'faild to add update degree'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
+        },
+        async unAssignDegreeHead(context, id) {
+            var response = await apiClient.delete('/api/unassign_degree_department_head/', id)
+            if (response.status === 200) {
+                var previousData = context.getters.degreeDepartments
+                const editedIndex = previousData.findIndex((department) => {
+                    return department.id === id
+                })
+                previousData[editedIndex] = response.data
+                context.commit('setDegreeDepartments', previousData)
+            } else {
+                throw 'faild to add update degree'
             }
         },
         async fetchTvetDepartments(context) {
@@ -240,40 +221,26 @@ export default {
                 } else {
                     throw 'faild to load degree department'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 context.rootState.isLoading = false
             }
         },
-        async deleteTvetDepartment(context, paylode) {
-            try {
-                var response = await apiClient.delete('/api/tvet_departments/' + paylode.id, JSON.stringify(paylode))
-                console.log('delete degree department response status' + response.status)
+        async deleteTvetDepartment(context, id) {
+                var response = await apiClient.delete('/api/tvet_departments/'+id)
                 if (response.status === 200) {
                     var previousData = context.getters.tvetDepartments
                     const deletedIndex =  previousData.findIndex((dep)=>{
-                      return dep.id === paylode.id
+                      return dep.id === id
                    })
                     previousData.splice(deletedIndex,1)
                     context.commit('setTvetDepartments', previousData)
                 } else {
                     throw 'faild to add delete degree'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
+           
         },
         async addTvetDepartment(context, tvetDepartment) {
-            try {
-                var response = await apiClient.post('/api/tvet_departments', JSON.stringify(tvetDepartment), {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
+                var response = await apiClient.post('/api/tvet_departments', JSON.stringify(tvetDepartment))
                 console.log('add degree department ---' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.tvetDepartments
@@ -283,19 +250,10 @@ export default {
                 } else {
                     throw 'faild to add'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
+           
         },
         async updateTvetDepartment(context, paylode) {
-            try {
-                var response = await apiClient.put('/api/tvet_departments/' + paylode.id, JSON.stringify(paylode), {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
+                var response = await apiClient.put('/api/tvet_departments/' + paylode.id, JSON.stringify(paylode))
                 console.log('update tvet department response status' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.tvetDepartments
@@ -308,36 +266,34 @@ export default {
                 } else {
                     throw 'faild to update tvet department'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
+           
         },
         async assignTvetDepartmentHead(context, paylode) {
-            try {
-                var response = await apiClient.post('/api/assign_tvet_department_head', paylode, {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
-                console.log('update degree department response status' + response.status)
+                var response = await apiClient.post('/api/assign_tvet_department_head', paylode)
                 if (response.status === 200) {
                     var previousData = context.getters.tvetDepartments
                     const editedIndex = previousData.findIndex((department) => {
                         return department.id === paylode.department_id
                     })
                     previousData[editedIndex] = response.data
-                    console.log('response assign dep', response.data)
                     context.commit('setTvetDepartments', previousData)
                 } else {
                     throw 'faild to add update degree'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
         },
+        async unAssignTvetHead(context, id) {
+            var response = await apiClient.delete('/api/unassign_tvet_department_head/', id)
+            if (response.status === 200) {
+                var previousData = context.getters.tvetDepartments
+                const editedIndex = previousData.findIndex((department) => {
+                    return department.id === id
+                })
+                previousData[editedIndex] = response.data
+                context.commit('setTvetDepartments', previousData)
+            } else {
+                throw 'faild to add update degree'
+            }
+         },
         async fetchCourses(context) {
             try {
                 context.rootState.isLoading = true
@@ -348,55 +304,34 @@ export default {
                 } else {
                     throw 'faild to load degree department'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
-            } finally {
+            }  finally {
                 context.rootState.isLoading = false
             }
         },
         async addCourse(context, course) {
-            try {
-                var response = await apiClient.post('/api/courses', JSON.stringify(course), {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
+                var response = await apiClient.post('/api/courses', JSON.stringify(course))
                 console.log('add courses ---' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.courses
                     previousData.push(response.data)
                     context.commit('setCourses', previousData)
-                    console.log('addedCourses', response.data)
                 } else {
                     throw 'faild to add'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
         },
-        async deleteCourse(context, paylode) {
-            try {
-                var response = await apiClient.delete('/api/courses/' + paylode.id, JSON.stringify(paylode))
-                console.log('delete courses response status' + response.status)
+        async deleteCourse(context, id) {
+                var response = await apiClient.delete('/api/courses/' + id)
                 if (response.status === 200) {
                     var previousData = context.getters.courses
                     const deletedIndex =  previousData.findIndex((course)=>{
-                      return course.id === paylode.id
+                      return course.id === id
                    })
                     previousData.splice(deletedIndex,1)
                     context.commit('setCourses', previousData)
                 } else {
                     throw 'faild to delete courses'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
         },
-
         async updateCourse(context, paylode) {
             try {
                 var response = await apiClient.put( '/api/courses/' + paylode.id, JSON.stringify(paylode), {
@@ -431,16 +366,10 @@ export default {
                 } else {
                     throw 'faild to '
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 context.rootState.isLoading = false
             }
         },
-   
-     
-
 
         async fetchModules({ commit, rootState }) {
             try {
@@ -448,26 +377,15 @@ export default {
                 var response = await apiClient.get("/api/modules")
                 if (response.status === 200) {
                     commit('setModules', response.data)
-                    console.log('modules', response.data)
                 } else {
                     throw 'faild to load modules'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 rootState.isLoading = false
             }
         },
         async addModule(context, tvetModule) {
-            try {
-                var response = await apiClient.post('/api/modules', JSON.stringify(tvetModule), {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
-                console.log('add modules ---' + response.status)
+                var response = await apiClient.post('/api/modules', JSON.stringify(tvetModule))
                 if (response.status === 201) {
                     var previousData = context.getters.modules
                     previousData.push(response.data)
@@ -475,20 +393,9 @@ export default {
                 } else {
                     throw 'faild to add'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
         },
-        async updateModule(context, paylode) {
-            try {
-                var response = await apiClient.put( '/api/modules/' + paylode.id, JSON.stringify(paylode), {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
-                console.log('update module response status' + response.status)
+        async updateModule(context, paylode) {  
+                var response = await apiClient.put( '/api/modules/' + paylode.id, JSON.stringify(paylode))
                 if (response.status === 200) {
                     var previousData = context.getters.modules
                     const editedIndex = previousData.findIndex((module) => {
@@ -496,70 +403,62 @@ export default {
                     })
                     previousData[editedIndex] = response.data
                     context.commit('setModules', previousData)
-                    console.log('module update', response.data)
                 } else {
                     throw 'faild to update module'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
+            
         },
-        async deleteModule(context, paylode) {
-            try {
-                var response = await apiClient.delete('/api/modules/' + paylode.id, JSON.stringify(paylode))
+        async deleteModule(context, id) {
+                var response = await apiClient.delete('/api/modules/' + id)
                 console.log('delete module response status' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.modules
                     const deletedIndex =  previousData.findIndex((dep)=>{
-                      return dep.id === paylode.id
+                      return dep.id === id
                    })
                     previousData.splice(deletedIndex,1)
                     context.commit('setModules', previousData)
                 } else {
                     throw 'faild to delete module'
                 }
-            } catch (e) {
-                console.log(e)
-                throw e
-            }
+           
         },
-        async fetchDegreePrograms({ commit, rootState }) {
-            try {
-                rootState.isLoading = true
-                var response = await apiClient.get("/api/degree_programs")
-                if (response.status === 200) {
-                    commit('setDegreePrograms', response.data)
-                    console.log('DegreePrograms', response.data)
-                } else {
-                    throw 'faild to load programs'
-                }
-            } catch (e) {
-                console.log(e.response)
-                throw e
-            } finally {
-                rootState.isLoading = false
-            }
-        },
-        async fetchTvetPrograms({ commit, rootState }) {
+        // async fetchDegreePrograms({ commit, rootState }) {
+        //     try {
+        //         rootState.isLoading = true
+        //         var response = await apiClient.get("/api/degree_programs")
+        //         if (response.status === 200) {
+        //             commit('setDegreePrograms', response.data)
+        //             console.log('DegreePrograms', response.data)
+        //         } else {
+        //             throw 'faild to load programs'
+        //         }
+        //     } catch (e) {
+        //         console.log(e.response)
+        //         throw e
+        //     } finally {
+        //         rootState.isLoading = false
+        //     }
+        // },
+        // async fetchTvetPrograms({ commit, rootState }) {
 
-            try {
-                rootState.isLoading = true
-                var response = await apiClient.get("/api/tvet_programs")
-                if (response.status === 200) {
-                    commit('setTvetPrograms', response.data)
-                    console.log('tvetPrograms', response.data)
-                } else {
-                    throw 'faild to load programs'
-                }
-            } catch (e) {
-                console.log(e.response)
-                throw e
-            } finally {
-                rootState.isLoading = false
+        //     try {
+        //         rootState.isLoading = true
+        //         var response = await apiClient.get("/api/tvet_programs")
+        //         if (response.status === 200) {
+        //             commit('setTvetPrograms', response.data)
+        //             console.log('tvetPrograms', response.data)
+        //         } else {
+        //             throw 'faild to load programs'
+        //         }
+        //     } catch (e) {
+        //         console.log(e.response)
+        //         throw e
+        //     } finally {
+        //         rootState.isLoading = false
 
-            }
-        },
+        //     }
+        // },
         async fetchTeachers({ commit, rootState }) {
             rootState.isLoading = true
             try {
@@ -571,9 +470,6 @@ export default {
                 } else {
                     throw 'faild to load teacher list'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 rootState.isLoading = false
             }
@@ -588,9 +484,6 @@ export default {
                     throw 'faild to load Department head list'
 
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 rootState.isLoading = true
             }
@@ -604,9 +497,7 @@ export default {
                 } else {
                     throw 'faild to load registrar list'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
+        
             } finally {
                 rootState.isLoading = false
             }
@@ -620,16 +511,12 @@ export default {
                 } else {
                     throw 'faild to load Cashier list'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
+         
             } finally {
                 rootState.isLoading = false
             }
         },
         async addTeachers(context, teacher) {
-            console.log('inside teacher registration actions')
-            console.log(teacher)
             try {
                 var response = await apiClient.post('/api/teachers', teacher)
                 if (response.status === 201) {

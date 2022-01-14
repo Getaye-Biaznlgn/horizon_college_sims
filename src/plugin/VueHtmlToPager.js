@@ -41,7 +41,7 @@ function addStyles(win, styles) {
         const element = window.document.getElementById(el);
   
         if (!element) {
-          alert(`Element to print #${el} not found!`);
+          alert('Unable To Print!');
           return;
         }
   
