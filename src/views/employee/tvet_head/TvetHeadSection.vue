@@ -4,7 +4,7 @@
   <div class="pe-3">
      <select v-model="programForFilter"  class="form-select" aria-label="select by level">
         <option value="all" selected>All Program</option>
-        <option v-for="program in degreePrograms" :key="program.id" :value="program.id">{{program.name}}</option>
+        <option v-for="program in tvetPrograms" :key="program.id" :value="program.id">{{program.name}}</option>
       </select>
      </div>
    <div>
@@ -27,41 +27,36 @@
     <th><span class="sr-only">action</span></th>
   </tr>
   <tbody>
-  <!-- <tr v-for="(section, index) in filteredSections" :key="section.id">
+  <tr v-for="(section, index) in sections" :key="section.id">
       <td>{{index+1}}</td>
       <td>{{section.name}}</td>
       <td>{{section.degree_department.name}}</td>
       <td>{{section.program?.name}}</td>
       <td>{{section.level_no}}</td>
-      <td>{{section.semester.number}}</td>
+      <!-- <td>{{section.semester.number}}</td> -->
       <td>
       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li @click="$router.push({name:'DegreeSectionStudent', params:{sectionId:section.id}})"><span class="dropdown-item">View Student</span></li>
-             <li @click="$router.push({name:'DegreeSectionCourse', params:{sectionId:section.id}})"><span class="dropdown-item">View Course</span></li>
+             <li @click="$router.push({name:'TvetSectionStudent', params:{sectionId:section.id}})"><span class="dropdown-item">View Student</span></li>
+             <li @click="$router.push({name:'TvetSectionCourse', params:{sectionId:section.id}})"><span class="dropdown-item">View Course</span></li>
              <li @click="showEditModal(section)"><span class="dropdown-item">Edit</span></li>
              <li @click="showDeleteModal(section)"><span class="dropdown-item">Delete</span></li>
           </ul>
       </div>
     </td>
-  </tr> -->
-  <tr v-for="n in 10" :key="n" >
-      <td>{{n}}</td>
-      <td>Here and there</td>
-      <td>Extension</td>
-      <td>1</td>
-      <td></td>
   </tr>
+ 
   </tbody>
-  <!-- <p v-if="!this.sections.length"  class="my-2">Section isn't added yet.</p>
-  <p v-else-if="!this.filteredSections.length" class="my-2">There is no matching section</p> -->
  </table>
+  <p v-if="!this.sections.length"  class="mt-1 text-center">Section isn't added yet.</p>
+  <p v-else-if="!this.filteredSections.length" class="mt-1 text-center">There is no matching section</p>
+ 
  </div>
 </base-card>
-<base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType">
+<base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearAddModal">
    <template #modalBody>
       <form @submit.prevent>
          <div class="mb-3" :class="{warining:v$.section.name.$error}">
@@ -73,27 +68,26 @@
          <div class="mb-3" :class="{warining:v$.section.program_id.$error}">
             <div class="form-label" for="#program">Program</div>
              <select class="form-select" v-model="section.program_id"  aria-label="select">
-                 <option  v-for="program in degreePrograms" :key="program.id"  :value="program.id">{{program.name}}</option>
+                 <option  v-for="program in tvetPrograms" :key="program.id"  :value="program.id">{{program.name}}</option>
              </select>
              <span class="error-msg mt-1"  v-for="(error, index) of v$.section.program_id.$errors" :key="index">{{ error.$message+", " }}</span>
          </div>
          <div class="mb-3" :class="{warining:v$.section.level_no.$error}">
-            <div class="form-label" for="#program">Year (Batch)</div>
+            <div class="form-label" for="#program">Level</div>
              <select class="form-select" v-model="section.level_no"  aria-label="select">
-                 <option  value="1">First year</option>
-                 <option  value="2">Second year</option>
-                 <option  value="3">Fourth year</option>
-                 <option  value="4">Fifth year</option>
+                 <option  value="1">Level 1</option>
+                 <option  value="2">Level 2</option>
+                 <option  value="3">Level 3</option>
+                 <option  value="4">Levle 4</option>
              </select>
              <span class="error-msg mt-1"  v-for="(error, index) of v$.section.level_no.$errors" :key="index">{{ error.$message+", " }}</span>
          </div>
-          <!-- <div class="mb-3" :class="{warining:v$.section.academic_year_id.$error}"> -->
+
             <div class="form-label" for="#academic">Academic Year</div>
              <select class="form-select" v-model="section.academic_year_id"  aria-label="select">
                  <option  v-for="year in academicYears" :key="year.id"  :value="year.id">{{'Academic year'+year.year}}</option>
              </select>
              <span class="error-msg mt-1"  v-for="(error, index) of v$.section.academic_year_id.$errors" :key="index">{{ error.$message+", " }}</span>
-         <!-- </div> -->
       </form>
        <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
@@ -125,6 +119,7 @@ export default {
       responseMessage:'',
       selectedSection:null,
       selectedSectionForDelete:null,
+      
       //for search and filter
       searchValue:'',
       levelForFilter:'all',
@@ -134,7 +129,8 @@ export default {
          name:'',
          program_id:'',
          level_no:'',
-         academic_year_id:''
+         academic_year_id:'',
+         tvet_department_id:''
       }   
     }
   },
@@ -143,7 +139,8 @@ export default {
     ...mapGetters({
       academicYears:'academicYears',
       sections:'tvetHead/sections',
-      programs:'programs'
+      programs:'programs',
+      user:'user'
       }),
     tvetPrograms(){
       return this.programs.filter((program)=>{
@@ -163,12 +160,15 @@ export default {
            return section.level_no===this.levelForFilter
          })
       }
-      
       return tempSections
     },
   },
 
   methods:{
+    clearAddModal(){
+      this.section={}  
+      this.v$.$reset()
+    },
     generatePaper(){
      this.$htmlToPaper('generatedFile')
     },
@@ -208,19 +208,20 @@ export default {
          })
       },
       edit(){
-         this.request('tvetHead/updateSection', this.section, 'Section updated successfully', 'Faild to update section')
+         this.request('tvetHead/updateSection', this.section, 'Faild to update section')
       },
       save(){
-         this.request('tvetHead/addSection',this.section, 'Section added successfully', 'Faild to add section')
+         this.section.tvet_department_id=this.user.managet.id
+         this.request('tvetHead/addSection',this.section, 'Faild to add section')
       },
-     async request(action, payload, successMessage, errorMessage){
+     async request(action, payload, errorMessage){
+       this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
          this.isSaving=true
           await this.$store.dispatch(action,payload)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage=successMessage
+           this.addBaseModal.hide()
          }).catch((e)=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
@@ -229,9 +230,7 @@ export default {
           this.isSaving=false
          })
        }
-       else{
-         console.log('form  validation faild')
-       }
+      
       },
     },
   mounted() {
@@ -243,10 +242,7 @@ export default {
       section:{
              name:{
                  required: helpers.withMessage('Name  can not be empty',required),
-               },
-             semester_id:{
-                 required: helpers.withMessage('Semester should be selected',required),
-              },
+               }, 
              program_id:{
                  required: helpers.withMessage('program should be selected',required),
               }, 
@@ -262,44 +258,4 @@ export default {
 }
 </script>
 
-<style scoped>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
 
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-.btn-add{
-    background-color: #2f4587;
-}
-.btn-add:hover{
-  background-color: #425fb8;
-}
-
-.fa-sign-out-alt{
-  transform: rotate(-90deg);
-}
-.warining input{
-    border: 1px red solid;
-  }
-.warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-}
-</style>

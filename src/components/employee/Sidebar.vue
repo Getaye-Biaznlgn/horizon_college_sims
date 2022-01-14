@@ -149,19 +149,19 @@
             </template>
          </collapse-sidebar-item>
            <!-- degree department head -->
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadDashboard'}" v-if="user.department_role==='degree_head'">
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadDashboard'}" v-if="user.role==='degree_head'">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadCourse'}" v-if="user.department_role==='degree_head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadCourse'}" v-if="user.role==='degree_head'" >
             <span><i class="fas  fa-align-justify pe-2"></i>Course</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadSection'}" v-if="user.department_role==='degree_head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadSection'}" v-if="user.role==='degree_head'" >
             <span><i class="fas fa-layer-group pe-2"></i>Section</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadStudent'}" v-if="user.department_role==='degree_head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadStudent'}" v-if="user.role==='degree_head'" >
             <span><i class="fas fa-user-graduate pe-2"></i>Students</span>
          </sidebar-item>
-         <collapse-sidebar-item label="Report" v-if="user.department_role==='degree_head'" > 
+         <collapse-sidebar-item label="Report" v-if="user.role==='degree_head'" > 
             <template #icon>
               <span><i class="fas fa-exclamation-circle pe-2"></i></span>
             </template>
@@ -176,19 +176,19 @@
          </collapse-sidebar-item>
          
          <!-- //tvet department head -->
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadDashboard'}" v-if="user.department_role==='tvet_head'">
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadDashboard'}" v-if="user.role==='tvet_head'">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadModule'}" v-if="user.department_role==='tvet_head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadModule'}" v-if="user.role==='tvet_head'" >
             <span ><i class="fas  fa-align-justify pe-2"></i>Course</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadSection'}" v-if="user.department_role==='tvet_head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadSection'}" v-if="user.role==='tvet_head'" >
             <span><i class="fas fa-layer-group pe-2"></i>Section</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadStudent'}" v-if="user.department_role==='tvet_head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadStudent'}" v-if="user.role==='tvet_head'" >
             <span><i class="fas fa-user-graduate pe-2"></i>Students</span>
          </sidebar-item>
-         <collapse-sidebar-item label="Repor" v-if="user.department_role==='tvet_head'" > 
+         <collapse-sidebar-item label="Repor" v-if="user.role==='tvet_head'" > 
             <template #icon>
               <span><i class="fas fa-exclamation-circle pe-2"></i></span>
             </template>

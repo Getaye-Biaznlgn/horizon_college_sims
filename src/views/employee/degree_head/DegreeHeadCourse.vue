@@ -72,8 +72,8 @@
   </tr>
   </tbody>
  </table>
-    <p v-if="!courses.length" class="mt-2"> Course isn't added for this department!</p>
-    <p v-else-if="!filteredCourses.length" class="mt-2">There is no matching course</p>
+    <p v-if="!courses.length" class="mt-2 text-center"> Course isn't added for this department!</p>
+    <p v-else-if="!filteredCourses.length" class="mt-2 text-center">There is no matching course</p>
 </base-card>
 
 

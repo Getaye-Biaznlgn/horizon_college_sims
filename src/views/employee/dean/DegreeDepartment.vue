@@ -24,10 +24,10 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showDetailModal(department)"><span class="dropdown-item">Detail</span></li>
-             <li ><span  @click="showEditModal(department)" class="dropdown-item">Edit</span></li>
-             <li ><span @click="showDeleteModal(department)"  class="dropdown-item">Delete</span></li>
+             <li @click="showEditModal(department)"><span   class="dropdown-item">Edit</span></li>
+             <li @click="showDeleteModal(department)"><span   class="dropdown-item">Delete</span></li>
              <li v-if="!department.department_head" @click="showAssignModal(department)"><span  class="dropdown-item" >Assign Head</span></li>
-             <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign</span> </li>
+             <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign Head</span> </li>
           </ul>
       </div>
     </td>
@@ -80,7 +80,7 @@
      <div class="col mb-3">
           <div class="form-label" for="#department">Assign Department Head</div>
              <select class="form-select" v-model="assignDepartmentHead.employee_id"  aria-label="select">
-                 <option  v-for="head in departmentHeads" :key="head.id"  :value="head.id">{{head.first_name+' '+ head.last_name}}</option>
+                 <option  v-for="head in unassignedHeads" :key="head.id"  :value="head.id">{{head.first_name+' '+ head.last_name}}</option>
              </select>
       </div>
      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
@@ -100,7 +100,7 @@
 <base-modal  id="unassignBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="unAssign" @cancel="clearDeleteModal">
    <template #modalBody>
       <div class="form-label fw-bold">Unassign</div>
-      <div class="my-3">Do you want to remove <i>{{depForDelete.name}}'s </i> head?</div>
+      <div class="my-3">Do you want to remove <i>{{unassignDepHead.name}}'s </i> head?</div>
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
@@ -130,12 +130,12 @@
 </template>
 
 
-
 <script>
 import { Modal } from 'bootstrap';
 import {mapGetters} from 'vuex'
 import {required,helpers} from '@vuelidate/validators'
 import useValidate from '@vuelidate/core'
+import apiClient from '../../../resources/baseUrl'
 import RequestStatusNotifier from '../../../components/RequestStatusNotifier.vue';
 import BaseModal from '../../../components/BaseModal.vue';
 
@@ -176,15 +176,17 @@ export default {
         department_id:'',
         employee_id:''
       },
-      depForDelete:{}
+      unassignDepHead:{},
+      depForDelete:{},
+      unassignedHeads:[]
       
     }
   },
   computed:{
-    ...mapGetters({degreeDepartments:'dean/degreeDepartments',departmentHeads:'dean/departmentHeads'})
+    ...mapGetters({degreeDepartments:'dean/degreeDepartments'})
   },
   created(){
-   
+      this.fetchUnassignedHeads()
   },
   validations(){
      return{
@@ -233,7 +235,7 @@ export default {
         this.assignBaseModal.show()
       },
       showUnassignBaseModal(dep){
-         this.depForDelete=dep
+         this.unassignDepHead={...dep}
          this.actionButtonType='delete'
          this.unassignBaseModal.show()
       },
@@ -252,10 +254,13 @@ export default {
       async unAssign(){
          this.responseMessage=''
           this.isSaving=true
-          await this.$store.dispatch('dean/unAssignDegreeHead',this.depForDelete.id)
+          await this.$store.dispatch('dean/unAssignDegreeHead',{
+            employee_id:this.unassignDepHead.head_id,
+            department_id:this.unassignDepHead.id
+          })
           .then(()=>{
            this.isNotSucceed=false,
-          this.deleteBaseModal.hide()
+          this.unassignBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to delete Department Head'
@@ -332,11 +337,22 @@ export default {
          })
       
        }
-       else{
-         console.log('form  validation faild')
-       }
-      }
-     
+  
+      },
+       async fetchUnassignedHeads(){
+         this.$store.commit('setIsItemLoading', true)
+        try {
+            var response = await apiClient.get("/api/unassigned_department_heads")
+            if (response.status === 200) {
+              this.unassignedHeads=response.data
+              
+            } else {
+              throw 'Failed to fetch event'
+            }
+        }finally {
+            this.$store.commit('setIsItemLoading', false)
+        }
+       },
     },
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));

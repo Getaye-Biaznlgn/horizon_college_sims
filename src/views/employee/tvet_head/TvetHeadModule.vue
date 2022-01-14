@@ -11,7 +11,7 @@
        
      <div class="pe-2 ms-auto"> 
         <select v-model="programForFilter" class="form-select" aria-label="select by program">
-           <option selected value="all">All Program</option>
+           <option  value="all">All Program</option>
            <option  value="regular">Regular</option>
            <option  value="extension">Extension</option>
         </select>
@@ -29,18 +29,17 @@
        </div>
     </div>
 </div>
-
 <table class="mt-2">
   <tbody>
-  <tr class="table-header">
-    <th class="">No</th>
-    <th class="">Module Code</th>
-    <th class="">Module Title</th>
-    <th class="">Training hour</th>
-    <th class="">Program</th>
-    <th class="">Level</th>
+  <tr>
+    <th>No</th>
+    <th>Module Code</th>
+    <th>Module Title</th>
+    <th>Training hour</th>
+    <th>Program</th>
+    <th>Level</th>
   </tr>
-  <!-- <tr v-for="(course,index) in filteredModules" :key="course.id" class="">
+  <tr v-for="(course,index) in filteredModules" :key="course.id">
     <td>{{index+1}}</td>
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
@@ -49,19 +48,12 @@
     <td>{{course.year_no}}</td>
     <td>{{course.semester_no}}</td>
     <td>{{course.type}}</td>
-  </tr> -->
-    <tr v-for="n in 10" :key="n" class="">
-    <td>{{n+1}}</td>
-    <td>PHT 030</td>
-    <td>Here and there</td>
-    <td>3</td>
-    <td>Regualr</td>
-    <td>4</td>
   </tr>
+   
   </tbody>
  </table>
-    <!-- <p v-if="!modules.length" class="mt-2"> Course isn't added for this department!</p>
-    <p v-else-if="!filteredModules.length" class="mt-2">There is no matching course</p> -->
+    <p v-if="!modules.length" class="mt-2 text-center "> Module isn't added for this department!</p>
+    <p v-else-if="!filteredModules.length" class="mt-2 text-center">There is no matching Module</p>
 </base-card>
 
 

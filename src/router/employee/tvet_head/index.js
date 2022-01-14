@@ -1,4 +1,4 @@
-import store from '../../../store'
+// import store from '../../../store'
 export default[
     {
         path: '/staff/department-head/module',
@@ -6,11 +6,11 @@ export default[
         component: () =>
             import ( /* webpackChunkName: "DegreeHeadModule" */ '../../../views/employee/tvet_head/TvetHeadModule.vue'),
             meta:{authRequired:true, typeRequired:'employee'},
-            beforeEnter(to, from, next){
-                if(store.getters.user.department_role!=='tvet_head'){
-                    next(from.path)
-                }
-            }
+            // beforeEnter(to, from, next){
+            //     if(store.getters.user.role!=='tvet_head'){
+            //         next(from.path)
+            //     }
+            // }
    },
    {
     path: '/staff/department-head/tvet-grade-report',
@@ -18,11 +18,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadGradeReport" */ '../../../views/employee/tvet_head/TvetHeadGradeReport.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/department-head/tvet-grade-report-preview',
@@ -33,11 +33,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadGradeReportPreview" */ '../../../views/employee/tvet_head/TvetHeadGradeReportPreview.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/dashboard',
@@ -45,11 +45,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadDashboard" */ '../../../views/employee/tvet_head/TvetHeadDashboard.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/section',
@@ -57,11 +57,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadSection" */ '../../../views/employee/tvet_head/TvetHeadSection.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/slip-report',
@@ -69,11 +69,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadSlipReport" */ '../../../views/employee/tvet_head/TvetHeadSlipReport.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/slip-preview',
@@ -84,11 +84,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadSlipPreview" */ '../../../views/employee/tvet_head/TvetHeadSlipPreview.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/student',
@@ -96,11 +96,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadStudent" */ '../../../views/employee/tvet_head/TvetHeadStudent.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/student/:studentId',
@@ -109,11 +109,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetHeadStudentDetail" */ '../../../views/employee/tvet_head/TvetHeadStudentDetail.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/tvet-section-student/:sectionId',
@@ -122,11 +122,11 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetSectionStudent" */ '../../../views/employee/tvet_head/TvetSectionStudent.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 {
     path: '/staff/tvet-department-head/tvet-section-module/:sectionId',
@@ -135,10 +135,10 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "TvetSectioncourse" */ '../../../views/employee/tvet_head/TvetSectionModule.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.department_role!=='tvet_head'){
-                next(from.path)
-            }
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='tvet_head'){
+        //         next(from.path)
+        //     }
+        // }
 },
 ]

@@ -1,6 +1,6 @@
 export default{
     modules(state){
-        return state.courses
+        return state.modules
     },
     sections(state){
         return state.sections

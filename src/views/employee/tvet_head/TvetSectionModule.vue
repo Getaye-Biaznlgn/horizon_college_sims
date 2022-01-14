@@ -152,7 +152,7 @@ computed:{
       //  this.sectionTeacherModule.teacher_id=teacherId
        this.isSaving=true
         try {
-            var response = await apiClient.post("/api/assign_teacher_for_course",{...this.sectionTeacherModule})
+            var response = await apiClient.post("/api/assign_teacher_for_module",{...this.sectionTeacherModule})
             console.log('tvet_section_modules ',response.data)
             if (response.status === 200) {
               let index= this.modules.findIndex((course)=>{
@@ -223,11 +223,9 @@ computed:{
              return num  
         } 
     }
-    },
+},
   
-  mounted() {
-
-  }
+ 
   
  }
  </script>

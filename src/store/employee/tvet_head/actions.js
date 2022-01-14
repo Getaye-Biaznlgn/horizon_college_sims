@@ -31,7 +31,7 @@ export default{
     async fetchStudentInLevels(context) {
         context.rootState.isLoading = true
         try {
-            var response = await apiClient.get("/api/students2")
+            var response = await apiClient.get("/api/tvet_department_students")
             if (response.status === 200) {
                 context.commit('setStudentInLevels', response.data)
             } else {
@@ -44,7 +44,7 @@ export default{
     
 //add sectiondegree_head
     async addSection(context, payload) {
-            var response = await apiClient.post('/api/level_sections', JSON.stringify(payload), {
+            var response = await apiClient.post('/api/tvet_sections', JSON.stringify(payload), {
             })
             if (response.status === 201) {
                 var previousData = context.getters.sections

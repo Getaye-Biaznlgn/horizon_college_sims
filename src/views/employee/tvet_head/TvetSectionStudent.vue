@@ -149,7 +149,7 @@ export default {
     async addStudentToSection(){
       try {
             this.isSaving=true
-            var response = await apiClient.post('/api/add_section_students', {section_id:this.sectionId,student_ids:this.studentsTobeAdded}, {
+            var response = await apiClient.post('/api/tvet_add_section_students', {section_id:this.sectionId,student_ids:this.studentsTobeAdded}, {
             })
             if (response.status === 200) {
               console.log('add student to section,', response.data)
@@ -183,7 +183,7 @@ export default {
     async  fetchSuggestedSectionStudent(payload){
        this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get("/api/section_suggested_students?section_id="+payload)
+            var response = await apiClient.get("/api/tvet_section_suggested_students?section_id="+payload)
             console.log('degree_section_students ',response.data)
             if (response.status === 200) {
               this.suggestedStudents=response.data
@@ -201,7 +201,7 @@ export default {
     async  fetchSectionStudent(sectionId){
        this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get("/api/degree_section_students/"+sectionId)
+            var response = await apiClient.get("/api/tvet_section_students/"+sectionId)
             console.log('degree_section_students ',response.data)
             if (response.status === 200) {
               this.students=response.data

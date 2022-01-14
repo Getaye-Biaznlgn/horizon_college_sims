@@ -185,12 +185,12 @@ export default {
                 }
         
         },
-        async assignDepartmentHead(context, paylode) {
-                var response = await apiClient.post('/api/assign_degree_department_head', paylode)
+        async assignDepartmentHead(context, payload) {
+                var response = await apiClient.post('/api/assign_degree_department_head', payload)
                 if (response.status === 200) {
                     var previousData = context.getters.degreeDepartments
                     const editedIndex = previousData.findIndex((department) => {
-                        return department.id === paylode.department_id
+                        return department.id === payload.department_id
                     })
                     previousData[editedIndex] = response.data
                     context.commit('setDegreeDepartments', previousData)
@@ -198,18 +198,18 @@ export default {
                     throw 'faild to add update degree'
                 }
         },
-        async unAssignDegreeHead(context, id) {
-            var response = await apiClient.delete('/api/unassign_degree_department_head/', id)
-            if (response.status === 200) {
-                var previousData = context.getters.degreeDepartments
-                const editedIndex = previousData.findIndex((department) => {
-                    return department.id === id
-                })
-                previousData[editedIndex] = response.data
-                context.commit('setDegreeDepartments', previousData)
-            } else {
-                throw 'faild to add update degree'
-            }
+        async unAssignDegreeHead(context, payload) {
+            var response = await apiClient.post('/api/unassign_degree_department_head', payload)
+                if (response.status === 200) {
+                    var previousData = context.getters.degreeDepartments
+                    const editedIndex = previousData.findIndex((department) => {
+                        return department.id === payload.department_id
+                    })
+                    previousData[editedIndex] = response.data
+                    context.commit('setDegreeDepartments', previousData)
+                } else {
+                    throw 'faild to add update degree'
+                }
         },
         async fetchTvetDepartments(context) {
             try {
@@ -281,12 +281,12 @@ export default {
                     throw 'faild to add update degree'
                 }
         },
-        async unAssignTvetHead(context, id) {
-            var response = await apiClient.delete('/api/unassign_tvet_department_head/', id)
+        async unAssignTvetHead(context, payload) {
+            var response = await apiClient.post('/api/unassign_tvet_department_head', payload)
             if (response.status === 200) {
                 var previousData = context.getters.tvetDepartments
                 const editedIndex = previousData.findIndex((department) => {
-                    return department.id === id
+                    return department.id === payload.department_id
                 })
                 previousData[editedIndex] = response.data
                 context.commit('setTvetDepartments', previousData)

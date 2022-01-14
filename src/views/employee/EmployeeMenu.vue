@@ -76,11 +76,17 @@ export default {
       // this.$store.dispatch('dean/fetchDegreePrograms')
       // this.$store.dispatch('dean/fetchTvetPrograms')
     }
-      else if(this.user.role==='department head'){
+      else if(this.user.role==='degree_head'){
         this.$router.push({name:'DegreeHeadDashboard'})
         this.$store.dispatch('degreeHead/fetchCourses')
         this.$store.dispatch('degreeHead/fetchSections')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
+      }
+
+      else if(this.user.role==='tvet_head'){
+        this.$store.dispatch('tvetHead/fetchModules')
+        this.$store.dispatch('tvetHead/fetchSections')
+        this.$store.dispatch('tvetHead/fetchStudentInLevels')
       }
       
       this.$store.dispatch('teacher/fetchMySections', this.user.id)
