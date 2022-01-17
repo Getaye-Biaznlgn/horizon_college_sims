@@ -24,14 +24,14 @@
                     <li @click="showDeleteModal(dean)"><span  role="button"  class="dropdown-item">Delete</span></li>
                     <li @click="showResetModal(dean)"><span  role="button"  class="dropdown-item">Reset Password</span></li>
                   </ul>
-      </div>
+               </div>
             </td>
         </tr>
     </table>
-  </base-card>
+    <p v-if="!deans.length" class="text-center mt-1">Dean is not added yet!</p>
+</base-card>
 
-
-   <base-modal @save="save"  @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearModal">
+<base-modal @save="save"  @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearModal">
    <template #modalBody>
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.dean.first_name.$error}">
@@ -57,9 +57,9 @@
       </form>
       <request-status-notifier :notificationMessage="requestStatus.message" :isNotSucceed="requestStatus.isNotSucceed" ></request-status-notifier>
    </template>
-  </base-modal>
+</base-modal>
 
-  <!-- Delete base modal -->
+<!-- Delete base modal -->
 <base-modal @deleteItem="deleteDean" :isLoading="isSaving" id="deleteBaseModal" :button-type="actionButtonType" @cancel="clearModal">
    <template #modalBody>
       <div class="fw-bold">DELETE</div>
@@ -69,7 +69,7 @@
    </template>
 </base-modal>
 
-  <vue-modal :modalState="resetModalState">
+<vue-modal :modalState="resetModalState">
      <div class="modal-content ms-auto me-auto bg-white p-3">
         <div class="header">
             <button @click="dismissVueModal"  class="btn fs-5 position-absolute end-0 top-0"><i class="fas fa-times"></i></button>   
@@ -132,7 +132,7 @@ export default {
        this.actionButtonType='edit'
        this.dean={...dean}
        this.addBaseModal.show()
-      },
+1      },
       showDeleteModal(dean){
         this.actionButtonType='delete'
          this.dean={...dean}
@@ -220,9 +220,7 @@ export default {
            this.isSaving=false
          }
          }
-         else{
-           console.log('form validation faild')
-         }
+        
        },
     async fetchDean(){
          this.$store.commit('setIsItemLoading', true)
@@ -231,7 +229,7 @@ export default {
             if (response.status === 200) {
               this.deans=response.data
             } else {
-              throw 'Failed to fetch news'
+              throw 'Failed to fetch dean'
             }
         } catch (e) {
             console.log(e.response)
@@ -249,6 +247,7 @@ export default {
              let response=  await apiClient.post('api/employees', this.dean)
                if(response.status===201){
                   this.deans.unshift(response.data)
+                  console.log('dean ', response.data)
                   this.addBaseModal.hide()
                   this.clearModal()
              }else{
@@ -257,7 +256,7 @@ export default {
          }
          catch(e){
              this.requestStatus.isNotSucceed=true,
-             this.requestStatus.message="Failed to add an event"
+             this.requestStatus.message="Failed to add dean"
          }
          finally{
            this.isSaving=false

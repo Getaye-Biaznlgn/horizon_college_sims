@@ -14,8 +14,7 @@ export default{
             return state.mySections
         },
         sectionById(state){
-            return (id)=>{
-                
+            return (id)=>{  
                 return state.mySections.find((section)=>{
                     return Number(section.id)===Number(id)
                 })
@@ -32,9 +31,6 @@ export default{
                 } else {
                     throw 'faild to load degree department'
                 }
-            } catch (e) {
-                console.log(e.response)
-                throw e
             } finally {
                 context.rootState.isLoading = false
             }

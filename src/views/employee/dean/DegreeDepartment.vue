@@ -10,24 +10,26 @@
   <tr>
     <th>No</th>
     <th>Department Name</th>
+    <th>Abbreviation</th>
     <th>Department Head</th>
     <th><span class="sr-only">action</span></th>
   </tr>
   <tr v-for="(department, index) in degreeDepartments" :key="department.id">
     <td>{{index+1}}</td>
     <td>{{department.name}}</td>
+    <td>{{department.short_name}}</td>
     <td>{{department.department_head}}</td>
     <td>
      <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
-             <li ><span  @click="showEditModal(index)" class="dropdown-item">Edit</span></li>
-             <li ><span @click="showDeleteModal(department)"  class="dropdown-item">Delete</span></li>
-             <li><span @click="showAssignModal(index)" class="dropdown-item" >Assign Head</span></li>
+             <li @click="showDetailModal(department)"><span class="dropdown-item">Detail</span></li>
+             <li @click="showEditModal(department)"><span   class="dropdown-item">Edit</span></li>
+             <li @click="showDeleteModal(department)"><span   class="dropdown-item">Delete</span></li>
+             <li v-if="!department.department_head" @click="showAssignModal(department)"><span  class="dropdown-item" >Assign Head</span></li>
+             <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign Head</span> </li>
           </ul>
       </div>
     </td>
@@ -42,10 +44,16 @@
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.department.name.$error}">
            <label for="#departmentName" class="form-label">Department Name</label>
-           <input class="form-control " v-model.trim="department.name" @blur="v$.department.name.$touch" id="departmentName" type="text" placeholder="Eg. Accounting" aria-label=".form-control">
-            <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
+           <input class="form-control " v-model.trim="department.name" @blur="v$.department.name.$touch" id="departmentName" type="text" placeholder="Eg. Management" aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
    
+        <div class="mb-3" :class="{warining:v$.department.short_name.$error}">
+           <label for="#departmentName" class="form-label">Abbreviation</label>
+           <input class="form-control " v-model.trim="department.short_name" @blur="v$.department.short_name.$touch" id="shortName" type="text" placeholder="Eg. mgt" aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.department.short_name.$errors" :key="index">{{ error.$message+", " }}</span>
+        </div> 
+
         <div class="my-2">Regular</div>
         <div class="row">
            <div class="col mb-3">
@@ -68,7 +76,7 @@
               <label class="form-label " for="#semesters">How many semesters?</label>
               <input class="form-control " v-model.trim="department.extension.noSemester" id="semesters" type="number"  min="1" max="30" aria-label=".form-control-lg">
             </div> 
-      </div>
+        </div>
       </form>
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
@@ -80,7 +88,7 @@
      <div class="col mb-3">
           <div class="form-label" for="#department">Assign Department Head</div>
              <select class="form-select" v-model="assignDepartmentHead.employee_id"  aria-label="select">
-                 <option  v-for="head in departmentHeads" :key="head.id"  :value="head.id">{{head.first_name+' '+ head.last_name}}</option>
+                 <option  v-for="head in unassignedHeads" :key="head.id"  :value="head.id">{{head.first_name+' '+ head.last_name}}</option>
              </select>
       </div>
      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
@@ -88,10 +96,19 @@
 </base-modal>
 
 <!-- delete -->
-<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem">
+<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem" @cancel="clearDeleteModal">
    <template #modalBody>
       <div class="form-label fw-bold">Delete</div>
-      <div class="my-3">Do you want to delete {{department?.name}} department?</div>
+      <div class="my-3">Do you want to delete <i>{{depForDelete.name}}</i> department?</div>
+      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+   </template>
+</base-modal>
+
+<!-- unassign -->
+<base-modal  id="unassignBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="unAssign" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Unassign</div>
+      <div class="my-3">Do you want to remove <i>{{unassignDepHead.name}}'s </i> head?</div>
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
@@ -105,9 +122,9 @@
    </div>
 <table class="mt-3">
   <tr class="table-header">
-    <th class="text-white">Program</th>
-    <th class="text-white">Year</th>
-    <th class="text-white">Semester</th>
+    <th>Program</th>
+    <th>Year</th>
+    <th>Semester</th>
   </tr>
   <tr v-for="program in detailShowingDepartment?.programs"   :key="program.name">
     <td>{{program.name}}</td>
@@ -121,12 +138,12 @@
 </template>
 
 
-
 <script>
 import { Modal } from 'bootstrap';
 import {mapGetters} from 'vuex'
-import {required,helpers} from '@vuelidate/validators'
+import {required,helpers, maxLength} from '@vuelidate/validators'
 import useValidate from '@vuelidate/core'
+import apiClient from '../../../resources/baseUrl'
 import RequestStatusNotifier from '../../../components/RequestStatusNotifier.vue';
 import BaseModal from '../../../components/BaseModal.vue';
 
@@ -140,12 +157,11 @@ export default {
       detailBaseModal:null,
       assignBaseModal:null,
       deleteBaseModal:null,
+      unassignBaseModal:null,
       //
       isSaving:false,
       detailShowingDepartment:null,
-      
       actionButtonType:'',
-
       //server response issue
       responseMessage:'',
       isNotSucceed:true,
@@ -153,6 +169,7 @@ export default {
       department:{
         id:'',
         name:'',
+        short_name:'',
       regular:{
         noYear:'',
         noSemester:''
@@ -160,21 +177,22 @@ export default {
       extension:{
         noYear:'',
         noSemester:''
-      }
+       }
       },
       assignDepartmentHead:{
         department_id:'',
         employee_id:''
       },
-      depForDelete:{}
-      
+      unassignDepHead:{},
+      depForDelete:{},
+      unassignedHeads:[]
     }
   },
   computed:{
-    ...mapGetters({degreeDepartments:'dean/degreeDepartments',departmentHeads:'dean/departmentHeads'})
+    ...mapGetters({degreeDepartments:'dean/degreeDepartments'})
   },
   created(){
-   
+      this.fetchUnassignedHeads()
   },
   validations(){
      return{
@@ -182,12 +200,16 @@ export default {
              name:{
                 required: helpers.withMessage('department name can not be empty',required),
                },
+               short_name:{
+                required: helpers.withMessage('Short name can not be empty',required),
+                max: helpers.withMessage('Abbreviation should be 3 letters', maxLength(3))
+              },
              regular:{
                noYear:{
                  required:helpers.withMessage('Number of year can not be empty', required)
                }
-             }  
-           }
+           }  
+        }
      }
   },
  
@@ -201,26 +223,32 @@ export default {
         this.actionButtonType='delete'
         this.deleteBaseModal.show()
       },
-      showEditModal(index){
-        this.department.id=this.degreeDepartments[index].id
-        this.department.name=this.degreeDepartments[index].name
-        this.department.regular.noYear=this.degreeDepartments[index].programs[0].no_of_year
-        this.department.regular.noSemester=this.degreeDepartments[index].programs[0].no_of_semester
-        this.department.extension.noYear=this.degreeDepartments[index].programs[0].no_of_year
-        this.department.extension.noSemester=this.degreeDepartments[index].programs[0].no_of_semester
+      showEditModal(dep){
+        this.department.id=dep.id
+        this.department.name=dep.name
+        this.department.short_name=dep.short_name
+        this.department.regular.noYear=dep.programs[0].no_of_year
+        this.department.regular.noSemester=dep.programs[0].no_of_semester
+        this.department.extension.noYear=dep.programs[0].no_of_year
+        this.department.extension.noSemester=dep.programs[0].no_of_semester
         this.actionButtonType="edit"
         //addBaseModal used for add and edit
         this.addBaseModal.show()
       },
-      showDetailModal(index){
+      showDetailModal(dep){
        this.actionButtonType="detail"
-       this.detailShowingDepartment=this.degreeDepartments[index] 
+       this.detailShowingDepartment=dep
        this.detailBaseModal.show()
       },
-      showAssignModal(index){
-        this.assignDepartmentHead.department_id=this.degreeDepartments[index].id
+      showAssignModal(dep){
+        this.assignDepartmentHead.department_id=dep.id
         this.actionButtonType='assign'      
         this.assignBaseModal.show()
+      },
+      showUnassignBaseModal(dep){
+         this.unassignDepHead={...dep}
+         this.actionButtonType='delete'
+         this.unassignBaseModal.show()
       },
       clearAddModal(){
         this.department.name=''
@@ -231,16 +259,36 @@ export default {
         this.responseMessage=''
         this.v$.$reset()
       },
+      clearDeleteModal(){
+        this.responseMessage=''
+      },
+      async unAssign(){
+         this.responseMessage=''
+          this.isSaving=true
+          await this.$store.dispatch('dean/unAssignDegreeHead',{
+            employee_id:this.unassignDepHead.head_id,
+            department_id:this.unassignDepHead.id
+          })
+          .then(()=>{
+           this.isNotSucceed=false,
+          this.unassignBaseModal.hide()
+         }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to remove Department Head'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+      },
         async deleteItem(){
          this.responseMessage=''
           this.isSaving=true
           await this.$store.dispatch('dean/deleteDegreeDepartment',this.depForDelete.id)
           .then(()=>{
            this.isNotSucceed=false,
-           this.responseMessage='Department Head assigned successfully'
+          this.deleteBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
-           this.responseMessage='Faild to assign Department Head'
+           this.responseMessage='Faild to delete Department Head'
          }).finally(()=>{
           this.isSaving=false
          })
@@ -250,8 +298,12 @@ export default {
           this.isSaving=true
           await this.$store.dispatch('dean/assignDepartmentHead',this.assignDepartmentHead)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage='Department Head assigned successfully'
+          const index= this.unassignedHeads.findIndex((head)=>{
+             return head.id===this.assignDepartmentHead.employee_id
+           })
+           this.unassignedHeads.splice(index,1)
+           this.assignBaseModal.hide()
+      
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to assign Department Head'
@@ -277,6 +329,7 @@ export default {
           await this.$store.dispatch(action,{
           id:this.department.id,
            name:this.department.name,
+           short_name:this.department.short_name,
            programs:[{
              no_of_semester:this.department.regular.noSemester,
              no_of_year:this.department.regular.noYear,
@@ -299,66 +352,29 @@ export default {
          }).finally(()=>{
           this.isSaving=false
          })
-      
        }
-       else{
-         console.log('form  validation faild')
-       }
-      }
-     
+  
+      },
+       async fetchUnassignedHeads(){
+         this.$store.commit('setIsItemLoading', true)
+        try {
+            var response = await apiClient.get("/api/unassigned_department_heads")
+            if (response.status === 200) {
+              this.unassignedHeads=response.data
+            } else {
+              throw 'Failed to fetch event'
+            }
+        }finally {
+            this.$store.commit('setIsItemLoading', false)
+        }
+       },
     },
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
    this.detailBaseModal = new Modal(document.getElementById('detailBaseModal'));
    this.assignBaseModal = new Modal(document.getElementById('assignBaseModal'));
    this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
- }
+   this.unassignBaseModal = new Modal(document.getElementById('unassignBaseModal'));
+  }
 }
 </script>
-<style scoped>
-/* table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.btn-add{
-    background-color: #ff9500;
-}
-.btn-add:hover{
-  background-color: #eca643;
-}
-
-.action{
-  cursor: pointer;
-}
-.action:hover{
-  color: #fcc561;
-}
-input[type="checkbox"]:checked{
- background-color: #ff9500;
- border: none;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-  } */
-</style>

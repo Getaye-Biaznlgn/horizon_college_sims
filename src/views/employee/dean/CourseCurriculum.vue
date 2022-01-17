@@ -72,7 +72,7 @@
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
     <td>{{course.cp}}</td>
-    <td>{{course.department?.name}}</td>
+    <td>{{course.department.name}}</td>
     <td>{{course.program}}</td>
     <td>{{course.year_no}}</td>
     <td>{{course.semester_no}}</td>
@@ -84,16 +84,17 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showEditModal(index)"><span role="button"  class="dropdown-item">Edit</span></li>
-             <li ><span  role="button"  class="dropdown-item">Delete</span></li>
+             <li @click="showDeleteModal(course)"><span  role="button"  class="dropdown-item">Delete</span></li>
           </ul>
       </div>
     </td>
   </tr>
-   <p v-if="!courses.length" class="my-2">There is no added course</p>
-  <p v-if="courses.length && !filteredCourses.length" class="my-2">There is no filtered course</p>
- 
  </table>
+  <div v-if="!courses.length" class="mt-1 text-center">There is no added course</div>
+  <div v-if="courses.length && !filteredCourses.length" class="mt-1 text-center">There is no filtered course</div>
+ 
 </base-card>
+<!-- ///add -->
 <base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="removeModalValue">
    <template #modalBody>
       <form @submit.prevent>
@@ -161,10 +162,17 @@
       </div>
       </form>
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
-
    </template>
 </base-modal>
 
+<!-- delete -->
+<base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Delete</div>
+      <div class="my-3">Do you want to delete <i>{{courseForDelete.title}}</i> course?</div>
+      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+   </template>
+</base-modal>
 </template>
 <script>
 import { Modal } from 'bootstrap';
@@ -183,15 +191,17 @@ export default {
       responseMessage:'',
       isNotSucceed:'',
        /////////////////////////|
-      //for filter and search//|
-     /////////////////////////|
+      //for filter and search//|/
+     /////////////////////////|/
       searchValue:'',
       departmentIdForFilter:'all',
       programForFilter:'all',
       yearForFilter:'all',
       semesterForFilter:'all',
       typeForFilter:'all',
-
+      
+      deleteBaseModal:'',
+      courseForDelete:'',
  course:{
       id:'',
       title:'',
@@ -207,9 +217,14 @@ export default {
     }
   },
 computed:{
-    ...mapGetters({degreeDepartments:'dean/degreeDepartments',courses:'dean/courses',degreePrograms:'dean/degreePrograms'}),
+    ...mapGetters({degreeDepartments:'dean/degreeDepartments',courses:'dean/courses', programs:'programs'}),
+   degreePrograms(){
+      return this.programs.filter((program)=>{
+        return program.type==='degree'
+      })
+      },
   filteredCourses(){
-
+    
      ////////////search
       let tempCourses=[...this.courses]
       if(this.searchValue!=''&& this.searchValue){
@@ -221,7 +236,7 @@ computed:{
      }
   
   //filter by department//
-     if(this.departmentIdForFilter.toLowerCase() !=='all'){
+     if(this.departmentIdForFilter !=='all'){
             tempCourses=tempCourses.filter((item)=>{
               return Number(item.department.id)===Number(this.departmentIdForFilter)
             })
@@ -298,6 +313,7 @@ computed:{
         this.actionButtonType='add'
         this.addBaseModal.show()
       },
+     
       removeModalValue(){
         this.course={}
         this.v$.$reset()
@@ -307,6 +323,29 @@ computed:{
         this.actionButtonType='edit'
         this.addBaseModal.show()
       },
+       
+       showDeleteModal(course){
+        this.courseForDelete=course
+        this.actionButtonType='delete'
+        this.deleteBaseModal.show()
+      },
+       clearDeleteModal(){
+        this.responseMessage=''
+      },
+        async deleteItem(){
+         this.responseMessage=''
+          this.isSaving=true
+          await this.$store.dispatch('dean/deleteCourse',this.courseForDelete.id)
+          .then(()=>{
+           this.isNotSucceed=false,
+          this.deleteBaseModal.hide()
+         }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to delete Department Head'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+       },
       edit(){
         this.request('dean/updateCourse','Faild to add update')
       },
@@ -314,7 +353,7 @@ computed:{
         this.request('dean/addCourse','Faild to add course')
       },
      async request(action, errorMessage){
-       
+       this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
          this.isSaving=true
@@ -323,25 +362,21 @@ computed:{
             this.addBaseModal.hide()
             this.removeModalValue()
            this.isNotSucceed=false
-         }).catch((e)=>{
+         }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
-           console.log('response with status'+e)
          }).finally(()=>{
           this.isSaving=false
          })
-      
        }
-       else{
-         console.log('form  validation faild')
-       }
+     
       },
      
     },
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
+   this.deleteBaseModal=new Modal(document.getElementById('deleteBaseModal'))
   }
-   
  }
  </script>
 

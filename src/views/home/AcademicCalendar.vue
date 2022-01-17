@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <strong class="d-block text-center mb-2 mt-3">2013 Degree Regular Students Academic Calendar</strong>
+        <strong class="d-block text-center mb-2 mt-3">{{year}} Degree Regular Students Academic Calendar</strong>
             <div class="row g-4">
                 <div class="col-lg-6 py-3">
                     <table class="">
@@ -11,10 +11,10 @@
                             <th class="text-center">Date</th>
                             <th class="text-center">Activity</th>
                         </tr>
-                         <tr v-for="n in 10" :key="n">
-                            <td>September 11, 2007EC</td>
-                            <td>Lorem ipsum dolor sit amet consectetur here and elit.
-                            </td>
+                         <tr v-for="activity in regularFirstActivities" :key="activity.id">
+                            <td>{{activity.date}}</td>
+                            <td>{{activity.activity}}</td>
+                            
                          </tr>
                     </table>
                 </div>
@@ -27,10 +27,10 @@
                             <th class="text-center">Date</th>
                             <th class="text-center">Activity</th>
                         </tr>
-                         <tr v-for="n in 10" :key="n">
-                            <td>September 11, 2007EC</td>
-                            <td>Lorem ipsum dolor sit amet consectetur here and elit.
-                            </td>
+                         <tr v-for="activity in regularSecondActivities" :key="activity.id">
+                            <td>{{activity.date}}</td>
+                            <td>{{activity.activity}}</td>
+                            
                          </tr>
                     </table>
                 </div>   
@@ -38,7 +38,7 @@
     </div>
     <!-- //extension -->
         <div class="container">
-        <strong class="d-block text-center mb-2 mt-3">2013 Degree Extension Students Academic Calendar</strong>
+        <strong class="d-block text-center mb-2 mt-3">{{year}} Degree Extension Students Academic Calendar</strong>
             <div class="row g-4">
                 <div class="col-lg-6 py-3">
                     <table class="">
@@ -49,10 +49,10 @@
                             <th class="text-center">Date</th>
                             <th class="text-center">Activity</th>
                         </tr>
-                         <tr v-for="n in 10" :key="n">
-                            <td>September 11, 2007EC</td>
-                            <td>Lorem ipsum dolor sit amet consectetur here and elit.
-                            </td>
+                         <tr v-for="activity in extensionFirstActivities" :key="activity.id">
+                            <td>{{activity.date}}</td>
+                            <td>{{activity.activity}}</td>
+                            
                          </tr>
                     </table>
                 </div>
@@ -65,10 +65,10 @@
                             <th class="text-center">Date</th>
                             <th class="text-center">Activity</th>
                         </tr>
-                         <tr v-for="n in 10" :key="n">
-                            <td>September 11, 2007EC</td>
-                            <td>Lorem ipsum dolor sit amet consectetur here and elit.
-                            </td>
+                         <tr v-for="activity in extensionSecondActivities" :key="activity.id">
+                           <td>{{activity.date}}</td>
+                            <td>{{activity.activity}}</td>
+                            
                          </tr>
                     </table>
                 </div>
@@ -81,10 +81,10 @@
                             <th class="text-center">Date</th>
                             <th class="text-center">Activity</th>
                         </tr>
-                         <tr v-for="n in 10" :key="n">
-                            <td>September 11, 2007EC</td>
-                            <td>Lorem ipsum dolor sit amet consectetur here and elit.
-                            </td>
+                         <tr v-for="activity in extensionThirdActivities" :key="activity.id">
+                            <td>{{activity.date}}</td>
+                            <td>{{activity.activity}}</td>
+                            
                          </tr>
                     </table>
                 </div>
@@ -92,7 +92,7 @@
     </div>
     <!-- //tvet -->
     <div class="container mb-5">
-         <strong class="d-block text-center mb-2 mt-3">2013 TVET Students Academic Calendar</strong>
+         <strong class="d-block text-center mb-2 mt-3">{{year}} TVET Students Academic Calendar</strong>
          <div class=" py-3">
                     <table class="">
                         <tr>
@@ -102,10 +102,10 @@
                             <th class="text-center">Date</th>
                             <th class="text-center">Activity</th>
                         </tr>
-                         <tr v-for="n in 10" :key="n">
-                            <td>September 11, 2007EC</td>
-                            <td>Lorem ipsum dolor sit amet consectetur here and elit.
-                            </td>
+                         <tr v-for="activity in tvetActivities" :key="activity.id">
+                            <td>{{activity.date}}</td>
+                            <td>{{activity.activity}}</td>
+                            
                          </tr>
                     </table>
                 </div>
@@ -116,16 +116,28 @@ import apiClient from '../../resources/baseUrl'
 export default {
     data(){
         return{
-           activities:[]
+           regularFirstActivities:[],
+           regularSecondActivities:[],
+           extensionFirstActivities:[],
+           extensionSecondActivities:[],
+           extensionThirdActivities:[],
+           tvetActivities:[],
+           year:''
         }
     },
     methods:{
         async fetchAcademicActivities(){
          this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get("/api/get_academic_activities")
+            var response = await apiClient.get("/api/get_academic_calenders")
             if (response.status === 200) {
-              this.activities=response.data
+              this.regularFirstActivities=response.data.degree.regular[0]?.degree_calender_activities
+              this.regularSecondActivities=response.data.degree.regular[1]?.degree_calender_activities
+              this.extensionFirstActivities=response.data.degree.extension[0]?.degree_calender_activities
+              this.extensionSecondActivities=response.data.degree.extension[1]?.degree_calender_activities
+              this.extensionThirdActivities=response.data.degree.extension[2]?.degree_calender_activities
+              this.tvetActivities=response.data.tvet
+              this.year=response.data.year
             } else {
               throw 'Failed to fetch event'
             }
@@ -135,6 +147,9 @@ export default {
             this.$store.commit('setIsItemLoading', false)
         }
        },
+    },
+    created(){
+        this.fetchAcademicActivities()
     }
 }
 </script>

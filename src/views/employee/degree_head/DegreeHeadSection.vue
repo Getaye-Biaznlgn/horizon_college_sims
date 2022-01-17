@@ -31,9 +31,9 @@
     <th>Program</th>
     <th>Year</th>
     <th>Semester</th>
-    <th><span class="sr-only">action</span></th>
+    <th><span class="sr-only"></span></th>
   </tr>
-  <tbody>
+
   <tr v-for="(section, index) in filteredSections" :key="section.id">
       <td>{{index+1}}</td>
       <td>{{section.name}}</td>
@@ -55,10 +55,10 @@
       </div>
     </td>
   </tr>
-  </tbody>
-  <p v-if="!this.sections.length"  class="my-2">Section isn't added yet.</p>
-  <p v-else-if="!this.filteredSections.length" class="my-2">There is no matching section</p>
  </table>
+  <div v-if="!this.sections.length"  class="mt-1 text-center">Section isn't added yet.</div>
+  <div v-else-if="!this.filteredSections.length" class="mt-1 text-center">There is no matching section</div>
+ 
  </div>
 </base-card>
 
@@ -91,7 +91,7 @@
           <!-- <div class="mb-3" :class="{warining:v$.section.academic_year_id.$error}"> -->
             <div class="form-label" for="#academic">Academic Year</div>
              <select class="form-select" v-model="section.academic_year_id"  aria-label="select">
-                 <option  v-for="year in academicYears" :key="year.id"  :value="year.id">{{'Academic year'+year.year}}</option>
+                 <option  v-for="year in academicYears" :key="year.id"  :value="year.id">{{'Academic year '+year.year}}</option>
              </select>
              <span class="error-msg mt-1"  v-for="(error, index) of v$.section.academic_year_id.$errors" :key="index">{{ error.$message+", " }}</span>
          <!-- </div> -->
@@ -227,40 +227,33 @@ export default {
         this.isSaving=true
           await this.$store.dispatch('degreeHead/deleteSection',this.selectedSectionForDelete.id)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage='Section deleted successfully'
-         }).catch((e)=>{
+           this.addBaseModal.hide()
+         }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to delete section'
-           console.log('response with status'+e)
          }).finally(()=>{
           this.isSaving=false
          })
       },
       edit(){
-         this.request('degreeHead/updateSection', this.section, 'Section updated successfully', 'Faild to update section')
+         this.request('degreeHead/updateSection', this.section,'Faild to update section')
       },
       save(){
-         this.request('degreeHead/addSection',this.section, 'Section added successfully', 'Faild to add section')
+         this.request('degreeHead/addSection',this.section,'Faild to add section')
       },
-     async request(action, payload, successMessage, errorMessage){
+     async request(action, payload, errorMessage){
        this.v$.$validate()
        if(!this.v$.$error){
          this.isSaving=true
           await this.$store.dispatch(action,payload)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage=successMessage
-         }).catch((e)=>{
+           this.addBaseModal.hide()
+         }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
-           console.log('add section'+e.errorMessage)
          }).finally(()=>{
           this.isSaving=false
          })
-       }
-       else{
-         console.log('form  validation faild')
        }
       },
     },
@@ -293,41 +286,5 @@ export default {
 </script>
 
 <style scoped>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-.btn-add{
-    background-color: #2f4587;
-}
-.btn-add:hover{
-  background-color: #425fb8;
-}
-
-.fa-sign-out-alt{
-  transform: rotate(-90deg);
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-  }
+/*  */
 </style>

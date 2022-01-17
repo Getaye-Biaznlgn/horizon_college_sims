@@ -1,5 +1,5 @@
 <template>
-     <div class="col-md-3 ms-auto me-auto border rounded-1 px-3 pt-3 mt-5">
+     <div class="col-md-3 mx-auto border rounded-1 px-3 pt-3 mt-5">
        <img src="../../assets/logo.png" class="mx-auto d-block" width="80" height="70" alt="">
        <form class="pb-5 pt-3" @submit.prevent="login">
         <div class="mb-2" :class="{warining:v$.userCrediantail.user_name.$error}">
@@ -75,10 +75,6 @@ export default {
       var response= await apiClient.post('/api/login', this.userCrediantail)
       if(response.status === 200){
         // let toPath= this.$route.query.to || '/staff'
-        
-        console.log('user----')
-        console.log(response.data.user)
-        
         apiClient.defaults.headers.common['Authorization'] =`Bearer ${response.data.access_token}`
         this.$store.dispatch('setToken', response.data.access_token)
         this.$store.dispatch('setUser', response.data.user)
@@ -93,8 +89,7 @@ export default {
       }else{
         throw 'faild'+response.status
       }
-    }catch(e){
-      console.log(e)
+    }catch{
       this.notify= 'Faild to login'
     }finally{
       this.isLoging=false

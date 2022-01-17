@@ -29,7 +29,7 @@
  </table>
 
  <div v-if="!fetchedNews.length" class="text-center">
-     There is no recored available
+     There is no record available
  </div>
   <div v-if="fetchedNews.length" class="mt-2 d-flex justify-content-end">
       <span class="pe-4 small">Rows per page {{per_page}}</span>
@@ -152,8 +152,7 @@ export default {
           let response= await apiClient.post('api/news', this.news)
             if(response.status===201){
                this.fetchedNews.unshift(response.data)
-               this.requestStatus.isNotSucceed=false,
-               this.requestStatus.message="News is added successfully"
+               this.addBaseModal.hide()
              }else{
                 throw''
              }
@@ -161,14 +160,10 @@ export default {
          catch(e){
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message="Failed to add news"
-           console.log()
          }
          finally{
            this.isSaving=false
          }
-         }
-         else{
-           console.log('form validation faild')
          }
        },
       async edit(){
@@ -182,8 +177,7 @@ export default {
                 return news.id=this.news.id
               })
               this.fetchedNews[updatedIndex]=response.data
-               this.requestStatus.isNotSucceed=false,
-               this.requestStatus.message="News is updated successfully"
+               this.addBaseModal.hide()
              }else{
                 throw''
              }
@@ -191,14 +185,10 @@ export default {
          catch(e){
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message="Failed to update news"
-             console.log()
          }
          finally{
            this.isSaving=false
          }
-         }
-         else{
-           console.log('form validation faild')
          }
        },
      async deleteNews(){
@@ -221,14 +211,11 @@ export default {
          catch(e){
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message="Failed to delete news"
-           console.log()
+
          }
          finally{
            this.isSaving=false
          }
-         }
-         else{
-           console.log('form validation faild')
          }
      },
     },

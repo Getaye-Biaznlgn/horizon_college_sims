@@ -33,18 +33,20 @@
       <th>Phone Number</th>
       <th>Email Address</th>
       <th>Type</th>
-      <th>Profession</th>
+      <th>Qualification</th>
+      <th>GPA</th>
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody v-if="teacherList?.length">
-     <tr v-for="(teacher,index) in teacherList" :key="teacher.id">
+  <tbody>
+     <tr v-for="(teacher,index) in filteredTeachers" :key="teacher.id">
       <td>{{index+1}}</td>
       <td>{{teacher.first_name+" "+teacher.last_name}}</td>
       <td>{{teacher.phone_no}}</td>
       <td>{{teacher.email}}</td>
       <td>{{teacher.type}}</td>
-      <td>{{teacher.profession}}</td>
+      <td>{{teacher.qualification}}</td>
+      <td>{{teacher.gpa}}</td>
        <td>
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -59,14 +61,13 @@
     </td>
     </tr>
   </tbody>
-   <div v-else class="mt-5 mb-5 text-center text-danger">There is no Teachers found please try again</div>
  </table>
-    <div v-if="!teacherList.length" class="text-center">There isnot added teacher</div>
+    <div v-if="!teachers.length" class="text-center">Teacher isnot added</div>
 
 </base-card>
 
     <!-- teracher registration form dialog-->
-    <base-modal :is-loading= "isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedTeacher" @save="registerTeacher">
+    <base-modal :is-loading= "isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedTeacher" @save="registerTeacher" @cancel="clearAddModal">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -81,13 +82,18 @@
   <input type="text" class="form-control" id="lname" v-model.trim="teacher.last_name" @blur="v$.teacher.last_name.$touch">
   <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
-<div class="mb-3" :class="{warining:v$.teacher.profession.$error}">
-  <label for="profession" class="form-label">Profession</label>
-  <input type="text" class="form-control" id="profession" v-model.trim="teacher.profession" @blur="v$.teacher.profession.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.profession.$errors" :key="index">{{ error.$message+", " }}</span>
+<div class="mb-3" :class="{warining:v$.teacher.qualification.$error}">
+  <label for="qualification" class="form-label">qualification</label>
+  <input type="text" class="form-control" id="qualification" v-model.trim="teacher.qualification" @blur="v$.teacher.qualification.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.qualification.$errors" :key="index">{{ error.$message+", " }}</span>
+</div>
+<div class="mb-3" :class="{warining:v$.teacher.gpa.$error}">
+  <label for="gpa" class="form-label">GPA</label>
+  <input type="number" max="4" class="form-control" id="gpa" v-model.trim="teacher.gpa" @blur="v$.teacher.gpa.$touch">
+  <span class="error-msg mt-1"  v-for="(error, index) of v$.teacher.gpa.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 <div class="mb-3">
-<label for="profession" class="form-label">Type</label>
+<label for="qualification" class="form-label">Type</label>
 <select class="form-select" aria-label="Default select example" v-model="teacher.type">
   <option selected value="regular">Regular</option>
   <option value="partime">Partime</option>
@@ -105,14 +111,14 @@
 </div>
 </form>
     </div>
-<p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
+<p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
   </template>    
   </base-modal>
 </template>
 <script>
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
-import { required, email, minLength,alpha,numeric,helpers, maxLength} from '@vuelidate/validators'
+import { required, email, minLength,numeric,helpers, maxLength} from '@vuelidate/validators'
 export default {
   props:['type'],
    data() {
@@ -124,17 +130,18 @@ export default {
            isSuccessed:true,
            isFaild:false,
            resultNotifier:'',
-           teacherType:null,
+           teacherType:'all',
            buttonType:'',
            isInvalid:null,
            teacherId:null,
-           teacherList:[],
+           ist:[],
            teacher:{
              first_name:'',
              last_name:'',
              phone_no:'',
              email:'',
-             profession:'',
+             qualification:'',
+             gpa:'',
              type:'',
            }
        }
@@ -142,18 +149,26 @@ export default {
    validations(){
      return {
       teacher:{
-        first_name:{required: helpers.withMessage('first name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        last_name:{required: helpers.withMessage('last name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-               profession:{required: helpers.withMessage('profession can not be empty',required)},
+        first_name:{
+               required: helpers.withMessage('first name can not be empty',required),
+               },
+        last_name:{
+               required: helpers.withMessage('last name can not be empty',required),
+               },
+               qualification:{
+                 required: helpers.withMessage('qualification can not be empty',required)},
+
                phone_no:{
               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
                max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
                },
-               email:{required:helpers.withMessage('email can not be empty',required),email}
+               email:{required:helpers.withMessage('email can not be empty',required),email},
+               gpa:{
+                 numeric,
+                 required:helpers.withMessage('GPA field can not be empty',required),
+                 }
       }
      }
    },
@@ -165,26 +180,33 @@ export default {
      teachers(){
        return this.$store.getters['dean/teachers']
      },
+        filteredTeachers(){
+          var ist
+        if(this.teacherType === 'all'){
+          ist = this.teachers
+        }
+        else{
+          ist = this.teachers.filter(teacher=>{
+          return this.teacherType === teacher.type
+        })
+        }
+        return ist
+      },
    },
    created() {
-     this.teacherList = this.teachers
+     this.ist = this.teachers
      if(this.type){
-       this.filterTeacher(this.type)
        this.teacherType=this.type
      }
-        
    },
-   watch:{
-    teacherType(newValue){
-      this.filterTeacher(newValue)
-    }
-   },
+
    methods: {
       addTeacher(){
          this.basemodal.show();
          this.buttonType='add'
       } ,
       registerTeacher(){
+        this.resultNotifier=''
        this.v$.$validate()
        if(!this.v$.$error){
          this.isLoading = true
@@ -194,22 +216,34 @@ export default {
            this.isSuccessed = true
            this.resultNotifier = 'You have registered one teacher succesfully'
            this.isLoading = false
+           this.basemodal.hide()
+           this.clearAddModal()
          }
           else{
-             console.log('form faild validation ')
+            throw ''
        }
-       }).catch(e=>{
+       }).catch(()=>{
          this.isSuccessed = false
          this.isFaild = true
-         this.resultNotifier = e.error
+         this.resultNotifier ='Faild to add teacher'
+       }).finally(()=>{
+         this.isLoading = false
        })
-       }
-       else{
-         console.log('error occured')
        }
       },
       cancelDialog(){
-          this.basemodal.hide();
+          this.basemodal.hide()
+      },
+      clearAddModal(){
+         this.teacher.first_name=''
+         this.teacher.last_name=''
+         this.teacher.phone_no=''
+         this.teacher.email=''
+         this.teacher.qualification=''
+         this.teacher.gpa=''
+         this.teacher.type=''
+         this.resultNotifier=''
+         this.v$.$reset()
       },
       editTeacher(teacher){
         this.basemodal.show();
@@ -217,12 +251,15 @@ export default {
         this.teacher.first_name = teacher.first_name
         this.teacher.last_name = teacher.last_name
         this.teacher.phone_no = teacher.phone_no
-        this.teacher.profession = teacher.profession
+        this.teacher.qualification = teacher.qualification
         this.teacher.email = teacher.email
+        this.teacher.gpa=teacher.gpa
         this.teacherId = teacher.id
+        this.teacher.type=teacher.type
          
       },
       saveEditedTeacher(){
+        this.resultNotifier=''
         this.v$.$validate()
         if(!this.v$.$error){
           this.isLoading = true
@@ -232,18 +269,18 @@ export default {
        this.$store.dispatch('dean/updateTeacher',this.teacher).then((response)=>{
          console.log(response)
          if(response.status === 200){
-           this.isFaild = false
-           this.isSuccessed = true
-           this.resultNotifier = 'You have updated one teacher succesfully'
-           this.isLoading = false
+           this.basemodal.hide()
+           this.clearAddModal()
          }
           else{
          console.log('updated data faild validation ')
        }
-       }).catch(e=>{
+       }).catch(()=>{
          this.isSuccessed = false
          this.isFaild = true
-         this.resultNotifier = e.error
+         this.resultNotifier = 'Faild to update teacher'
+       }).finally(()=>{
+          this.isLoading = false
        })
        }
        else{
@@ -254,18 +291,6 @@ export default {
       deleteTeacher(id){
          this.$store.dispatch('dean/deleteTeacher',id)
       },
-      filterTeacher(value){
-        if(value === 'all'){
-          this.teacherList = this.teachers
-        }
-        else{
-          this.teacherList = this.teachers.filter(teacher=>{
-          return value === teacher.type
-        })
-        }
-        
-      },
-           
    }, 
 }
 </script>
@@ -326,3 +351,4 @@ td{
     color: red;
   }
 </style>
+

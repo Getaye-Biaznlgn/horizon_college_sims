@@ -21,7 +21,7 @@ export default {
   components:{Activities,State, FeeMonth, AcademicTime},
   data(){
       return{
-          selectedComponent:'AcademicTime',
+          selectedComponent:'Activities',
           feeMonth:'',
           academicTime:'',
           months:[],
@@ -44,12 +44,10 @@ export default {
           this.selectedComponent=compName
         },
         setFeeMonth(feeMonth){
-          console.log('here from fee month parent', feeMonth)
           this.feeMonth=feeMonth
         },
         setAcademicTime(time){
            this.academicTime=time
-           console.log('ac time form parent', this.academicTime)
         },
      
        async saveAcadamicYear(activities){

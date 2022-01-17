@@ -63,6 +63,7 @@
                          </tr>
                      </tbody>
                  </table>
+                   <div v-if="!regularTeachers.length" class="text-center mt-1">There is no available record</div>
                </base-card>
           </div>
           
@@ -88,6 +89,7 @@
                          </tr>
                      </tbody>
                  </table>
+                 <div v-if="!partimeTeachers.length" class="text-center mt-1">There is no available record</div>
                </base-card>
           </div>
         </div>

@@ -41,7 +41,7 @@
 </base-card>
     
     <!-- registrar registration form dialog-->
-    <base-modal :is-loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar">
+    <base-modal :is-loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar" @cancel="clearAddModal">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -68,14 +68,14 @@
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
-</template>    
+    <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+ </template>    
   </base-modal>
 </template>
 <script>
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
-import { required, email, minLength,alpha,numeric,helpers, maxLength} from '@vuelidate/validators'
+import { required, email, minLength,numeric,helpers, maxLength} from '@vuelidate/validators'
 export default {
    data() {
        return {
@@ -101,10 +101,7 @@ export default {
      return {
       registrar:{
         first_name:{required: helpers.withMessage('first name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        last_name:{required: helpers.withMessage('last name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-               phone_no:{
+        last_name:{required: helpers.withMessage('last name can not be empty',required),               phone_no:{
               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
@@ -113,6 +110,8 @@ export default {
                email:{required:helpers.withMessage('email can not be empty',required),email}
 
       }
+     }
+   },
      }
    },
    mounted() {
@@ -128,7 +127,15 @@ export default {
          this.basemodal.show();
          this.buttonType = 'add'
       } ,
+      clearAddModal(){
+           this.registrar.first_name=''
+           this.registrar.last_name=''
+           this.registrar.phone_no=''
+           this.registrar.email=''
+           this.resultNotifier=''
+      },
       registerRegistrar(){
+        this.resultNotifier=''
        this.v$.$validate()
        if(!this.v$.$error){
          this.isLoading = true
@@ -138,6 +145,7 @@ export default {
            this.isSuccessed = true
            this.resultNotifier = 'You have registered one registrar succesfully'
            this.isLoading = false
+            this.basemodal.hide()
          }
           else{
          console.log('form faild validation ')
@@ -146,12 +154,12 @@ export default {
          this.isSuccessed = false
          this.isFaild = true
          this.resultNotifier = e.error
+       }).finally(()=>{
+           this.isLoading=false
        })
        }
       },
-      cancelDialog(){
-          this.basemodal.hide();
-      },
+    
       editRegistrar(registrar){
         this.basemodal.show();
         this.buttonType = 'edit'        
@@ -163,37 +171,30 @@ export default {
         this.registrarId = registrar.id
       },
       saveEditedRegistrar(){
+        this.resultNotifier=''
         this.v$.$validate()
          if(!this.v$.$error){
            this.isLoading = true
-         console.log('edit registrar')
-         console.log(this.registrar)
          this.registrar.id = this.registrarId
-       this.$store.dispatch('dean/updateRegistrar',this.registrar).then((response)=>{
-         console.log(response)
+         this.$store.dispatch('dean/updateRegistrar',this.registrar).then((response)=>{ 
          if(response.status === 200){
-           this.isFaild = false
-           this.isSuccessed = true
-           this.resultNotifier = 'You have updated one registrar succesfully'
-           this.isLoading = false
+           this.basemodal.hide()
          }
-          else{
-         console.log('updated data faild validation ')
-       }
-       }).catch(e=>{
+      else{
+        throw ''
+      }
+       }).catch(()=>{
          this.isSuccessed = false
          this.isFaild = true
-         this.resultNotifier = e.error
+         this.resultNotifier = 'Faild to update registrar'
+       }).finally(()=>{
+         this.isLoading = false
        })
-       }
-       else{
-         console.log('error occured')
        }
       },
       deleteRegistrar(id){
          this.$store.dispatch('dean/deleteRegistrar',id)
       }
-
    }, 
 }
 </script>

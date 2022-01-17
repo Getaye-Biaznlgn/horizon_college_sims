@@ -17,7 +17,7 @@
   </tr>
   <tbody>
   <tr v-for="(course,index) in courses" :key="course.id">
-    <td>{{index+1}}/{{course.id}}</td>
+    <td>{{index+1}}</td>
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
     <td>{{course.cp}}</td>
@@ -25,20 +25,21 @@
     <td>{{course.instructor}}</td>
     <td>
         <div class="dropdown">
-          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
-          </a>
-          <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
+           </a>
+           <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
               <li @click="showAssignBaseModal(course.id)"><span class="dropdown-item px-4 py-2">Assign Instructor</span></li>
               <li><span class="dropdown-item px-4 py-2">delete</span></li>
-          </ul>
+           </ul>
         </div>
     </td>
   </tr>
   </tbody>
-   <p v-if="!courses.length" class="my-2">There is no added course</p>
  </table>
+ <div v-if="!courses.length" class="mt-1 text-center">There is no added course</div>
 </base-card >
+
 <!-- assign instructor for section course -->
   <vue-modal :modalState="assignModalState">
      <div class="modal-content ms-auto me-auto bg-white m-4 px-2">
@@ -63,10 +64,10 @@
         <tbody>
           <tr v-for="(teacher, index) in filteredTeachers" :key="teacher.id">
            <td><input type="radio" v-model="sectionTeacherCourse.teacher_id" :value="teacher.id" id=""></td>
-           <td>{{index+1}}/{{teacher.id}}</td>
+           <td>{{index+1}}</td>
            <td>{{teacher.first_name +' '+teacher.last_name}}</td>
            <td>{{teacher.phone_no}}</td>
-           <td>{{teacher.profession}}</td>
+           <td>{{teacher.qualification}}</td>
           </tr>
         </tbody>
       </table>
@@ -75,18 +76,17 @@
        <div class="modal-footer">
           <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
            <button :disabled="isSaving "  type="button" @click="dismissModal" class="btn  px-4 btn-cancel border mx-3">CANCEL</button>
-           <button :disabled="isSaving || sectionTeacherCourse.teacher_id==''" type="button" @click="assignTeacher" class="btn  px-4 btn-save text-white mx-3">
+           <button :disabled="isSaving || sectionTeacherCourse.teacher_id==''" type="button" @click="assignTeacher" class="btn  px-4 btn-add text-white mx-3">
             <span v-if="isSaving">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                SAVING
             </span>      
             <span v-else>Assign</span>   
           </button>
-
        </div>
      </div>
- 
   </vue-modal>
+
 </template>
 <script>
 import {mapGetters} from 'vuex'
@@ -234,79 +234,24 @@ computed:{
  </script>
 
 <style scoped>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-.fa-sign-out-alt{
-  transform: rotate(-90deg);
-  font-size: 20px;
-}
-
 .back{
   font-size: 20px;
   color: #366ad3;
   cursor: pointer;
 }
-
-.btn-add{
-    background-color: #2f4587;
-}
-
-.btn-add:hover{
-  background-color: #4256b8;
-}
-
-.search, .action{
-  cursor: pointer;
-}
-.action:hover{
-  color: #fcc561;
-}
 input[type=radio]:checked{
- background-color: #2f4587;
- border: none;
+  background-color: #2f4587;
+  border: none;
 }
 input[type=radio]{
   transform: scale(1.4);
 }
-.search-input{
-    border-bottom-right-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-}
-.btn-save{
-    background-color: #2f4587;
-    border-radius: 0;
-}
-.btn-save:hover{
-  background-color: #425fb8;
-}
-.btn-cancel{
-  border-radius: 0;  
-}
-
   /* custome modal */
-  .modal-content{
-    width: 60%;
-  }
-  .modal-body{
-    max-height: 70vh;
-    overflow-y: scroll;
-  }
+.modal-content{
+  width: 60%;
+}
+.modal-body{
+  max-height: 70vh;
+  overflow-y: scroll;
+}
 </style>

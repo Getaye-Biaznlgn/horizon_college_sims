@@ -161,7 +161,7 @@ export default{
    async fetchEvents(){
          this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get("/api/events?per_page=4&&page=1")
+            var response = await apiClient.get("/api/get_events?per_page=4&&page=1")
             if (response.status === 200) {
               this.events=response.data.data
             } else {

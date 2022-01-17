@@ -65,8 +65,9 @@ export default {
             })
            }
           )
-      if(this.user.role==='dean'){  
-      this.$router.push({name:'DeanDashboard'})
+    if(this.user.role==='dean'){  
+      // let path=this.$route.path || '/staff/dean-dashboard'
+      // this.$router.replace(path)
       this.$store.dispatch('dean/fetchDashboardData')
       this.$store.dispatch('dean/fetchTeachers')
       this.$store.dispatch('dean/fetchDepartmentHeads')
@@ -85,6 +86,10 @@ export default {
        this.$store.dispatch('registrar/fetchLevels')   
       }
       else if(this.user.role==='department head'){
+      // this.$store.dispatch('dean/fetchDegreePrograms')
+      // this.$store.dispatch('dean/fetchTvetPrograms')
+    }
+      else if(this.user.role==='degree_head'){
         this.$router.push({name:'DegreeHeadDashboard'})
         this.$store.dispatch('degreeHead/fetchCourses')
         this.$store.dispatch('degreeHead/fetchSections')
@@ -104,15 +109,19 @@ export default {
       this.$store.dispatch('dean/fetchTvetPrograms')
         
       }
-
-      
-       this.$store.dispatch('fetchPrograms')
+    else if(this.user.role==='tvet_head'){
+        this.$store.dispatch('tvetHead/fetchModules')
+        this.$store.dispatch('tvetHead/fetchSections')
+        this.$store.dispatch('tvetHead/fetchStudentInLevels')
+      }
       
       this.$store.dispatch('teacher/fetchMySections', this.user.id)
       this.$store.dispatch('fetchPrograms')
        
-       if(this.user.role==='admin')
-          this.$router.push({name:'AdminDashboard'})  
+       if(this.user.role==='admin'){
+          this.$router.push({name:'AdminDashboard'}) 
+       }
+       this.$store.dispatch('fetchPrograms') 
     }
 }
 </script>
@@ -192,5 +201,11 @@ td{
 input[type="radio"]:checked{
  background-color: #2f4587;
  border: none;
+}
+
+.back{
+  font-size: 20px;
+  color: #366ad3;
+  cursor: pointer;
 }
 </style>

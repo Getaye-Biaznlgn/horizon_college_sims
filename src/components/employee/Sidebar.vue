@@ -3,7 +3,7 @@
       <ul class="navbar-nav">
         <li class="mx-2 mt-2">Main</li>
            <sidebar-item :isSubItem="false" :to="{name:'MyClass'}">
-            <span><i class="fas fa-tachometer-alt pe-2" ></i>MyClass</span>
+            <span><i class="fas fa-tachometer-alt pe-2" ></i>My Class</span>
          </sidebar-item>
 
        <!-- admin -->
@@ -74,7 +74,7 @@
                  <span>Teacher</span>
                </sidebar-item> 
                 <sidebar-item :isSubItem="true" :to="{name:'AddDepartmentHead'}">
-                 <span>Department head</span>
+                 <span>Dep. head</span>
                </sidebar-item> 
                 <sidebar-item :isSubItem="true" :to="{name:'AddRegistrar'}">
                  <span>Registrar</span>
@@ -199,19 +199,19 @@
             
          </collapse-sidebar-item> 
            <!-- degree department head -->
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadDashboard'}" v-if="user.role==='department head'">
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadDashboard'}" v-if="user.role==='degree_head'">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadCourse'}" v-if="user.role==='department head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadCourse'}" v-if="user.role==='degree_head'" >
             <span><i class="fas  fa-align-justify pe-2"></i>Course</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadSection'}" v-if="user.role==='department head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadSection'}" v-if="user.role==='degree_head'" >
             <span><i class="fas fa-layer-group pe-2"></i>Section</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadStudent'}" v-if="user.role==='department head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'DegreeHeadStudent'}" v-if="user.role==='degree_head'" >
             <span><i class="fas fa-user-graduate pe-2"></i>Students</span>
          </sidebar-item>
-         <collapse-sidebar-item label="Report" v-if="user.role==='department head'" > 
+         <collapse-sidebar-item label="Report" v-if="user.role==='degree_head'" > 
             <template #icon>
               <span><i class="fas fa-exclamation-circle pe-2"></i></span>
             </template>
@@ -226,19 +226,19 @@
          </collapse-sidebar-item>
          
          <!-- //tvet department head -->
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadDashboard'}" v-if="user.role==='department head'">
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadDashboard'}" v-if="user.role==='tvet_head'">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadModule'}" v-if="user.role==='department head'" >
-            <span ><i class="fas  fa-align-justify pe-2"></i>Course</span>
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadModule'}" v-if="user.role==='tvet_head'" >
+            <span ><i class="fas  fa-align-justify pe-2"></i>Module</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadSection'}" v-if="user.role==='department head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadSection'}" v-if="user.role==='tvet_head'" >
             <span><i class="fas fa-layer-group pe-2"></i>Section</span>
          </sidebar-item>
-         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadStudent'}" v-if="user.role==='department head'" >
+         <sidebar-item :isSubItem="false" :to="{name:'TvetHeadStudent'}" v-if="user.role==='tvet_head'" >
             <span><i class="fas fa-user-graduate pe-2"></i>Students</span>
          </sidebar-item>
-         <collapse-sidebar-item label="Repor" v-if="user.role==='department head'" > 
+         <collapse-sidebar-item label="Repor" v-if="user.role==='tvet_head'" > 
             <template #icon>
               <span><i class="fas fa-exclamation-circle pe-2"></i></span>
             </template>

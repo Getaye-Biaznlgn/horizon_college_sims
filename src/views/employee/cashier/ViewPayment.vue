@@ -203,16 +203,6 @@ rowNumber(newValue){
   this.queryObject.page = 1
   this.studentsPaid(this.queryObject)
 },
-//  paymentType(newValue){
-//    if(newValue === 'all'){
-//       this.queryObject.payment_type = ''
-//    }
-//    else{
-//       this.queryObject.payment_type = newValue
-//     this.studentsPaid(this.queryObject)
-//    }
-  
-//  },
   acYearId(newValue){
 this.$store.dispatch('cashier/fetchPaymentTypes',newValue)
  this.$store.dispatch('cashier/fetchPaymentTypes',newValue)
@@ -289,23 +279,6 @@ var date = new Date(dateValue)
         this.isIntervalDate = false
         this.isCustomDate = true
       }
-
-      // lastOneDay(){
-      //    this.queryObject.date_interval = 1
-      //     this.studentsPaid(this.queryObject)
-      //   this.isDateSelection = false
-      //   console.log('query data = ',this.queryObject)
-      // },
-      // lastSevenDay(){
-      //    this.queryObject.date_interval = 7
-      //     this.studentsPaid(this.queryObject)
-      //   this.isDateSelection = false
-      // },
-      // lastMonth(){
-      //    this.queryObject.date_interval = 30
-      //     this.studentsPaid(this.queryObject)
-      //   this.isDateSelection = false
-      // }
 
     }
 }

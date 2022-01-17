@@ -22,11 +22,9 @@
       <th>Student ID</th>
       <th>Full Name</th>
       <th>Sex</th>
-      <th>11%</th>
-      <th>12%</th>
-      <th>12%</th>
-      <th>25%</th>
-      <th>40%</th>
+      <th>20%</th>
+      <th>30%</th>
+      <th>50%</th>
       <th>100%</th>
       <th><span class="sr-only"></span></th>
     </tr>
@@ -38,11 +36,9 @@
       <td>{{student.student_id}}</td>
       <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
-      <td>{{student.from_11}}</td>
-      <td>{{student.from_12}}</td>
-      <td>{{student.from_12s}}</td>
-      <td>{{student.from_25}}</td>
-      <td>{{student.from_40}}</td>
+      <td>{{student.from_20}}</td>
+      <td>{{student.from_30}}</td>
+      <td>{{student.from_50}}</td>
       <td>{{student.result}}</td>
       <td>
           <div class="dropdown">
@@ -65,30 +61,20 @@
  <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearModal">
    <template #modalBody>
       <form @submit.prevent>
-        <div class="mb-3" :class="{warining:v$.result.from_11.$error}">
-           <label for="#from_11" class="form-label">From 11%</label>
-           <input class="form-control" v-model.trim="result.from_11" @blur="v$.result.from_11.$touch" id="from_11" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_11.$errors" :key="index">{{ error.$message+", " }}</span>
+        <div class="mb-3" :class="{warining:v$.result.from_20.$error}">
+           <label for="#from_20" class="form-label">From 20%</label>
+           <input class="form-control" v-model.trim="result.from_20" @blur="v$.result.from_20.$touch" id="from_20" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_20.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
-         <div class="mb-3" :class="{warining:v$.result.from_12s.$error}">
-           <label for="#from_12s" class="form-label">From 12%</label>
-           <input class="form-control" v-model.trim="result.from_12s" @blur="v$.result.from_12s.$touch" id="from_12s" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_12s.$errors" :key="index">{{ error.$message+", " }}</span>
+         <div class="mb-3" :class="{warining:v$.result.from_30.$error}">
+           <label for="#from_30" class="form-label">From 20%</label>
+           <input class="form-control" v-model.trim="result.from_30" @blur="v$.result.from_30.$touch" id="from_30" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_30.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
-         <div class="mb-3" :class="{warining:v$.result.from_12.$error}">
-           <label for="#from_12" class="form-label">From 12%</label>
-           <input class="form-control" v-model.trim="result.from_12" @blur="v$.result.from_12.$touch" id="from_12" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_12.$errors" :key="index">{{ error.$message+", " }}</span>
-        </div>
-         <div class="mb-3" :class="{warining:v$.result.from_25.$error}">
-           <label for="#from_25" class="form-label">From 25%</label>
-           <input class="form-control" v-model.trim="result.from_25" @blur="v$.result.from_25.$touch" id="from_25" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_25.$errors" :key="index">{{ error.$message+", " }}</span>
-        </div>
-         <div class="mb-3" :class="{warining:v$.result.from_40.$error}">
-           <label for="#from_40" class="form-label">From 40%</label>
-           <input class="form-control" v-model.trim="result.from_40" @blur="v$.result.from_40.$touch" id="from_40" type="text"  aria-label=".form-control">
-           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_40.$errors" :key="index">{{ error.$message+", " }}</span>
+         <div class="mb-3" :class="{warining:v$.result.from_50.$error}">
+           <label for="#from_50" class="form-label">From 50%</label>
+           <input class="form-control" v-model.trim="result.from_50" @blur="v$.result.from_50.$touch" id="from_50" type="text"  aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_50.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
       </form>
       <request-status-notifier :notificationMessage="requestStatus.message" :isNotSucceed="requestStatus.isNotSucceed" ></request-status-notifier>
@@ -109,11 +95,9 @@ export default {
             v$:vuelidate(),
             students:[],
             result:{
-                from_11:'',
-                from_12:'',
-                from_25:'',
-                from_12s:'',
-                from_40:'',
+                from_20:'',
+                from_30:'',
+                from_50:'',
             },
             requestStatus:{
                 message:'',
@@ -137,8 +121,6 @@ export default {
             return student.student_id.toLowerCase().startsWith(this.searchValue.toLowerCase())
           })
          }
-       
-        
           return tempStudents
        }
     },
@@ -148,13 +130,13 @@ export default {
         },
          showAddDialog(result){
            this.result={...result}
-             this.actionButtonType='add'
-             this.addBaseModal.show()
+           this.actionButtonType='add'
+           this.addBaseModal.show()
          },
          clearModal(){
             //  this.result=''
             this.requestStatus.message=''
-             this.v$.$reset()
+            this.v$.$reset()
          },
         async save(){
              this.v$.$validate()
@@ -164,15 +146,13 @@ export default {
                     let response= await apiClient.post('api/teacher_set_result/'+this.result.id, {
                       type:this.section.type,
                       course_id:this.section.course_id,
-                      total_mark:Number(this.result.from_11)+Number(this.result.from_12)+Number(this.result.from_12s)+Number(this.result.from_25)+Number(this.result.from_40),
-                      from_11:this.result.from_11,
-                      from_12:this.result.from_12,
-                      from_12s:this.result.from_12s,
-                      from_25:this.result.from_25,
-                      from_40:this.result.from_40,
+                      total_mark:Number(this.result.from_20)+Number(this.result.from_5)+Number(this.result.from_5s)+Number(this.result.from_30)+Number(this.result.from_50),
+                      from_20:this.result.from_20,
+                      from_30:this.result.from_30,
+                      from_50:this.result.from_50,
                       
                     })
-                    this.result.result=Number(this.result.from_11)+Number(this.result.from_12)+Number(this.result.from_12s)+Number(this.result.from_25)+Number(this.result.from_40)
+                    this.result.result=Number(this.result.from_20)+Number(this.result.from_5)+Number(this.result.from_5s)+Number(this.result.from_30)+Number(this.result.from_50)
                     if(response.status===200){
                       const index=this.students.findIndex((student)=>{
                           return student.id===this.result.id
@@ -216,39 +196,24 @@ export default {
     validations(){
         return{
             result:{
-                from_11:{
+                from_20:{
                     numeric:helpers.withMessage('Value should be number', numeric),
-                    maxValue:helpers.withMessage('Shouldn\'t be greater than 11', maxValue(11)),
+                    maxValue:helpers.withMessage('Shouldn\'t be greater than 20', maxValue(20)),
                     minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
                      required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
-
             },
-                 from_12:{
+                 from_30:{
                     numeric:helpers.withMessage('Value should be number', numeric),
-                    maxValue:helpers.withMessage('Shouldn\'t be greater than 12', maxValue(12)),
+                    maxValue:helpers.withMessage('Shouldn\'t be greater than 30', maxValue(30)),
                     minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
                     required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
 
                },
-                 from_12s:{
+                 from_50:{
                     numeric:helpers.withMessage('Value should be number', numeric),
-                    maxValue:helpers.withMessage('Shouldn\'t be greater than 12', maxValue(12)),
+                    maxValue:helpers.withMessage('Shouldn\'t be greater than 50', maxValue(50)),
                     minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
                     required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
-               },
-                 from_25:{
-                    numeric:helpers.withMessage('Value should be number', numeric),
-                    maxValue:helpers.withMessage('Shouldn\'t be greater than 25', maxValue(25)),
-                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
-                    required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
-
-               },
-                 from_40:{
-                    numeric:helpers.withMessage('Value should be number', numeric),
-                    maxValue:helpers.withMessage('Shouldn\'t be greater than 40', maxValue(40)),
-                    minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
-                    required:helpers.withMessage('Can\'t be empty,at least make it 0 ', required)
-
                }
             }
         }

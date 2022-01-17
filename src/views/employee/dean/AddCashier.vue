@@ -41,7 +41,7 @@
 </base-card>
 
     <!-- cashier registration form dialog-->
-    <base-modal :is-Loading="isLoading" id="baseModal" :button-Type="buttonType" @edit="saveEditedCashier" @save="registerCashier">
+    <base-modal :is-Loading="isLoading" id="baseModal" :button-Type="buttonType" @edit="saveEditedCashier" @save="registerCashier" @cancel="clearAddModal">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -68,7 +68,7 @@
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
+    <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
  </template>    
   </base-modal>
 </template>
@@ -125,6 +125,13 @@ export default {
      },
    },
    methods: {
+     clearAddModal(){
+         this.cashier.first_name='',
+            this.cashier.last_name=''
+            this.cashier.phone_no=''
+            this.cashier.email=''
+            this.resultNotifier=''
+     },
       addCashier(){
          this.basemodal.show();
          this.buttonType = 'add'
@@ -138,6 +145,9 @@ export default {
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You have registered one Cashier succesfully'
+            this.basemodal.hide()
+            this.v$.$reset()  
+            this.resultNotifier=''
            this.isLoading = false
          }
          else{
@@ -164,24 +174,17 @@ export default {
        this.v$.$validate()
         if(!this.v$.$error){
           this.isLoading = true
-         console.log('edit cashier')
-         console.log(this.cashier)
-         this.cashier.id = this.cashierId
-       this.$store.dispatch('dean/updateCashier',this.cashier).then((response)=>{
-         console.log(response)
-         if(response.status === 200){
-           this.isFaild = false
-           this.isSuccessed = true
-           this.resultNotifier = 'You have updated one cashier succesfully'
-           this.isLoading = false
-         }
-          else{
-         console.log('updated data faild validation ')
-       }
+          this.cashier.id = this.cashierId
+        this.$store.dispatch('dean/updateCashier',this.cashier).then(()=>{
+          this.basemodal.hide()
+          this.v$.$reset()   
+          this.resultNotifier=''
        }).catch(e=>{
          this.isSuccessed = false
          this.isFaild = true
          this.resultNotifier = e.error
+       }).finally(()=>{
+            this.isLoading=true
        })
        }
        else{

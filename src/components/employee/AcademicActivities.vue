@@ -84,7 +84,7 @@
                         <td>{{act.task}}</td>
                         <td class="text-center" style="white-space:nowrap !important">
                            <span @click="showEditModal('extensionFirst',index)" role="button"><i class="far fa-edit fs-4"></i></span>
-                           <span role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
+                           <span @click="deleteItem('extensionFirst', index)" role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
                          </td>
                       </tr>
                    </table>
@@ -110,7 +110,7 @@
                     <td>{{act.task}}</td>
                     <td class="text-center" style="white-space:nowrap !important">
                       <span @click="showEditModal('extensionSecond', index)" role="button"><i class="far fa-edit fs-4"></i></span>
-                      <span role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
+                      <span @click="deleteItem('extensionSecond', index)" role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
                     </td>
                 </tr>
           </table>
@@ -136,7 +136,7 @@
                    <td>{{act.task}}</td>
                    <td class="text-center" style="white-space:nowrap !important">
                       <span @click="showEditModal('extensionThird',index)" role="button"><i class="far fa-edit fs-4"></i></span>
-                      <span role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
+                      <span @click="deleteItem('regularThird', index)" role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
                    </td>
                 </tr>
           </table>
@@ -168,7 +168,7 @@
                   <td>{{act.task}}</td>
                   <td class="text-center" style="white-space:nowrap !important">
                       <span @click="showEditModal('tvetActivity',index)" role="button"><i class="far fa-edit fs-4"></i></span>
-                      <span role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
+                      <span @click="deleteItem('tvetActivity', index)" role="button" class="ms-3"><i class="fas fa-backspace fs-4"></i></span>
                   </td>
                 </tr>
           </table>
@@ -184,7 +184,7 @@
               <span   class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 Saving
               </span>      
-            <span v-else>Save</span>   
+            <span v-else>Finish</span>   
           </button>
       </div>
   </div>
@@ -342,22 +342,22 @@ export default {
         this.v$.$validate()
       if(!this.v$.$error){
            if(this.semesterType==='regularFirst'){
-              this.activities.regular.firstSemester.unshift({...this.plan})
+              this.activities.regular.firstSemester.push({...this.plan})
             }
             else if(this.semesterType==='regularSecond'){
-              this.activities.regular.secondSemester.unshift({...this.plan})
+              this.activities.regular.secondSemester.push({...this.plan})
             }
             else if(this.semesterType==='extensionFirst'){
-              this.activities.extension.firstSemester.unshift({...this.plan})
+              this.activities.extension.firstSemester.push({...this.plan})
             }
             else if(this.semesterType==='extensionSecond'){
-              this.activities.extension.secondSemester.unshift({...this.plan})
+              this.activities.extension.secondSemester.push({...this.plan})
             }
             else if(this.semesterType==='extensionThird'){
-              this.activities.extension.thirdSemester.unshift({...this.plan})
+              this.activities.extension.thirdSemester.push({...this.plan})
             }
             else if(this.semesterType==='tvetActivity'){
-              this.activities.tvet.unshift({...this.plan})
+              this.activities.tvet.push({...this.plan})
             }
             this.modalState=false 
             this.plan.task=''
