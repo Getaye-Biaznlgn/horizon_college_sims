@@ -83,12 +83,10 @@ export default {
             var response = await apiClient.get("/api/admin_dashboard2")
             if (response.status === 200) {
               this.studentStatistics=response.data
-            } else {
+             } else {
               throw 'Failed to fetch news'
             }
-        } catch (e) {
-            console.log(e.response)
-        } finally {
+        }finally {
             this.$store.commit('setIsItemLoading', false)
         }
        },
@@ -98,12 +96,11 @@ export default {
             var response = await apiClient.get("/api/admin_dashboard")
             if (response.status === 200) {
               this.inComeStatistics=response.data
+              console.log('admin stastics',response.data)
             } else {
               throw 'Failed to fetch news'
             }
-        } catch (e) {
-            console.log(e.response)
-        } finally {
+        }finally {
             this.$store.commit('setIsItemLoading', false)
         }
        }

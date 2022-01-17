@@ -3,7 +3,7 @@
       <ul class="navbar-nav">
         <li class="mx-2 mt-2">Main</li>
            <sidebar-item :isSubItem="false" :to="{name:'MyClass'}">
-            <span><i class="fas fa-tachometer-alt pe-2" ></i>MyClass</span>
+            <span><i class="fas fa-tachometer-alt pe-2" ></i>My Class</span>
          </sidebar-item>
 
        <!-- admin -->
@@ -180,7 +180,7 @@
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
          <sidebar-item :isSubItem="false" :to="{name:'TvetHeadModule'}" v-if="user.role==='tvet_head'" >
-            <span ><i class="fas  fa-align-justify pe-2"></i>Course</span>
+            <span ><i class="fas  fa-align-justify pe-2"></i>Module</span>
          </sidebar-item>
          <sidebar-item :isSubItem="false" :to="{name:'TvetHeadSection'}" v-if="user.role==='tvet_head'" >
             <span><i class="fas fa-layer-group pe-2"></i>Section</span>

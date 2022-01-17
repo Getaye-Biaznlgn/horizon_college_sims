@@ -17,7 +17,7 @@
   <thead>
     <tr>
       <th>NO</th>
-      <th>Stud ID</th>
+      <th>Student ID</th>
       <th>Full Name</th>
       <th>sex</th>
     
@@ -45,6 +45,7 @@
     </tr>
    </tbody>
   </table>
+  <div v-if="!students.length" class="text-center mt-1">Students don't added yet!</div>
 </base-card >
 <!-- Modal -->
 <transition>

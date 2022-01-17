@@ -89,10 +89,10 @@
       </div>
     </td>
   </tr>
-   <p v-if="!courses.length" class="my-2">There is no added course</p>
-  <p v-if="courses.length && !filteredCourses.length" class="my-2">There is no filtered course</p>
- 
  </table>
+  <div v-if="!courses.length" class="mt-1 text-center">There is no added course</div>
+  <div v-if="courses.length && !filteredCourses.length" class="mt-1 text-center">There is no filtered course</div>
+ 
 </base-card>
 <!-- ///add -->
 <base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="removeModalValue">
@@ -217,9 +217,14 @@ export default {
     }
   },
 computed:{
-    ...mapGetters({degreeDepartments:'dean/degreeDepartments',courses:'dean/courses',degreePrograms:'dean/degreePrograms'}),
+    ...mapGetters({degreeDepartments:'dean/degreeDepartments',courses:'dean/courses', programs:'programs'}),
+   degreePrograms(){
+      return this.programs.filter((program)=>{
+        return program.type==='degree'
+      })
+      },
   filteredCourses(){
-
+    
      ////////////search
       let tempCourses=[...this.courses]
       if(this.searchValue!=''&& this.searchValue){
@@ -348,6 +353,7 @@ computed:{
         this.request('dean/addCourse','Faild to add course')
       },
      async request(action, errorMessage){
+       this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
          this.isSaving=true
@@ -356,17 +362,14 @@ computed:{
             this.addBaseModal.hide()
             this.removeModalValue()
            this.isNotSucceed=false
-         }).catch((e)=>{
+         }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
-           console.log('response with status'+e)
          }).finally(()=>{
           this.isSaving=false
          })
        }
-       else{
-         console.log('form  validation faild')
-       }
+     
       },
      
     },
@@ -374,7 +377,6 @@ computed:{
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
    this.deleteBaseModal=new Modal(document.getElementById('deleteBaseModal'))
   }
-   
  }
  </script>
 

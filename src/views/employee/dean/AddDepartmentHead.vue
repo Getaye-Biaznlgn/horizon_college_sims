@@ -39,7 +39,7 @@
 
     </base-card>
     <!-- department head registration form dialog-->
-    <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead">
+    <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead" @cancel="clearAddModal">
     <template #modalBody>
     <div class="bg-white p-3">
 
@@ -66,7 +66,7 @@
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
+    <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
 </template>    
   </base-modal>
 </template>
@@ -110,8 +110,7 @@ export default {
                max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
                },
                email:{required:helpers.withMessage('email can not be empty',required),email}
-
-      }
+        }
      }
    },
    mounted() {
@@ -127,16 +126,24 @@ export default {
          this.basemodal.show();
          this.buttonType = 'add'
       } ,
+      clearAddModal(){
+        this.departmentHead.first_name =''
+        this.departmentHead.last_name = ''
+        this.departmentHead.phone_no = ''
+        this.departmentHead.email = ''
+        this.resultNotifier=''
+       this.v$.$reset()
+      },
       registerDepartmentHead(){
+        this.resultNotifier=''
        this.v$.$validate()
        if(!this.v$.$error){
          this.isLoading = true
        this.$store.dispatch('dean/addDepartmentHead',this.departmentHead).then((response)=>{
          if(response.status === 201){
-           this.isFaild = false
-           this.isSuccessed = true
            this.isLoading = false
            this.basemodal.hide()
+           this.clearAddModal()
          }
           else{
          console.log('form faild validation ')
@@ -159,27 +166,23 @@ export default {
         this.deptHeadId = departmentHead.id
       },
       saveEditedDeptHead(){
+        this.resultNotifier=''
         this.v$.$validate()
          if(!this.v$.$error){
            this.isLoading = true
-         console.log('edit departmentHead')
-         console.log(this.departmentHead)
          this.departmentHead.id=this.deptHeadId
        this.$store.dispatch('dean/updateDepartmentHead',this.departmentHead).then((response)=>{
-         console.log(response)
          if(response.status === 200){
-           this.isFaild = false
-           this.isSuccessed = true
-           this.isLoading = false
+           
            this.basemodal.hide()
+           this.clearAddModal()
          }
-          else{
-         console.log('updated data faild validation ')
-       }
-       }).catch(e=>{
+       }).catch(()=>{
          this.isSuccessed = false
          this.isFaild = true
-         this.resultNotifier = e.error
+         this.resultNotifier = 'Faild to update head'
+       }).finally(()=>{
+         this.isLoading = false
        })
        }
        else{

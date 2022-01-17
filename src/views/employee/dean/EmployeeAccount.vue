@@ -19,11 +19,11 @@
     <th><span class="sr-only">action</span></th>
   </tr>
   <tr v-for="(employee, index) in employees" :key="employee.id">
-    <td>{{index+1}}</td>
+    <td>{{index+1+current_page*per_page-per_page}}</td>
     <td>{{employee.first_name+' '+employee.last_name}}</td>
     <td>{{employee.phone_no}}</td>
     <td>{{employee.email}}</td>
-    <td>{{employee.role}}</td>
+    <td>{{employee.role.toLowerCase().split('_').join(' ')}}</td>
     <td>
     <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -37,7 +37,7 @@
   </tr>
  </table>
   <div v-if="!employees.length" class="text-center">
-     There is no recored available
+     There is no record available
  </div>
    <div v-if="employees.length" class="mt-2 d-flex justify-content-end">
       <span class="pe-4 small">Rows per page {{per_page}}</span>
@@ -115,8 +115,6 @@ export default {
             } else {
               throw 'Failed to fetch employee'
             }
-        } catch (e) {
-            console.log(e.response)
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }

@@ -6,6 +6,7 @@ export default{
             var response = await apiClient.get("/api/department_modules")
             if (response.status === 200) {
                 context.commit('setModules', response.data)
+                console.log('TVET head modules', response.data)
             } else {
                 throw 'faild to load degree department'
             }
@@ -34,6 +35,7 @@ export default{
             var response = await apiClient.get("/api/tvet_department_students")
             if (response.status === 200) {
                 context.commit('setStudentInLevels', response.data)
+                console.log('tvet dep students', response.data)
             } else {
                 throw 'faild to load degree department'
             }

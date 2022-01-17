@@ -2,8 +2,8 @@ export default{
     setModules(state, payload){
         state.modules=payload
     },
-    setSections(state,payload){
-        state.sections=payload
+    setSections(state,section){
+        state.sections=section
     },
     setStudentInLevels(state, payload){
         state.studentInLevels=payload

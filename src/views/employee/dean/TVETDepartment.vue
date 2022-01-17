@@ -8,6 +8,7 @@
   <tr>
     <th>No</th>
     <th>Department Name</th>
+    <th>Abbreviation</th>
     <th>Sector</th>
     <th>Department Head</th>
     <th><span class="sr-only">action</span></th>
@@ -15,6 +16,7 @@
   <tr v-for="(department, index) in tvetDepartments" :key="department.id">
     <td>{{index +1 }}</td>
     <td>{{department.name}}</td>
+    <td>{{department.short_name}}</td>
     <td>{{department.sector}}</td>
     <td>{{department.department_head}}</td>
     <td>
@@ -24,7 +26,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
-             <li @click="showEditModal(department)"><span  class="dropdown-item" >Edit</span></li>
+             <!-- <li @click="showEditModal(department)"><span  class="dropdown-item" >Edit</span></li> -->
              <li @click="showDeleteModal(department)"><span   class="dropdown-item">Delete</span></li>
              <li v-if="!department.department_head" @click="showAssignModal(department)"><span  class="dropdown-item">Assign Head</span></li>
              <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign Head</span> </li>
@@ -37,7 +39,7 @@
 </base-card>
 
 <!-- //add -->
- <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @edit="edit">
+ <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @edit="edit" @cancel="clearAddModal">
    <template #modalBody>
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.department.name.$error}">
@@ -46,6 +48,12 @@
            <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
        
+       <div class="mb-3" :class="{warining:v$.department.short_name.$error}">
+           <label for="#departmentShort" class="form-label">Abbreviation</label>
+           <input class="form-control" v-model.trim="department.short_name" @blur="v$.department.short_name.$touch" id="departmentShort" type="text" placeholder="Eg. Accounting" aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.department.short_name.$errors" :key="index">{{ error.$message+", " }}</span>
+        </div> 
+
        <div class="mb-3" :class="{warining:v$.department.sector.$error}">
            <label for="#departmentSector" class="form-label">Sector</label>
            <input class="form-control" v-model.trim="department.sector" @blur="v$.department.sector.$touch" id="departmentSector" type="text" aria-label=".form-control">
@@ -150,6 +158,7 @@ export default {
       department:{
         id:'',
       name:'',
+      short_name:'',
       sector:'',
       levelOneOccupationName:'',
       levelTwoOccupationName:'',
@@ -172,6 +181,9 @@ export default {
              name:{
                required: helpers.withMessage('department name can not be empty',required),
              },
+             short_name:{
+               required: helpers.withMessage('Short name can not be empty',required),
+             },
              sector:{
                required: helpers.withMessage('sector can not be empty',required),
              },
@@ -185,6 +197,9 @@ export default {
       showAddModal(){
         this.actionButtonType="add"
         this.addBaseModal.show()
+      },
+      clearAddModal(){
+       this.v$.$reset()
       },
       showDetailModal(index){
         this.actionButtonType="detail"
@@ -208,6 +223,7 @@ export default {
       },
         clearDeleteModal(){
         this.responseMessage=''
+
       },
         async unAssign(){
          this.responseMessage=''
@@ -221,7 +237,7 @@ export default {
           this.unassignBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
-           this.responseMessage='Faild to delete Department Head'
+           this.responseMessage='Faild to remove Department Head'
          }).finally(()=>{
           this.isSaving=false
          })
@@ -240,8 +256,8 @@ export default {
           this.isSaving=false
          })
        },
-      showEditModal(dep){
-        console.log('dep for edit----',dep)
+      showEditModal(){
+        // console.log('dep for edit----',dep)
         // let department=this.tvetDepartments[index]
         // this.actionButtonType="edit"
         // this.department.id=department['id']
@@ -251,13 +267,17 @@ export default {
         // this.department.levelTwoOccupationName=department?.levels[1].occupation_name
         // this.department.levelThreeOccupationName=department?.levels[2].occupation_name
         // this.department.levelFourOccupationName=department?.levels[3].occupation_name
-        this.addBaseModal.show()
+        // this.addBaseModal.show()
       },
         async assignHead(){
          this.responseMessage=''
           this.isSaving=true
           await this.$store.dispatch('dean/assignTvetDepartmentHead',this.assignDepartmentHead)
           .then(()=>{
+            const index= this.unassignedHeads.findIndex((head)=>{
+             return head.id===this.assignDepartmentHead.employee_id
+           })
+           this.unassignedHeads.splice(index,1)
            this.assignBaseModal.hide()
            
          }).catch(()=>{
@@ -284,6 +304,7 @@ export default {
           await this.$store.dispatch(action,{
            id:this.department.id ,
            name:this.department.name,
+           short_name:this.department.short_name,
            sector:this.department.sector,
            levels:[{
              occupation_name:this.department.levelOneOccupationName,
@@ -305,8 +326,7 @@ export default {
          })
          .then(()=>{
            this.isNotSucceed=false,
-           this.responseMessage=successMessage
-           console.log('response with status')
+           this.addBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
@@ -347,6 +367,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-
-</style>

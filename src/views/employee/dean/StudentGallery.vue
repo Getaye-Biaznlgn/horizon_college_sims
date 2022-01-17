@@ -224,8 +224,6 @@ export default {
 .img-overly{
   display: none;
   background-color: rgba(255, 255, 255, 0.6);
- /* width: 200px !important;
- height: 200px!important; */
 }
 .img-content:hover .img-overly{
   display: block;

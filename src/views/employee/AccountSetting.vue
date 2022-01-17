@@ -1,6 +1,6 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
-       <strong class="fw-bold d-block mb-3">Accounting Setting</strong> 
+       <strong class="fw-bold d-block mb-3">Account Setting</strong> 
        <div class=" border-bottom mb-2"> <strong>Name</strong>  <span class="ms-5">{{user.first_name+' '+user.last_name}}</span></div>  
        <div class="border-bottom mb-2"><strong>Email</strong>  <span class="ms-5">{{user.email}}</span></div>
        <div class="border-bottom mb-2"><strong>Phone Number</strong>  <span class="ms-5">{{user.phone_no}}</span></div>

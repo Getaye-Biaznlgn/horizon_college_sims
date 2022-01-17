@@ -2,7 +2,7 @@
    <div class="p-1 bg-white shadow-sm d-flex">
       <img src="../../assets/logo.png" class="ms-3 align-self-center" height="50">
       <div class="pt-3">
-         <h5 class="d-inline fw-bold ms-3">HORIZON</h5>
+         <h5 class="d-inline ms-3">Horizon</h5>
       </div>
       <!-- v-if="user.role==='department head'" -->
       <div  class="ms-5 ps-4 pt-1 d-flex">

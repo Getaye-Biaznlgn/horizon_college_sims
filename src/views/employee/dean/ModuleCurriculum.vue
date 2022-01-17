@@ -33,7 +33,7 @@
   <tr>
     <th>No</th>
     <th>Module Code</th>
-    <th>UC</th>
+    <th>Units Of Competence</th>
     <th>Training Hour</th>
     <th>Department</th>
     <th>Occupation Level</th>
@@ -59,10 +59,10 @@
       </div>
     </td>
   </tr>
+</table>
+  <p v-if="!modules.length" class="mt-1 text-center">There is no added module</p>
+  <p v-if="modules.length && !filteredModules.length" class="mt-1 text-center">There is no filtered module</p>
  
-  <p v-if="!modules.length" class="my-2">There is no added module</p>
-  <p v-if="modules.length && !filteredModules.length" class="my-2">There is no filtered module</p>
- </table>
 </base-card>
 <base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType">
    <template #modalBody>
@@ -227,12 +227,19 @@ export default {
         })
         return dep
       },
-
        
        showDeleteModal(course){
         this.moduleForDelete=course
         this.actionButtonType='delete'
         this.deleteBaseModal.show()
+      },
+      clearAddModal(){
+         this.modul.title=''
+         this.modul.code=''
+         this.modul.training_hour=''
+         this.modul.tvet_department_id=''
+         this.modul.level_id=''
+         this.v$.$reset()
       },
        clearDeleteModal(){
         this.responseMessage=''
@@ -252,19 +259,19 @@ export default {
          })
        },
       edit(){
-         this.request('dean/updateModule', 'Course updated successfully', 'Faild to update course')
+         this.request('dean/updateModule', 'Faild to update module')
       },
       save(){
-         this.request('dean/addModule', 'Course added successfully', 'Faild to add course')
+         this.request('dean/addModule', 'Faild to add module')
       },
-     async request(action, successMessage, errorMessage){
+     async request(action, errorMessage){
+       this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
          this.isSaving=true
           await this.$store.dispatch(action,this.modul)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage=successMessage
+           this.addBaseModal.hide()
          }).catch((e)=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
@@ -288,57 +295,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-/* table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.btn-add{
-    background-color: #ff9500;
-}
-.btn-add:hover{
-  background-color: #eca643;
-}
-.search{
-  cursor: pointer;
-}
-.search-input{
-    border-bottom-right-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-}
-.action{
-  cursor: pointer;
-}
-.action:hover{
-  color: #fcc561;
-}
-input[type="radio"]:checked{
- background-color: #ff9500;
- border: none;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-  } */
-</style>

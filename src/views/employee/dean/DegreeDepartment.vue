@@ -10,12 +10,14 @@
   <tr>
     <th>No</th>
     <th>Department Name</th>
+    <th>Abbreviation</th>
     <th>Department Head</th>
     <th><span class="sr-only">action</span></th>
   </tr>
   <tr v-for="(department, index) in degreeDepartments" :key="department.id">
     <td>{{index+1}}</td>
     <td>{{department.name}}</td>
+    <td>{{department.short_name}}</td>
     <td>{{department.department_head}}</td>
     <td>
      <div class="dropdown">
@@ -42,10 +44,16 @@
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.department.name.$error}">
            <label for="#departmentName" class="form-label">Department Name</label>
-           <input class="form-control " v-model.trim="department.name" @blur="v$.department.name.$touch" id="departmentName" type="text" placeholder="Eg. Accounting" aria-label=".form-control">
-            <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
+           <input class="form-control " v-model.trim="department.name" @blur="v$.department.name.$touch" id="departmentName" type="text" placeholder="Eg. Management" aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.department.name.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
    
+        <div class="mb-3" :class="{warining:v$.department.short_name.$error}">
+           <label for="#departmentName" class="form-label">Abbreviation</label>
+           <input class="form-control " v-model.trim="department.short_name" @blur="v$.department.short_name.$touch" id="shortName" type="text" placeholder="Eg. mgt" aria-label=".form-control">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.department.short_name.$errors" :key="index">{{ error.$message+", " }}</span>
+        </div> 
+
         <div class="my-2">Regular</div>
         <div class="row">
            <div class="col mb-3">
@@ -68,7 +76,7 @@
               <label class="form-label " for="#semesters">How many semesters?</label>
               <input class="form-control " v-model.trim="department.extension.noSemester" id="semesters" type="number"  min="1" max="30" aria-label=".form-control-lg">
             </div> 
-      </div>
+        </div>
       </form>
       <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
@@ -133,7 +141,7 @@
 <script>
 import { Modal } from 'bootstrap';
 import {mapGetters} from 'vuex'
-import {required,helpers} from '@vuelidate/validators'
+import {required,helpers, maxLength} from '@vuelidate/validators'
 import useValidate from '@vuelidate/core'
 import apiClient from '../../../resources/baseUrl'
 import RequestStatusNotifier from '../../../components/RequestStatusNotifier.vue';
@@ -153,9 +161,7 @@ export default {
       //
       isSaving:false,
       detailShowingDepartment:null,
-      
       actionButtonType:'',
-
       //server response issue
       responseMessage:'',
       isNotSucceed:true,
@@ -163,6 +169,7 @@ export default {
       department:{
         id:'',
         name:'',
+        short_name:'',
       regular:{
         noYear:'',
         noSemester:''
@@ -170,7 +177,7 @@ export default {
       extension:{
         noYear:'',
         noSemester:''
-      }
+       }
       },
       assignDepartmentHead:{
         department_id:'',
@@ -179,7 +186,6 @@ export default {
       unassignDepHead:{},
       depForDelete:{},
       unassignedHeads:[]
-      
     }
   },
   computed:{
@@ -194,12 +200,16 @@ export default {
              name:{
                 required: helpers.withMessage('department name can not be empty',required),
                },
+               short_name:{
+                required: helpers.withMessage('Short name can not be empty',required),
+                max: helpers.withMessage('Abbreviation should be 3 letters', maxLength(3))
+              },
              regular:{
                noYear:{
                  required:helpers.withMessage('Number of year can not be empty', required)
                }
-             }  
-           }
+           }  
+        }
      }
   },
  
@@ -216,6 +226,7 @@ export default {
       showEditModal(dep){
         this.department.id=dep.id
         this.department.name=dep.name
+        this.department.short_name=dep.short_name
         this.department.regular.noYear=dep.programs[0].no_of_year
         this.department.regular.noSemester=dep.programs[0].no_of_semester
         this.department.extension.noYear=dep.programs[0].no_of_year
@@ -263,7 +274,7 @@ export default {
           this.unassignBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
-           this.responseMessage='Faild to delete Department Head'
+           this.responseMessage='Faild to remove Department Head'
          }).finally(()=>{
           this.isSaving=false
          })
@@ -287,7 +298,12 @@ export default {
           this.isSaving=true
           await this.$store.dispatch('dean/assignDepartmentHead',this.assignDepartmentHead)
           .then(()=>{
+          const index= this.unassignedHeads.findIndex((head)=>{
+             return head.id===this.assignDepartmentHead.employee_id
+           })
+           this.unassignedHeads.splice(index,1)
            this.assignBaseModal.hide()
+      
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to assign Department Head'
@@ -313,6 +329,7 @@ export default {
           await this.$store.dispatch(action,{
           id:this.department.id,
            name:this.department.name,
+           short_name:this.department.short_name,
            programs:[{
              no_of_semester:this.department.regular.noSemester,
              no_of_year:this.department.regular.noYear,
@@ -335,7 +352,6 @@ export default {
          }).finally(()=>{
           this.isSaving=false
          })
-      
        }
   
       },
@@ -345,7 +361,6 @@ export default {
             var response = await apiClient.get("/api/unassigned_department_heads")
             if (response.status === 200) {
               this.unassignedHeads=response.data
-              
             } else {
               throw 'Failed to fetch event'
             }
@@ -360,53 +375,6 @@ export default {
    this.assignBaseModal = new Modal(document.getElementById('assignBaseModal'));
    this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
    this.unassignBaseModal = new Modal(document.getElementById('unassignBaseModal'));
- }
+  }
 }
 </script>
-<style scoped>
-/* table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.btn-add{
-    background-color: #ff9500;
-}
-.btn-add:hover{
-  background-color: #eca643;
-}
-
-.action{
-  cursor: pointer;
-}
-.action:hover{
-  color: #fcc561;
-}
-input[type="checkbox"]:checked{
- background-color: #ff9500;
- border: none;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-  } */
-</style>

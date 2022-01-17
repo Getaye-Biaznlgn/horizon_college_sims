@@ -18,7 +18,7 @@
     <th><span class="sr-only">action</span></th>
   </tr>
   <tr v-for="(student, index) in students" :key="student.id">
-    <td>{{index+1}}</td>
+    <td>{{index+1+current_page*per_page-per_page}}</td>
     <td>{{student.student_id}}</td>
     <td>{{student.full_name}}</td>
     <td>{{student.department}}</td>
@@ -37,7 +37,7 @@
   </tr>
  </table>
   <div v-if="!students.length" class="text-center">
-     There is no recored available
+     There is no record available
  </div>
    <div v-if="students.length" class="mt-2 d-flex justify-content-end">
       <span class="pe-4 small">Rows per page {{per_page}}</span>
@@ -143,9 +143,7 @@ export default {
             } else {
               throw 'Failed to fetch student'
             }
-        } catch (e) {
-            console.log(e.response)
-        } finally {
+        }finally {
             this.$store.commit('setIsItemLoading', false)
         }
        },
@@ -167,7 +165,7 @@ export default {
          catch(e){
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message="Failed to change password"
-             console.log()
+             
          }
          finally{
            this.isSaving=false

@@ -27,13 +27,12 @@
     <th><span class="sr-only">action</span></th>
   </tr>
   <tbody>
-  <tr v-for="(section, index) in sections" :key="section.id">
+  <tr v-for="(section, index) in filteredSections" :key="section.id">
+    <!-- {{section}} -->
       <td>{{index+1}}</td>
       <td>{{section.name}}</td>
-      <td>{{section.degree_department.name}}</td>
       <td>{{section.program?.name}}</td>
-      <td>{{section.level_no}}</td>
-      <!-- <td>{{section.semester.number}}</td> -->
+      <td>{{section.level?.level_no}}</td>
       <td>
       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -41,7 +40,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="$router.push({name:'TvetSectionStudent', params:{sectionId:section.id}})"><span class="dropdown-item">View Student</span></li>
-             <li @click="$router.push({name:'TvetSectionCourse', params:{sectionId:section.id}})"><span class="dropdown-item">View Course</span></li>
+             <li @click="$router.push({name:'TvetSectionModule', params:{sectionId:section.id}})"><span class="dropdown-item">View Module</span></li>
              <li @click="showEditModal(section)"><span class="dropdown-item">Edit</span></li>
              <li @click="showDeleteModal(section)"><span class="dropdown-item">Delete</span></li>
           </ul>
@@ -157,7 +156,7 @@ export default {
       }
       if(this.levelForFilter!=='all'){
         tempSections=tempSections.filter((section)=>{
-           return section.level_no===this.levelForFilter
+           return Number(section.level?.level_no)===Number(this.levelForFilter)
          })
       }
       return tempSections
@@ -188,8 +187,9 @@ export default {
         this.section.id=section.id        
         this.section.name=section.name
         this.section.program_id=section.program?.id
-        this.section.level_no=section.level_no
-        this.section.academic_year_id=section.semester.academic_year_id
+        this.section.level_no=section.level?.level_no
+        this.section.academic_year_id=section.academic_year_id
+        this.section.tvet_department_id=section.tvet_department.id
         this.actionButtonType='edit'
         this.addBaseModal.show()
       },
@@ -197,12 +197,10 @@ export default {
         this.isSaving=true
           await this.$store.dispatch('tvetHead/deleteSection',this.selectedSectionForDelete.id)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage='Section deleted successfully'
-         }).catch((e)=>{
+           this.deleteBaseModal.hide()
+         }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to delete section'
-           console.log('response with status'+e)
          }).finally(()=>{
           this.isSaving=false
          })

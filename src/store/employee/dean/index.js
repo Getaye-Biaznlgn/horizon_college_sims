@@ -133,18 +133,11 @@ export default {
                 context.rootState.isLoading = false
             }
         },
-
         async addDegreeDepartment(context, degreeDepartment) {
-                var response = await apiClient.post('/api/degree_departments', JSON.stringify(degreeDepartment), {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                })
-                console.log('add degree department ---' + response.status)
+                var response = await apiClient.post('/api/degree_departments', JSON.stringify(degreeDepartment))
                 if (response.status === 201) {
                     var previousData = context.getters.degreeDepartments
-                    previousData.push(response.data)
+                    previousData.unshift(response.data)
                     context.commit('setDegreeDepartments', previousData)
                 } else {
                     throw 'faild to add'
@@ -241,11 +234,9 @@ export default {
         },
         async addTvetDepartment(context, tvetDepartment) {
                 var response = await apiClient.post('/api/tvet_departments', JSON.stringify(tvetDepartment))
-                console.log('add degree department ---' + response.status)
-                if (response.status === 200) {
+                if (response.status === 201) {
                     var previousData = context.getters.tvetDepartments
-                    previousData.push(response.data)
-                    console.log('tvet_department', response.data)
+                    previousData.unshift(response.data)
                     context.commit('setTvetDepartments', previousData)
                 } else {
                     throw 'faild to add'
@@ -310,10 +301,9 @@ export default {
         },
         async addCourse(context, course) {
                 var response = await apiClient.post('/api/courses', JSON.stringify(course))
-                console.log('add courses ---' + response.status)
                 if (response.status === 200) {
                     var previousData = context.getters.courses
-                    previousData.push(response.data)
+                    previousData.unshift(response.data)
                     context.commit('setCourses', previousData)
                 } else {
                     throw 'faild to add'
@@ -356,7 +346,6 @@ export default {
                 throw e
             }
         },
-        
         async fetchYearMonths(context) {
             try {
                 context.rootState.isLoading = true
@@ -370,7 +359,6 @@ export default {
                 context.rootState.isLoading = false
             }
         },
-
         async fetchModules({ commit, rootState }) {
             try {
                 rootState.isLoading = true
@@ -386,9 +374,9 @@ export default {
         },
         async addModule(context, tvetModule) {
                 var response = await apiClient.post('/api/modules', JSON.stringify(tvetModule))
-                if (response.status === 201) {
+                if (response.status === 200) {
                     var previousData = context.getters.modules
-                    previousData.push(response.data)
+                    previousData.unshift(response.data)
                     context.commit('setModules', previousData)
                 } else {
                     throw 'faild to add'
@@ -464,9 +452,8 @@ export default {
             try {
                 var response = await apiClient.get('api/teachers')
                 if (response.status === 200) {
-                    console.log('teachers from server')
-                    console.log(response.data)
                     commit('setTeacher', response.data)
+                    console.log('Teachers', response.data)
                 } else {
                     throw 'faild to load teacher list'
                 }
@@ -520,8 +507,7 @@ export default {
             try {
                 var response = await apiClient.post('/api/teachers', teacher)
                 if (response.status === 201) {
-                    console.log('added teacher from server')
-                    console.log(response.data)
+                    
                     var previousTeacher = context.getters.teachers
                     previousTeacher.push(response.data)
                     context.commit('setTeacher', previousTeacher)
@@ -536,13 +522,9 @@ export default {
         },
         async addDepartmentHead(context, deptHead) {
             try {
-                console.log(deptHead)
                 var response = await apiClient.post('api/employees', deptHead)
-                console.log('response.status' + response.status)
                 if (response.status === 201) {
-                    console.log('response from server')
-                    console.log(response.data)
-                    var previousDeptHead = context.getters.departmentHeads
+                  var previousDeptHead = context.getters.departmentHeads
                     previousDeptHead.push(response.data)
                     context.commit('setDepartmentHeads', previousDeptHead)
                 } else {

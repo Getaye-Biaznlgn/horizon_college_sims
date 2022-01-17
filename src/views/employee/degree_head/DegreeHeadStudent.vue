@@ -40,7 +40,7 @@
 
 <div id="departmentStudent">
  <div class="sr-only">
-   {{ selectedAcademicYear.year+' '}}
+   {{ getYearById.year+' '}}
    {{ user.manage.name+' Department '}} 
   <span v-show="programForFilter!=='all'">{{ programById(programForFilter)?.name}}</span> 
   <span v-show="yearForFilter!=='all'">{{'Year '+ yearForFilter}}</span> 
@@ -102,8 +102,8 @@
         <i  class="fas fa-chevron-right"></i>
      </span>
 </div> -->
-<p v-if="!filteredInSemester.length"> Students don't register for this semester!</p>
-<p v-else-if="!filteredStudents.length">There is no matching student</p>
+<p v-if="!filteredInSemester.length" class="text-center mt-1" > Students don't register for this semester!</p>
+<p v-else-if="!filteredStudents.length" class="text-center mt-1">There is no matching student</p>
     </base-card>
 </template>
 <script>
@@ -142,11 +142,10 @@ export default {
         programs:'programs',
         user:'user'
         }),
-        
-        // selectedAcademicYear(){
-        //   return this.$store.getters.selectedAcademicYear(this.selectedAcademicYearId)
-        // },
-        
+
+      getYearById(){
+        return this.$store.getters.getYearById(this.selectedAcademicYear)
+      },
       degreePrograms(){
       return this.programs.filter((program)=>{
         return program.type==='degree'
@@ -199,7 +198,7 @@ export default {
      })
      return prog       
     },                
-
+     
     nextPage(){
      if(this.currentPage<this.totalPages){
        this.currentPage++
@@ -221,40 +220,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-.search{
-  cursor: pointer;
-}
-.search-input{
-    border-bottom-right-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-}
-.btn-add{
-    background-color: #2f4587;
-}
-.btn-add:hover{
-  background-color: #425fb8;
-}
-</style>

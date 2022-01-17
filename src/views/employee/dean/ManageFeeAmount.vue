@@ -1,14 +1,16 @@
 <template>
   <base-card class="px-3 mx-4 mt-3">
 <div class="d-flex justify-content-end">
-    
+    <button class="btn btn-add text-white shadow-sm me-2" @click="showAddModal()"> 
+     Add Fee
+   </button> 
     <button class="btn btn-add text-white shadow-sm" @click="printPaymentAmount()"> 
      Export
    </button> 
   
 </div>
 <div id="paymentPage">
-    <div class="sr-only text-center">
+    <div class="sr-only  text-center">
      Horizon College  {{getYear?.year}} Payment Amount
     </div> 
    <table class="mt-3">
@@ -36,18 +38,18 @@
  </table>
 </div>
 
-  <div v-if="!fees.length">
+ <div v-if="!fees.length">
     <span class="d-block text-center">Fee amount isn't added yet!</span>
-  </div>
+ </div>
  </base-card>
 
  <!--Add-->
-<base-modal  @cancel="clearModal" :isLoading="isSaving" @edit="edit" id="editBaseModal" :button-type="actionButtonType">
+<base-modal  @cancel="clearModal" :isLoading="isSaving" @edit="edit" @save="save" id="editBaseModal" :button-type="actionButtonType">
    <template #modalBody>
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.fee.name.$error}">
            <label for="#feename" class="form-label">Fee name</label>
-           <input class="form-control " v-model.trim="fee.name" @blur="v$.fee.name.$touch" id="feename" name="text" placeholder="Eg. name" aria-label=".form-control">
+           <input :disabled="actionButtonType==='edit'" class="form-control " v-model.trim="fee.name" @blur="v$.fee.name.$touch" id="feename" name="text" placeholder="Eg. name" aria-label=".form-control">
             <span class="error-msg mt-1"  v-for="(error, index) of v$.fee.name.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
    
@@ -80,7 +82,6 @@ export default {
       //
       isSaving:false,
       actionButtonType:'',
-
       //server response issue
       responseMessage:'',
       isNotSucceed:true,
@@ -97,19 +98,18 @@ export default {
      getYear(){
        return this.$store.getters.getYearById(this.selectedYearId)
      }
-     
   },
   validations(){
      return{
       fee:{
             name:{
-                required: helpers.withMessage('department name can not be empty',required),
+                required: helpers.withMessage('Payment name can not be empty',required),
                },
              amount:{
-                 required:helpers.withMessage('Number of year can not be empty', required)
+                 required:helpers.withMessage('Amount can not be empty', required)
              }  
            }
-     }
+        }
   },
  
   methods:{
@@ -122,10 +122,17 @@ export default {
         //editBaseModal used for add and edit
         this.editBaseModal.show()
       },
+      showAddModal(){
+       this.actionButtonType='add'
+       this.editBaseModal.show()
+      },
       clearModal(){
+        this.fee.name=''
+        this.fee.amount=''
         this.v$.$reset()
         this.responseMessage=''
       },
+
      async fetchFeeAmount(yearId){
          this.$store.commit('setIsItemLoading', true)
         try {
@@ -135,12 +142,10 @@ export default {
             } else {
               throw 'Failed to fetch event'
             }
-        } catch (e) {
-            console.log(e.response)
-        } finally {
+         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
-       },   
+     },   
      
     async  edit(){
        this.responseMessage=''
@@ -152,24 +157,38 @@ export default {
               const index= this.fees.findIndex((fee)=>{
                 return fee.id===this.fee.id
               })
-              this.fees[index]=this.fee
-              this.isNotSucceed=false,
-              this.responseMessage='Fee type updated successfully'
+              this.fees[index]={...this.fee}
+              this.editBaseModal.hide()//editBaseModal used for edit and add purpose
+
             }
-                    }).catch(()=>{
+          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to update fee type'
          }).finally(()=>{
           this.isSaving=false
          })
-      
-       }
-       else{
-         console.log('form  validation faild')
-       }
       }
-     
-    },
+  },
+   async  save(){
+       this.responseMessage=''
+       this.v$.$validate()
+       if(!this.v$.$error){
+          this.isSaving=true
+          this.fee.academic_year_id=this.selectedYearId
+          await apiClient.post('/api/fee_types', this.fee).then((response)=>{
+            if(response.status===201){
+              this.fees.unshift(response.data)
+              this.editBaseModal.hide()
+            }
+           }).catch(()=>{
+           this.isNotSucceed=true,
+           this.responseMessage='Faild to update fee type'
+         }).finally(()=>{
+          this.isSaving=false
+         })
+       }
+    }  
+},
   mounted() {
    this.editBaseModal = new Modal(document.getElementById('editBaseModal'));
  },

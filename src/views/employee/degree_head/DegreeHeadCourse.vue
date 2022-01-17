@@ -53,7 +53,6 @@
     <th class="">Course Code</th>
     <th class="">Course Title</th>
     <th class="">Credit hour</th>
-    <!-- <th class="">Department</th> -->
     <th class="">Program</th>
     <th class="">Year</th>
     <th class="">Semester</th>
@@ -64,31 +63,25 @@
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
     <td>{{course.cp}}</td>
-    <!-- <td>{{course.department?.name}}</td> -->
     <td>{{course.program}}</td>
     <td>{{course.year_no}}</td>
     <td>{{course.semester_no}}</td>
     <td>{{course.type}}</td>
   </tr>
   </tbody>
- </table>
+  </table>
     <p v-if="!courses.length" class="mt-2 text-center"> Course isn't added for this department!</p>
     <p v-else-if="!filteredCourses.length" class="mt-2 text-center">There is no matching course</p>
-</base-card>
-
-
+ </base-card>
 </template>
 <script>
 import {mapGetters} from 'vuex'
-
 export default {
-
   data(){
     return{ 
        /////////////////////////|
       //for filter and search//|/
      /////////////////////////|/
- 
       searchValue:'',
       programForFilter:'all',
       yearForFilter:'all',
@@ -150,46 +143,3 @@ computed:{
  }
  </script>
 
-<style scoped>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-.search, .action{
-  cursor: pointer;
-}
-
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-    font-size: 14px;
-  }
-.search-input{
-    border-bottom-right-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-}
-  .input-group{
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-</style>

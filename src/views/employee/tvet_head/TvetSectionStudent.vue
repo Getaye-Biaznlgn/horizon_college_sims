@@ -6,12 +6,13 @@
      <button @click="showAddModal" class="btn btn-add  ms-auto text-white shadow-sm" > Add Student</button> 
     </div>
  <div class="ps-3">
-    <button class="btn btn-add ms-auto text-white shadow-sm"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
+    <button @click="print" class="btn btn-add ms-auto text-white shadow-sm"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
  </div>
 </div>
-<div v-if="section" class="fw-bold">
-    {{section?.degree_department?.name + ' '+section.program.name+' program'+' '+this.getTextValue(section?.year_no)+' year ' +
-    this.getTextValue(section?.semester?.number) +' semester '+ 'section '+ section?.name +' students'}}   
+<div id="printed">
+ <div v-if="section"  class="fw-bold">
+    {{section.tvet_department?.name + ' '+section.program.name+' program '+' Level '+section.level.level_no
+     +' section '+ section?.name +' students'}}   
  </div>
 <table class="mt-2">
   <thead>
@@ -24,10 +25,10 @@
     </tr>
   </thead>
   <tbody>
-    <!-- <tr v-for="(student, index) in students" :key="student.id">
+    <tr v-for="(student, index) in students" :key="student.id">
       <td>{{index+1}}</td>
       <td>{{student.student_id}}</td>
-      <td>{{student.first_name+''+student.middle_name}}</td>
+      <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
       <td>
         <div class="dropdown">
@@ -35,23 +36,15 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span class="dropdown-item px-4 py-2">edit</span></li>
-              <hr class="w-100 mb-0 mt-0">
-             <li><span class="dropdown-item px-4 py-2">delete</span></li>
+             <li><span class="dropdown-item px-4 py-2">Remove</span></li>
           </ul>
         </div>
       </td>
-    </tr> -->
-    <!-- <table-row col1="4" col2="5" col3="5" col4="5" col5="5"></table-row> -->
-     <tr>
-          <td>2</td>
-          <td>4</td>
-          <td>4</td>
-          <td>5</td>
-          <td>5</td>
-      </tr>
+    </tr>
+    
    </tbody>
   </table>
+</div>
 </base-card >
 <!-- Modal -->
 <transition>
@@ -67,6 +60,7 @@
             <span v-else>Add to section</span>   
         </button>
       </div>   
+      
       <p :class="responseMessage.status?'text-success':'text-danger'">{{responseMessage?.message}}</p>
   <table class="p-3 m-3">
      <thead>
@@ -76,19 +70,16 @@
            <th>Stud ID</th>
            <th>Full Name</th>
            <th>sex</th>
-           <th>Year</th>
-           <th>Semester</th>
+           <th>Level</th>
        </tr>
     <tr v-for="(student, index) in suggestedStudents" :key="student.id">
        <th><input type="checkbox" v-model="studentsTobeAdded" :value="student.id"  class="form-check-input p-1"  name="suggestedStudent"  :id="student.id"></th>
        <th>{{index+1}}</th>
        <th>{{student.id}}</th>
-       <th>{{student.first_name+' '+student.middle_name}}</th>
+       <th>{{student.first_name+' '+student.last_name}}</th>
        <th>{{student.sex}}</th>
-       <th>{{student.current_year_no}}</th>
-       <th>{{student.current_semester_no}}</th>
+       <th>{{student.current_level_no}}</th>
     </tr>
-    
   </thead> 
  </table>
  </div>
@@ -140,9 +131,10 @@ export default {
        this.modalState=!this.modalState
        this.studentsTobeAdded=[]
       document.documentElement.style.overflow = 'scroll'
-
     },
-   
+   print(){
+     this.$htmlToPaper('printed')
+   },
     back(){
       this.$router.back()
     },
@@ -152,16 +144,12 @@ export default {
             var response = await apiClient.post('/api/tvet_add_section_students', {section_id:this.sectionId,student_ids:this.studentsTobeAdded}, {
             })
             if (response.status === 200) {
-              console.log('add student to section,', response.data)
-                // this.students.push.apply(this.students,response.data)
-                // if the response contain all section datas
                 this.students=response.data
-                this.responseMessage={message:'Students added successfully', status:1}
+                this.modalState=false
             } else {
                 throw 'Faild to add student'
             }
-        } catch (e) {
-            console.log(e)
+        } catch{
             this.responseMessage={message:'Faild to add students', status:0}
         }finally{
           this.isSaving=false
@@ -176,7 +164,6 @@ export default {
          this.suggestedStudents.forEach((student)=>{
          selected.push(student.id)
          })
-         
       }
      this.studentsTobeAdded=selected
     },
@@ -184,16 +171,13 @@ export default {
        this.$store.commit('setIsItemLoading', true)
         try {
             var response = await apiClient.get("/api/tvet_section_suggested_students?section_id="+payload)
-            console.log('degree_section_students ',response.data)
+            console.log('tvet_section_students ',response.data)
             if (response.status === 200) {
               this.suggestedStudents=response.data
             } else {
                 throw 'faild to load degree department'
             }
-        } catch (e) {
-            console.log(e.response)
-            throw e
-        } finally {
+        }  finally {
             this.$store.commit('setIsItemLoading', false)
         }
 
@@ -202,36 +186,15 @@ export default {
        this.$store.commit('setIsItemLoading', true)
         try {
             var response = await apiClient.get("/api/tvet_section_students/"+sectionId)
-            console.log('degree_section_students ',response.data)
             if (response.status === 200) {
               this.students=response.data
             } else {
                 throw 'faild to load degree department'
             }
-        } catch (e) {
-            console.log(e.response)
-            throw e
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
-
       },
-      getTextValue(num){
-        switch(num){
-            case 1:
-                return 'first'
-             case 2:
-                 return 'second'
-             case 3:
-                 return 'third'
-             case 4:
-                 return 'fourth'          
-            case 5:
-                return 'fifth'
-             default:
-             return num  
-        } 
-    }
   },
  
 }

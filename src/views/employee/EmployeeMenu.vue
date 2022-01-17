@@ -174,4 +174,10 @@ input[type="radio"]:checked{
  background-color: #2f4587;
  border: none;
 }
+
+.back{
+  font-size: 20px;
+  color: #366ad3;
+  cursor: pointer;
+}
 </style>

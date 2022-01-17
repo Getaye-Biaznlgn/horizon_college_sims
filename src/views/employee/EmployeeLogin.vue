@@ -1,5 +1,5 @@
 <template>
-     <div class="col-md-3 ms-auto me-auto border rounded-1 px-3 pt-3 mt-5">
+     <div class="col-md-3 mx-auto border rounded-1 px-3 pt-3 mt-5">
        <img src="../../assets/logo.png" class="mx-auto d-block" width="80" height="70" alt="">
        <form class="pb-5 pt-3" @submit.prevent="login">
         <div class="mb-2" :class="{warining:v$.userCrediantail.user_name.$error}">

@@ -20,14 +20,14 @@
            <th>Amount</th>
            <th class="sr-only">Action</th>
         </tr>
-        <tr v-for="(payment,index) in payments" :key="payment.id">
+        <tr v-for="(pay,index) in payments" :key="pay.id+pay.receipt_no">
             <td>{{index+1+(current_page * per_page-per_page)}}</td>
-            <td>{{payment.receipt_no}}</td>
-            <td>{{payment.student_id}}</td>
-            <td>{{payment.full_name}}</td>
-            <td>{{new Date(payment.paid_date).toString().split(' ').slice(0,4).join(' ')}}</td>
-            <td>{{payment.payment_type}}</td>
-            <td>{{payment.paid_amount}}</td>
+            <td>{{pay.receipt_no}}</td>
+            <td>{{pay.student_id}}</td>
+            <td>{{pay.full_name}}</td>
+            <td>{{new Date(pay.paid_date).toString().split(' ').slice(0,4).join(' ')}}</td>
+            <td>{{pay.payment_type}}</td>
+            <td>{{pay.paid_amount}}</td>
             <td>
                 <span @click="showDeleteModal(index)" role="button"><i class="fas fa-trash pe-2"></i></span>
             </td>
@@ -90,10 +90,12 @@ export default {
             if (response.status === 200) {
               
               this.payments=response.data.data
-
+             
               this.current_page=response.data.current_page
               this.per_page=response.data.per_page
               this.last_page=response.data.last_page
+              console.log('payments admin', this.payments)
+              console.log('payment array', this.payments)
             } else {
               throw 'Failed to fetch news'
             }

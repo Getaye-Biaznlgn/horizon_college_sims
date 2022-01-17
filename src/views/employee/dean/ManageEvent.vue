@@ -153,8 +153,6 @@ export default {
             } else {
               throw 'Failed to fetch event'
             }
-        } catch (e) {
-            console.log(e.response)
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
@@ -167,8 +165,7 @@ export default {
           let response=  await apiClient.post('api/events', this.event)
             if(response.status===201){
                this.events.unshift(response.data)
-               this.requestStatus.isNotSucceed=false,
-               this.requestStatus.message="An event is added successfully"
+               this.addBaseModal.hide()
              }else{
                 throw''
              }
@@ -197,8 +194,7 @@ export default {
                 return event.id=this.event.id
               })
               this.events[updatedIndex]=response.data
-               this.requestStatus.isNotSucceed=false,
-               this.requestStatus.message="An event is updated successfully"
+               this.addBaseModal.hide()
              }else{
                 throw''
              }
@@ -227,8 +223,7 @@ export default {
                 return event.id===this.event.id
               })
               this.events.splice(index,1)
-               this.requestStatus.isNotSucceed=false,
-               this.requestStatus.message="An event is deleted successfully"
+               this.deleteBaseModal.hide()
              }else{
                 throw''
              }
@@ -236,15 +231,12 @@ export default {
          catch(e){
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message="Failed to delete an event"
-           console.log()
          }
          finally{
            this.isSaving=false
          }
          }
-         else{
-           console.log('form validation faild')
-         }
+        
      },
     },
     mounted(){

@@ -76,7 +76,6 @@
             <button @click="back" class="btn border px-3">Back</button>
             <button @click="next" class="btn text-white btn-add px-3 ms-4">Next</button>
         </div>
-        
     </div>
 
      <vue-modal :modalState="modalState">
