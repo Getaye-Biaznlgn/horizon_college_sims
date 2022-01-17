@@ -16,14 +16,14 @@
 </div>
     </div>
       <div class="d-flex justify-content-end mt-3">
-    <button @click="printGraduatedTvetStudent()" class="btn me-1 addbtn me-3 p-1">
+    <button @click="printGraduatedDegreeStudent()" class="btn me-1 addbtn me-3 p-1">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
       </div>
      </div>
      <div id="degreeGraguate">
-       <div class="ms-5 mt-3"></div>
+        <div class="ms-5 mt-3 sr-only"><u>በ ዲግሪ  ፕሮግራም የተመረቁ ተማሪዎች</u></div>
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -47,7 +47,7 @@
   </tbody>
     </table>
      </div>
-    <div class="d-flex justify-content-end mt-3 me-5">
+    <div v-if="degreeGraduates.data.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
@@ -109,7 +109,7 @@ export default {
                 },
        },  
     methods: {
-        async printGraduatedTvetStudent(){
+        async printGraduatedDegreeStudent(){
             await this.$htmlToPaper('degreeGraguate');
             },
         async fetchDegreeGraduat(queryObject){
@@ -128,6 +128,15 @@ export default {
               this.$store.state.isItemLoading = false
             }
         },
+        forWardChivron(){
+        this.queryObject.page = this.queryObject.page + 1
+       this.fetchTvetGraduats(this.queryObject)
+      },
+      backChivron(){
+        this.queryObject.page = this.queryObject.page - 1
+       this.fetchTvetGraduats(this.queryObject)
+      },
+        
         // fetchSpecificDegreeGraduats(){
         //     var deptId = this.$refs.degreeDptId.value
         //   var progId = this.$refs.programId.value
@@ -187,5 +196,13 @@ td{
 } 
 .addbtn:hover{
     background-color:#366ad9 ;
+}
+.chivronbtn{
+    border: none;
+    background-color: #fff;
+    color: rgba(179, 175, 175, 0.849);
+}
+.active{
+  color: rgb(15, 15, 15);
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
      <div class="row mt-5">
-  <div class="mb-3 col-sm-6">
+  <div class="mb-3 col-lg-6">
     <label for="egsseresult" class="form-label">EGSSE Result</label>
     <input type="text" class="form-control form-control-sm" id="egsseresult" v-model="EGSSE_result">
   </div>
-  <div class="mb-3 col-sm-6">
+  <div class="mb-3 col-lg-6">
     <label for="eheeeresult" class="form-label">EHEEE Result</label>
     <input type="text" class="form-control form-control-sm" id="eheeeresult" v-model="EHEEE_result">
   </div>

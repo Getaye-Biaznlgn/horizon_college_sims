@@ -1,6 +1,6 @@
 <template>
    <div class="p-2 bg-white shadow-sm d-flex">
-      <img src="../../assets/school.png" class="ms-3" height="40">
+      <img src="../../assets/logo.png" class="ms-3 align-self-center" height="50">
       <div class="pt-3">
          <h5 class="d-inline fw-bold ms-3">HORIZON</h5>
       </div>
@@ -9,24 +9,27 @@
          <select class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">
             <option  v-for="year in academicYears" :key="year.id" :selected="selectedAcademicYear===year.id" :value="year.id" >{{'Academic year '+year.year}}</option> 
          </select>
+         <div v-if="user.role==='dean'" class="ms-2 mt-1" >
+            <button @click="$router.push({name:'AddNewAcademicYear'})" class="btn btn-add text-white">
+              <span style="white-space: nowrap!important; overflow: hidden;">Add New Calendar</span>
+            </button>
+         </div>
       </div>
-        <div v-if="user.role==='registrar' || user.role==='cashier'" class="ms-5 mt-3">
+        <div v-if="user.role==='registrar' || user.role==='cashier'" class="ms-5 mt-1">
          <select class="form-select" @change="changeAcYear($event)"  aria-label="select ">
             <option  v-for="year in academicYears" :key="year.id" :value="year.id" :selected="Number(year.is_current)=== Number(1)">{{'Academic year '+year.year}}</option> 
           </select>
       </div>
       <div class="d-flex ms-auto">
-      <div v-if="user.role==='registrar' && notifications.length" class="me-5 mt-4 position-relative" align-items-center>
-  <span @click="gotoApprove()" class="notification position-absolute top-0 start-100 translate-middle p-2 bg-primary text-white border border-light rounded-circle">
-    <span>{{fetchNotifications.length}}</span>
+      <div v-if="user.role==='registrar' && notifications" class="me-5 mt-1 position-relative" align-items-center>
+  <span @click="gotoApprove()" class="notification mt-4 position-absolute top-0 start-100 translate-middle p-2 text-white border border-light rounded-circle">
+    <span>{{notifications}}</span>
   </span>
-   <span class="notifyTitle">Un approved Students</span>
       </div>
-      <div class="dropdown shadow-sm">
-         <button class="btn  rounded dropdown-toggle p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
-      <div class=" shadow-sm  p-0">
-         <div class=" rounded-lg"  aria-expanded="false">
+     <div class="shadow-sm  p-0 ms-auto">
+         <div class=" rounded-lg  p-1"  aria-expanded="false">
              <div class="d-flex">
+                <span class="align-self-center btn-add text-white p-1 rounded mx-2"><i class="fas fa-user fs-4 fw-bold"></i></span>
                 <div class="d-flex flex-column">
                    <span class="fw-bold small text-center">{{user.first_name +' '+ user.last_name}}</span>
                    <span v-if="user.role==='department head'">{{user.manage.name +' head'}}</span>
@@ -35,8 +38,7 @@
              </div>
          </div>
      </div>
-   </div>
-   </div>
+      </div>
    </div>
 </template>
 <script> 
@@ -45,7 +47,6 @@ import { mapGetters } from 'vuex'
 export default {
    data(){
       return{
-      notifications:[]
       }
    },
    created() {
@@ -54,7 +55,10 @@ export default {
       }
    },
    computed:{
-   ...mapGetters(['user','academicYears','selectedAcademicYearId','acYearId','selectedAcademicYear'])  
+   ...mapGetters(['user','academicYears','selectedAcademicYearId','acYearId','selectedAcademicYear','notifications']) ,
+   notifications(){
+      return this.$store.getters.notifications
+   } 
    
    },
       methods:{
@@ -73,9 +77,10 @@ export default {
       },
          async fetchNotifications(){
          try{
-            var response = await apiClient.get('api/notifications')
+            var response = await apiClient.get('api/notifications/'+this.user.id)
             if(response.status === 200){
-               this.notifications = response.data
+               console.log('notificationsm== ',response.data)
+               this.$store.commit('setNotifications',response.data.length)
             }
          }
          catch(e){
@@ -93,20 +98,12 @@ export default {
  .dropdown-toggle::after {
       display: none;
    }
-  .notifybtn{
-     background-color: #2f4587;
-     color: #fff;
-  }
-  .notification:hover{
+  .notification{
 cursor: pointer;
+background-color: #2f4587;
+color: #fff;
 
   }
-.notifyTitle{
-   color: #fff;
-}
-.notifyTitle:hover{
-   color: #000;
-}
 
 
 </style>

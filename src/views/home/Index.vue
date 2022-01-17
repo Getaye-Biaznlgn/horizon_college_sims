@@ -1,4 +1,7 @@
 <template>
+<div class="position-relative">
+
+
 <div class="d-flex text-white py-1 justify-content-between top-address">
     <div class="d-flex">
         <span class="small mx-3 d-none d-lg-block"><i class="fas fa-map-marker-alt pe-2"></i>Bahir Dar, Ethiopia</span>
@@ -12,10 +15,10 @@
         <a href="https://www.youtube.com" target="_blank" class="small text-white mx-1 mx-md-2"><i class="fab fa-youtube-square"></i></a>
     </div>
 </div>
-<nav class="navbar navbar-expand-lg position-sticky top-0 my-nav  navbar-light bg-light">
-  <div class="container-fluid">
-    <a  class="navbar-brand ms-md-3" href="#">
-        <img src="../../assets/total_logo.jpg" class="rounded-circle" width="40" height="40" alt="">
+<nav class="navbar navbar-expand-lg py-0 position-sticky top-0 my-nav  navbar-light bg-light">
+  <div class="container-fluid py-0">
+    <a class="navbar-brand ms-md-3" href="#">
+        <img src="../../assets/logo.png" class="rounded-circle" width="80" height="60" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -59,7 +62,7 @@
   <section class="d-none d-lg-block">
      <div class="d-flex px-3 py-4 text-white quick-link justify-content-between">
         <div class=" align-self-center">
-            <img src="../../assets/total_logo.jpg" class="rounded-circle" width="50" height="50" alt="">
+            <img src="../../assets/logo.png" width="80" height="60" alt="">
              <span class="fw-bold mx-2 lead">HORIZON COLLEGE</span>
              <span class="d-block mt-2">FOR QUALITY WE STRIVE TOGETHER !</span>
         </div>
@@ -67,7 +70,7 @@
           <div class="fw-bold fs-5">Quick Links</div> 
          <router-link :to="{name:'AcademicCalendar'}" class="nav-link ps-0  text-white">Academic Caledar</router-link>
          <router-link :to="{name:'AcademicCalendar'}"  class="nav-link ps-0 text-white">Student Information(SIMS)</router-link>
-         <router-link :to="{name:'Registration'}" class="nav-link ps-0  text-white">Application Form</router-link>
+         <router-link :to="{name:'OnlineRegistration'}" class="nav-link ps-0  text-white">Application Form</router-link>
          <router-link :to="{name:'About'}" class="nav-link ps-0 text-white">About Us</router-link>
         </div>
         <div class="d-flex flex-column">
@@ -96,7 +99,7 @@
         <div class="accordion-body">
          <router-link :to="{name:'AcademicCalendar'}" class="nav-link ps-0">Academic Caledar</router-link>
          <router-link :to="{name:'AcademicCalendar'}"  class="nav-link ps-0">Student Information(SIMS)</router-link>
-         <router-link :to="{name:'Registration'}" class="nav-link ps-0">Application Form</router-link>
+         <router-link :to="{name:'OnlineRegistration'}" class="nav-link ps-0">Application Form</router-link>
          <router-link :to="{name:'About'}" class="nav-link ps-0">About Us</router-link>
       </div>
       </div>
@@ -117,7 +120,7 @@
     </div>
 </div>
    <div class="p-3 d-flex justify-content-evenly quick-link">
-        <a href="https://www.facebook.com" target="_blank"  class=" text-white  mx-1 mx-md-2"><i class="fs-3 fab fa-facebook-square"></i></a>
+        <a href="https://www.facebook.com/HorizoncollegeBdr" target="_blank"  class=" text-white  mx-1 mx-md-2"><i class="fs-3 fab fa-facebook-square"></i></a>
         <a href="https://www.twitter.com" target="_blank" class=" text-white mx-1 mx-md-2"><i class="fs-3 fab fa-twitter-square"></i></a>
         <a href="https://www.linkedin.com" target="_blank" class=" text-white mx-1 mx-md-2"><i class="fs-3 fab fa-linkedin"></i></a>
         <a href="https://www.youtube.com" target="_blank" class=" text-white mx-1 mx-md-2 "><i class="fs-3 fab fa-youtube-square"></i></a>
@@ -125,37 +128,37 @@
 </section>
   <footer >
       <div class="py-3 text-center  main-color text-white">
-        Website Desinged and Developed by <a href="#">AMBA TECHNOLOGIES</a> . Copyright &copy;2022 Horizon College 
+        Website Designed and Developed by <a href="#">AMBA TECHNOLOGIES</a> . Copyright &copy;2022 Horizon College 
       </div>
   </footer>
+   <div v-if="isItemLoading" class="loading-screen route-loading p-0  bg-white position-fixed top-0 start-0 bottom-0 end-0">
+               <div class="loading-spinner">
+                   <img src="../../assets/preloader.gif"   alt="slow connection">
+               </div>
+    </div> 
+ </div>     
 </template>
 <script>
-// import {bootstrap} from 'bootstrap'
+import { mapGetters } from 'vuex'
 export default {
+  data(){
+     return{
+
+     }
+  },
+  computed:{
+    ...mapGetters(['isItemLoading'])
+  },
   methods:{
     applyNow(){
-      this.$router.push({name:'Registration'})
+      this.$router.push({name:'OnlineRegistration'})
     },
     navigatTo(to){
       this.$router.push(to)
-    }
+    },
+    
   },
-  mounted(){
-  // document.querySelectorAll('.navbar-collapse a').click(function(){
-  //           document.querySelectorAll(".navbar-collapse").collapse('hide');
-  //       });
-//  document.querySelector('#home').addEventListener('click',()=>{
-//                    document.querySelectorAll(".navbar-collapse").collapse('hide');
-
-//  })
-
-//       const navLinks = document.querySelectorAll('.nav-item')
-//       const menuToggle = document.getElementById('navbarSupportedContent')
-//       const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle:false})
-// navLinks.forEach((l) => {
-//     l.addEventListener('click', () => { bsCollapse.toggle() })
-// })
-    }
+ 
 }
 </script>
 <style scoped>
@@ -186,6 +189,18 @@ export default {
 }
 .bg-accordion{
    background-color:#f1f1f1
+}
+
+
+.loading-spinner{
+  position:absolute; 
+  top: 10%;
+  left: 40%;
+  /* z-index: 1; */
+}
+.route-loading{
+  /* background-color: rgba(0, 0, 0, 0.5);; */
+  z-index: 12!important;
 }
 </style>
 <style>

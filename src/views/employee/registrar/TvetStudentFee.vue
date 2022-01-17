@@ -7,13 +7,13 @@
 </div>
  <div class="mb-3 me-4">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="paid" @change="fetchPaidStudents($event)">
-  <option value="paid">paid</option>
+  <option value="paid">paid Students</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
   <div class="mb-3 me-4">
    <select class="form-select form-select-sm" aria-label="Default select example" v-model="unpaid" @change="fetchUnpaidStudents($event)">
-  <option value="unpaid">Unpaid</option>
+  <option value="unpaid">Unpaid Students</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
@@ -25,7 +25,7 @@
     </div>
     </div>
     <div id="tvetStudentFee">
-      <div class="ms-5 mt-3">TVET Student tuition fee list</div>
+      <div class="ms-5 mt-3 sr-only">TVET Student tuition fee list</div>
     <table class="mt-3">
   <thead>
     <tr class="table-header">
@@ -57,63 +57,26 @@
       <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
-      <td>
-       <span v-if="student.pads.September === null">X</span>
-      <span v-else>{{student.pads.September}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.October === null">X</span>
-      <span v-else>{{student.pads.October}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.November === null">X</span>
-      <span v-else>{{student.pads.November}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.December === null">X</span>
-      <span v-else>{{student.pads.December}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.January === null">X</span>
-      <span v-else>{{student.pads.January}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.February === null">X</span>
-      <span v-else>{{student.pads.February}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.March === null">X</span>
-      <span v-else>{{student.pads.March}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.April === null">X</span>
-      <span v-else>{{student.pads.April}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.May === null">X</span>
-      <span v-else>{{student.pads.May}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.Jun === null">X</span>
-      <span v-else>{{student.pads.Jun}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.Julay === null">X</span>
-      <span v-else>{{student.pads.Julay}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.August === null">X</span>
-      <span v-else>{{student.pads.August}}</span>
-      </td>
+      <td>{{student.pads.September}}</td>
+      <td>{{student.pads.October}}</td>
+      <td>{{student.pads.November}}</td>
+      <td>{{student.pads.December}}</td>
+      <td>{{student.pads.January}}</td>
+      <td>{{student.pads.February}}</td>
+      <td>{{student.pads.March}}</td>
+      <td>{{student.pads.April}}</td>
+      <td>{{student.pads.May}}</td>
+      <td>{{student.pads.Jun}}</td>
+      <td>{{student.pads.Julay}}</td>
+      <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
       <td><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
-      
     </tr>
-  </tbody>
-   
+  </tbody>   
 </table>
+ <div v-if="!tvetStudentFees.data?.length" class="ms-5 px-5 mt-4 pb-3">There is no payment found for TVET students</div>
     </div>
-<div v-if="tvetStudentFees.data.length" class="d-flex justify-content-end mt-3 me-5">
+<div v-if="tvetStudentFees.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
@@ -427,5 +390,8 @@ td{
    margin: 3% 5% 5% 5%;
    height: 90vh;
    overflow-y: scroll;
+}
+.error{
+  color: red;
 }
 </style>

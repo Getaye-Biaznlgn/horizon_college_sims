@@ -39,15 +39,15 @@
 </div>
 <div class="d-flex justify-content-between">
    <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
- <div class="d-flex mt-5 mb-3">
+ <div class="d-flex mt-5 mb-3 justify-content-end">
       <button @click="backAdmissionInfoPage()" class="btn back p-1 me-3">Back</button>
-      <button  @click="finish()" class="btn next p-1 ms-3">
-               <span v-if="isUploading" class="btn py-1">
-               <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
+        <button type="button" @click="finish()" class="btn  px-2 next text-white mx-3">
+            <span v-if="isUploading">
+               <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                Registering
             </span>      
-            <span v-else>Finish</span> 
-  </button>
+            <span v-else>Finish</span>   
+          </button>
   </div>
 </div>
 </template>
@@ -83,6 +83,7 @@ export default {
             this.financeDetail(this.financial)
         },
         backAdmissionInfoPage(){
+          this.$store.commit('registrar/setResultNotifier','')
             this.backPage('admission-info','isFinance')
         },
        
@@ -91,7 +92,7 @@ export default {
 </script>
 <style scoped>
 .btn{
-    width: 7em;
+    width: 8em;
 }
 .next{
     background-color: #2f4587;

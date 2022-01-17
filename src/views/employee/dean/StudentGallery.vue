@@ -130,8 +130,8 @@ export default {
                 return image.id===this.img.id
               })
               this.gallery.splice(index,1)
-               this.requestResponse.isNotSucceed=false,
-               this.requestResponse.message="Image is deleted successfully"
+              this.deleteBaseModal.hide()
+              this.clearModal()
              }else{
                 throw''
              }
@@ -175,6 +175,8 @@ export default {
            this.gallery.unshift(response.data)
            this.requestResponse.message="Image is uploaded successfully"
            this.requestResponse.isNotSucceed=false
+           this.dismissVueModal()
+
         }
         else throw ''
         }catch(e){

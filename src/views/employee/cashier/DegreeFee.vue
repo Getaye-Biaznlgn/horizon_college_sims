@@ -2,7 +2,7 @@
 <base-card>
  <div class="d-flex justify-content-between">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByStudId()">
+  <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue">
    <span @click="searchByStudId()" class="searchicon  input-group-text" id="searchby_id"><i class="fas fa-search"></i></span>
 </div>
   <div class="exportbtn">
@@ -40,59 +40,23 @@
     </tr>
   </thead>
   <tbody>
-     <tr v-for="(student,index) in studentFee" :key="student.id">
-      <td>{{index+1}}</td>
+     <tr v-for="(student,index) in filteredStudents" :key="student.id">
+       <td>{{queryObject.per_page*studentFee.current_page +index+1 - queryObject.per_page }}</td>
       <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
-      <td>
-       <span v-if="student.pads.September === null">X</span>
-      <span v-else>{{student.pads.September}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.October === null">X</span>
-      <span v-else>{{student.pads.October}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.November === null">X</span>
-      <span v-else>{{student.pads.November}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.December === null">X</span>
-      <span v-else>{{student.pads.December}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.January === null">X</span>
-      <span v-else>{{student.pads.January}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.February === null">X</span>
-      <span v-else>{{student.pads.February}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.March === null">X</span>
-      <span v-else>{{student.pads.March}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.April === null">X</span>
-      <span v-else>{{student.pads.April}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.May === null">X</span>
-      <span v-else>{{student.pads.May}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.Jun === null">X</span>
-      <span v-else>{{student.pads.Jun}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.Julay === null">X</span>
-      <span v-else>{{student.pads.Julay}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.August === null">X</span>
-      <span v-else>{{student.pads.August}}</span>
-      </td>
+    <td>{{student.pads.September}}</td>
+      <td>{{student.pads.October}}</td>
+      <td>{{student.pads.November}}</td>
+      <td>{{student.pads.December}}</td>
+      <td>{{student.pads.January}}</td>
+      <td>{{student.pads.February}}</td>
+      <td>{{student.pads.March}}</td>
+      <td>{{student.pads.April}}</td>
+      <td>{{student.pads.May}}</td>
+      <td>{{student.pads.Jun}}</td>
+      <td>{{student.pads.Julay}}</td>
+      <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
       <td><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
       
@@ -101,9 +65,9 @@
    
 </table>
     </div>
-<div v-if="studentFee.length" class="d-flex justify-content-end mt-3 me-5">
+<div v-if="studentFee.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
-Rows per Page
+ Number of Rows
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
@@ -115,7 +79,7 @@ Rows per Page
 </select>
 </div>
 <div class="pageno me-3">
-{{studentFee.from+'-'+studentFee.to+' of '+studentFee.total+' pages'}}
+{{studentFee.from+'-'+studentFee.to+' of '+studentFee.total+' Rows'}}
 </div>
 <div class="leftchivron ms-3 me-3">
 <button @click="backChivron()" class="chivronbtn" :class="{active:studentFee.from !== 1}" :disabled="studentFee.from === 1"><i class="fas fa-chevron-left"></i></button>
@@ -216,6 +180,7 @@ export default {
       return {
         isDetail:false,
         studentId:null,
+        searchValue:'',
         rowNumber:5,
          queryObject:{
             page:1,
@@ -236,8 +201,17 @@ export default {
       },
       acYearId(){
   return this.$store.getters.acYearId
-}
-    },
+ },    
+      filteredStudents(){
+         var tempStudents= this.studentFee.data    
+      if(this.searchValue!==''){
+         tempStudents=tempStudents.filter((student)=>{
+            return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
+         })
+      }
+      return tempStudents
+      }
+      },
      watch:{
       studentId(newValue){
   this.queryObject.search_id = newValue
@@ -273,7 +247,7 @@ printStudentList(){
         this.queryObject.page = this.queryObject.page -1
        this.degreeStudentsPaid(this.queryObject)
       },
-    },
+    }
 }
 </script>
 <style scoped>
@@ -335,9 +309,9 @@ td{
 .chivronbtn{
     border: none;
     background-color: #fff;
-    color: rgba(97, 94, 94, 0.849);
+    color: rgba(179, 175, 175, 0.849);
 }
-.chivronbtn:focus{
-    color: rgb(15, 15, 15);
+.active{
+  color: rgb(15, 15, 15);
 }
 </style>

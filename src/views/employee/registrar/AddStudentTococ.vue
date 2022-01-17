@@ -11,13 +11,15 @@
     </div>
     <div v-if="isInternal" class="mt-5">
         <span class="ms-5 p-3 fs-5">Student ID</span>
-<div class="input-group mb-3 mt-2 ms-5 me-5 w-75">
+        <div class="mb-3 mt-2 px-5">
+<div class="input-group">
   <input type="text" class="form-control p-2" aria-label="Recipient's username" aria-describedby="basic-addon2" v-model="searchValue">
   <span @click="checkStudent()" class="input-group-text checkbtn" id="basic-addon2">
       <span v-if="isChecking" class="btn  py-1">
  <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>Checking</span>      
   <span v-else>Check</span>
   </span>
+</div>
 </div>
 <div class="px-5 mt-3">
   <span class="py-2">Select Student Type</span>
@@ -217,7 +219,7 @@ export default {
             this.$router.back()
         },
        async checkStudent(){
-          this.isLoading=true
+          this.isChecking=true
           try{
             console.log('student type = '+this.student_type)
             var response = await apiClient.post('api/check_student_for_coc/'+this.searchValue,{type:this.student_type})
@@ -234,7 +236,7 @@ export default {
             console.log(e)
           }
           finally{
-             this.isLoading=false
+             this.isChecking=false
           }
         },
             internalStudent(){

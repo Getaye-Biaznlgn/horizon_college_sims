@@ -108,7 +108,7 @@ export default {
               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
-               max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
+               max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(10)),
                },
                email:{required:helpers.withMessage('email can not be empty',required),email}
 

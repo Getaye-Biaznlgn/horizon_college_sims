@@ -71,6 +71,7 @@ export default {
       },
   },
   created(){
+    this.$emit('title', 'My Grade')
     if(this.student.role==='degree_student')
       this.fetchMyGrade('api/degree_my_grade/'+this.student.id)
     else if(this.student.role==='tvet_student')

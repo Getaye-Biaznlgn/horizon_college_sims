@@ -33,7 +33,7 @@
   <tr>
     <th>No</th>
     <th>Module Code</th>
-    <th>Module Title</th>
+    <th>UC</th>
     <th>Training Hour</th>
     <th>Department</th>
     <th>Occupation Level</th>

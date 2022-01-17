@@ -19,7 +19,7 @@
       <th class="text-white p-2"></th>
       </tr>
       </thead>
-  <tbody>
+  <tbody v-if="cocs.length">
   <tr v-for="(coc,index) in cocs" :key="coc.id">
   <td class="py-2">{{index+1}}</td>
   <td class="py-2">{{coc.start_date}}</td>
@@ -43,6 +43,7 @@
   </td>
   </tr>
   </tbody>
+  <div v-else class="ms-5 mt-4 pb-3 error">There is no COC schedules found</div>
     </table>
     </div>
     </div>
@@ -122,12 +123,12 @@ export default {
       return this.$store.getters.acYearId
     }
     },
-    // created() {
-    //   this.fetchCocs()
-    // },
+    created() {
+      this.fetchCocs(this.academicYearId)
+    },
     watch:{
-      academicYearId( ){
-       this.fetchCocs()
+      academicYearId(newValue){
+       this.fetchCocs(newValue)
       },
     },
     methods: {
@@ -135,11 +136,11 @@ export default {
            this.isAddCoc = true
            this.add_or_edit = 'add'
            },
-                   async fetchCocs() {
+                   async fetchCocs(caYearId) {
             this.$store.state.isItemLoading = true
             console.log('acadamic year id inside action--- ' + this.academicYearId)
             try {
-                var response = await apiClient.get(`api/cocs?academic_year_id=${this.academicYearId}`)
+                var response = await apiClient.get(`api/cocs?academic_year_id=${caYearId}`)
                 console.log('responce code ==++++= ' + response.status)
                 console.log('coc lists from server')
                 console.log(response.data)
@@ -279,7 +280,7 @@ cursor: pointer;
 .viewcourse th{
   background-color: #fff;
   color: rgb(17, 17, 17)!important;
-  font-size: 20px;
+  font-size: 16px;
 }
 .viewcourse tr{
   border-top: 2px solid gray;
@@ -324,7 +325,7 @@ cursor: pointer;
 .success{
     color: green;
   }
-  .faild{
+  .faild,.error{
     color: red;
   }
 </style>

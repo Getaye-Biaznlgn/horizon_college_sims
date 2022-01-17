@@ -2,7 +2,7 @@
     <base-card>
     <div class="d-flex justify-content-between mt-3">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-2" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByIdNo()">
+  <input type="text" class="form-control p-2" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue" @keyup.enter="searchByIdNo()">
    <span @click="searchByIdNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
  <div>
@@ -46,14 +46,15 @@
     </tr>
   </thead>
   <tbody>
-     <tr v-for="(student,index) in paidStudents.data" :key="index">
+
+     <tr v-for="(student,index) in filteredStudents" :key="index">
         <td>{{queryObject.per_page*paidStudents.current_page +index+1 - queryObject.per_page }}</td>
       <td>{{student?.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{paidDate(student.paid_date)}}</td>
       <td>{{student.payment_type}}</td>
       <td>{{student.receipt_no}}</td>
-      <td>{{student.paid_amount}}</td>
+      <td>{{student['amount ']}}</td>
     </tr>
   </tbody>
    
@@ -72,7 +73,7 @@ Rows per Page
 </select>
 </div>
 <div class="pageno me-3">
-{{paidStudents.from+'-'+paidStudents.to+' of '+paidStudents.total+' pages'}}
+{{paidStudents.from+'-'+paidStudents.to+' of '+paidStudents.total+' Rows'}}
 </div>
 <div class="leftchivron ms-3 me-3">
 <button @click="backChivron()" class="chivronbtn" :class="{active:paidStudents.from !== 1}" :disabled="paidStudents.from === 1"><i class="fas fa-chevron-left"></i></button>
@@ -124,7 +125,7 @@ export default {
     return {
         rowNumber:5,
         paymentType:'all',
-        studentId:null,
+        searchValue:'',
         startDate:'',
         endDate:null,
         dateFormat:null,
@@ -168,6 +169,24 @@ export default {
     acYearId(){
         return this.$store.getters.acYearId
      },
+      filteredStudents(){
+         var tempStudents= this.paidStudents.data
+        // var student = this.paidStudents.data
+    
+      if(this.searchValue!==''){
+         tempStudents=tempStudents.filter((student)=>{
+            return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
+         })
+      }
+
+            if(this.paymentType!=='all'){
+         tempStudents=tempStudents.filter((student)=>{
+            return student?.payment_type===this.paymentType
+         })
+      }
+        
+      return tempStudents 
+     },
           
   },
   created() {  
@@ -176,10 +195,6 @@ export default {
      this.$store.dispatch('cashier/fetchPaymentTypes',this.acYearId)
   },
   watch:{
-//     date(newValue){
-// var startDate= newValue[0].slice(0,4).join(' ')
-// console.log('start date ='+startDate)
-//     },
 dateSpecific(newValue){
    this.queryObject.date_query = newValue
 },
@@ -188,19 +203,16 @@ rowNumber(newValue){
   this.queryObject.page = 1
   this.studentsPaid(this.queryObject)
 },
- paymentType(newValue){
-   if(newValue === 'all'){
-      this.queryObject.payment_type = ''
-   }
-   else{
-      this.queryObject.payment_type = newValue
-    this.studentsPaid(this.queryObject)
-   }
+//  paymentType(newValue){
+//    if(newValue === 'all'){
+//       this.queryObject.payment_type = ''
+//    }
+//    else{
+//       this.queryObject.payment_type = newValue
+//     this.studentsPaid(this.queryObject)
+//    }
   
- },
-studentId(newValue){
-  this.queryObject.search_id = newValue
-},
+//  },
   acYearId(newValue){
 this.$store.dispatch('cashier/fetchPaymentTypes',newValue)
  this.$store.dispatch('cashier/fetchPaymentTypes',newValue)
@@ -223,7 +235,7 @@ this.$store.dispatch('cashier/fetchPaidStudents',queryObject).then(()=>{
          await this.$htmlToPaper('paidStuddentList');
       },
        searchByIdNo(){
-         this.queryObject.search_id = this.studentId
+         this.queryObject.search_id = this.searchValue
           this.studentsPaid(this.queryObject)
 
  },

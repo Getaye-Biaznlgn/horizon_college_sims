@@ -13,10 +13,10 @@
     </div>
     <div class="d-flex justify-content-between mt-4">
      <div class="input-group mt-3 search">
-  <input type="text" class="form-control px-0" placeholder="Search By Student ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue">
+  <input type="text" class="form-control form-control-sm px-0" placeholder="Search By ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue">
    <span class="searchicon input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
-  <div class="d-flex">
+  <div class="d-flex ms-3">
   <div class="mb-3 me-4">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="departmentForFilter">
   <option value="all">All Department</option>
@@ -51,10 +51,9 @@
             aria-label="Default select example"
             v-model="scholarForFilter"
           >
-            <option value="all">All Scholarship</option>
-            <option value="none">none</option>
-            <option value="fully">fully schlar</option>
-            <option value="partial">partialy scholar</option>
+            <option value="all">All</option>
+            <option value="none">none Scholar</option>
+            <option value="fully">fully scholar</option>
           </select>
         </div>
 <div class="mb-3">
@@ -70,7 +69,7 @@
     <div class="ms-5 mt-5">
     <span class="sr-only">{{yearNo+' '+semesterName+' '+departmentName+' '+ programName+' '+stateName+' Students'}}</span>
     </div>
-     <table v-if="filteredStudents.length" class="mt-3">
+     <table class="mt-3">
   <thead>
     <tr class="table-header">
       <th class="text-white px-2">NO</th>
@@ -97,7 +96,7 @@
       <td>{{semesterForFilter}}</td>
       <td class="text-center">
         <span v-if="student.status === 'approved'">{{student.status}}</span>
-        <span v-else class="approvebtn border rounded shadow-sm p-1"><button @click="approveStudent(student)" class="btn approvebtn error" id="approvebtn">approve</button></span>
+        <span v-else class="approvebtn border rounded shadow-sm p-1"><button @click="approveStudent(student)" class="btn error" id="approvebtn">approve</button></span>
       </td>
       <td>
         <div class="dropdown">
@@ -106,7 +105,7 @@
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-             <li><span @click="editStudents(student,'edit')" class="dropdown-item px-4 py-2">edit</span></li>
+             <li><span @click="deleteStudent(student.id)" class="dropdown-item px-4 py-2">Delet Student</span></li>
              <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
           </ul>
         </div>
@@ -114,7 +113,7 @@
     </tr>
   </tbody>  
 </table>
- <div v-else class="error ms-5 mt-5"><span class="text-center">Students not found</span></div> 
+ <div  v-if="!filteredStudents?.length" class="px-5 ms-5 mt-3 pb-2"><span class="text-center">Students not found</span></div> 
 </div>
     </base-card>
    
@@ -153,6 +152,12 @@ export default {
     
     academicYearId(){
       return this.$store.getters.acYearId
+    },
+    notifications(){
+      return this.$store.getters.notifications
+    },
+      user(){
+      return this.$store.getters.user
     },
      filteredStudents(){
          var tempStudents=[]
@@ -291,35 +296,23 @@ this.degreePrograms.forEach(program=>{
          var student={}
          student.student_id= studentvalue.id,
          student.semester_id= studentvalue.semester_id
+         student.user_id = this.user.id
          
           try{
          var response = await apiClient.post('api/degree_approve',student)
          if(response.status === 200){
            studentvalue.status = 'approved'
+           console.log('notification length',this.notifications)
+           this.$store.commit('setNotifications',Number(this.notifications)-1)
          }
           }
           catch(e){
             console.log(e)
           }
-       }
-      //  try{
-      //    this.studentId = id
-      //    var response = await apiClient.get('api/student_semesters/'+id)
-      //    if(response.status === 200){
-      //      this.studentSemesters = response.data
-      //      this.programId = response.data.program.id
-      //       this.isStudentDetail = true
-      //       console.log('program id ='+this.programId)
-      //    }
-      //  }
-      //  catch(e){
-      //    console .log('error')
-      //  }
-      //  finally{
-      //     this.$store.commit('setIsItemLoading',false)
-      //  }
-
-    
+       },
+       deleteStudent(id){
+         this.$store.dispatch('registrar/deleteDegreeStudent',id)
+       },    
     },
 
 }
@@ -476,9 +469,9 @@ ul li{
   }
   .error{
     color: rgb(253, 7, 7);
+    box-shadow: none!important;
   }
   .approvebtn{
-    box-shadow: none!important;
     color: rgb(253, 7, 7);
   }
   .approvebtn:hover{

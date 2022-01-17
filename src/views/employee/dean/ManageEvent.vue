@@ -80,7 +80,7 @@
       <div class="fw-bold">DELETE</div>
       <div class="my-3">Do you want to delete <i>{{this.event.title}}</i>  ?
       </div>
-        <request-status-notifier :notificationMessage='requestStatus.message' :isNotSucceed="requestStatus.isNotSucceed" ></request-status-notifier>
+      <request-status-notifier :notificationMessage='requestStatus.message' :isNotSucceed="requestStatus.isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
 </template>
@@ -141,11 +141,10 @@ export default {
         this.v$.$reset()
        },
       async navigate(pageNumber){
-        if(pageNumber>this.last_page || pageNumber<1)
-            return;
          this.$store.commit('setIsItemLoading', true)
         try {
             var response = await apiClient.get("/api/events?page="+pageNumber)
+            console.log('events', response.data.data)
             if (response.status === 200) {
               this.events=response.data.data
               this.current_page=response.data.current_page

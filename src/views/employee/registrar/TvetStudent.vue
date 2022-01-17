@@ -10,10 +10,10 @@
       </button>
     </div>
     <div class="d-flex justify-content-between">
-      <div class="input-group mt-3 search w-25">
+      <div class="input-group mt-5 search w-25">
         <input
           type="text"
-          class="form-control"
+          class="form-control mt-3"
           placeholder="Search By Student ID"
           aria-label="Username"
           aria-describedby="addon-wrapping"
@@ -21,7 +21,7 @@
         />
         <span
           @click="searchById()"
-          class="input-group-text searchbtn"
+          class="input-group-text mt-3 searchbtn"
           id="addon-wrapping"
           ><i class="fas fa-search"></i
         ></span>
@@ -96,7 +96,7 @@
         </div>
       </div>
     </div>
-    <table v-if="filteredStudents?.length" class="mt-3" id="tvetstu">
+    <table class="mt-3" id="tvetstu">
       <thead>
         <tr class="table-header">
           <th class="text-white">NO</th>
@@ -122,8 +122,8 @@
           <td>{{ tvetStudents.level_no }}</td>
           <td>{{ student.scholarship }}</td>
           <td>
-        <span v-if="student === 'approved'">{{student.status}}</span>
-        <span v-else><button @click="approveStudent(student)" class="btn approved">approve</button></span>
+        <span v-if="student.status === 'approved'">{{student.status}}</span>
+        <span v-else class="approvebtn p-1 border rounded shadow-sm"><button @click="approveStudent(student)" class="btn error approved">approve</button></span>
       </td>
           <td>
             <div class="dropdown">
@@ -142,14 +142,14 @@
                 class="dropdown-menu"
                 aria-labelledby="dropdownMenuLink border rounded shadow-sm"
               >
-                <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2"                  >View Detail</span
+                <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Detail</span
                   >
                 </li>
                 <li>
                   <span
                     @click="deleteStudent(student.id)"
                     class="dropdown-item px-4 py-2"
-                    >delete</span
+                    >delete Student</span
                   >
                 </li>
               </ul>
@@ -158,7 +158,7 @@
         </tr>
       </tbody>
     </table>
-    <div v-else class="text-center error">
+    <div v-if="!filteredStudents?.length" class="ms-5 px-5 mt-3 pb-2">
       Students  not found
     </div>
   </base-card>
@@ -186,6 +186,7 @@ export default {
       levelNumber: "",
       queryData:{
         level_no:1,
+        academic_year_id:''
       }
      
     };
@@ -195,6 +196,9 @@ export default {
     tvetStudents() {
       return this.$store.getters["registrar/tvetStudents"];
     },
+    user(){
+      return this.$store.getters.user
+    },
     academicYears() {
       return this.$store.getters["academicYears"];
     },
@@ -203,6 +207,9 @@ export default {
     },
     academicYearId(){
       return this.$store.getters.acYearId
+    },
+    notifications(){
+      return this.$store.getters.notifications
     },
     departmentBasedLevels() {
       var levels = this.levels.filter((level) => {
@@ -251,19 +258,22 @@ export default {
   watch:{
     academicYearId(newValue){
       this.queryData.academic_year_id = newValue
-     // this.queryData.level_no = this.levelForFilter
- this.$store.dispatch('registrar/fetchTvetStudents',newValue)
+ this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
     },
         levelForFilter(newValue){
-     // this.queryData.academic_year_id = this.academicYearId
-      this.queryData.level_no = newValue
- this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
+           this.queryData.level_no = newValue
+           this.queryData.academic_year_id = this.academicYearId
+  this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
     }
   },
   methods: {
     addStudent() {
       this.$router.push({ name: "TvetStudentRegistration" });
     },
+    // fetchStudent(event){
+    //   this.queryData.level_id = event.target.value
+    //   this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
+    // },
     printTvetStudent() {
       this.$HtmlToPaper("#tvetstu");
     },
@@ -272,20 +282,27 @@ export default {
             this.$router.push({name:'TvetStudentDetail',params:{tvetStudId:id}})
       })
       },
-     async approveStudent(studentvalue){
-         var student={}
-         student.student_id= studentvalue.id,
-         student.semester_id= studentvalue.semester_id
+     async approveStudent(student){
+         var studentData={}
+         studentData.student_id= student.id,
+         studentData.level_id= student.level_id
+         studentData.uer_id = this.user.id
          
           try{
-         var response = await apiClient.post('api/degree_approve',student)
+            console.log('data sent to approve',studentData)
+         var response = await apiClient.post('api/tvet_approve',studentData)
+         console.log('response code=',response.status)
          if(response.status === 200){
-           studentvalue.status = 'approved'
+           student.status = response.data.status
+           this.$store.commit('setNotifications',Number(this.notifications)-1)
          }
           }
           catch(e){
             console.log(e)
           }
+      },
+      deleteStudent(id){
+        this.$store.dispatch('registrar/deleteTvetStudent',id)
       }
   }
 }
@@ -357,7 +374,14 @@ cursor: pointer;
   color: #366ad9;
   cursor: pointer;
 }
-.error{
-  color: red;
-}
+ .error{
+    color: rgb(253, 7, 7);
+    box-shadow: none!important;
+  }
+  .approvebtn{
+    color: rgb(253, 7, 7);
+  }
+  .approvebtn:hover{
+ background-color: #366ad9;
+  }
 </style>

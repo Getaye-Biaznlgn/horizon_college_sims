@@ -1,7 +1,6 @@
 <template>
 
    <base-card class="px-3 mx-md-4 mt-md-3">
-
     <table class="bg-white"  v-if="student?.role==='degree_student'">
        <tr>
            <th class="text-white">Course Code</th>
@@ -73,6 +72,7 @@ methods:{
       },
 },
 created(){
+  this.$emit('title', 'My Course')
   if(this.student.role==='degree_student')
   this.fetchCourse('/api/degree_my_course/'+this.student.id)
   else if(this.student.role==='tvet_student')

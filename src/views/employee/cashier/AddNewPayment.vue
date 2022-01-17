@@ -23,12 +23,13 @@
     </div>
     <div class="mt-2 ms-auto me-3 search">
      <span>Student ID</span>
-    <div class="input-group mt-1 searchdiv">
-  <input type="text" class="form-control searchinput" aria-label="Sizing example input" placeholder="Student ID" aria-describedby="inputGroup-sizing-sm" v-model="studId" @keyup.enter="searchStudentById()">
+    <div class="input-group mt-1 searchdiv" :class="{error:lengthValue}">
+  <input type="text" class="form-control searchinput" aria-label="Sizing example input" placeholder="Student ID" aria-describedby="inputGroup-sizing-sm" v-model="studId" @keyup.enter="searchStudentById()" @input="checkLengthId($event)">
   <span @click="searchStudentById()" class="input-group-text searchbtn" id="inputGroup-sizing-sm">
         <span v-if="isChecking"><span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Searching</span>      
             <span v-else>Search</span>
     </span>
+    <span v-if="lengthValue" class="errorMsg"> The maximum ID length should be 13 Characters</span>
 </div>
     </div>
     </div>
@@ -56,8 +57,7 @@
     </div>
     </div>
     </div>
-    <div class="d-flex mt-3">
-    <div v-if="studentFeelists.semesters?.length" class="d-flex">
+    <div v-if="studentFeelists.semesters?.length" class="d-flex justify-content-between mt-3">
     <div v-for="semesters in studentFeelists.semesters" :key="semesters.id" class="mt-3  ms-4 roundtabel">
      <table class="monthtable">
   <thead>
@@ -80,7 +80,7 @@
   <td :colspan="semesters.months.length+1">
   <div class="d-flex justify-content-between">
   <span>Paid by Month</span>
-  <button @click="selectPaymentType(studentFeelists.month_payment,semesters.monthly_cp_fee,semesters.id,semesters.months,studentFeelists.id)" class="btn completed  mt-1 ms-auto" :disabled="isFullPaid(semesters.months)" :class="{paybtn:!isFullPaid}">Pay</button>
+  <button @click="selectPaymentType(studentFeelists,semesters)" class="btn completed  mt-1 ms-auto" :disabled="!isFullPaidSemester(semesters.months)" :class="{paybtn:isFullPaidSemester(semesters.months)}">Pay</button>
   </div>
   </td>
   </tr>
@@ -88,12 +88,11 @@
     </div>
     </div>
     </div>
-    </div>
-    <div v-if="isEmpty && !studentFeelists.semesters?.length" class="text-center mt-5 notFound">
+    <div v-if="isEmpty && !studentFeelists.semesters?.length && !studentFeelists.months?.length" class="text-center mt-5 notFound">
       <span>{{student_type+' '}}Student with ID number{{' '+studId}} Not found </span>
     </div>
     <!-- TVET student payment -->
-     <div v-if="studentFeelists.type === 'tvet'">
+     <div v-if="studentFeelists.type === 'tvet' && studentFeelists.months?.length">
     <div class="d-flex justify-content-between mt-4">
     <div class="nameanid ms-5">
     <div class="d-flex">
@@ -135,7 +134,7 @@
   <tr>
   <td :colspan="studentFeelists.months?.length">
   <div class="d-flex justify-content-end py-2">
-  <button @click="tvetPayment(studentFeelists.month_payment,studentFeelists.id,studentFeelists.months)" class="btn paybtn mt-1 me-3">Pay</button>
+  <button @click="tvetPayment(studentFeelists)" class="btn paybtn mt-1 me-3">Pay</button>
   </div>
   </td>
   </tr>
@@ -144,40 +143,40 @@
     </div>
      </div>
     </div>
-    <div v-if="isOtherFee" class="mt-4">
-    <div class="row mt-3 align-items-center ms-3 me-3">
-     <div class="studenttype col-sm-3 me-5">
-    <span class="mt-3 mb-3">Student Type</span>
+    <div v-if="isOtherFee" class="mt-4 px-3">
+    <div class="row">
+     <div class="col-lg-4">
+    <span>Student Type</span>
     <select class="form-select mt-1" aria-label=".form-select-sm example" v-model="student_type">
   <option selected value="degree"><strong>Degree</strong></option>
   <option value="tvet"><strong>TVET</strong></option>
 </select>
     </div>
-    <div class="calender col-sm-3 ms-5">
-    <span class="mt-3">Fee Type</span>
+    <div class="col-lg-4">
+    <span>Fee Type</span>
     <select class="form-select mt-1" aria-label=".form-select-sm example" v-model="paymentTypeId">
   <option v-for="feeType in paymentTypes" :key="feeType.id" :value="feeType.id">{{feeType.name}}</option>
 </select>
     </div>
-    <div class="mt-2 ms-auto me-3 search">
+    <div class="col-lg-4">
      <span>Pad Number</span>
-    <div class="mt-1">
   <input type="text" class="form-control" aria-label="Sizing example input" placeholder="Ex 134" v-model="receiptNumber">
   <span v-if="isPadFieldEmpty && receiptNumber === ''" class="errorMsg">Pad number is required</span>
 </div>
     </div>
-    <div class="d-flex align-items-center">
-    <div class="form-group mt-4 mb-3 me-5 w-25">
+    <div class="row mt-lg-5">
+    <div class="col-lg-4">
 <label for="otherpayeddate" class="form-label">Paid Date</label>
 <input class="form-control" type="date" id="otherpayeddate" aria-label=".form-control-sm example" v-model="otherPaidDate">
  <span v-if="isDateFieldEmpty && otherPaidDate === ''" class="errorMsg mt-1">Please select paid date</span>
 </div>
-<div class="form-group ms-5">
+<div class="col-lg-4 me-5" :class="{warning:idLength}">
 <label for="idno" class="form-label">Student ID</label>
-<input class="form-control" type="text" id="idno" placeholder="Ex HCR1013" aria-label=".form-control-sm example" v-model="otherStudId">
-<span v-if="isIdFieldEmpty && otherStudId === ''" class="errorMsg mt-1">Student ID number is required</span>
+<input class="form-control" type="text" id="idno" placeholder="Ex HCR1013" aria-label=".form-control-sm example" v-model="otherStudId" @input="checkIdLength($event)">
+<span v-if="isIdFieldEmpty && otherStudId === ''" class="errorMsg mt-1">Student ID number is required, </span>
+<span v-if="idLength" class="errorMsg"> The maximum ID length should be 13 Characters</span>
 </div> 
-    <div class="d-flex justify-content-end mt-5 ms-auto">
+    <div class="col-1 ms-5 mt-4">
     <button @click="otherPayment()" class="btn addbtn me-3 p-1"><span v-if="isLoading" class="btn  py-1">
  <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>PAYING</span>      
   <span v-else>PAY</span>
@@ -191,7 +190,6 @@
 
     </div>
      <p class=" mt-5 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
-    </div>
     </div>
 </base-card>
 <!-- payment form -->
@@ -255,9 +253,9 @@
 </div>
  <p class=" mt-5 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 <div class="d-flex justify-content-between mt-5">
-<button @click="cancelPaymentDialog()" class="btn cancelbtn optionbtn py-1">CANCEL</button>
-<button @click="payByCp()" class="btn optionbtn paybtn py-1">
-  <span v-if="isLoading" class="btn  py-1">
+<button @click="cancelPaymentDialog()" class="btn cancelbtn py-1">CANCEL</button>
+<button @click="payByCp()" class="btn paybtn mx-3 py-1">
+  <span v-if="isLoading">
  <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>PAYING</span>      
             <span v-else>PAY</span>
 </button>
@@ -304,9 +302,9 @@
 </div>
  <p class=" mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 <div class="d-flex justify-content-between mt-5">
-<button @click="cancelPaymentDialog()" class="btn cancelbtn optionbtn py-1">CANCEL</button>
-   <button  @click="payByMonth()" class="btn optionbtn paybtn p-1">
-  <span v-if="isLoading" class="btn py-1">
+<button @click="cancelPaymentDialog()" class="btn cancelbtn  py-1">CANCEL</button>
+   <button  @click="payByMonth()" class="btn paybtn p-1">
+  <span v-if="isLoading">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                PAYING
             </span>      
@@ -356,7 +354,10 @@ export default {
            searchResultNotifier:'',
            isPadFieldEmpty:false,
            isIdFieldEmpty:false,
-           isDateFieldEmpty:false
+           isDateFieldEmpty:false,
+           idLength:false,
+           lengthValue:false
+
         }
     },
     validations(){
@@ -421,6 +422,22 @@ typeOfPayment(){
       back(){
         this.$router.back()
       },
+      checkIdLength(event){
+        if(event.target.value.length !== 13 &&  event.target.value !== ''){
+          this.idLength = true
+        }
+        else{
+          this.idLength = false
+        }
+      },
+       checkLengthId(event){
+        if(event.target.value.length !== 13 &&  event.target.value !== ''){
+          this.lengthValue = true
+        }
+        else{
+          this.lengthValue = false
+        }
+      },
         tuitionFeeType(){
             this.isTuitionFee = true
             this.isOtherFee = false
@@ -446,35 +463,31 @@ typeOfPayment(){
             this.isChecking=false
           })
         },
-         tvetPayment(monthlyPayment,studId,months){
-          this.monthlyPayment = monthlyPayment
+         tvetPayment(studentFeelists){
+          this.monthlyPayment = studentFeelists.month_payment
           this.activeACyear = this.$refs.acYearId.value
-          this.student_id = studId,
-          this.semesterMonths = months
-          console.log('monthly payment = '+monthlyPayment+' student id= '+studId)
-          console.log('academic months')
-          console.log(this.semesterMonths)
-         
-          document.documentElement.style.overflow = "hidden"
+          this.student_id = studentFeelists.id
+          this.semesterMonths = studentFeelists.months
            this.newPayment = true
                    
         },
-        selectPaymentType(monthlyPayment,semesterValue,semesterId,semestermonths,studId){
-          this.monthlyPayment = monthlyPayment
-          this.semesterPayment = semesterValue 
-          this.semester_id = semesterId
-          this.semesterMonths = semestermonths
+        selectPaymentType(studentFeelists,semesters){
+          this.monthlyPayment =  studentFeelists.month_payment
+          this.semesterPayment = semesters.monthly_cp_fee 
+          this.semester_id = semesters.id
+          this.semesterMonths = semesters.months
           this.activeACyear = this.$refs.acYearId.value
-          this.student_id = studId
+          this.student_id = studentFeelists.id
            this.newPayment = true
            this.resultNotifier = ''
                    
         },
-        isFullPaid(semestermonths){
+        isFullPaidSemester(semestermonths){
           var isComplet = false
         semestermonths.forEach(month=>{
              if(month.pad === null){
              isComplet=true
+             return
              }
            })
            return isComplet
@@ -484,7 +497,6 @@ typeOfPayment(){
            this.resetValue()
         },
        async payByMonth(){
-         this.resultNotifier = ''
            this.v$.$validate()
            if(!this.v$.$error){
              this.isLoading = true
@@ -510,7 +522,7 @@ typeOfPayment(){
               console.log(response.data)
                this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'Your payment is succesfully done'
+          //  this.resultNotifier = 'Your payment is succesfully done'
            this.isLoading = false
            this.newPayment = false
            this.v$.$reset()
@@ -530,6 +542,11 @@ typeOfPayment(){
            this.isSuccessed = false
            this.resultNotifier = response.data.error
                 }
+            }
+            catch(e){
+                     this.isFaild = true
+           this.isSuccessed = false
+           this.resultNotifier = 'error! some thing went wrong'
             }
              finally{
                this.isLoading = false
@@ -561,7 +578,7 @@ typeOfPayment(){
               console.log(response.data)
                this.isFaild = false
            this.isSuccessed = true
-           this.isLoading = false
+           this.isLoading = true
            this.newPayment = false
            this.v$.$reset()
            this.resetValue()
@@ -584,6 +601,7 @@ typeOfPayment(){
           }
           finally{
             this.resultNotifier = ''
+            this.isLoading = false
           }
            
            }
@@ -595,7 +613,8 @@ typeOfPayment(){
          this.semesterPayment = ''
         },
        async  otherPayment(){
-         var isEmptyFild = null
+         console.log('other payment is called')
+         var isEmptyFild = false
          this.resultNotifier = ''
            if(this.otherStudId === ''){
              this.isIdFieldEmpty = true
@@ -609,7 +628,7 @@ typeOfPayment(){
              this.isDateFieldEmpty = true
              isEmptyFild = true
            }
-           if(isEmptyFild){
+           if(!isEmptyFild){
          this.isLoading = true
           var studentFee={}
            studentFee.student_id = this.otherStudId
@@ -687,13 +706,12 @@ typeOfPayment(){
     color: #000;
 }
 .paybtn{
-  width: 5em;
-  padding: 1;
-  background-color:#366ad9 ;
+  width: 6em;
+  background-color:#2f4587 ;
   color: #fff;
 }
 .paybtn:hover{
- background-color:#1142ac ;
+ background-color:#366ad9 ;
  
 }
 .addbtn{
@@ -723,10 +741,6 @@ color: #fff;
 .searchinput{
    box-shadow: none !important;
 }
-.cppaid,.monthlypaid{
-   background-color:#366ad9 ; 
-  color: #fff; 
-}
 .search{
     width: 30%;
 }
@@ -745,6 +759,7 @@ table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
+   overflow-x: auto!important;
 }
 .table-header{
     background-color:#4285fa ;
@@ -759,7 +774,7 @@ th{
 td{
   border: 1px solid #dddddd;
   text-align: left;
-  padding: 8px;
+  padding: 4px;
   vertical-align: top;
 }
 .roundtabel{
@@ -772,10 +787,10 @@ td{
   width: 100%;
   height: 100%;
 }
-.cptabel{
+/* .cptabel{
   width: 100%;
   height: 100%;
-}
+} */
 .editwraper{
  position: fixed;
     top: 0;
@@ -796,9 +811,9 @@ td{
   background-color: #fff;
   border: 1px solid rgb(172, 167, 167);
 }
-.optionbtn{
+/* .optionbtn{
   width: 7em;
-}
+} */
 .success{
     color: green;
   }
@@ -815,6 +830,9 @@ td{
   }
   .checkmonth{
     color: red;
+  }
+  .error input{
+    border-color: red;
   }
   .errorMsg{
     color: red;

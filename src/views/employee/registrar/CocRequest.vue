@@ -5,23 +5,21 @@
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button></div>
-      <div id="cocRequest">
-        <div class="d-flex justify-content-between ms-5 me-5 px-5 mt-5">
+      <div id="cocRequest" class="ms-5 mt-5 me-5">
+        <div class="d-flex justify-content-between ms-5 me-5  px-5">
           <div>
           <h3>ሆራይዞን ኮሌጅ</h3>
-          <h4><i class="fa fa-envelope-o" aria-hidden="true"></i>058-3208997</h4>
-          <h4>927Bahi Dar</h4>
+          <h4><i class="fas fa-phone"></i> 058-3208997</h4>
+          <h4> <i class="fas fa-envelope-square"></i> 927Bahi Dar</h4>
           </div>
-          <div class="d-flex">
-            <img src="../../../assets/logo.png" alt="horizon logo" width="60" height="60" class="me-5">
+          <div> <img src="../../../assets/logo.png" alt="horizon logo" width="80" height="80" class="me-5"></div>
           <div class="ms-5"><h3>Horizon College</h3>
           <h4>Fax:058-3208997</h4>
           <h6>E-mail:horizoncollege@gmail.com</h6>
           </div>
-          </div>
 
         </div>
-       <div class="fs-3 fw-bold"><hr class="p-1"></div>
+        <hr class="w-100 mt-3" />
 
           <div class="sr-only d-flex justify-content-end mt-1 px-5">
               <div>
@@ -71,6 +69,17 @@
         </tr>
       </tbody>
             </table>
+            <div class="ms-5 mt-5">
+              <h4>
+                አመልካቾችን ለምዘና የመዘገብብን መሆኑን እየገለጽን የምዘና ቀን በሚውሰንበት ጊዜ
+              </h4>
+              <h4>ምዘናውን ለመስጠት ዝግጁ መሆናችንን እናሳውቃለን</h4>
+              <div class="d-flex">
+                <div class="ms-auto mt-5 me-5">
+                  <h4>ከሰላምታ ጋር</h4>
+                </div>
+              </div>
+            </div>
       </div>
 </base-card>
 </template>

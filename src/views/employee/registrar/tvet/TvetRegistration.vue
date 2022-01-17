@@ -64,10 +64,13 @@ export default {
       isFinance: false,
       componentName: "personal-info",
       studentInfo: {},
-      resultNotifier:false,
-        isSuccessed:false,
-        isFaild:false,
-        isLoading:false,
+      // resultNotifier:{
+      //   notification:false,
+      //     isSuccessed:false,
+      //   isFaild:false,
+      //   isLoading:false,
+      // }
+      
     };
   },
   computed: {
@@ -80,15 +83,13 @@ export default {
       admissionDetail: this.admissionDetail,
       financeDetail: this.financeDetail,
       backPage: this.backPage,
-      resultNotifier:this.resultNotifier,
-        isSuccessed:this.isSuccessed,
-        isFaild:this.isFaild,
-        isLoading:this.isLoading
+      // resultNotifier:this.resultNotifier
     };
   },
   methods: {
  back(){
         this.$router.back()
+         this.$store.commit('registrar/setResultNotifier','')
       },
     // personal(){
     //   this.isPersonal = true
@@ -172,6 +173,7 @@ export default {
       this.componentName = pageName;
     },
     async registerTvetStudent() {
+      this.$store.commit('registrar/setResultNotifier','')
        this.$store.commit('registrar/setIsUploading',true)
       this.studentInfo.academic_year_id = this.acYearId;
       console.log("the data sent to the server");
@@ -180,19 +182,25 @@ export default {
         var response = await apiClient.post('api/tvet_students',this.studentInfo);
         console.log("status code = " + response.status);
         if (response.status === 201) {
+        //  this.resultNotifier.notification = 'You have registered a student successfully'
+        //  this.resultNotifier.isSuccessed = true
+        //  this.resultNotifier.isFaild = false
           console.log('response from adding tvet student')
     console.log(response.data)
-     var previousStudent = this.$store.getters['registrar/tvetStudents']
-    var index = previousStudent.findIndex(student => {
-     return student.level_no === response.data.level_no
-     })
-  previousStudent[index].students.push(response.data)
-  this.$store.commit('registrar/setTvetStudent',previousStudent)
+  //    var previousStudent = this.$store.getters['registrar/tvetStudents']
+  //   var index = previousStudent.findIndex(student => {
+  //    return student.level_no === response.data.level_no
+  //    })
+  // previousStudent[index].students.push(response.data)
+  //  this.$store.commit('registrar/setTvetStudent',previousStudent)
   this.$store.commit('registrar/setResultNotifier','You have registered a student successfully')
-     this.$store.commit('registrar/setIsSuccessed',true)
+      this.$store.commit('registrar/setIsSuccessed',true)
       this.$store.commit('registrar/setIsFaild',false)
   }
   else if(response.status === 200){
+    //  this.resultNotifier.notification = 'You have alrady registered this Student'
+    //      this.resultNotifier.isSuccessed = false
+    //      this.resultNotifier.isFaild = true
     this.$store.commit('registrar/setResultNotifier',response.data.error)
          this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)
@@ -200,7 +208,10 @@ export default {
   }
 }
 catch(e){
-    this.$store.commit('registrar/setResultNotifier','Faild to register a TVET student')
+    // this.resultNotifier.notification = 'Registration faild'
+    //      this.resultNotifier.isSuccessed = false
+    //      this.resultNotifier.isFaild = true
+     this.$store.commit('registrar/setResultNotifier','Registration Faild')
          this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)
 }

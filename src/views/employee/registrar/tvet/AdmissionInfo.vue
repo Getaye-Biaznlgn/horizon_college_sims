@@ -25,7 +25,7 @@
   <div class="d-flex mt-5">
   <div><strong>REGISTER FOR</strong></div>
 <div v-for="level in departmentBasedLevels" :key="level.id" class="form-check me-3">
-  <input class="form-check-input ms-4 p-2" type="radio" name="levelno" :checked="Number(level.level_no) === 1" :id="'level'+level.id" :value="level.id" v-model="levelId">
+  <input class="form-check-input ms-4 p-2" type="radio" name="levelno" :id="'level'+level.id" :value="level.id" v-model="levelId">
   <label class="form-check-label ms-2" :for="'level'+level.id">
     {{'Level '+level.level_no}}
   </label>
@@ -68,6 +68,13 @@ export default {
   },
   created() {
     this.tvetDepartmentId = this.tvetDepartments[0]?.id
+    this.levelId = this.departmentBasedLevels[0]?.id
+    
+  },
+  watch:{
+    departmentBasedLevels(newValue){
+      this.levelId = newValue[0]?.id
+    }
   },
       methods: {
        gotoFinancialPage(){

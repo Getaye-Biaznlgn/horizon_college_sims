@@ -38,6 +38,12 @@ export default {
       isFinance:false,
       componentName:'personal-info',
       studentInfo:{},
+      //   resultNotifier:{
+      //   notification:'',
+      //     isSuccessed:false,
+      //   isFaild:false,
+      //   isLoading:false,
+      // }
     }
   },
      computed:{
@@ -51,12 +57,14 @@ export default {
         admissionDetail:this.admissionDetail,
         financeDetail:this.financeDetail,
         backPage:this.backPage,
+       // resultNotifier:this.resultNotifier
 
     }
   },
     methods: {
        back(){
         this.$router.back()
+        this.$store.commit('registrar/setResultNotifier','')
       },
       // personal(){
       //   this.isPersonal = true
@@ -151,29 +159,38 @@ export default {
   var response = await apiClient.post('api/degree_students',this.studentInfo)
   console.log('status code '+response.status)
   if(response.status === 201){
+        //  this.resultNotifier.notification = 'You have registered a student successfully'
+        //  this.resultNotifier.isSuccessed = true
+        //  this.resultNotifier.isFaild = false
     console.log('response from adding degree student')
     console.log(response.data)
-     var previousStudent = this.$store.getters['registrar/degreeStudents']
-    var index = previousStudent.findIndex(student => {
-     return student.level_no === response.data.level_no
-     })
-  previousStudent[index].students.push(response.data)
-  this.$store.commit('registrar/setDegreeStudent',previousStudent)
+  //    var previousStudent = this.$store.getters['registrar/degreeStudents']
+  //   var index = previousStudent.findIndex(student => {
+  //    return student.semester_no === response.data.semester_no
+  //    })
+  // previousStudent[index].students.push(response.data)
+  // this.$store.commit('registrar/setDegreeStudent',previousStudent)
   this.$store.commit('registrar/setResultNotifier','You have registered a Degree student successfully')
      this.$store.commit('registrar/setIsSuccessed',true)
       this.$store.commit('registrar/setIsFaild',false)
   }
   else if(response.status === 200){
-    this.$store.commit('registrar/setResultNotifier',response.data.error)
-         this.$store.commit('registrar/setIsSuccessed',false)
+      // this.resultNotifier.notification = ''
+      //    this.resultNotifier.isSuccessed = false
+      //    this.resultNotifier.isFaild = true
+          this.$store.commit('registrar/setResultNotifier','You have already registered this Student')
+     this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)
 
   }
 }
 catch(e){
-    this.$store.commit('registrar/setResultNotifier','Faild to register a degree student')
-         this.$store.commit('registrar/setIsSuccessed',false)
+        this.$store.commit('registrar/setResultNotifier','Registeration faild')
+     this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)
+    // this.resultNotifier.notification = 'Registeretion faild'
+    //      this.resultNotifier.isSuccessed = false
+    //      this.resultNotifier.isFaild = true
 }
 finally{
   this.$store.commit('registrar/setIsUploading',false)

@@ -7,6 +7,7 @@ import registrar from './employee/registrar'
 import cashier from './employee/cashier'
 import tvetHead from './employee/tvet_head/index'
 import studentAuth from './student/auth'
+import teacher from './employee/teacher'
 export default createStore({
     modules: {
         studentAuth,
@@ -19,6 +20,7 @@ export default createStore({
         auth, //staff auth
         degreeHead,
         tvetHead,
+        teacher
     },
     state: {
         programs: [], // still im not using it
@@ -26,7 +28,8 @@ export default createStore({
         isLoading: null, //loading for entry page,
         academicYears: [],
         selectedAcademicYearId: '',
-        acYearId: ''
+        acYearId: '',
+        notifications: null
     },
     mutations: {
         setPrograms(state, programs) {
@@ -46,6 +49,9 @@ export default createStore({
         },
         setSelectedAcYearId(state, year) {
             state.acYearId = year
+        },
+        setNotifications(state, value) {
+            state.notifications = value
         }
 
     },
@@ -70,6 +76,9 @@ export default createStore({
         },
         selectedAcademicYear(state) {
             return state.selectedAcademicYear
+        },
+        notifications(state) {
+            return state.notifications
         },
         getYearById(state) {
             return function(id) {

@@ -26,7 +26,7 @@
              <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">New Degree Students</span>
-                <span class="fw-bold d-block text-center">{{dashboardDatas.new_degree_students}}</span>
+                <span class="fw-bold d-block text-center">{{dashboardDatas.new_degree_student}}</span>
             </div>
              <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>

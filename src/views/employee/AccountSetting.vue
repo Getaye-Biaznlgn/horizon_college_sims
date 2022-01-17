@@ -12,19 +12,19 @@
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.password.oldPassword.$error}">
            <label for="#oldPassword" class="form-label">Old Password</label>
-           <input class="form-control" v-model.trim="password.oldPassword" @blur="v$.password.oldPassword.$touch" id="oldPassword" type="text"  aria-label=".form-control">
+           <input class="form-control" v-model.trim="password.oldPassword" @blur="v$.password.oldPassword.$touch" id="oldPassword" type="password"  aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.password.oldPassword.$errors" :key="index">{{ error.$message+", " }}</span>
         </div> 
        
        <div class="mb-3" :class="{warining:v$.password.newPassword.$error}">
            <label for="#newPassword" class="form-label">New Password</label>
-           <input class="form-control" v-model.trim="password.newPassword" @blur="v$.password.newPassword.$touch" id="newPassword" type="text" aria-label=".form-control">
+           <input class="form-control" v-model.trim="password.newPassword" @blur="v$.password.newPassword.$touch" id="newPassword" type="password" aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.password.newPassword.$errors" :key="index">{{ error.$message+", " }}</span>
        </div> 
-
+      
       <div class="mb-3" :class="{warining:v$.password.confirmPassword.$error}">
            <label for="#confirmPassword" class="form-label">Confirm Password</label>
-           <input class="form-control" v-model.trim="password.confirmPassword" @blur="v$.password.confirmPassword.$touch" id="confirmPassword" type="text" aria-label=".form-control">
+           <input class="form-control" v-model.trim="password.confirmPassword" @blur="v$.password.confirmPassword.$touch" id="confirmPassword" type="password" aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.password.confirmPassword.$errors" :key="index">{{ error.$message+", " }}</span>
        </div> 
       </form>
@@ -47,6 +47,7 @@ export default {
                 oldPassword:'',
                 confirmPassword:''
             },
+            
             addBaseModal:null,
             actionButtonType:'',
             isSaving:false,
@@ -75,7 +76,11 @@ export default {
        if(!this.v$.$error){
            this.isSaving=true
          try{
-          let response= await apiClient.post('api/news', this.news)
+          let response= await apiClient.post('api/change_password', {
+              user_name:this.user.email,
+              new_password:this.password.newPassword,
+              old_password:this.password.oldPassword
+          })
             if(response.status===200){
                this.requestStatus.isNotSucceed=false,
                this.requestStatus.message="Password is changed successfully"
@@ -85,7 +90,7 @@ export default {
          }
          catch(e){
              this.requestStatus.isNotSucceed=true,
-             this.requestStatus.message="Failed to change password"
+             this.requestStatus.message='Faild to change password'
          }
          finally{
            this.isSaving=false

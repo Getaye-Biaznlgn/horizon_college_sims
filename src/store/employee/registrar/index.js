@@ -377,5 +377,69 @@ export default {
                 console.log('error occurd')
             }
         },
+        async deleteStudentFromCoc(context, deletedStudent) {
+            try {
+                var response = await apiClient.delete(`api/coc_students/${deletedStudent.id}?type=${deletedStudent.type}&coc_id=${deletedStudent.coc_id}`)
+                console.log('status = ', response.status)
+                if (response.status === 200) {
+                    console.log('Deleteed data from seerver')
+                    console.log(response.data)
+                    var previousStudent = context.getters.cocTakerStudents
+                    var index = previousStudent.findIndex(student => {
+                        return student.student_id === deletedStudent.id
+                    })
+                    previousStudent.splice(index, 1)
+                    context.commit('setCocTakerStudents', previousStudent)
+                } else {
+                    throw 'faild to delet student from coc'
+                }
+                //return response
+            } catch (e) {
+                console.log('error occurd')
+            }
+        },
+        async deleteDegreeStudent(context, id) {
+            try {
+                var response = await apiClient.delete(`api/delete_degree_students/${id}`)
+                console.log('status = ', response.status)
+                if (response.status === 200) {
+                    console.log('Deleteed student from seerver olala')
+                    console.log(response.data)
+                    var previousStudent = context.getters.degreeStudents.data
+                    var index = previousStudent.findIndex(student => {
+                        return student.student_id === id
+                    })
+                    previousStudent.splice(index, 1)
+                    context.commit('setDegreeStudent', previousStudent)
+                } else {
+                    throw 'faild to delet student from coc'
+                }
+                //return response
+            } catch (e) {
+                console.log('error occurd')
+            }
+        },
+        async deleteTvetStudent(context, id) {
+            try {
+                var response = await apiClient.delete(`api/delete_tvet_students/${id}`)
+                console.log('status = ', response.status)
+                if (response.status === 200) {
+                    console.log('Deleteed student from seerver olala')
+                    console.log(response.data)
+                    var previousStudent = context.getters.tvetStudents.data
+                    var index = previousStudent.findIndex(student => {
+                        return student.student_id === id
+                    })
+                    previousStudent.splice(index, 1)
+                    context.commit('setTvetStudent', previousStudent)
+                } else {
+                    throw 'faild to delet student from coc'
+                }
+                //return response
+            } catch (e) {
+                console.log('error occurd')
+            }
+        }
+
     },
 }

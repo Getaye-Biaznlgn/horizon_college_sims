@@ -13,7 +13,7 @@
             </div>
             <div class="d-flex mt-2">
               <span class="ms-2"><strong>Sex: </strong></span>
-              <span>{{ studentLevels.sex }}</span>
+              <span>{{ studentLevels?.sex }}</span>
             </div>
           </div>
           <div class="deptandprogram me-5">

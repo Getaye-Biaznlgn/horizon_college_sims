@@ -2,16 +2,17 @@
 <base-card>
  <div class="d-flex justify-content-between">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-1" placeholder="Search By pad number" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByPadNo()">
+  <input type="text" class="form-control p-1" placeholder="Search By pad number" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue" @keyup.enter="searchByPadNo()">
    <span @click="searchByPadNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
   <div>
-    <button @click="addStudent" class="btn me-1 addbtn">
+    <button @click="printStudentFee()" class="btn me-1 addbtn">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
     </div>
     </div>
+    <div id="tvetFee">
     <table class="mt-3">
   <thead>
     <tr class="table-header">
@@ -38,59 +39,23 @@
     </tr>
   </thead>
   <tbody>
-     <tr v-for="(student,index) in tvetStudentFee" :key="student.id">
-      <td>{{index+1}}</td>
+     <tr v-for="(student,index) in filteredStudents" :key="student.id">
+      <td>{{queryObject.per_page*tvetStudentFee.current_page +index+1 - queryObject.per_page }}</td>
       <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
-      <td>
-       <span v-if="student.pads.September === null">X</span>
-      <span v-else>{{student.pads.September}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.October === null">X</span>
-      <span v-else>{{student.pads.October}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.November === null">X</span>
-      <span v-else>{{student.pads.November}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.December === null">X</span>
-      <span v-else>{{student.pads.December}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.January === null">X</span>
-      <span v-else>{{student.pads.January}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.February === null">X</span>
-      <span v-else>{{student.pads.February}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.March === null">X</span>
-      <span v-else>{{student.pads.March}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.April === null">X</span>
-      <span v-else>{{student.pads.April}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.May === null">X</span>
-      <span v-else>{{student.pads.May}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.Jun === null">X</span>
-      <span v-else>{{student.pads.Jun}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.July === null">X</span>
-      <span v-else>{{student.pads.Julay}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.August === null">X</span>
-      <span v-else>{{student.pads.August}}</span>
-      </td>
+     <td>{{student.pads.September}}</td>
+      <td>{{student.pads.October}}</td>
+      <td>{{student.pads.November}}</td>
+      <td>{{student.pads.December}}</td>
+      <td>{{student.pads.January}}</td>
+      <td>{{student.pads.February}}</td>
+      <td>{{student.pads.March}}</td>
+      <td>{{student.pads.April}}</td>
+      <td>{{student.pads.May}}</td>
+      <td>{{student.pads.Jun}}</td>
+      <td>{{student.pads.July}}</td>
+      <td>{{student.pads.Augest}}</td>
       <td>{{student.total}}</td>
       <td><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
       
@@ -98,9 +63,10 @@
   </tbody>
    
 </table>
-<div v-if="tvetStudentFee.length" class="d-flex justify-content-end mt-3 me-5">
+    </div>
+<div v-if="tvetStudentFee.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
-Rows per Page
+Number of Rows 
 </div>
 <div class="limit col-sm-1 me-3">
 <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="rowNumber">
@@ -112,7 +78,7 @@ Rows per Page
 </select>
 </div>
 <div class="pageno me-3">
-{{tvetStudentFee.from+'-'+tvetStudentFee.to+' of '+tvetStudentFee.total+' pages'}}
+{{tvetStudentFee.from+'-'+tvetStudentFee.to+' of '+tvetStudentFee.total+' Rows'}}
 </div>
 <div class="leftchivron ms-3 me-3">
 <button @click="backChivron()" class="chivronbtn" :class="{active:tvetStudentFee.from !== 1}" :disabled="tvetStudentFee.from === 1"><i class="fas fa-chevron-left"></i></button>
@@ -129,6 +95,7 @@ export default {
             isDetail:false,
             rowNumber:5,
             studentId:null,
+            searchValue:'',
             queryObject:{
             page:1,
             per_page:5,
@@ -146,6 +113,15 @@ export default {
       },
       acYearId(){
         return this.$store.getters.acYearId
+      },
+       filteredStudents(){
+         var tempStudents= this.tvetStudentFee.data    
+      if(this.searchValue!==''){
+         tempStudents=tempStudents.filter((student)=>{
+            return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
+         })
+      }
+      return tempStudents
       }
     },
           created() {
@@ -172,6 +148,7 @@ rowNumber(newValue){
 this.$store.dispatch('cashier/fetchTvetStudentFee',queryObject)
         },
       searchByPadNo(){
+        this.queryObject.search_id = this.searchValue
 this.tvetStudentsPaid(this.queryObject)
       },
         showDetail(id){
@@ -189,6 +166,9 @@ this.tvetStudentsPaid(this.queryObject)
         this.queryObject.page = this.queryObject.page -1
        this.tvetStudentsPaid(this.queryObject)
       },
+      printStudentFee(){
+        this.$htmlToPaper('tvetFee')
+      }
     },
 }
 </script>
@@ -250,9 +230,9 @@ td{
 .chivronbtn{
     border: none;
     background-color: #fff;
-    color: rgba(219, 219, 219, 0.849);
+    color: rgba(179, 175, 175, 0.849);
 }
-.chivronbtn:focus{
-    color: rgb(15, 15, 15);
+.active{
+  color: rgb(15, 15, 15);
 }
 </style>

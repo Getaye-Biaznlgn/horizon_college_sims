@@ -127,8 +127,6 @@ export default {
         this.v$.$reset()
        },
       async navigate(pageNumber){
-        // if(pageNumber>this.last_page || pageNumber<1)
-        //     return;
          this.$store.commit('setIsItemLoading', true)
         try {
             var response = await apiClient.get("/api/news?page="+pageNumber)

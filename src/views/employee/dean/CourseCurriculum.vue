@@ -14,31 +14,31 @@
        </div>
     <div class="px-2 ms-auto"> 
         <select v-model="departmentIdForFilter" class="form-select" aria-label="select by department">
-           <option selected value="all">All Department</option>
+           <option  value="all">All Department</option>
            <option v-for="dep in degreeDepartments" :key="dep.id" :value="dep.id">{{dep.name}}</option>
         </select>
     </div>
      <div class="pe-2"> 
         <select v-model="programForFilter" class="form-select" aria-label="select by program">
-           <option selected value="all">All Program</option>
-           <option selected value="regular">Regular</option>
-           <option selected value="extension">Extension</option>
+           <option  value="all">All Program</option>
+           <option  value="regular">Regular</option>
+           <option  value="extension">Extension</option>
         </select>
      </div>
      
        <div class="pe-2"> 
           <select v-model="yearForFilter" class="form-select " aria-label="select by year">
-            <option selected value="all">All Year</option>
-            <option selected value="1">Year 1</option>
-            <option selected value="2">Year 2</option>
-            <option selected value="3">Year 3</option>
-            <option selected value="4">Year 4</option>
-            <option selected value="5">Year 5</option>
+            <option  value="all">All Year</option>
+            <option  value="1">Year 1</option>
+            <option  value="2">Year 2</option>
+            <option  value="3">Year 3</option>
+            <option  value="4">Year 4</option>
+            <option  value="5">Year 5</option>
           </select>
        </div>
        <div class="pe-2"> 
           <select v-model="semesterForFilter" class="form-select" aria-label="select by semester">
-            <option selected value="all">All Semester</option>
+            <option  value="all">All Semester</option>
             <option value="1">Semester 1</option>
             <option value="2">Semester 2</option>
             <option value="3">Semester 3</option>
@@ -46,7 +46,7 @@
        </div>
        <div class=""> 
         <select v-model="typeForFilter" class="form-select" aria-label="select by program">
-           <option selected value="all">All Type</option>
+           <option  value="all">All Type</option>
            <option value="major">Major</option>
            <option value="common">Common</option>
            <option value="supporting">Supporting</option>
@@ -54,7 +54,6 @@
      </div>
     </div>
 </div>
-
 <table class="mt-3">
   <tr >
     <th>No</th>
@@ -183,10 +182,9 @@ export default {
       actionButtonType:'',
       responseMessage:'',
       isNotSucceed:'',
-       ////////////////////////|
-      //for filter and search/ |
-     ////////////////////////  |
- //                         | 
+       /////////////////////////|
+      //for filter and search//|
+     /////////////////////////|
       searchValue:'',
       departmentIdForFilter:'all',
       programForFilter:'all',
@@ -211,7 +209,8 @@ export default {
 computed:{
     ...mapGetters({degreeDepartments:'dean/degreeDepartments',courses:'dean/courses',degreePrograms:'dean/degreePrograms'}),
   filteredCourses(){
-      //search
+
+     ////////////search
       let tempCourses=[...this.courses]
       if(this.searchValue!=''&& this.searchValue){
         tempCourses=tempCourses.filter((item)=>{
@@ -222,35 +221,36 @@ computed:{
      }
   
   //filter by department//
-     if(this.departmentIdForFilter !=='all'){
+     if(this.departmentIdForFilter.toLowerCase() !=='all'){
             tempCourses=tempCourses.filter((item)=>{
               return Number(item.department.id)===Number(this.departmentIdForFilter)
             })
        }
       
   //filter by program//
-      if(this.programForFilter !=='all'){
+      if(this.programForFilter.toLowerCase() !=='all'){
             tempCourses=tempCourses.filter((item)=>{
-              return item.program.toLowerCase()===this.programForFilter.toLowerCase()
+              return item.program.toLowerCase()==this.programForFilter
             })
        }
-   
+    
    //filter by year//
-      if(this.yearForFilter !=='all'){
+      if(this.yearForFilter.toLowerCase() !=='all'){
+        console.log('here we go year for filter')
             tempCourses=tempCourses.filter((item)=>{
               return Number(item.year_no)===Number(this.yearForFilter)
             })
        }
      
    //filter by semester//
-      if(this.semesterForFilter !=='all'){
+      if(this.semesterForFilter.toLowerCase() !=='all'){
             tempCourses=tempCourses.filter((item)=>{
               return Number(item.semester_no)===Number(this.semesterForFilter)
             })
        }
 
    //filter by type//
-      if(this.typeForFilter !=='all'){
+      if(this.typeForFilter.toLowerCase() !=='all'){
             tempCourses=tempCourses.filter((item)=>{
               return item.type.toLowerCase()===this.typeForFilter.toLowerCase()
             })
@@ -299,28 +299,30 @@ computed:{
         this.addBaseModal.show()
       },
       removeModalValue(){
-        this.course=''
+        this.course={}
+        this.v$.$reset()
       },
       showEditModal(index){
-        this.course=this.courses[index]
+        this.course={...this.filteredCourses[index]}
         this.actionButtonType='edit'
         this.addBaseModal.show()
       },
       edit(){
-        this.request('dean/updateCourse','Course updated successfully','Faild to add update')
+        this.request('dean/updateCourse','Faild to add update')
       },
       save(){
-        this.request('dean/addCourse','Course added successfully','Faild to add course')
+        this.request('dean/addCourse','Faild to add course')
       },
-     async request(action, successMessage, errorMessage){
+     async request(action, errorMessage){
        
        this.v$.$validate()
        if(!this.v$.$error){
          this.isSaving=true
           await this.$store.dispatch(action,this.course)
           .then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage=successMessage  
+            this.addBaseModal.hide()
+            this.removeModalValue()
+           this.isNotSucceed=false
          }).catch((e)=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage

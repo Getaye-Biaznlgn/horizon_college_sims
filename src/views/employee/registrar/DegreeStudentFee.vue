@@ -59,61 +59,26 @@
       <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
       <td>{{student.sex}}</td>
-      <td>
-       <span v-if="student.pads.September === null">X</span>
-      <span v-else>{{student.pads.September}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.October === null">X</span>
-      <span v-else>{{student.pads.October}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.November === null">X</span>
-      <span v-else>{{student.pads.November}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.December === null">X</span>
-      <span v-else>{{student.pads.December}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.January === null">X</span>
-      <span v-else>{{student.pads.January}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.February === null">X</span>
-      <span v-else>{{student.pads.February}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.March === null">X</span>
-      <span v-else>{{student.pads.March}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.April === null">X</span>
-      <span v-else>{{student.pads.April}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.May === null">X</span>
-      <span v-else>{{student.pads.May}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.Jun === null">X</span>
-      <span v-else>{{student.pads.Jun}}</span>
-      </td>
-      <td>
-     <span v-if="student.pads.Julay === null">X</span>
-      <span v-else>{{student.pads.Julay}}</span>
-      </td>
-      <td>
-      <span v-if="student.pads.August === null">X</span>
-      <span v-else>{{student.pads.August}}</span>
-      </td>
+      <td>{{student.pads.September}}</td>
+      <td>{{student.pads.October}}</td>
+      <td>{{student.pads.November}}</td>
+      <td>{{student.pads.December}}</td>
+      <td>{{student.pads.January}}</td>
+      <td>{{student.pads.February}}</td>
+      <td>{{student.pads.March}}</td>
+      <td>{{student.pads.April}}</td>
+      <td>{{student.pads.May}}</td>
+      <td>{{student.pads.Jun}}</td>
+      <td>{{student.pads.Julay}}</td>
+      <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
       <td><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
       
     </tr>
   </tbody>
-   
+     
 </table>
+<div v-if="!studentFee.data?.length" class="ms-5 px-5  mt-3 pb-2">There is no payment found for Degree students</div>
     </div>
 <div v-if="studentFee.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
@@ -435,5 +400,8 @@ td{
    height: 90vh;
    overflow-y: scroll;
   
+}
+.error{
+  color: red;
 }
 </style>

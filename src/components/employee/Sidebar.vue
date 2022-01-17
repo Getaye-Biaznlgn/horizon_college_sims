@@ -5,6 +5,33 @@
            <sidebar-item :isSubItem="false" :to="{name:'MyClass'}">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>MyClass</span>
          </sidebar-item>
+
+       <!-- admin -->
+         <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'AdminDashboard'}">
+            <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
+         </sidebar-item>
+           <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'ThePayment'}">
+            <span><i class="fas fa-receipt pe-2"></i>Payment</span>
+         </sidebar-item>
+           <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'TheDean'}">
+            <span><i class="fas fa-user-alt pe-2" ></i>Dean</span>
+         </sidebar-item>
+         
+          <collapse-sidebar-item v-if="user.role==='admin'" label="Files"> 
+            <template #icon>
+              <span><i class="fas fa-file-archive pe-2"></i></span>
+            </template>
+            <template #default>
+              <sidebar-item :isSubItem="true" :to="{name:'DegreeFile'}">
+                <span>Degree</span>
+              </sidebar-item> 
+              <sidebar-item :isSubItem="true" :to="{name:'TvetFile'}">
+                <span>TVET</span>
+               </sidebar-item> 
+            </template>
+         </collapse-sidebar-item>
+
+       <!--end admin -->
         <!-- dean -->
          <sidebar-item v-if="user.role==='dean'" :isSubItem="false" :to="{name:'DeanDashboard'}">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
@@ -258,7 +285,6 @@ export default {
       
                 localStorage.removeItem('token')  
                 this.$router.push({name:'EmployeeLogin'})
-
                }else{
                 throw 'faild'
               }
