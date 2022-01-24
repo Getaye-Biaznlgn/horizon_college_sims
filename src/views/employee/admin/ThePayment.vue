@@ -80,22 +80,19 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['selectedAcademicYear'])
+        ...mapGetters(['selectedAcademicYearId'])
     },
     methods:{
          async navigate(pageNumber){
          this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get("/api/admin_paid_students?page="+pageNumber+'&&academic_year_id='+this.selectedAcademicYear)
+            var response = await apiClient.get("/api/admin_paid_students?per_page=10&&page="+pageNumber+'&&academic_year_id='+this.selectedAcademicYearId)
             if (response.status === 200) {
-              
               this.payments=response.data.data
-             
               this.current_page=response.data.current_page
               this.per_page=response.data.per_page
               this.last_page=response.data.last_page
-              console.log('payments admin', this.payments)
-              console.log('payment array', this.payments)
+              
             } else {
               throw 'Failed to fetch news'
             }

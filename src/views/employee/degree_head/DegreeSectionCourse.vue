@@ -15,7 +15,7 @@
     <th>Instructor</th>
     <th class="sr-only">Action</th>
   </tr>
-  <tbody>
+
   <tr v-for="(course,index) in courses" :key="course.id">
     <td>{{index+1}}</td>
     <td>{{course.code}}</td>
@@ -30,12 +30,11 @@
            </a>
            <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
               <li @click="showAssignBaseModal(course.id)"><span class="dropdown-item px-4 py-2">Assign Instructor</span></li>
-              <li><span class="dropdown-item px-4 py-2">delete</span></li>
            </ul>
         </div>
     </td>
   </tr>
-  </tbody>
+ 
  </table>
  <div v-if="!courses.length" class="mt-1 text-center">There is no added course</div>
 </base-card >
@@ -59,9 +58,9 @@
            <th>No</th>
            <th>Name</th>
            <th>Phone No</th>
-           <th>Profession</th>
+           <th>Qualification</th>
          </tr>
-        <tbody>
+     
           <tr v-for="(teacher, index) in filteredTeachers" :key="teacher.id">
            <td><input type="radio" v-model="sectionTeacherCourse.teacher_id" :value="teacher.id" id=""></td>
            <td>{{index+1}}</td>
@@ -69,7 +68,7 @@
            <td>{{teacher.phone_no}}</td>
            <td>{{teacher.qualification}}</td>
           </tr>
-        </tbody>
+     
       </table>
       <p v-if="!filteredTeachers.length">No search result yet!</p>
      </div>
@@ -149,30 +148,23 @@ computed:{
        document.documentElement.style.overflow='scroll'
      },
      async assignTeacher(){
-      //  this.sectionTeacherCourse.teacher_id=teacherId
        this.isSaving=true
         try {
             var response = await apiClient.post("/api/assign_teacher_for_course",{...this.sectionTeacherCourse})
-            console.log('degree_section_courses ',response.data)
             if (response.status === 200) {
               let index= this.courses.findIndex((course)=>{
                  return course.id===this.sectionTeacherCourse.course_id
               })
               this.courses[index].instructor=response.data
-              this.isNotSucceed=false
-              this.responseMessage='Instructor assigned Successfully '
+              this.assignModalState=false
             } else {
                 throw 'faild to load degree department'
             }
         } catch (e) {
           this.isNotSucceed=true
           this.responseMessage='Faild to assign instructor'
-            console.log(e.response)
         } finally {
           this.isSaving=false
-          setTimeout(()=>{
-            this.responseMessage=''
-          },3000)
         }
      },
      async  fetchSectionCourses(sectionId){
@@ -185,8 +177,8 @@ computed:{
             } else {
                 throw 'faild to load degree department'
             }
-        } catch (e) {
-            console.log(e.response)
+        } catch {
+          //
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
@@ -202,8 +194,8 @@ computed:{
             } else {
                 throw 'faild to active teaches'
             }
-        } catch (e) {
-            console.log(e.response)
+        } catch {
+            //
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
@@ -234,11 +226,7 @@ computed:{
  </script>
 
 <style scoped>
-.back{
-  font-size: 20px;
-  color: #366ad3;
-  cursor: pointer;
-}
+
 input[type=radio]:checked{
   background-color: #2f4587;
   border: none;

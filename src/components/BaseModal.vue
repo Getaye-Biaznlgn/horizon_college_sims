@@ -62,6 +62,9 @@ export default {
     assign(){
       this.$emit('assign')
     },
+    cancel(){
+      this.$emit('cancel')
+    },
     deleteItem(){
       this.$emit('deleteItem')
     },

@@ -61,36 +61,37 @@
                     </tr>
                 </table>
             </div>
-            <!-- <div class="col-12">
-                 <div class="mb-3">TVET Program Fee Month</div>
-                 <div class="border d-flex border-secondary p-1">
-                     <span v-for="month in  feeMonth.tvet" :key="month" class="border me-1 rounded p-1">{{month}}</span>
-                     <span @click="tvetMonth" role="button" class="ms-auto mt-1"><i class="far fa-plus-square fs-3"></i></span>
-                 </div>
-            </div> -->
+           
         </div>
         <div class="my-2">
              <div v-for="(error,index) in errors" :key="index" class="text-danger">{{error}}</div>
         </div>
         <div class="mb-4 pt-5 d-flex justify-content-end">
             <button @click="back" class="btn border px-3">Back</button>
-            <button @click="next" class="btn text-white btn-add px-3 ms-4">Next</button>
+            <button  @click="saveChanges" class="text-white btn-add btn  px-3 mx-3">
+                 <span v-if="isSaving">
+                    <span   class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                     saving
+                 </span>
+                 <span v-else>
+                     Save Changes  
+                 </span>
+             </button>
+            <button @click="next" class="btn border px-3 ms-2">Next</button>
         </div>
     </div>
 
      <vue-modal :modalState="modalState">
-     <div class="modal-content mx-auto bg-white p-3">
-        <div class="header">
-            <button @click="dismissVueModal"  class="btn fs-5 position-absolute end-0 top-0"><i class="fas fa-times"></i></button>   
-        </div>
-        <div class="body">
-            <strong class="fw-bold d-block my-2">Select Months</strong>
-            <div v-for="month in suggestedMonths" :key="month.id" class="form-check">
+       <div class="modal-content mx-auto bg-white p-3">
+           <div class="header">
+              <button @click="dismissVueModal"  class="btn fs-5 position-absolute end-0 top-0"><i class="fas fa-times"></i></button>   
+           </div>
+           <div class="body">
+              <strong class="fw-bold d-block my-2">Select Months</strong>
+              <div v-for="month in suggestedMonths" :key="month.id" class="form-check">
               <input class="form-check-input" type="checkbox" v-model="months" :value="month.id" id="july">
-              <label class="form-check-label" for="july">
-                {{month.name}}
-              </label>
-        </div> 
+              <label class="form-check-label" for="july">   {{month.name}} </label>
+            </div> 
         </div>
          <div class="footer">
              <button @click="addMonths" class="btn btn-add text-white px-3 d-block ms-auto">Add</button>
@@ -100,9 +101,10 @@
 </template>
 <script>
 import VueModal from '../VueModal.vue'
+import apiClient from '../../resources/baseUrl'
 export default {
     components:{VueModal},
-    inject:['setFeeMonth','setSelectedComponent'],
+    inject:['setSelectedComponent'],
     data(){
         return{
             feeMonth:{
@@ -120,12 +122,16 @@ export default {
             modalType:'',
             months:[],
             errors:[],
-            suggestedMonths:[]
+            suggestedMonths:[],
+            isSaving:false
         }
     },
     computed:{
         yearMonths(){
             return this.$store.getters['dean/yearMonths']
+        },
+        academicCalendarDetail(){
+            return this.$store.getters['dean/selectedAcademicCalendarDetail']
         }
     },
     methods:{
@@ -200,19 +206,60 @@ export default {
             else if(this.modalType==='extensionThird'){
                 this.feeMonth.extension.thirdSemester=this.months
             }
-          
             this.modalState=false
-             this.months=[]
+            this.months=[]
         },
         next(){
-            this.validate()
+            this.setSelectedComponent('AcademicActivitiesDetail')
+        },
+       async saveChanges(){
+           this.validate()
             if(!this.errors.length){
-               this.setFeeMonth(this.feeMonth)
-               this.setSelectedComponent('Activities')
-            }
+                this.isSaving=true
+                let temp={
+                   semesters:[
+                       {
+                          semester_id:this.academicCalendarDetail.regular?.[0]?.id,
+                          months:[...this.feeMonth.regular.firstSemester]
+                       },
+                        {
+                          semester_id:this.academicCalendarDetail.regular?.[1]?.id,
+                          months:[...this.feeMonth.regular.secondSemester] 
+                       },
+                        {
+                          semester_id:this.academicCalendarDetail.extension?.[0]?.id,
+                          months:[...this.feeMonth.extension.firstSemester] 
+                       },
+                        {
+                          semester_id:this.academicCalendarDetail.extension?.[1]?.id,
+                          months:[...this.feeMonth.extension.secondSemester] 
+                       },
+                        {
+                          semester_id:this.academicCalendarDetail.extension?.[2]?.id,
+                          months:[...this.feeMonth.extension.thirdSemester] 
+                       },
+                   ]   
+                }
+         try{
+          let response=  await apiClient.put('api/update_semester_month', temp)
+            if(response.status===200){
+               alert('goes right month')
+             }else{
+                throw''
+             }
+         }
+         catch(e){
+            //  this.requestStatus.isNotSucceed=true,
+            //  this.requestStatus.message="Failed to add an event"
+            this.isSaving=false
+         }
+         finally{
+           this.isSaving=false
+         }
+    }
         },
         back(){
-            this.setSelectedComponent('AcademicTime')
+            this.setSelectedComponent('AcademicTimeDetail')
         },
         validate(){
            this.errors=[]
@@ -226,9 +273,32 @@ export default {
                this.errors.push('Extension Second Semester month can\'t be empty.')
            if(!this.feeMonth.extension.thirdSemester.length)
                this.errors.push('Extension Third Semester month can\'t be empty.')
-      
-         
-        }         
+        },     
+        setFields(){
+           this.academicCalendarDetail.regular?.[0]?.months?.forEach((item)=>{
+              this.feeMonth.regular.firstSemester.push(item.id) 
+           })
+          this.academicCalendarDetail.regular?.[1]?.months?.forEach((item)=>{
+             this.feeMonth.regular.secondSemester.push(item.id) 
+          })
+          this.academicCalendarDetail.extension?.[0]?.months?.forEach((item)=>{
+             this.feeMonth.extension.firstSemester.push(item.id) 
+         })
+         this.academicCalendarDetail.extension?.[1]?.months?.forEach((item)=>{
+           this.feeMonth.extension.secondSemester.push(item.id) 
+         })
+         this.academicCalendarDetail.extension?.[2]?.months?.forEach((item)=>{
+           this.feeMonth.extension.thirdSemester.push(item.id) 
+        })
+    },
+    },
+    watch:{
+      academicCalendarDetail(){
+         this.setFields()
+      },
+    },
+    created(){
+        this.setFields()
     }
 }
 </script>
@@ -238,5 +308,6 @@ export default {
     }
     .modal-content{
         width: 40%;
+        min-height: 10em;
     }
 </style>

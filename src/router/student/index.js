@@ -3,7 +3,8 @@ export default {
     name: 'StudentHome',
     component: () =>
         import ( /* webpackChunkName: "studenthome" */ '../../views/student/StudentHome.vue'),
-    children: [{
+      
+        children: [{
             path: '/student-home/',
             name: 'MyTutionFee',
             component: () =>

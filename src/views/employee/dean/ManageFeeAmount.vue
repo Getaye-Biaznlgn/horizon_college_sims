@@ -1,11 +1,12 @@
 <template>
   <base-card class="px-3 mx-4 mt-3">
 <div class="d-flex justify-content-end">
-    <button class="btn btn-add text-white shadow-sm me-2" @click="showAddModal()"> 
+    <button class="btn btn-add text-white shadow-sm me-2" @click="showAddModal"> 
      Add Fee
    </button> 
-    <button class="btn btn-add text-white shadow-sm" @click="printPaymentAmount()"> 
-     Export
+    <button class="btn btn-add text-white shadow-sm" @click="printPaymentAmount">
+      <i class="fas fa-print me-2"></i> 
+       Print
    </button> 
   
 </div>
@@ -94,7 +95,7 @@ export default {
     }
   },
   computed:{
-     ...mapGetters({selectedYearId:'selectedAcademicYear'}),
+     ...mapGetters({selectedYearId:'selectedAcademicYearId'}),
      getYear(){
        return this.$store.getters.getYearById(this.selectedYearId)
      }

@@ -224,7 +224,6 @@ computed:{
       })
       },
   filteredCourses(){
-    
      ////////////search
       let tempCourses=[...this.courses]
       if(this.searchValue!=''&& this.searchValue){
@@ -291,7 +290,6 @@ computed:{
               },
              program_id:{
                  required: helpers.withMessage('Program should be selected',required),
-                
               },
              year_no:{
                  required: helpers.withMessage('Program can not be empty',required),
@@ -304,7 +302,8 @@ computed:{
              type:{
                  required: helpers.withMessage('Type should be selected',required),
                  alpha:helpers.withMessage('Type must be only alpahbet letters',alpha),
-              } 
+              },
+               
             }
      }
   },

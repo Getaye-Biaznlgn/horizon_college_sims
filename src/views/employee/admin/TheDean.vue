@@ -156,8 +156,7 @@ export default {
          try{
           let response= await apiClient.post('api/reset_employee_password', {user_name:this.dean.email})
             if(response.status===200){
-               this.requestStatus.isNotSucceed=false,
-               this.requestStatus.message="Password is changed successfully"
+               this.resetModalState=false
              }else{
                 throw''
             }

@@ -41,5 +41,11 @@ export default[
         import ( /* webpackChunkName: "FileDetail" */ '../../../views/employee/admin/FileDetail'),
         meta:{authRequired:true,  typeRequired:'employee' } 
    }, 
-   
+   {
+    path: '/staff/income-per-day',
+    name: 'IncomePerDay',
+    component: () =>
+        import ( /* webpackChunkName: "IncomePerDay" */ '../../../views/employee/admin/IncomePerDay'),
+        meta:{authRequired:true,  typeRequired:'employee' } 
+   }, 
 ]

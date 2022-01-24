@@ -96,7 +96,7 @@
     <div class="text-center fw-bold fs-5 mb-4 text-md-start">Students On College</div>
     <div class="row g-5">
         <div v-for="gallery in galleries" :key="gallery.id" class="col-sm-6 col-lg-3">
-            <img :src="gallery.url" class="img-fluid rounded rounded">                    
+            <img :src="gallery.url" height="200" width="250" class=" rounded rounded">                    
          </div>
     </div>
   </section>

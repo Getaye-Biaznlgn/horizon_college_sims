@@ -21,9 +21,9 @@
            </div>
            <div>
               <span class="pe-2">Department: <u>{{slip?.degree_department?.name}}</u></span> 
-              <span class="pe-2">Academic Year:</span> 
-              <span class="pe-2">Year: <u>{{slip.current_year_no}}</u></span>  
-              <span class="pe-2">Semester: {{slip.current_semester_no}}</span> 
+              <span class="pe-2">Academic Year: <u>{{getYearById.year}}</u></span> 
+              <span class="pe-2">Year: <u>{{year_no}}</u></span>  
+              <span class="pe-2">Semester: <u>{{semester_no}}</u></span> 
            </div>
            <table class="mt-3">
                <tbody>
@@ -33,12 +33,6 @@
                        <td>{{course.code}}</td>
                        <td>{{course.cp}}</td>
                    </tr>
-                   <!-- <tr v-for="(course, index) in 8" :key="index">
-                       <td>{{index+1}}</td>
-                       <td>'here'</td>
-                       <td>'here'</td>
-                       <td>'ja'</td>
-                   </tr> -->
                    <tr>
                        <td colspan="3" class="text-center">Total Credit Hrs</td>
                        <td>{{totalCP}}</td>
@@ -89,7 +83,7 @@ export default {
         }
     },
     computed:{
-       ...mapGetters({studentForSlip:'degreeHead/studentForSlip', }),
+       ...mapGetters({studentForSlip:'degreeHead/studentForSlip', selectedAcademicYearId:'selectedAcademicYearId'}),
        totalCP(){
            let totalCP=0
            this.slipCourses.forEach((course)=>{
@@ -97,10 +91,10 @@ export default {
           })
           return totalCP
        },
-    selectedAcademicYear(){
-      return this.$store.getters.selectedAcademicYear
-  }
-  },
+       getYearById(){
+         return this.$store.getters.getYearById(this.selectedAcademicYearId)
+       }
+   },
     methods:{
         back(){
             this.$router.back()
@@ -120,9 +114,8 @@ export default {
             } else {
                 throw 'faild to load course for slip'
             }
-        } catch (e) {
-            console.log(e.response)
-            throw e
+        } catch {
+        //
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
@@ -132,7 +125,7 @@ export default {
         this.fetchSlipForSemester({program_id:this.program_id,
                                    year_no:this.year_no,
                                    semester_no:this.semester_no,
-                                   academic_year_id:this.selectedAcademicYear.id
+                                   academic_year_id:this.selectedAcademicYearId
                             })
     }
 
@@ -157,7 +150,7 @@ th{
   text-align: left;
   padding: 8px;
 }
-td{
+td,tr{
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;

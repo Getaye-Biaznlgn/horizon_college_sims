@@ -173,16 +173,12 @@ export default {
          catch(e){
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message="Failed to add an event"
-           console.log()
          }
          finally{
            this.isSaving=false
          }
-         }
-         else{
-           console.log('form validation faild')
-         }
-       },
+       } 
+      },
       async edit(){
           this.v$.$validate()
           if(!this.v$.$error){
@@ -202,7 +198,6 @@ export default {
          catch(e){
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message="Failed to update event"
-           console.log()
          }
          finally{
            this.isSaving=false

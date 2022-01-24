@@ -22,7 +22,7 @@
   </select>
  </div>
  <div class="ms-auto">
-     <button :disabled="!studentsForGrade.length" @click="showPreview" class="btn btn-add ms-auto text-white  shadow-sm"><i class="fas fa-sign-out-alt me-2"></i>Generate Slip</button> 
+     <button :disabled="!studentsForGrade.length" @click="showPreview" class="btn btn-add ms-auto text-white  shadow-sm"><i class="fas fa-sign-out-alt me-2"></i>Generate Grade Report</button> 
  </div>
 </div>
 <table class="mt-2">

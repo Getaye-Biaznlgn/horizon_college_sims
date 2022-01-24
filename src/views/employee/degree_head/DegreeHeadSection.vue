@@ -40,7 +40,7 @@
       <td>{{section.degree_department.name}}</td>
       <td>{{section.program?.name}}</td>
       <td>{{section.year_no}}</td>
-      <td>{{section.semester.number}}</td>
+      <td>{{section.semester?.number}}</td>
       <td>
       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">

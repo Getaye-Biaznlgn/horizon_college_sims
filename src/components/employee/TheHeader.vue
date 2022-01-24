@@ -1,16 +1,20 @@
 <template>
-   <div class="p-2 bg-white shadow-sm d-flex">
+   <div class="p-1 bg-white shadow-sm d-flex">
       <img src="../../assets/logo.png" class="ms-3 align-self-center" height="50">
       <div class="pt-3">
-         <h5 class="d-inline ms-3">Horizon</h5>
+         <h5 class="d-inline ms-3 fw-bold">HORIZON</h5>
       </div>
-      <!-- v-if="user.role==='department head'" -->
-      <div  v-if="user.role==='department head'"  class="ms-5 ps-4 pt-1">
-         <select class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">
-            <option  v-for="year in academicYears" :key="year.id" :selected="selectedAcademicYear===year.id" :value="year.id" >{{'Academic year '+year.year}}</option> 
+      <div class="ms-5 ps-4 pt-1 d-flex">
+         <select v-if="user.role==='dean' || user.role==='tvet_head' || user.role==='degree_head'" class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">
+            <option  v-for="year in academicYears" :key="year.id" :selected="selectedAcademicYearId===year.id" :value="year.id" >{{'Academic year '+year.year}}</option> 
          </select>
-         
-         <div v-if="user.role==='dean'" class="ms-2 mt-1" >
+         <div v-if="user.role==='dean'" class="mt-1 px-3">
+            <router-link :to="{name:'SelectedAcademicYearDetail'}">
+               <span><i class="far fa-calendar text-dark-blue fs-2 "></i></span>
+            </router-link>
+            
+         </div>
+         <div v-if="user.role==='dean'" >
             <button @click="$router.push({name:'AddNewAcademicYear'})" class="btn btn-add text-white">
               <span style="white-space: nowrap!important; overflow: hidden;">Add New Calendar</span>
             </button>
@@ -34,7 +38,7 @@
                 <div class="d-flex flex-column">
                    <span class="fw-bold small text-center">{{user.first_name +' '+ user.last_name}}</span>
                    <span v-if="user.role==='department head'">{{user.manage.name +' head'}}</span>
-                   <span v-else class="job-title small align-self-start">{{user.role.split('_').join(' ')}}</span>
+                   <span v-else class="job-title small align-self-start">{{user.role?.split('_').join(' ')}}</span>
                 </div>
              </div>
          </div>
@@ -56,27 +60,26 @@ export default {
       }
    },
    computed:{
-   ...mapGetters(['user','academicYears','selectedAcademicYearId','acYearId','selectedAcademicYear','notifications']) ,
+   ...mapGetters(['user','academicYears','selectedAcademicYearId','acYearId','notifications']) ,
    notifications(){
       return this.$store.getters.notifications
    } 
    
    },
-      methods:{
+   methods:{
       changeAcademicYear(event){
-         this.$store.commit('setSelectedAcademicYearId',event.target.value)
-          this.$store.commit('setSelectedAcademicYear',event.target.value)
-        this.$store.dispatch('degreeHead/fetchSections')
-        this.$store.dispatch('degreeHead/fetchStudentInSemesters')
+        this.$store.commit('setSelectedAcademicYearId',event.target.value)
+        this.$store.commit('setSelectedAcademicYear',event.target.value)
+      //   this.$store.dispatch('degreeHead/fetchSections')
+      //   this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       },
       changeAcYear(event){
-           this.$store.commit('setSelectedAcYearId',event.target.value) 
-    this.$store.dispatch('registrar/fetchDegreeStudents',event.target.value)
-     this.$store.dispatch('registrar/fetchTvetStudents',event.target.value)
-      //this.$store.dispatch('registrar/fetchCocs',event.target.value)
-       
+        this.$store.commit('setSelectedAcYearId',event.target.value) 
+        this.$store.dispatch('registrar/fetchDegreeStudents',event.target.value)
+        this.$store.dispatch('registrar/fetchTvetStudents',event.target.value)
+      //this.$store.dispatch('registrar/fetchCocs',event.target.value) 
       },
-         async fetchNotifications(){
+      async fetchNotifications(){
          try{
             var response = await apiClient.get('api/notifications/'+this.user.id)
             if(response.status === 200){
@@ -105,6 +108,7 @@ background-color: #2f4587;
 color: #fff;
 
   }
-
-
+.text-dark-blue{
+  color: #2f4587;
+}
 </style>

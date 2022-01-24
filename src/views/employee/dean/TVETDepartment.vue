@@ -172,7 +172,6 @@ export default {
       unassignDepHead:{},
       unassignedHeads:[],
       depForDelete:''
-      
     }
   },
   validations(){
@@ -233,6 +232,12 @@ export default {
             department_id:this.unassignDepHead.id
           })
           .then(()=>{
+             this.unassignedHeads.push({
+                    id:this.unassignDepHead.head_id,
+                    first_name:this.unassignDepHead.department_head,
+                    //since this.unassignDepHead.department_head contains full name, last name will be empity string
+                    last_name:''
+                    })
            this.isNotSucceed=false,
           this.unassignBaseModal.hide()
          }).catch(()=>{
@@ -333,10 +338,6 @@ export default {
          }).finally(()=>{
           this.isSaving=false
          })
-      
-       }
-       else{
-         console.log('form  validation faild')
        }
       },
     

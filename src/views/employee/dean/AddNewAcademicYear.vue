@@ -1,9 +1,9 @@
 <template>
 <base-card class="px-3 mx-4 mt-3" >
     <div class="d-flex justify-content-center mt-3">
-          <div  class="personal pointer me-4 startPointer activePointer">Academic Time</div>
-          <div  class="educational pointer me-4" :class="{activePointer:selectedComponent==='FeeMonth' || selectedComponent==='Activities'}">Fee Month</div>
-          <div class="finance pointer" :class="{activePointer:selectedComponent==='Activities',endPointer:selectedComponent==='Activities'}">Activities</div>
+        <div  class="personal pointer me-4 startPointer activePointer">Academic Time</div>
+        <div  class="educational pointer me-4" :class="{activePointer:selectedComponent==='FeeMonth' || selectedComponent==='Activities'}">Fee Month</div>
+        <div class="finance pointer" :class="{activePointer:selectedComponent==='Activities',endPointer:selectedComponent==='Activities'}">Activities</div>
     </div>
     <keep-alive>
        <component :is="selectedComponent"/>
@@ -13,15 +13,14 @@
 
 <script>
 import Activities from '../../../components/employee/AcademicActivities.vue'
-import State from '../../../components/employee/AcademicState.vue'
 import FeeMonth from '../../../components/employee/FeeMonth.vue'
 import AcademicTime from '../../../components/employee/AcademicTime.vue'
 import apiClient from '../../../resources/baseUrl'
 export default {
-  components:{Activities,State, FeeMonth, AcademicTime},
+  components:{Activities, FeeMonth, AcademicTime},
   data(){
       return{
-          selectedComponent:'Activities',
+          selectedComponent:'AcademicTime',
           feeMonth:'',
           academicTime:'',
           months:[],
@@ -30,7 +29,6 @@ export default {
             message:'',
             isNotSucceed:''
           }
-
       }
   },
   methods:{
@@ -87,7 +85,6 @@ export default {
             payload.tvet_start_date=this.academicTime.tvet?.startDate
             payload.tvet_end_date=this.academicTime.tvet?.endDate
             payload.tvet_activities=activities.tvet
-         
          try{
           let response= await apiClient.post('api/academic_years', payload)
             if(response.status===201){
@@ -108,7 +105,7 @@ export default {
   },
   provide(){
       return{
-          academicTime:this.academicTime,
+          // academicTime:this.academicTime,
           requestStatus:this.requestStatus,
           setAcademicActivities:this.setAcademicActivities,
           setSelectedComponent:this.setSelectedComponent,

@@ -42,7 +42,7 @@
 
 </div>
 </base-card>
-<base-modal @save="addStudentToNextSemester" :isLoading="isSaving"  id="addBaseModal" :button-type="actionButtonType">
+<base-modal @save="addStudentToNextSemester" :isLoading="isSaving"  id="addBaseModal" :button-type="actionButtonType" @cancel="clearAddModal">
       <template #modalBody>
           <div class="mb-3" :class="{warining:v$.toNewSemester.academic_year_id.$error}">
             <div class="form-label" for="#program">Academic Year</div>
@@ -54,7 +54,7 @@
          <div class="mb-3" :class="{warining:v$.toNewSemester.semester_id.$error}">
             <div class="form-label" for="#program">Semester</div>
              <select class="form-select" v-model="toNewSemester.semester_id"  aria-label="select">
-                 <option v-for="semester in suggestedSemesters" :key="semester.id">Semester {{semester.number}}</option>
+                 <option v-for="semester in suggestedSemesters" :key="semester.id" :value="semester.id">Semester {{semester.number}}</option>
              </select>
              <span class="error-msg mt-1"  v-for="(error, index) of v$.toNewSemester.semester_id.$errors" :key="index">{{ error.$message+", " }}</span>
          </div>
@@ -124,22 +124,28 @@ export default {
       back(){
         this.$router.back()
       },
+      clearAddModal(){
+        this.responseMessage=''
+      },
       async addStudentToNextSemester(){
+        this.responseMessage=''
          this.isSaving=true
           this.v$.$validate()
        if(!this.v$.$error){
         try {
             var response = await apiClient.post("/api/register_student_for_semester",this.toNewSemester)
-            console.log('d',response.data)
-            if (response.status === 200) {
+            if (response.status === 201) {
               this.studentSemester.semesters.push(response.data)
-              this.responseMessage='Successfully added to new semester'
-              this.isNotSucceed=false
-            } else {
+              this.addBaseModal.hide()
+            }
+            else if(response.status===200){
+             this.responseMessage='Student is already registered'
+             this.isNotSucceed=true
+            }
+            else {
                 throw 'Faild add to next department'
             }
         } catch (e) {
-            console.log(e.response)
             this.responseMessage='Faild to add semester'
             this.isNotSucceed=true
         } finally {

@@ -4,7 +4,7 @@
 <div class="d-flex">
  <div class="pe-2">
   <select v-model="programForFilter" class="form-select" aria-label="program select">
-     <option v-for="program in degreePrograms" :key="program.id" v-text="program.name" :value="program.id"></option>
+     <option v-for="program in tvetPrograms" :key="program.id" v-text="program.name" :value="program.id"></option>
   </select>
  </div>
  <div class="pe-2">
@@ -15,7 +15,6 @@
      <option value="4">Level IV</option>
   </select>
  </div>
-
  <div class="ms-auto">
      <button :disabled="!studentsForSlip.length" @click="showPreview" class="btn btn-add ms-auto text-white  shadow-sm"><i class="fas fa-sign-out-alt me-2"></i>Generate Slip</button> 
  </div>
@@ -32,33 +31,24 @@
       <th>Level</th>
     </tr>
   </thead>
-  <tbody>
-    <!-- <tr v-for="(student,index) in filteredStudents" :key="student.id">
+    <tr v-for="(student,index) in filteredStudents" :key="student.id">
       <td><input type="checkbox" v-model="studentsForSlip"  @change="checkSelected($event)" :value="student" class="form-check-input p-1"></td>  
       <td>{{index+1}}</td>
       <td>{{student.student_id}}</td>
       <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
       <td>{{student.program?.name}}</td>
-      <td>{{student.department?.name}}</td>
-      <td>{{semesterForFilter}}</td>
-      <td>{{student.year_no}}</td>
-    </tr> -->
-        <table-row v-for="n in 10" :key="n" col1="1" col2="2" col3="3" col4="4" col5="5" col6="6" col7="7"></table-row>
-
-  </tbody> 
-  </table>
-  <p v-if="!filteredInLevels.length"> Students don't register for this semester!</p>
-  <p v-else-if="!filteredStudents.length">There is no matching student</p>
+      <td>{{levelForFilter}}</td>
+    </tr>
+ </table>
+  <p v-if="!filteredInLevels.length" class="text-center"> Students don't register for this level!</p>
+  <p v-else-if="!filteredStudents.length" class="text-center">There is no matching Student!</p>
 </base-card>
 </template>
 <script>
-import TableRow from '../../../components/employee/TableRow.vue'
 import { mapGetters } from 'vuex'
 export default {
-    components:{
-       TableRow
-    },
+   
   data() {
     return {
      levelForFilter:1,
@@ -74,41 +64,36 @@ export default {
 
     filteredInLevels(){
       let students=[];
-        this.studentInLevels.forEach((semester)=>{
-         if(semester.semester_no?.toString()===this.semesterForFilter.toString()){
-           students=semester.students
+        this.studentInLevels.forEach((level)=>{
+         if(Number(level.level_no)===Number(this.levelForFilter)){
+           students=level.students
          }
        })
        return students
     },
+    
      filteredStudents(){
       let tempStudents=[...this.filteredInLevels]
-      if(this.levelForFilter!==''){
-         tempStudents=tempStudents.filter((student)=>{
-            return student.year_no.toString()===this.levelForFilter.toString()
-         })
-      }
+
       if(this.programForFilter!==''){
           tempStudents=tempStudents.filter((student)=>{
-            return student.program.id===this.programForFilter
+            return Number(student.program?.id) ===Number(this.programForFilter)
           })
       }
       return tempStudents 
      },
-     degreePrograms(){
+     tvetPrograms(){
       return this.programs.filter((program)=>{
-        return program.type==='degree'
+        return program.type==='tvet'
       })
     },
 },
   methods:{
     showPreview(){
-        this.$store.commit('degreeHead/setStudentForSlip',this.studentsForSlip)
-        this.$router.push({name:'DegreeHeadSlipPreview', 
+        this.$store.commit('tvetHead/setStudentForSlip',this.studentsForSlip)
+        this.$router.push({name:'TvetHeadSlipPreview', 
          query:{
-           program_id:this.programForFilter,
-           year_no:this.levelForFilter,
-           semester_no:this.semesterForFilter
+           level_no:this.levelForFilter
         }})
     },
     checkSelected(event){
@@ -128,56 +113,24 @@ export default {
     }, 
   },
   created() {
-      this.programForFilter=this.degreePrograms[0]?.id
+      this.programForFilter=this.tvetPrograms[0]?.id
   },
  watch:{
-   degreePrograms(newValue){
+   tvetPrograms(newValue){
      this.programForFilter=newValue[0]?.id
    }
  }
 }
 </script>
 <style scoped>
-.btn-add{
-    background-color: #2f4587;
-}
-.btn-add:hover{
-  background-color: #425fb8;
-
-}
 input[type=checkbox] {
- transform: scale(1.4);
+ transform: scale(1.3);
 }
-
 input[type="checkbox"]:checked{
     background-color: #2f4587;
     border: none;
 }
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-
 .fa-sign-out-alt{
     transform: rotate(-90deg);
 }
-
-
 </style>

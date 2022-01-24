@@ -30,18 +30,18 @@
    </select>
  </div>
  <div class="me-3">
-   <select v-model="stateForFilter" class="form-select" aria-label="year select">
+   <!-- <select v-model="stateForFilter" class="form-select" aria-label="year select">
      <option value="all">All State</option>
      <option value="1">Waiting</option>
-   </select>
+   </select> -->
  </div>
-      <button class="btn btn-add ms-auto text-white me-2 shadow-sm" @click="exportStudentData"><i class="fas fa-print me-2"></i>Print</button> 
+      <button class="btn btn-add ms-auto text-white me-2 shadow-sm" @click="exportStudentData"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
 </div>
 
 <div id="departmentStudent">
  <div class="sr-only">
-   {{ getYearById.year+' '}}
-   {{ user.manage.name+' Department '}} 
+   {{ getYearById?.year+' '}}
+   {{ user.manage?.name+' Department '}} 
   <span v-show="programForFilter!=='all'">{{ programById(programForFilter)?.name}}</span> 
   <span v-show="yearForFilter!=='all'">{{'Year '+ yearForFilter}}</span> 
   <span>{{' Semester '+semesterForFilter}}</span>
@@ -60,16 +60,13 @@
       <th></th>
     </tr>
   </thead>
-  <tbody>
     <tr v-for="(student,index) in filteredStudents" :key="student.id">
       <td>{{index+1}}</td>
       <td>{{student.student_id}}</td>
       <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
       <td>{{student.program?.name}}</td>
-      <!-- <td>{{student.department?.name}}</td> -->
       <td>{{student.year_no}}</td>
-      <!-- <td>{{semesterForFilter}}</td> -->
       <td>{{student.status}}</td>
       <td>
         <div class="dropdown">
@@ -82,26 +79,8 @@
         </div>
       </td>
     </tr>
- </tbody>  
 </table>
 </div>
-<!-- <div v-if="filteredStudents.length && students.length" class="pagination d-flex justify-content-end mt-2">
-    <span class="me-3 mt-1">Rows per page </span> 
-    <div class="me-3">
-      <select v-model="perPage" class="form-select">
-       <option value="1">1</option>
-       <option value="2">2</option>
-       <option value="3">3</option>
-    </select>
-    </div>
-     <span class="me-3 mt-2">{{currentPage}}/{{totalPages}}</span>
-     <span @click="previousPage" role="button" class="me-3 mt-2">
-        <i  class="fas fa-chevron-left"></i>
-     </span>
-      <span @click="nextPage" role="button" class="me-3 mt-2">
-        <i  class="fas fa-chevron-right"></i>
-     </span>
-</div> -->
 <p v-if="!filteredInSemester.length" class="text-center mt-1" > Students don't register for this semester!</p>
 <p v-else-if="!filteredStudents.length" class="text-center mt-1">There is no matching student</p>
     </base-card>
@@ -109,6 +88,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
+  props:['program'],
   data() {
     return {
      searchValue:'',
@@ -116,35 +96,19 @@ export default {
      semesterForFilter:'1',
      stateForFilter:'all', 
      yearForFilter:'all',
-     
-      //  for pagination
-   //////  currentPage:1,
-    //  perPage:1,
+    
     }
   },
    computed:{
-    //  totalPages(){
-    //     return Math.ceil(this.filteredStudents.length/this.perPage)
-    //  },
-    //  displayPaginatedData(){
-    //   let data=[...this.filteredStudents]
-    //   let page=this.currentPage
-    //   let perPage=this.perPage
-    //   let from=(page*perPage) - perPage
-    //   let to=page*perPage
-    //   return data.splice(from,to)
-    //   //  return this.paginateData(this.filteredStudents)
-    //   //studentInSemesters
-    //  },
      ...mapGetters({
        studentInSemesters:'degreeHead/studentInSemesters',
-       selectedAcademicYear:'selectedAcademicYear',
+       selectedAcademicYearId:'selectedAcademicYearId',
         programs:'programs',
         user:'user'
         }),
 
       getYearById(){
-        return this.$store.getters.getYearById(this.selectedAcademicYear)
+        return this.$store.getters.getYearById(this.selectedAcademicYearId)
       },
       degreePrograms(){
       return this.programs.filter((program)=>{
@@ -218,5 +182,14 @@ export default {
      return data.splice(from,to)
    }
   },
+  created(){
+    if(this.program){
+      // alert('here program', this.program)
+      let programId=this.degreePrograms.find((program)=>{
+        return program.name?.toLowerCase()===this.program.toLowerCase()
+      })?.id
+      this.programForFilter=programId
+    }
+  }
 }
 </script>

@@ -11,9 +11,8 @@
     <th>Module Title</th>
     <th>Training hour</th>
     <th>Instructor</th>
-    <th class="sr-only">Action</th>
+    <th class="sr-only"></th>
   </tr>
-  
   <tr v-for="(modul,index) in modules" :key="modul.id">
     <td>{{index+1}}</td>
     <td>{{modul.code}}</td>
@@ -27,13 +26,12 @@
           </a>
           <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
               <li @click="showAssignBaseModal(modul.id)"><span class="dropdown-item px-4 py-2">Assign Instructor</span></li>
-              <li><span class="dropdown-item px-4 py-2">delete</span></li>
           </ul>
         </div>
     </td>
   </tr>
  </table>
-    <p v-if="!modules.length" class="mt-1 text-center">There  is no added module</p>
+ <p v-if="!modules.length" class="mt-1 text-center">There  is no added module</p>
 
 </base-card >
 <!-- assign instructor for section modul -->
@@ -126,7 +124,7 @@ computed:{
     }
    },
     created(){
-       this.fetchSectionmodules(this.sectionId)
+       this.fetchSectionModules(this.sectionId)
        this.fetchActiveTeachers()
     },
  methods:{
@@ -140,11 +138,11 @@ computed:{
       },
       dismissModal(){
        this.assignModalState=false
+       this.responseMessage=''
        this.sectionTeacherModule.teacher_id=''
        document.documentElement.style.overflow='scroll'
      },
      async assignTeacher(){
-      //  this.sectionTeacherModule.teacher_id=teacherId
        this.isSaving=true
         try {
             var response = await apiClient.post("/api/assign_teacher_for_module",{...this.sectionTeacherModule})
@@ -164,12 +162,13 @@ computed:{
           this.isSaving=false
         }
      },
-     async  fetchSectionmodules(sectionId){
+     async  fetchSectionModules(sectionId){
        this.$store.commit('setIsItemLoading', true)
         try {
             var response = await apiClient.get("/api/section_modules?section_id="+sectionId)
             if (response.status === 200) {
               this.modules=response.data
+              console.log('section module ',response.data)
             } else {
                 throw 'faild to load tvet department'
             }
@@ -197,7 +196,6 @@ computed:{
 
 <style scoped>
 /* end */
- tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
 .fa-sign-out-alt{
   transform: rotate(-90deg);
   font-size: 20px;
@@ -210,8 +208,6 @@ input[type=radio]:checked{
 input[type=radio]{
   transform: scale(1.4);
 }
-
-
   /* custome modal */
   .modal-content{
     width: 60%;

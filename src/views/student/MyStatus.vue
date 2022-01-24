@@ -5,14 +5,15 @@
            <th class="text-white">Ac Year</th>
            <th class="text-white">Year</th>
            <th class="text-white">Semester</th>
-           <th class="text-white">SGPA</th>
            <th class="text-white">GPA</th>
+           <th class="text-white">CGPA</th>
        </tr>
        <tr v-for="status in myStatus" :key="status.id">
            <td>{{status.year}}</td>
            <td>{{status.year_no}}</td>
            <td>{{status.semester_no}}</td>
-           <td>{{status.GPA}}</td>
+           <td>{{status.GPA?.toString().substring(0,4)}}</td>
+           <td>{{status.CGPA?.toString().substring(0,4)}}</td>   
        </tr>
    </table>
    <table class="bg-white" v-else-if="student?.role==='tvet_student'">
@@ -50,15 +51,14 @@ export default {
        this.$store.commit('setIsItemLoading', true)
         try {
             var response = await apiClient.get(path)
-            console.log('d',response.data)
             if (response.status === 200) {
               this.myStatus=response.data
               // this.studentCurrentYearNo=response.data.current_year_no
             } else {
                 throw 'faild to load degree department'
             }
-        } catch (e) {
-            console.log(e.response)
+        } catch{
+            //
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }

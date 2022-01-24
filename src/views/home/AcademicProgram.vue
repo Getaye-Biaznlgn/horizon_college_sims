@@ -58,9 +58,7 @@ export default {
             } else {
               throw 'Failed to fetch dep'
             }
-        } catch (e) {
-            console.log(e.response)
-        } finally {
+        }finally {
             this.$store.commit('setIsItemLoading', false)
         }
     },

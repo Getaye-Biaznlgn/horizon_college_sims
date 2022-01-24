@@ -1,7 +1,7 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
-    <button @click="addCashier()" class="btn btn-add text-white">Add New Cashier</button>
+    <button @click="addCashier" class="btn btn-add text-white">Add New Cashier</button>
     </div>
 <table class="mt-3">
   <thead>
@@ -33,11 +33,8 @@
     </td>
     </tr>
   </tbody>
-    <div v-if="!cashiers.length" class="mt-2">There is no Cashiers found please try again</div>
-
 </table>
-    <div v-if="!cashiers.length" class="text-center">There is no added cashier</div>
-
+    <div v-if="!cashiers.length" class="text-center mt-1">There is no added cashier</div>
 </base-card>
 
     <!-- cashier registration form dialog-->
@@ -76,7 +73,7 @@
 
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
-import { required, email, minLength,alpha,numeric,helpers, maxLength} from '@vuelidate/validators'
+import { required, email, minLength,numeric,helpers, maxLength} from '@vuelidate/validators'
 export default {
    data() {
        return {
@@ -101,17 +98,22 @@ export default {
    validations(){
      return {
       cashier:{
-        first_name:{required: helpers.withMessage('first name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        last_name:{required: helpers.withMessage('last name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-               phone_no:{
-              required: helpers.withMessage('phone number can not be empty',required),
-               numeric,
-               min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
-               max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
+        first_name:{
+              required: helpers.withMessage('first name can not be empty',required),
                },
-               email:{required:helpers.withMessage('email can not be empty',required),email}
+        last_name:{
+              required: helpers.withMessage('last name can not be empty',required),
+               },
+        phone_no:{
+              required: helpers.withMessage('phone number can not be empty',required),
+              numeric,
+              min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
+              max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
+               },
+        email:{
+            required:helpers.withMessage('email can not be empty',required),
+            email
+            }
 
       }
      }
@@ -175,7 +177,7 @@ export default {
         if(!this.v$.$error){
           this.isLoading = true
           this.cashier.id = this.cashierId
-        this.$store.dispatch('dean/updateCashier',this.cashier).then(()=>{
+          this.$store.dispatch('dean/updateCashier',this.cashier).then(()=>{
           this.basemodal.hide()
           this.v$.$reset()   
           this.resultNotifier=''
@@ -187,9 +189,7 @@ export default {
             this.isLoading=true
        })
        }
-       else{
-         console.log('error occured')
-       }
+      
      },
      deleteCashier(id){
        this.$store.dispatch('dean/deleteCashier',id)
@@ -197,63 +197,3 @@ export default {
    }, 
 }
 </script>
-<style scoped>
-.wraper{
-    position: relative;
-}
-.addbtn{
-    background-color: #2f4587;
-    color: #fff;
-    width: 10em;
-
-} 
-.addbtn:hover{
-    background-color:#366da9;
-}
-.dropdown ul{
-  background-color: #f5f6fa
-}
-ul li{
-    cursor: pointer;
-  }
- a span:hover{
-   color: #366da9;
- }
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#366da9 ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-
-  }
-  .success{
-    color: green;
-  }
-  .faild{
-    color: red;
-  }
-   a span:hover{
-   color: #ff9500;
- }
-</style>
