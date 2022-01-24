@@ -127,4 +127,11 @@ export default[
                 import ( /* webpackChunkName: "AddNewAcademicYear" */ '../../../views/employee/dean/AddNewAcademicYear'),
                 meta:{authRequired:true,  typeRequired:'employee' } 
           }, 
+          {
+            path: '/staff/selected-academic-year-detail',
+            name: 'SelectedAcademicYearDetail',
+            component: () =>
+                import ( /* webpackChunkName: "SelectedAcademicYearDetail" */ '../../../views/employee/dean/SelectedAcademicYearDetail'),
+                meta:{authRequired:true,  typeRequired:'employee' } 
+          }, 
 ]

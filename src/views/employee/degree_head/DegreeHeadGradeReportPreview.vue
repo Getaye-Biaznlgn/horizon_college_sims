@@ -8,7 +8,7 @@
        
     <div id="slip">
        <div v-for="student in studentCourses" :key="student.id"  style="height:260mm; overflow-y:hidden;">
-           <div class="d-flex justify-content-between fw-bold">
+           <div class="d-flex justify-content-between fw-bold my-2">
              <div>
                 Horizon College<br>
                 College of the Registrar <br>
@@ -23,19 +23,19 @@
            </div>
            <div class="basic-info">
                <div class="d-flex">
-                  <span class="">Full Name: {{student.first_name+' '+student.middle_name}}</span> 
-                  <span class="ms-auto">Sex: {{student.sex}}</span>
-                  <span class="ms-auto">ID No: {{student.student_id}}</span>
-                  <span class="ms-auto">Admission Classification: {{student.progarm}}</span>
+                  <span class="">Full Name: <u>{{student.first_name+' '+student.last_name}}</u></span> 
+                  <span class="ms-auto">Sex: {{student.sex?.toString().substring(0,1)}} </span>
+                  <span class="ms-auto">ID No: <u>{{student.student_id}}</u></span>
+                  <span class="ms-auto">Admission Classification: <u>{{student.program}}</u> </span>
                </div>
            </div>
-           <div class="d-flex">
-              <span class="pe-2">Department: {{student.department_name}}</span> 
-              <span class=" ms-auto">Date of Admission: {{student.addmission_year}}</span> 
-              <span class=" ms-auto">Date of Award: </span>  
-              <span class=" ms-auto">Program: Degree</span> 
+           <div class="d-flex mt-1">
+              <span class="pe-2">Department: <u>{{student.department_name}}</u></span> 
+              <span class=" ms-auto">Date of Admission: <u>{{student.addmission_year}}</u></span> 
+              <span class=" ms-auto">Date of Award: <u></u></span>  
+              <span class=" ms-auto">Program: <u>Degree</u></span> 
            </div>
-           <table class="mt-1">
+           <table class="my-2">
               <tr>
                  <th>No</th>
                  <th>Course code</th>
@@ -59,11 +59,12 @@
                </tbody>
            </table>
            <div>
-               Total Grade Point: {{}}<br>
+               Semester Total Cr Hr: {{student.total_credit_hour}} <br>
+               Total Grade Point: {{student.semester_grade_point}}<br>
                Total Cr.Hr: {{student.total_credit_hour}}<br>
-               Semester Average: {{student.semester_average}}<br>
+               Semester Average: {{student.CGPA?.toString().substring(0,4)}}<br>
                Previous Total: {{student.previous_total}}<br>
-               Comulative Average: {{student.CGPA}}<br>  
+               Comulative Average: {{student.CGPA?.toString().substring(0,4)}}<br>  
            </div>
        </div>
     </div>
@@ -81,7 +82,7 @@ export default {
         }
     },
     computed:{
-       ...mapGetters({studentsForGrade:'degreeHead/studentsForGrade', }),
+       ...mapGetters({studentsForGrade:'degreeHead/studentsForGrade', selectedAcademicYearId:'selectedAcademicYearId'}),
        totalCP(){
            let totalCP=0
            this.slipCourses.forEach((course)=>{
@@ -89,8 +90,8 @@ export default {
           })
           return totalCP
        },
-    selectedAcademicYear(){
-      return this.$store.getters.selectedAcademicYear
+    getYearById(){
+      return this.$store.getters.getYearById(this.selectedAcademicYearId)
   }
   },
     methods:{
@@ -106,14 +107,12 @@ export default {
             var response = await apiClient.post("/api/grade_reports",payload)
             if (response.status === 200) {
               this.studentCourses=response.data
-              
-              console.log('grade report', response.data)
-            } else {
+              console.log('grade report load data', response.data)
+              } else {
                 throw 'faild to load course for slip'
             }
-        } catch (e) {
-            console.log(e.response)
-            throw e
+        } catch {
+           //
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
@@ -121,11 +120,11 @@ export default {
     },
     created(){
         this.fetchGradeForSemester({program_id:this.program_id,
-                                   year_no:this.year_no,
-                                   semester_no:this.semester_no,
-                                   academic_year_id:this.selectedAcademicYear.id,
-                                   student_ids:this.studentsForGrade
-                                   })
+               year_no:this.year_no,
+               semester_no:this.semester_no,
+               academic_year_id:this.selectedAcademicYearId,
+               student_ids:this.studentsForGrade
+               })
     }
 
 }
@@ -150,7 +149,7 @@ table {
   font-size: 20px;
   color: #366ad3;
 }
-th,
+th,tr,
 td{
   border: 1px solid #dddddd;
   text-align: left;

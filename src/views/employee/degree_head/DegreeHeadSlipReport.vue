@@ -53,8 +53,8 @@
     </tr>
   </tbody> 
   </table>
-  <p v-if="!filteredInSemester.length"> Students don't register for this semester!</p>
-  <p v-else-if="!filteredStudents.length">There is no matching student</p>
+  <p v-if="!filteredInSemester.length" class="text-center"> Students don't register for this semester!</p>
+  <p v-else-if="!filteredStudents.length" class="text-center">There is no matching student</p>
 </base-card>
 </template>
 <script>

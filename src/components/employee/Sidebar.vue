@@ -2,7 +2,7 @@
    <nav class="navbar-dark">
       <ul class="navbar-nav">
         <li class="mx-2 mt-2">Main</li>
-           <sidebar-item :isSubItem="false" :to="{name:'MyClass'}">
+           <sidebar-item :isSubItem="false" :to="{name:'MyClass'}" v-if="user.role==='teacher'">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>My Class</span>
          </sidebar-item>
 
@@ -10,13 +10,17 @@
          <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'AdminDashboard'}">
             <span><i class="fas fa-tachometer-alt pe-2" ></i>Dashboard</span>
          </sidebar-item>
-           <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'ThePayment'}">
+         <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'IncomePerDay'}">
+            <span><i class="fas fa-money-check-alt pe-2" ></i>Daily</span>
+         </sidebar-item>
+         <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'ThePayment'}">
             <span><i class="fas fa-receipt pe-2"></i>Payment</span>
          </sidebar-item>
-           <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'TheDean'}">
-            <span><i class="fas fa-user-alt pe-2" ></i>Dean</span>
+         <sidebar-item v-if="user.role==='admin'" :isSubItem="false" :to="{name:'TheDean'}">
+            <span><i class="fas fa-user-alt pe-2"></i>Dean</span>
          </sidebar-item>
          
+
           <collapse-sidebar-item v-if="user.role==='admin'" label="Files"> 
             <template #icon>
               <span><i class="fas fa-file-archive pe-2"></i></span>

@@ -207,9 +207,7 @@ export default {
             rootState.isLoading = true
             try {
                 var response = await apiClient.get('api/levels')
-                if (response.status === 200) {
-                    console.log('setLevels')
-                    console.log(response.data)
+                if (response.status === 200) {  
                     commit('setLevels', response.data)
                 } else {
                     throw 'faild to load levels'

@@ -12,7 +12,7 @@
     <th>Department Name</th>
     <th>Abbreviation</th>
     <th>Department Head</th>
-    <th><span class="sr-only">action</span></th>
+    <th><span class="sr-only"></span></th>
   </tr>
   <tr v-for="(department, index) in degreeDepartments" :key="department.id">
     <td>{{index+1}}</td>
@@ -29,7 +29,7 @@
              <li @click="showEditModal(department)"><span   class="dropdown-item">Edit</span></li>
              <li @click="showDeleteModal(department)"><span   class="dropdown-item">Delete</span></li>
              <li v-if="!department.department_head" @click="showAssignModal(department)"><span  class="dropdown-item" >Assign Head</span></li>
-             <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign Head</span> </li>
+             <li v-else @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign Head</span> </li>
           </ul>
       </div>
     </td>
@@ -268,8 +268,15 @@ export default {
           await this.$store.dispatch('dean/unAssignDegreeHead',{
             employee_id:this.unassignDepHead.head_id,
             department_id:this.unassignDepHead.id
+
           })
           .then(()=>{
+           this.unassignedHeads.push({
+                    id:this.unassignDepHead.id,
+                    first_name:this.unassignDepHead.department_head,
+                    //since this.unassignDepHead.department_head contains full name, last name will be empity string
+                    last_name:''
+                    })
            this.isNotSucceed=false,
           this.unassignBaseModal.hide()
          }).catch(()=>{
@@ -303,7 +310,6 @@ export default {
            })
            this.unassignedHeads.splice(index,1)
            this.assignBaseModal.hide()
-      
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to assign Department Head'
@@ -321,7 +327,7 @@ export default {
       save() {
           this.request('dean/addDegreeDepartment','department added successfully', 'Faild to add department')
       },
-    async  request(action, successMessage, errorMessage){
+    async  request(action, successMessage){
        this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
@@ -346,9 +352,9 @@ export default {
            this.responseMessage=successMessage
            this.addBaseModal.hide()
            this.clearAddModal()
-         }).catch(()=>{
+         }).catch((e)=>{
            this.isNotSucceed=true,
-           this.responseMessage=errorMessage
+           this.responseMessage=e.response?.data
          }).finally(()=>{
           this.isSaving=false
          })

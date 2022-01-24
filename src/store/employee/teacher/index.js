@@ -14,9 +14,9 @@ export default{
             return state.mySections
         },
         sectionById(state){
-            return (id)=>{  
+            return (id,courseId)=>{  
                 return state.mySections.find((section)=>{
-                    return Number(section.id)===Number(id)
+                    return Number(section.id)===Number(id) && Number(section.course_id)===Number(courseId)
                 })
             }
         }
@@ -28,6 +28,7 @@ export default{
                 var response = await apiClient.get("/api/teacher_sections/"+id)
                 if (response.status === 200) {
                     context.commit('setMySections', response.data)
+                    console.log('sections', response.data)
                 } else {
                     throw 'faild to load degree department'
                 }

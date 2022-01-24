@@ -170,13 +170,11 @@ export default {
          finally{
            this.isSaving=false
          }
-        
        }
     },
     created(){
         this.navigate(1)
     },
-  
 }
 </script>
 <style scoped>

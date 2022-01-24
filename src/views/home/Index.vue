@@ -69,7 +69,7 @@
         <div class="d-flex flex-column">
           <div class="fw-bold fs-5">Quick Links</div> 
          <router-link :to="{name:'AcademicCalendar'}" class="nav-link ps-0  text-white">Academic Caledar</router-link>
-         <router-link :to="{name:'AcademicCalendar'}"  class="nav-link ps-0 text-white">Student Information(SIMS)</router-link>
+         <router-link :to="{name:'StudentHome'}"  class="nav-link ps-0 text-white">Student Information(SIMS)</router-link>
          <router-link :to="{name:'OnlineRegistration'}" class="nav-link ps-0  text-white">Application Form</router-link>
          <router-link :to="{name:'About'}" class="nav-link ps-0 text-white">About Us</router-link>
         </div>
@@ -98,7 +98,7 @@
       <div id="collapseQuick" class="accordion-collapse bg-accordion collapse" aria-labelledby="headingQuick" data-bs-parent="#accordionQuick">
         <div class="accordion-body">
          <router-link :to="{name:'AcademicCalendar'}" class="nav-link ps-0">Academic Caledar</router-link>
-         <router-link :to="{name:'AcademicCalendar'}"  class="nav-link ps-0">Student Information(SIMS)</router-link>
+         <router-link :to="{name:'StudentHome'}"  class="nav-link ps-0">Student Information(SIMS)</router-link>
          <router-link :to="{name:'OnlineRegistration'}" class="nav-link ps-0">Application Form</router-link>
          <router-link :to="{name:'About'}" class="nav-link ps-0">About Us</router-link>
       </div>
@@ -132,9 +132,9 @@
       </div>
   </footer>
    <div v-if="isItemLoading" class="loading-screen route-loading p-0  bg-white position-fixed top-0 start-0 bottom-0 end-0">
-               <div class="loading-spinner">
-                   <img src="../../assets/preloader.gif"   alt="slow connection">
-               </div>
+        <div class="loading-spinner">
+            <img src="../../assets/preloader.gif"   alt="slow connection">
+        </div>
     </div> 
  </div>     
 </template>
@@ -190,12 +190,11 @@ export default {
 .bg-accordion{
    background-color:#f1f1f1
 }
-
-
 .loading-spinner{
   position:absolute; 
   top: 10%;
-  left: 40%;
+  left: 50%;
+  transform:translate(-50%, -50%);
   /* z-index: 1; */
 }
 .route-loading{

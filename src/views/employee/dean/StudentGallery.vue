@@ -19,7 +19,7 @@
       <span v-show="current_page!==1" @click="fetchGallery(current_page-1)" role="button"><i class="fas fa-chevron-left pe-3"></i></span>
       <span v-show="current_page!==last_page" @click="fetchGallery(current_page+1)" role="button"><i class="fas fa-chevron-right"></i></span>
  </div>
-      </div>
+</div>
   </base-card>
 
  <vue-modal :modalState="modalState">

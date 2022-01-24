@@ -112,12 +112,15 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadStudent" */ '../../../views/employee/degree_head/DegreeHeadStudent.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
+        props(route) {
+           return  route.query || {}
+        },
         beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
+          if(store.getters.user.role!=='degree_head'){
                 next(from.path)
                 return;
-            }
-            next()
+           }
+           next()
         }
 },
 {

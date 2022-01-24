@@ -1,5 +1,5 @@
 <template>
-   <nav class="navbar-dark">
+   <nav class="navbar-dark side-bar">
       <ul class="navbar-nav px-3">
         <li class="mb-2 mt-3  text-white">Main</li>
          <sidebar-item :to="{name:'MyTutionFee'}" @linkClicked="$emit('linkClicked')">
@@ -37,6 +37,8 @@ export default {
 </script>
 
 <style scoped>
-  
+  .side-bar{
+      min-height: 100vh;
+  }
 </style>>
 

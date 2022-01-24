@@ -109,8 +109,8 @@
           <ul class="dropdown-menu py-0" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
 
              <li v-if="Number(student.year_no) === 1 && student.status === 'waiting'"><span @click="deleteStudent(student.id,student.semester_id,semesterForFilter)" class="dropdown-item px-4 py-2">Delet Student</span></li>
-             <li><span @click="editStudent(student.id)" class="dropdown-item px-4 py-2">Edit Student</span></li>
-             <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
+             <li><span @click="editStudent(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
+             <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Status</span></li>
               <li><span @click="permitResult(student)" class="dropdown-item px-4 py-2">Permit Result Entry</span></li>
           </ul>
         </div>

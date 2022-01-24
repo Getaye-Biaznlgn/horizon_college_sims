@@ -23,9 +23,10 @@
  </div>
  
  <div class="me-3">
-   <select v-model="stateForFilter" class="form-select" aria-label="year select">
+   <select v-model="statusForFilter" class="form-select" aria-label="year select">
      <option value="all">All State</option>
-     <option value="1">Waiting</option>
+     <option value="waiting">Waiting</option>
+     <option value="approved">Approved</option>
    </select>
  </div>
       <button class="btn btn-add ms-auto text-white me-2 shadow-sm" @click="exportStudentData"><i class="fas fa-print me-2"></i>Print</button> 
@@ -76,7 +77,7 @@
 </table> 
 </div>
 <p v-if="!filteredInLevel.length" class="text-center"> Students don't register for this semester!</p>
-<p v-else-if="!filteredStudents.length">There is no matching student</p>
+<p v-else-if="!filteredStudents.length" class="text-center">There is no matching student</p>
     </base-card>
 </template>
 <script>
@@ -87,19 +88,19 @@ export default {
     return {
      searchValue:'',
      programForFilter:'all',
-     stateForFilter:'all', 
+     statusForFilter:'all', 
      levelForFilter:'1',
     }
   },
    computed:{
      ...mapGetters({
        studentInLevels:'tvetHead/studentInLevels',
-       selectedAcademicYear:'selectedAcademicYear',
+       selectedAcademicYearId:'selectedAcademicYearId',
        programs:'programs',
        user:'user'
         }),
       getYearById(){
-         return this.$store.getters.getYearById(this.selectedAcademicYear)
+         return this.$store.getters.getYearById(this.selectedAcademicYearId)
       } ,  
       tvetPrograms(){
       return this.programs.filter((program)=>{
@@ -123,12 +124,11 @@ export default {
          })
       }
      
-   
-      // if(this.programForFilter!=='all'){
-      //    tempStudents=tempStudents.filter((student)=>{
-      //       return student.program.id===Number(this.programForFilter)
-      //    })
-      // }
+      if(this.statusForFilter!=='all'){
+         tempStudents=tempStudents.filter((student)=>{
+            return student.status.toString().toLowerCase()===this.statusForFilter.toLowerCase()
+         })
+      }
       return tempStudents 
      }
   },

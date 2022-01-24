@@ -8,7 +8,6 @@
     </button>
       </div>
       <div id="coclist">
-
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">

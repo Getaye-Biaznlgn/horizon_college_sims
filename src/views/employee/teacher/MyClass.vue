@@ -27,9 +27,9 @@ export default {
   methods:{
     showSectionStudent(section){
       if(section.type==='degree')
-      this.$router.push({name:'TeacherDegreeStudent', params:{id:section.id}})
-      else(section.type==='tvet')
-      this.$router.push({name:'TeacherTvetStudent'})
+      this.$router.push({name:'TeacherDegreeStudent', query:{id:section.id,courseId:section.course_id}})
+      else if(section.type==='tvet')
+      this.$router.push({name:'TeacherTvetStudent', query:{id:section.id,courseId:section.course_id}})
     }
   }
 }

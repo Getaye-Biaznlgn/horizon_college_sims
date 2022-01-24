@@ -6,27 +6,29 @@
         <option value="all" selected>All Program</option>
         <option v-for="program in tvetPrograms" :key="program.id" :value="program.id">{{program.name}}</option>
       </select>
-     </div>
+  </div>
    <div>
-     <select v-model="levelForFilter"  class="form-select mx-2" aria-label="select by level">
-            <option value="all" selected>All Level</option>
-            <option v-for="n in 4" :key="n" :value="n">Year {{n}}</option>
-        </select>
-     </div>
-
+       <select v-model="levelForFilter"  class="form-select mx-2" aria-label="select by level">
+          <option value="all" selected>All Level</option>
+          <option v-for="n in 4" :key="n" :value="n">Year {{n}}</option>
+       </select>
+   </div>
       <button class="btn btn-add ms-auto text-white me-2 shadow-sm" @click="showAddModal"> Add New Section</button> 
       <button class="btn btn-add text-white shadow-sm" @click="generatePaper"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
 </div>
+
 <div id="generatedFile">
+  <div class="sr-only">
+     {{getYearById?.year}} {{user.managet?.name}} department sections
+  </div>
 <table class="mt-2" >
   <tr>
     <th>No</th>
     <th>Section Name</th>
     <th>Program</th>
     <th>Level</th>
-    <th><span class="sr-only">action</span></th>
+    <th><span class="sr-only"></span></th>
   </tr>
-  <tbody>
   <tr v-for="(section, index) in filteredSections" :key="section.id">
     <!-- {{section}} -->
       <td>{{index+1}}</td>
@@ -48,7 +50,6 @@
     </td>
   </tr>
  
-  </tbody>
  </table>
   <p v-if="!this.sections.length"  class="mt-1 text-center">Section isn't added yet.</p>
   <p v-else-if="!this.filteredSections.length" class="mt-1 text-center">There is no matching section</p>
@@ -119,8 +120,7 @@ export default {
       selectedSection:null,
       selectedSectionForDelete:null,
       
-      //for search and filter
-      searchValue:'',
+      //filter
       levelForFilter:'all',
       programForFilter:'all',
       section:{
@@ -139,6 +139,7 @@ export default {
       academicYears:'academicYears',
       sections:'tvetHead/sections',
       programs:'programs',
+      selectedAcademicYearId:'selectedAcademicYearId',
       user:'user'
       }),
     tvetPrograms(){
@@ -146,7 +147,9 @@ export default {
         return program.type==='tvet'
       })
     },
-
+    getYearById(){
+       return this.$store.getters.getYearById(this.selectedAcademicYearId)
+    },
     filteredSections(){
       let tempSections=[...this.sections]
       if(this.programForFilter!=='all'){

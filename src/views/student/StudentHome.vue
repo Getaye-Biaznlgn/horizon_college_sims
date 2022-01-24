@@ -1,16 +1,18 @@
 <template>
 <div class="row">
-  <div class="col-sm col-md-2 pe-0 sidbar-wrapper position-relative">
+  <div class="col-sm col-md-2 pe-0 sidbar-wrapper">
      <div class="header d-flex justify-content-between py-1 shadow-sm text-white px-2 md-px-3 mx-0">
-        <span class=" fw-bold">       <img src="../../assets/logo.png" class=" align-self-center" height="51">
-Horizon College</span>
+        <span class=" fw-bold">       
+          <img src="../../assets/logo.png" class=" align-self-center" height="51">
+             Horizon College
+        </span>
         <span role="button" @click="toggleMenu" id="menubar" class="d-sm-none me-2">
             <i class="fas fa-bars fw-bold fs-1"></i>
          </span>
      </div> 
-       <div class="student-sidebar"  ref="sidebar" id="sidebar">
-         <sidebar @linkClicked='toggleMenu'></sidebar>
-        </div>
+     <div class="student-sidebar"  ref="sidebar" id="sidebar">
+         <sidebar  @linkClicked='toggleMenu'></sidebar>
+      </div>
   </div>
    <div class="col-sm col-md-10 content px-0 ">
      <div class="bg-white py-sm-4 py-md-3 px-3 shadow-sm fw-bold d-flex justify-content-between">
@@ -34,11 +36,9 @@ Horizon College</span>
       <div class="loading-spinner position-relative">
          <img src="../../assets/loading.gif" width="70" height="70"  alt="slow connection">
       </div>
-    </div>  
+  </div>  
 
-
-
-    <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearModal">
+  <base-modal @save="save" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearModal">
    <template #modalBody>
       <form @submit.prevent>
         <div class="mb-3" :class="{warining:v$.password.oldPassword.$error}">
@@ -90,7 +90,6 @@ export default {
                 isNotSucceed:'',
                 message:''
             }
-
       }
    },
    computed:{
@@ -138,7 +137,7 @@ export default {
            this.isSaving=true
          try{
           let response= await apiClient.post('api/change_password', {
-              user_name:this.user.email,
+              user_name:this.student.student_id,
               new_password:this.password.newPassword,
               old_password:this.password.oldPassword
           })
@@ -149,7 +148,7 @@ export default {
                 throw''
              }
          }
-         catch(e){
+         catch{
              this.requestStatus.isNotSucceed=true,
              this.requestStatus.message='Faild to change password'
          }
@@ -171,11 +170,9 @@ export default {
                 this.$store.dispatch('studentAuth/setStudent')
                 this.$store.dispatch('studentAuth/setIsStudentAuthenticated', false)
                  
-                localStorage.removeItem('student') 
+                localStorage.removeItem('student')
                 localStorage.removeItem('studentToken')  
-               this.$router.push({name:'StudentLogin'})
-
-
+                this.$router.push({name:'StudentLogin'})
                }else{
                 throw 'faild'
               }
@@ -184,7 +181,6 @@ export default {
               throw e
             }
           },
-
    },
    created(){
       window.addEventListener("resize", this.myEventHandler);
@@ -234,15 +230,25 @@ export default {
 }
 .content{
    background-color: #f5f6fa;
+   min-height: 100vh;
 }
 
 .student-sidebar{
     background-color: #3081b4;
     min-height: 100vh;
 }
+.warining input, .warining textarea{
+    border: 1px red solid;
+  }
+.warining span{
+    display: inline;
+    color: red;
+    font-size: 14px;
+  }
 .loading-spinner{
   top: 10%;
-  left: 47%;
+  left: 48%;
+  /* transform:translate(-50%, -50%); */
 }
 .route-loading{
   background-color: rgba(0, 0, 0, 0.5);;
@@ -278,7 +284,7 @@ th{
   background-color: #3081b4;
 }
 tr,td,th{
-  border: 2px solid hsla(228, 33%, 97%, 0.637)
+  border: 2px solid #f1f1f1
 }
 td{
   text-align: left;

@@ -1,7 +1,7 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
-    <button @click="addDepartmentHead()" class="btn btn-add text-white py-2 px-2">Add Department Head</button>
+    <button @click="addDepartmentHead" class="btn btn-add text-white px-2">Add Department Head</button>
     </div>
     <table class="mt-3">
   <thead>
@@ -13,8 +13,7 @@
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody v-if="deptHeads.length">
- 
+  <tbody>
     <tr v-for="(deptHead,index) in deptHeads" :key="deptHead.id">
       <td>{{index+1}}</td>
       <td>{{deptHead.first_name+" "+deptHead.last_name}}</td>
@@ -25,7 +24,6 @@
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm py-0">
               <li><span @click="editDeptHead(deptHead)" class="dropdown-item px-4 py-2">edit</span></li>
              <li><span @click="deleteDeptHead(deptHead.id)" class="dropdown-item px-4 py-2">delete</span></li>
@@ -34,47 +32,45 @@
     </td>
     </tr>
   </tbody>
-  <div v-else class="mt-5 mb-5 text-center text-danger">There is no Department heads found please try again</div>
 </table>
-  <div v-if="!deptHeads.length" class="text-center">There isno added department head</div>
+  <div v-if="!deptHeads.length" class="text-center mt-1">There isno added department head</div>
 
     </base-card>
     <!-- department head registration form dialog-->
-    <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead" @cancel="clearAddModal">
-    <template #modalBody>
+<base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead" @cancel="clearAddModal">
+  <template #modalBody>
     <div class="bg-white p-3">
-
-    <form>
-    <div class="mb-3" :class="{warining:v$.departmentHead.first_name.$error}">
-  <label for="fname" class="form-label">First Name</label>
-  <input type="text" class="form-control" id="fname" v-model.trim="departmentHead.first_name" @blur="v$.departmentHead.first_name.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.first_name.$errors" :key="index">{{ error.$message+", " }}</span>
-</div>
-<div class="mb-3" :class="{warining:v$.departmentHead.last_name.$error}">
-  <label for="lname" class="form-label">Last Name</label>
-  <input type="text" class="form-control" id="lname" v-model.trim="departmentHead.last_name" @blur="v$.departmentHead.last_name.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
-</div>
-<div class="mb-3" :class="{warining:v$.departmentHead.phone_no.$error}">
-  <label for="phoneNo" class="form-label">Phone Number</label>
-  <input type="tel" class="form-control" id="phoneNo" v-model="departmentHead.phone_no" @blur="v$.departmentHead.phone_no.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.phone_no.$errors" :key="index">{{ error.$message+", " }}</span>
-</div>
-<div class="mb-3" :class="{warining:v$.departmentHead.email.$error}">
-  <label for="exampleFormControlInput1" class="form-label">Email address</label>
-  <input type="email" class="form-control" id="exampleFormControlInput1" v-model="departmentHead.email" @blur="v$.departmentHead.email.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.email.$errors" :key="index">{{ error.$message+", " }}</span>
-</div>
-</form>
-    </div>
-    <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
-</template>    
-  </base-modal>
+      <form>
+        <div class="mb-3" :class="{warining:v$.departmentHead.first_name.$error}">
+          <label for="fname" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="fname" v-model.trim="departmentHead.first_name" @blur="v$.departmentHead.first_name.$touch">
+          <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.first_name.$errors" :key="index">{{ error.$message+", " }}</span>
+        </div>
+        <div class="mb-3" :class="{warining:v$.departmentHead.last_name.$error}">
+          <label for="lname" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="lname" v-model.trim="departmentHead.last_name" @blur="v$.departmentHead.last_name.$touch">
+          <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
+        </div>
+        <div class="mb-3" :class="{warining:v$.departmentHead.phone_no.$error}">
+          <label for="phoneNo" class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="phoneNo" v-model="departmentHead.phone_no" @blur="v$.departmentHead.phone_no.$touch">
+          <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.phone_no.$errors" :key="index">{{ error.$message+", " }}</span>
+        </div>
+        <div class="mb-3" :class="{warining:v$.departmentHead.email.$error}">
+           <label for="exampleFormControlInput1" class="form-label">Email address</label>
+           <input type="email" class="form-control" id="exampleFormControlInput1" v-model="departmentHead.email" @blur="v$.departmentHead.email.$touch">
+           <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.email.$errors" :key="index">{{ error.$message+", " }}</span>
+         </div>
+     </form>
+ </div>
+ <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+ </template>    
+</base-modal>
 </template>
 <script>
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
-import { required, email, minLength,alpha,numeric,helpers, maxLength} from '@vuelidate/validators'
+import { required, email, minLength,numeric,helpers, maxLength} from '@vuelidate/validators'
 export default {
   components:{},
    data() {
@@ -89,7 +85,7 @@ export default {
            buttonType:'',
            deptHeadId:null,
            departmentHead:{
-              first_name:'',
+             first_name:'',
              last_name:'',
              phone_no:'',
              email:'',
@@ -100,11 +96,13 @@ export default {
    validations(){
      return {
       departmentHead:{
-        first_name:{required: helpers.withMessage('first name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-        last_name:{required: helpers.withMessage('last name can not be empty',required),
-               alpha:helpers.withMessage('the value must be only alpahbet letters',alpha)},
-               phone_no:{
+        first_name:{
+              required: helpers.withMessage('first name can not be empty',required),
+          },
+        last_name:{
+              required: helpers.withMessage('last name can not be empty',required),
+            },
+        phone_no:{
               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
@@ -133,15 +131,15 @@ export default {
         this.departmentHead.phone_no = ''
         this.departmentHead.email = ''
         this.resultNotifier=''
-       this.v$.$reset()
+        this.v$.$reset()
       },
       registerDepartmentHead(){
         this.resultNotifier=''
-       this.v$.$validate()
-       if(!this.v$.$error){
-         this.isLoading = true
-       this.$store.dispatch('dean/addDepartmentHead',this.departmentHead).then((response)=>{
-         if(response.status === 201){
+        this.v$.$validate()
+        if(!this.v$.$error){
+          this.isLoading = true
+          this.$store.dispatch('dean/addDepartmentHead',this.departmentHead).then((response)=>{
+           if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
            this.resultNotifier = 'You have registered one department Head succesfully'
@@ -149,9 +147,6 @@ export default {
            this.basemodal.hide()
            this.clearAddModal()
          }
-          else{
-         console.log('form faild validation ')
-       }
        }).catch(e=>{
          this.isSuccessed = false
          this.isFaild = true
@@ -193,9 +188,7 @@ export default {
          this.isLoading = false
        })
        }
-       else{
-         console.log('error occured')
-       }
+      
       },
       deleteDeptHead(id){
          this.$store.dispatch('dean/deleteDepartmentHead',id)
@@ -203,63 +196,3 @@ export default {
    }, 
 }
 </script>
-<style scoped>
-.wraper{
-    position: relative;
-}
-.addbtn{
-    background-color: #2f4587;
-    color: #fff;
-    width: 11em;
-
-}
-.addbtn:hover{
-    background-color:#366ad9 ;
-}
-.dropdown ul{
-  background-color: #f5f6fa;
-}
-ul li{
-    cursor: pointer;
-  }
- a span:hover{
-   color: #366ad9;
- }
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#366ad9 ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-
-  }
-  .success{
-    color: green;
-  }
-  .faild{
-    color: red;
-  }
-   a span:hover{
-   color: #ff9500;
- }
-</style>

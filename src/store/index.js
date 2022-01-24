@@ -74,9 +74,9 @@ export default createStore({
         acYearId(state) {
             return state.acYearId
         },
-        selectedAcademicYear(state) {
-            return state.selectedAcademicYear
-        },
+        // selectedAcademicYear(state) {
+        //     return state.selectedAcademicYear
+        // },
         notifications(state) {
             return state.notifications
         },
@@ -115,6 +115,7 @@ export default createStore({
                 var response = await apiClient.get('/api/academic_years')
                 if (response.status === 200) {
                     commit('setAcademicYears', response.data)
+                    console.log('fetch year', response.data)
                 } else {
                     throw 'faild to load AcademicYears'
                 }

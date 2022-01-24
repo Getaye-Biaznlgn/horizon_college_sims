@@ -14,6 +14,7 @@
     {{section.tvet_department?.name + ' '+section.program.name+' program '+' Level '+section.level.level_no
      +' section '+ section?.name +' students'}}   
  </div>
+ 
 <table class="mt-2">
   <thead>
     <tr>
@@ -21,7 +22,7 @@
       <th>Stud ID</th>
       <th>Full Name</th>
       <th>sex</th>
-      <th><span class="sr-only">action</span></th>
+      <th><span class="sr-only"></span></th>
     </tr>
   </thead>
   <tbody>
@@ -36,23 +37,23 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-             <li><span class="dropdown-item px-4 py-2">Remove</span></li>
+             <li @click="removeStudent(student.id)"><span class="dropdown-item px-4 py-2">Remove</span></li>
           </ul>
         </div>
       </td>
     </tr>
-    
    </tbody>
   </table>
+  <div v-if="!students.length" class="text-center mt-">Student isn't added</div>
 </div>
 </base-card >
 <!-- Modal -->
 <transition>
 <div v-if="modalState" class="modalm w-100  h-100 position-fixed top-0 start-0" open>
-  <div v-if="suggestedStudents.length" class="ms-auto w-50 me-auto   modalContent bg-white shadow rounded rounded-lg">
-    <button @click="dismissModal"  class="btn fs-5 float-end  position-sticky top-0"><i class="fas fa-times"></i></button>   
+  <div v-if="suggestedStudents.length" class="mx-auto w-50   modalContent bg-white shadow rounded rounded-lg">
+    <button @click="dismissModal"  class="btn fs-5 float-end"><i class="fas fa-times"></i></button>   
       <div class="mx-5 my-2">
-        <button @click="addStudentToSection" :disabled="!studentsTobeAdded.length" class="btn btn-add  ms-auto text-white shadow-sm" > 
+        <button @click="addStudentToSection" :disabled="!studentsTobeAdded.length" class="btn mt-2 btn-add  text-white shadow-sm" > 
             <span v-if="isSaving">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                  Adding
@@ -60,9 +61,9 @@
             <span v-else>Add to section</span>   
         </button>
       </div>   
-      
       <p :class="responseMessage.status?'text-success':'text-danger'">{{responseMessage?.message}}</p>
-  <table class="p-3 m-3">
+   <div class="table-content">
+    <table class="">
      <thead>
         <tr class="table-header">
            <th><input type="checkbox" @change="toggleSelectAll($event)" class="form-check-input check-box"  name="" id=""></th>
@@ -82,6 +83,7 @@
     </tr>
   </thead> 
  </table>
+ </div>
  </div>
  <div v-else class="ms-auto mt-4 me-auto py-3  errorModal bg-white shadow rounded rounded-lg">
       <div class="head fw-bold mx-3">Sorry</div>
@@ -123,6 +125,23 @@ export default {
    this.fetchSuggestedSectionStudent(this.sectionId)
   },
   methods: {
+     async removeStudent(id){
+       try {
+       const response= await apiClient.post('/api/tvet_remove_section_students/'+id, {section_id:this.sectionId})
+         if(response.status === 200){
+           const index=this.students.findIndex((student)=>{
+             return student.id===id
+           })
+           
+           this.suggestedStudents.unshift({...this.students[index]})
+           this.students.splice(index,1)
+         }
+       } catch {
+            //
+        }finally{
+          this.isSaving=false
+        }
+    },
     showAddModal(){
        this.modalState=!this.modalState
        document.documentElement.style.overflow = 'hidden'
@@ -144,7 +163,14 @@ export default {
             var response = await apiClient.post('/api/tvet_add_section_students', {section_id:this.sectionId,student_ids:this.studentsTobeAdded}, {
             })
             if (response.status === 200) {
-                this.students=response.data
+
+               const alreadyAddedStudentsSet=new Set(this.studentsTobeAdded)
+               const unaddedStudents=this.suggestedStudents.filter((student)=>{
+                 return ! alreadyAddedStudentsSet.has(student.id)
+               })
+             this.suggestedStudents=[...unaddedStudents]
+             this.students=response.data
+             this.studentsTobeAdded=[]
                 this.modalState=false
             } else {
                 throw 'Faild to add student'
@@ -180,7 +206,6 @@ export default {
         }  finally {
             this.$store.commit('setIsItemLoading', false)
         }
-
       },
     async  fetchSectionStudent(sectionId){
        this.$store.commit('setIsItemLoading', true)
@@ -200,41 +225,12 @@ export default {
 }
 </script>
 <style scoped>
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+.table-content{
+  overflow-y: scroll;
+  max-height: 80vh;
+  overflow-x: hidden;
 }
 
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-.back{
-  font-size: 20px;
-  color: #366ad3;
-}
-
-.btn-add{
-    background-color: #2f4587;
-}
-
-.btn-add:hover{
-  background-color: #4256b8;
-}
 .fa-sign-out-alt{
   transform: rotate(-90deg);
   font-size: 20px;
@@ -244,8 +240,6 @@ td{
 }
 
 .modalContent{
-  max-height: 100vh;
-  overflow-y: scroll;
   z-index: 20;
   transition: opacity .3s ease;
 }

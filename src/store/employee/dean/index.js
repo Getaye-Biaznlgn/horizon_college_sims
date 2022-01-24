@@ -15,7 +15,8 @@ export default {
         news: [],
         events: [],
         yearMonths: [],
-        dashboardData: {}
+        dashboardData: {},
+        selectedAcademicCalendarDetail:{}
     },
     getters: {
         teachers(state) {
@@ -65,6 +66,9 @@ export default {
         },
         yearMonths(state) {
             return state.yearMonths
+        },
+        selectedAcademicCalendarDetail(state){
+            return state.selectedAcademicCalendarDetail
         }
     },
     mutations: {
@@ -77,7 +81,9 @@ export default {
         setTvetDepartments(state, tvetDepartments) {
             state.tvetDepartments = tvetDepartments
         },
-
+        setSelectedAcademicCalendarDetail(state, yearDetail){
+            state.selectedAcademicCalendarDetail=yearDetail
+        },
         setCourses(state, courses) {
             state.courses = courses
         },
@@ -140,6 +146,7 @@ export default {
                 var response = await apiClient.get("api/degree_departments")
                 if (response.status === 200) {
                     context.commit('setDegreeDepartments', response.data)
+                    console.log('degree department', response.data)
                 } else {
                     throw 'faild to load degree department'
                 }
@@ -158,12 +165,7 @@ export default {
             }
         },
         async updateDegreeDepartment(context, paylode) {
-            var response = await apiClient.put('/api/degree_departments/' + paylode.id, JSON.stringify(paylode), {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            })
+            var response = await apiClient.put('/api/degree_departments/' + paylode.id, JSON.stringify(paylode),)
             console.log('update degree department response status' + response.status)
             if (response.status === 200) {
                 var previousData = context.getters.degreeDepartments
@@ -185,10 +187,7 @@ export default {
                 var deletedIndex = previousData.findIndex((dep) => {
                     return dep.id === id
                 })
-                previousData.splice(deletedIndex, 1)
-                deletedIndex = previousData.findIndex((dep) => {
-                    return dep.id === id
-                })
+            
                 previousData.splice(deletedIndex, 1)
                 context.commit('setDegreeDepartments', previousData)
             } else {

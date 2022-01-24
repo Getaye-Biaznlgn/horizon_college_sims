@@ -14,7 +14,6 @@
                          <tr v-for="activity in regularFirstActivities" :key="activity.id">
                             <td>{{activity.date}}</td>
                             <td>{{activity.activity}}</td>
-                            
                          </tr>
                     </table>
                 </div>
@@ -30,7 +29,6 @@
                          <tr v-for="activity in regularSecondActivities" :key="activity.id">
                             <td>{{activity.date}}</td>
                             <td>{{activity.activity}}</td>
-                            
                          </tr>
                     </table>
                 </div>   
@@ -51,8 +49,7 @@
                         </tr>
                          <tr v-for="activity in extensionFirstActivities" :key="activity.id">
                             <td>{{activity.date}}</td>
-                            <td>{{activity.activity}}</td>
-                            
+                            <td>{{activity.activity}}</td> 
                          </tr>
                     </table>
                 </div>
@@ -67,8 +64,7 @@
                         </tr>
                          <tr v-for="activity in extensionSecondActivities" :key="activity.id">
                            <td>{{activity.date}}</td>
-                            <td>{{activity.activity}}</td>
-                            
+                            <td>{{activity.activity}}</td> 
                          </tr>
                     </table>
                 </div>
@@ -84,11 +80,10 @@
                          <tr v-for="activity in extensionThirdActivities" :key="activity.id">
                             <td>{{activity.date}}</td>
                             <td>{{activity.activity}}</td>
-                            
                          </tr>
                     </table>
                 </div>
-            </div>
+         </div>
     </div>
     <!-- //tvet -->
     <div class="container mb-5">

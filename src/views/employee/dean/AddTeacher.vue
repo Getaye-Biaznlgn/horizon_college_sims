@@ -14,31 +14,28 @@
     Regular
   </label>
 </div>
-    <div class="form-check me-3">
-  <input class="form-check-input" type="radio" name="teachertyperadio" value="partime" id="partime" v-model="teacherType">
-  <label class="form-check-label" for="partime">
-    Partime
-  </label>
-</div>
-    </div>
-    <div>
-    <button @click="addTeacher()" class="btn btn-add text-white px-2">Add New Teacher</button>
-    </div>
-    </div>
+   <div class="form-check me-3">
+     <input class="form-check-input" type="radio" name="teachertyperadio" value="partime" id="partime" v-model="teacherType">
+     <label class="form-check-label" for="partime"> Partime </label>
+   </div>
+  </div>
+  <div>
+    <button @click="addTeacher" class="btn btn-add text-white px-2">Add New Teacher</button>
+  </div>
+ </div>
     <table class="mt-3">
-  <thead>
+    <thead>
     <tr>
-      <th>NO</th>
-      <th>Full Name</th>
-      <th>Phone Number</th>
-      <th>Email Address</th>
-      <th>Type</th>
-      <th>Qualification</th>
-      <th>GPA</th>
-      <th><span class="sr-only">action</span></th>
+       <th>NO</th>
+       <th>Full Name</th>
+       <th>Phone Number</th>
+       <th>Email Address</th>
+       <th>Type</th>
+       <th>Qualification</th>
+       <th>GPA</th>
+       <th><span class="sr-only"></span></th>
     </tr>
   </thead>
-  <tbody>
      <tr v-for="(teacher,index) in filteredTeachers" :key="teacher.id">
       <td>{{index+1}}</td>
       <td>{{teacher.first_name+" "+teacher.last_name}}</td>
@@ -52,7 +49,6 @@
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
              <li><span @click="editTeacher(teacher,'edit')" class="dropdown-item px-4 py-2">edit</span></li>
              <li><span @click="deleteTeacher(teacher.id)" class="dropdown-item px-4 py-2">delete</span></li>
@@ -60,9 +56,8 @@
         </div>
     </td>
     </tr>
-  </tbody>
  </table>
-    <div v-if="!teachers.length" class="text-center">Teacher isnot added</div>
+ <div v-if="!teachers.length" class="text-center mt-1">Teacher isnot added</div>
 
 </base-card>
 
@@ -118,7 +113,7 @@
 <script>
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
-import { required, email, minLength,numeric,helpers, maxLength} from '@vuelidate/validators'
+import { required, email, minLength,numeric,helpers,maxValue,minValue, maxLength} from '@vuelidate/validators'
 export default {
   props:['type'],
    data() {
@@ -151,24 +146,29 @@ export default {
       teacher:{
         first_name:{
                required: helpers.withMessage('first name can not be empty',required),
-               },
+             },
         last_name:{
                required: helpers.withMessage('last name can not be empty',required),
-               },
-               qualification:{
-                 required: helpers.withMessage('qualification can not be empty',required)},
-
-               phone_no:{
-              required: helpers.withMessage('phone number can not be empty',required),
+             },
+        qualification:{
+                required: helpers.withMessage('qualification can not be empty',required)
+             },
+        phone_no:{
+               required: helpers.withMessage('phone number can not be empty',required),
                numeric,
                min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
                max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(13)),
-               },
-               email:{required:helpers.withMessage('email can not be empty',required),email},
-               gpa:{
-                 numeric,
-                 required:helpers.withMessage('GPA field can not be empty',required),
-                 }
+             },
+         email:{
+              required:helpers.withMessage('email can not be empty',required),
+              email
+            },
+         gpa:{
+               numeric,
+               required:helpers.withMessage('GPA field can not be empty',required),
+               maxValue:helpers.withMessage('Shouldn\'t be greater than 25', maxValue(1.0)),
+               minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(4.0)),
+             }
       }
      }
    },
@@ -294,61 +294,5 @@ export default {
    }, 
 }
 </script>
-<style scoped>
-.wraper{
-    position: relative;
-}
-.addbtn{
-    background-color: #2f4587;
-    color: #fff;
-    width: 10em;
 
-}
-.addbtn:hover{
-    background-color:#366ad9 ;
-}
-.dropdown ul{
-  background-color: #f5f6fa;
-}
-ul li{
-    cursor: pointer;
-  }
- a span:hover{
-   color: #ff9500;
- }
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#4285fa ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
-
-  }
-  .success{
-    color: green;
-  }
-  .faild{
-    color: red;
-  }
-</style>
 

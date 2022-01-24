@@ -1,7 +1,7 @@
 <template>
     <base-card class="px-3 mx-4 mt-3">
     <div class="d-flex justify-content-end">
-    <button @click="addregistrar()" class="btn btn-add text-white py-2 px-2">Add New registrar</button>
+    <button @click="addregistrar" class="btn btn-add text-white px-2">Add New registrar</button>
     </div>
    <table class="mt-3">
   <thead>
@@ -13,7 +13,6 @@
       <th><span class="sr-only">action</span></th>
     </tr>
   </thead>
-  <tbody v-if="registrars.length">
      <tr v-for="(registrar,index) in registrars" :key="registrar.id">
       <td>{{index+1}}</td>
       <td>{{registrar.first_name+" "+registrar.last_name}}</td>
@@ -24,7 +23,6 @@
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
                  <li><span @click="editRegistrar(registrar)" class="dropdown-item px-4 py-2">edit</span></li>
                  <hr class="w-100 mb-0 mt-0">
@@ -33,11 +31,8 @@
         </div>
     </td>
     </tr>
-     </tbody>
-     <div v-else class="errorcase mt-5 mb-5 text-danger">There is no Registrar found please try again</div>
 </table>
-     <div v-if="!registrars.length" class="text-center">There is no added registrar</div>
-
+     <div v-if="!registrars.length" class="text-center mt-1">There is no added registrar</div>
 </base-card>
     
     <!-- registrar registration form dialog-->
@@ -46,17 +41,17 @@
     <div class="bg-white p-3">
 
     <form>
-    <div class="mb-3" :class="{warining:v$.registrar.first_name.$error}">
-  <label for="fname" class="form-label">First Name</label>
-  <input type="text" class="form-control" id="fname" v-model.trim="registrar.first_name" @blur="v$.registrar.first_name.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.first_name.$errors" :key="index">{{ error.$message+", " }}</span>
-</div>
-<div class="mb-3" :class="{warining:v$.registrar.last_name.$error}">
-  <label for="lname" class="form-label">Last Name</label>
-  <input type="text" class="form-control" id="lname" v-model.trim="registrar.last_name" @blur="v$.registrar.last_name.$touch">
-  <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
-</div>
-<div class="mb-3" :class="{warining:v$.registrar.phone_no.$error}">
+      <div class="mb-3" :class="{warining:v$.registrar.first_name.$error}">
+         <label for="fname" class="form-label">First Name</label>
+         <input type="text" class="form-control" id="fname" v-model.trim="registrar.first_name" @blur="v$.registrar.first_name.$touch">
+         <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.first_name.$errors" :key="index">{{ error.$message+", " }}</span>
+      </div>
+      <div class="mb-3" :class="{warining:v$.registrar.last_name.$error}">
+         <label for="lname" class="form-label">Last Name</label>
+         <input type="text" class="form-control" id="lname" v-model.trim="registrar.last_name" @blur="v$.registrar.last_name.$touch">
+         <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.last_name.$errors" :key="index">{{ error.$message+", " }}</span>
+      </div>
+      <div class="mb-3" :class="{warining:v$.registrar.phone_no.$error}">
   <label for="phoneNo" class="form-label">Phone Number</label>
   <input type="tel" class="form-control" id="phoneNo" v-model="registrar.phone_no" @blur="v$.registrar.phone_no.$touch">
   <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.phone_no.$errors" :key="index">{{ error.$message+", " }}</span>
@@ -68,7 +63,7 @@
 </div>
 </form>
     </div>
-    <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+    <p class="text-center mt-1" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
  </template>    
   </base-modal>
 </template>
@@ -100,18 +95,22 @@ export default {
    validations(){
      return {
       registrar:{
-        first_name:{required: helpers.withMessage('first name can not be empty',required),
-        last_name:{required: helpers.withMessage('last name can not be empty',required),               phone_no:{
-              required: helpers.withMessage('phone number can not be empty',required),
-               numeric,
-               min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
-               max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(10)),
-               },
-               email:{required:helpers.withMessage('email can not be empty',required),email}
+        first_name:{
+          required: helpers.withMessage('first name can not be empty',required),
+          },
 
-      }
-     }
-   },
+        last_name:{required: helpers.withMessage('last name can not be empty',required)
+        },             
+        phone_no:{
+           required: helpers.withMessage('phone number can not be empty',required),
+           numeric,
+           min:helpers.withMessage('phone number should be at least 10 digits long',minLength(10)),
+           max:helpers.withMessage('phone number should not be greter than 13 digits long',maxLength(10)),
+           },
+         email:{
+            required:helpers.withMessage('email can not be empty',required),email
+          }
+       }
      }
    },
    mounted() {
@@ -198,65 +197,4 @@ export default {
    }, 
 }
 </script>
-<style scoped>
-.wraper{
-    position: relative;
-}
-.addbtn{
-    background-color: #2f4587;
-    color: #fff;
-    width: 10em; 
-}
-.addbtn:hover{
-    background-color:#366ad9 ;
-}
-.dropdown ul{
-  background-color: #f5f6fa;
-}
-ul li{
-    cursor: pointer;
-  }
- a span:hover{
-   color: #366ad9;
- }
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-.table-header{
-    background-color:#366ad9 ;
-    border-radius: 5px;
-}
-th{
-  text-align: left;
-  padding: 8px;
-  
-}
-td{
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-.warining input{
-    border: 1px red solid;
-  }
-  .warining span{
-    display: inline;
-    color: red;
 
-  }
-  .success{
-    color: green;
-  }
-  .faild{
-    color: red;
-  }
-  a span:hover{
-    color: #eca643;
-  }
-  .errorcase{
-    text-align: center;
-  }
-</style>

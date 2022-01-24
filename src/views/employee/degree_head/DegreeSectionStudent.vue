@@ -6,53 +6,54 @@
     <button @click="showAddModal" class="btn btn-add  ms-auto text-white shadow-sm" > Add Student</button> 
  </div>
  <div class="ps-3">
-    <button class="btn btn-add ms-auto text-white shadow-sm"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
+    <button @click="print" class="btn btn-add ms-auto text-white shadow-sm"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
  </div>
 </div>
-<div v-if="section" class="fw-bold">
-    {{section?.degree_department?.name + ' '+section.program.name+' program'+' '+this.getTextValue(section?.year_no)+' year ' +
-    this.getTextValue(section?.semester?.number) +' semester '+ 'section '+ section?.name +' students'}}   
- </div>
-<table class="mt-2">
-  <thead>
-    <tr>
-      <th>NO</th>
-      <th>Student ID</th>
-      <th>Full Name</th>
-      <th>sex</th>
-    
-      <th><span class="sr-only">action</span></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(student, index) in students" :key="student.id">
-      <td>{{index+1}}</td>
-      <td>{{student.student_id}}</td>
-      <td>{{student.first_name+''+student.middle_name}}</td>
-      <td>{{student.sex}}</td>
-      <td>
-        <div class="dropdown">
-          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+<div id="sectionStudent">
+    <div v-if="section" class="fw-bold">
+        {{section?.degree_department?.name + ' '+section.program.name+' program'+' '+this.getTextValue(section?.year_no)+' year ' +
+        this.getTextValue(section?.semester?.number) +' semester '+ 'section '+ section?.name +' students'}}   
+     </div>
+  <table class="mt-2">
+     <thead>
+       <tr>
+         <th>NO</th>
+         <th>Student ID</th>
+         <th>Full Name</th>
+         <th>sex</th>
+         <th><span class="sr-only"></span></th>
+       </tr>
+     </thead>
+    <tbody>
+      <tr v-for="(student, index) in students" :key="student.id">
+        <td>{{index+1}}</td>
+        <td>{{student.student_id}}</td>
+        <td>{{student.first_name+' '+student.last_name}}</td>
+        <td>{{student.sex}}</td>
+        <td>
+          <div class="dropdown">
+            <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
-          </a>
-          <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span class="dropdown-item px-4 py-2">edit</span></li>
-              <hr class="w-100 mb-0 mt-0">
-             <li><span class="dropdown-item px-4 py-2">delete</span></li>
-          </ul>
-        </div>
-      </td>
-    </tr>
+            </a>
+            <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
+              <li @click="removeStudent(student.id)"><span class="dropdown-item py-2">Remove</span></li>
+            </ul>
+          </div>
+        </td>
+      </tr>
    </tbody>
   </table>
   <div v-if="!students.length" class="text-center mt-1">Students don't added yet!</div>
+
+</div>
+
 </base-card >
 <!-- Modal -->
 <transition>
-<div v-if="modalState" class="modalm w-100  h-100 position-fixed top-0 start-0" open>
-  <div v-if="suggestedStudents.length" class="ms-auto w-50 me-auto   modalContent bg-white shadow rounded rounded-lg">
-    <button @click="dismissModal"  class="btn fs-5 float-end  position-sticky top-0"><i class="fas fa-times"></i></button>   
-      <div class="mx-5 my-2">
+ <div v-if="modalState" class="modalm w-100  h-100 position-fixed top-0 start-0" open>
+  <div v-if="suggestedStudents.length" class="ms-auto w-50 me-auto pt-1  modalContent bg-white shadow rounded rounded-lg pb-2">
+    <button @click="dismissModal"  class="btn fs-5 float-end top-0"><i class="fas fa-times"></i></button>   
+      <div class="ms-3 my-2">
         <button @click="addStudentToSection" :disabled="!studentsTobeAdded.length" class="btn btn-add  ms-auto text-white shadow-sm" > 
             <span v-if="isSaving">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -62,7 +63,8 @@
         </button>
       </div>   
       <p :class="responseMessage.status?'text-success':'text-danger'">{{responseMessage?.message}}</p>
-  <table class="p-3 m-3">
+ <div class="table-content">
+   <table class="p-3 m-3" >
      <thead>
         <tr class="table-header">
            <th><input type="checkbox" @change="toggleSelectAll($event)" class="form-check-input check-box"  name="" id=""></th>
@@ -70,28 +72,23 @@
            <th>Stud ID</th>
            <th>Full Name</th>
            <th>sex</th>
-           <th>Year</th>
-           <th>Semester</th>
-           
         </tr>
     <tr v-for="(student, index) in suggestedStudents" :key="student.id">
       <th><input type="checkbox" v-model="studentsTobeAdded" :value="student.id"  class="form-check-input p-1"  name="suggestedStudent"  :id="student.id"></th>
        <th>{{index+1}}</th>
        <th>{{student.id}}</th>
-       <th>{{student.first_name+' '+student.middle_name}}</th>
+       <th>{{student.first_name+' '+student.last_name}}</th>
        <th>{{student.sex}}</th>
-       <th>{{student.current_year_no}}</th>
-       <th>{{student.current_semester_no}}</th>
-       
     </tr>
   </thead> 
  </table>
+ </div>
  </div>
  <div v-else class="ms-auto mt-4 me-auto py-3  errorModal bg-white shadow rounded rounded-lg">
       <div class="head fw-bold mx-3">Sorry</div>
       <div class="my-4 mx-3 content">There is no unassigned student</div>
       <div class="d-flex">
-        <button @click="dismissModal" class="btn me-3 btn-add text-white ms-auto">OK</button>
+        <button @click="dismissModal" class="btn me-3 px-4 btn-add text-white ms-auto">OK</button>
       </div>
  </div>
  </div>
@@ -129,6 +126,26 @@ export default {
    this.fetchSuggestedSectionStudent(this.sectionId)
   },
   methods: {
+    print(){
+     this.$htmlToPaper('sectionStudent')
+    },
+    async removeStudent(id){
+       try {
+       const response= await apiClient.post('/api/remove_section_students/'+id, {section_id:this.sectionId})
+         if(response.status === 200){
+           const index=this.students.findIndex((student)=>{
+             return student.id===id
+           })
+           
+           this.suggestedStudents.unshift({...this.students[index]})
+           this.students.splice(index,1)
+         }
+       } catch {
+            //
+        }finally{
+          this.isSaving=false
+        }
+    },
     showAddModal(){
        this.modalState=!this.modalState
        document.documentElement.style.overflow = 'hidden'
@@ -136,35 +153,31 @@ export default {
     dismissModal(){
        this.modalState=!this.modalState
        this.studentsTobeAdded=[]
-      document.documentElement.style.overflow = 'scroll'
-
+       document.documentElement.style.overflow = 'scroll'
     },
-   
     back(){
       this.$router.back()
     },
     async addStudentToSection(){
       try {
             this.isSaving=true
-            var response = await apiClient.post('/api/add_section_students', {section_id:this.sectionId,student_ids:this.studentsTobeAdded}, {
-            })
+            var response = await apiClient.post('/api/add_section_students', {section_id:this.sectionId,student_ids:this.studentsTobeAdded})
             if (response.status === 200) {
-              console.log('add student to section,', response.data)
-                // this.students.push.apply(this.students,response.data)
-                // if the response contain all section datas
-                this.students=response.data
-                this.responseMessage={message:'Students added successfully', status:1}
+               const alreadyAddedStudentsSet=new Set(this.studentsTobeAdded)
+               const unaddedStudents=this.suggestedStudents.filter((student)=>{
+                 return ! alreadyAddedStudentsSet.has(student.id)
+               })
+             this.suggestedStudents=[...unaddedStudents]
+             this.students=response.data
+             this.studentsTobeAdded=[]
+             this.modalState=false
             } else {
                 throw 'Faild to add student'
             }
-        } catch (e) {
-            console.log(e)
+        } catch {
             this.responseMessage={message:'Faild to add students', status:0}
         }finally{
           this.isSaving=false
-          setTimeout(()=>{
-            this.responseMessage=''
-          }, 5000)
         }
     },
     toggleSelectAll(event){
@@ -173,7 +186,6 @@ export default {
          this.suggestedStudents.forEach((student)=>{
          selected.push(student.id)
          })
-         
       }
      this.studentsTobeAdded=selected
     },
@@ -181,15 +193,13 @@ export default {
        this.$store.commit('setIsItemLoading', true)
         try {
             var response = await apiClient.get("/api/section_suggested_students?section_id="+payload)
-            console.log('degree_section_students ',response.data)
             if (response.status === 200) {
               this.suggestedStudents=response.data
             } else {
                 throw 'faild to load degree department'
             }
-        } catch (e) {
-            console.log(e.response)
-            throw e
+        } catch{
+            //catch here
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
@@ -205,9 +215,8 @@ export default {
             } else {
                 throw 'faild to load degree department'
             }
-        } catch (e) {
-            console.log(e.response)
-            throw e
+        } catch {
+            //
         } finally {
             this.$store.commit('setIsItemLoading', false)
         }
@@ -234,52 +243,12 @@ export default {
 }
 </script>
 <style scoped>
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-/* new design change start*/
-tbody > tr:last-child { border-bottom: 2px solid hsl(231, 16%, 91%) }
-
-th{
-  text-align: left;
-  padding: 8px;
-}
-tr{
-  border-top: 2px solid hsl(231, 16%, 91%)
-}
-td{
-  text-align: left;
-  padding: 8px;
-  vertical-align: top;
-}
-/* end */
-.back{
-  font-size: 20px;
-  color: #366ad3;
-}
-
-.btn-add{
-    background-color: #2f4587;
-}
-
-.btn-add:hover{
-  background-color: #4256b8;
-}
-.fa-sign-out-alt{
-  transform: rotate(-90deg);
-  font-size: 20px;
-}
-.back{
-  cursor: pointer;
-}
-
-.modalContent{
-  max-height: 100vh;
+.table-content{
   overflow-y: scroll;
+  max-height: 80vh;
+  overflow-x: hidden;
+}
+.modalContent{
   z-index: 20;
   transition: opacity .3s ease;
 }
@@ -297,7 +266,6 @@ input[type="checkbox"]:checked{
 /* modal transition */
 .v-enter-from{
   opacity: 0;
-  
 }
 .v-enter-active{
   transition: all 0.3s ease-out;

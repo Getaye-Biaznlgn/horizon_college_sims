@@ -89,8 +89,8 @@ export default {
       }else{
         throw 'faild'+response.status
       }
-    }catch{
-      this.notify= 'Faild to login'
+    }catch(e){
+      this.notify= 'Faild to login, check your email and password'
     }finally{
       this.isLoging=false
     }

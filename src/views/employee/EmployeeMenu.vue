@@ -57,7 +57,6 @@ export default {
        .then(()=>{
            this.$store.getters.academicYears.forEach((year)=>{
            if(Number(year.is_current) === 1) {
-             console.log('active year id yyy  = '+year.id)
                this.$store.commit('setSelectedAcademicYearId', year.id)
                   this.$store.commit('setSelectedAcYearId',year.id) 
                   this.$store.dispatch('registrar/fetchActiveYearSemisters',year.id)
@@ -66,8 +65,8 @@ export default {
            }
           )
     if(this.user.role==='dean'){  
-      // let path=this.$route.path || '/staff/dean-dashboard'
-      // this.$router.replace(path)
+      let path=this.$route.path || '/staff/dean-dashboard'
+      this.$router.push(path)
       this.$store.dispatch('dean/fetchDashboardData')
       this.$store.dispatch('dean/fetchTeachers')
       this.$store.dispatch('dean/fetchDepartmentHeads')
@@ -77,13 +76,13 @@ export default {
       this.$store.dispatch('dean/fetchTvetDepartments')
       this.$store.dispatch('dean/fetchCourses')
       this.$store.dispatch('dean/fetchModules')
-      this.$store.dispatch('dean/fetchDegreePrograms')
-      this.$store.dispatch('dean/fetchTvetPrograms')
-    this.$store.dispatch('registrar/fetchActiveYearSemister')
-     this.$store.dispatch('registrar/fetchAcadamicMounths')
-     this.$store.dispatch('registrar/fetchDegreeStudents')
-     this.$store.dispatch('registrar/fetchTvetStudents')
-       this.$store.dispatch('registrar/fetchLevels')   
+      // this.$store.dispatch('dean/fetchDegreePrograms')
+      // this.$store.dispatch('dean/fetchTvetPrograms')
+      this.$store.dispatch('registrar/fetchActiveYearSemister')
+      this.$store.dispatch('registrar/fetchAcadamicMounths')
+      this.$store.dispatch('registrar/fetchDegreeStudents')
+      this.$store.dispatch('registrar/fetchTvetStudents')
+      this.$store.dispatch('registrar/fetchLevels')   
       }
       else if(this.user.role==='department head'){
       // this.$store.dispatch('dean/fetchDegreePrograms')
@@ -97,6 +96,7 @@ export default {
       }
       else if(this.user.role === 'cashier'){
     //actions used by cashier
+    this.$router.push({name:'CashierDashboard'})
       }
       //actions used by registrar
       else if(this.user.role === 'registrar'){
@@ -106,21 +106,23 @@ export default {
        this.$store.dispatch('registrar/fetchLevels')
          this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')
-        
+        this.$router.push({name:'RegistrarDashboard'})
       }
     else if(this.user.role==='tvet_head'){
         this.$store.dispatch('tvetHead/fetchModules')
         this.$store.dispatch('tvetHead/fetchSections')
         this.$store.dispatch('tvetHead/fetchStudentInLevels')
       }
+    else if(this.user.role==='teacher'){
+       this.$store.dispatch('teacher/fetchMySections', this.user.id)
+    }
       
-      this.$store.dispatch('teacher/fetchMySections', this.user.id)
-      this.$store.dispatch('fetchPrograms')
+    this.$store.dispatch('fetchPrograms')
        
        if(this.user.role==='admin'){
           this.$router.push({name:'AdminDashboard'}) 
        }
-       this.$store.dispatch('fetchPrograms') 
+       
     }
 }
 </script>
@@ -134,7 +136,8 @@ export default {
 .loading-spinner{
   position:absolute; 
   top: 10%;
-  left: 40%;
+  left: 50%;
+  transform:translate(-50%, -50%);
   /* z-index: 1; */
 }
 .route-loading{
