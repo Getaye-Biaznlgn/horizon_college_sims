@@ -32,7 +32,7 @@
    </div>
     </div>
     <div id="paidStuddentList">
-      <span class="ms-5 sr-only">{{'List of Students paid from'+startDate+' - '+endDate}}</span>
+      <span class="ms-5 sr-only">{{'students fee payment tabel'}}</span>
      <table class="mt-3" id="studentspaid">
   <thead>
     <tr class="table-header">
@@ -108,7 +108,7 @@ Rows per Page
 <button @click="recentDates(7)" class="interval fs-5 p-2 mt-2 text-center"> Last 7 Days</button>
 <button @click="recentDates(30)" class="interval fs-5 p-2 mt-2 text-center"> Last 30 Days</button>
 <button @click="specificDate()" class="interval fs-5 p-2 mt-2 text-center"> Search by Specific Date</button>
-<button @click="customDate()" class="interval fs-5 p-2 mt-2 text-center"> Custom Range</button>
+<button @click="customDate()" class="interval fs-5 p-2 mt-2 text-center" :class="{isActive:isCustomDate}"> Custom Range</button>
 <div class="d-flex justify-content-end py-5 mt-5">
    <button @click="cancelPicker()" class="btn cancel me-3">Cancel</button>
   <button @click="applay()" class="btn addbtn">Apply</button>
@@ -139,13 +139,12 @@ export default {
         dateSpecific:'',
         queryObject:{
           page:1,
-          per_page:5,
+          per_page:10,
           path:'api/students_paid',
           search_id:'',
           date_between:'',
           payment_type:'',
           date_query:'',
-          date_interval:'',
         }
     }
   },
@@ -251,33 +250,40 @@ var date = new Date(dateValue)
         if(this.date?.length){
         var date1 = new Date(this.date[0])
         var date2 = new Date(this.date[1])
-        var startDate = date1.getFullYear()+'/'+(date1.getMonth()+1)+'/'+date1.getDate()
-        var endDate = date2.getFullYear()+'/'+(date2.getMonth()+1)+'/'+date2.getDate()
+        var startDate = date1.getFullYear()+'/'+Number(date1.getMonth())+1+'/'+date1.getDate()
+        var endDate = date2.getFullYear()+'/'+Number(date2.getMonth())+1+'/'+date2.getDate()
         this.queryObject.date_between = startDate+','+endDate
         }
         this.studentsPaid(this.queryObject)
         this.isDateSelection = false
         console.log('date range selected =',this.queryObject)
+        this.dateStart=''
+        this.dateEnd=''
       },
       recentDates(dateValue){
         this.isCustomDate = false
         this.isSpecificDate = false
         this.isIntervalDate = true
-         this.queryObject.date_interval = dateValue
          var d1 = new Date()
-       this.dateEnd = d1.getMonth()+1+'/'+d1.getDate()+'/'+d1.getFullYear()
+       this.dateEnd = d1.getFullYear()+'/'+(Number(d1.getMonth())+1)+'/'+d1.getDate()
        var d2 = new Date(Date.now() - (dateValue * 24 * 60 * 60 * 1000)) 
-       this.dateStart = d2.getMonth()+1+'/'+d2.getDate()+'/'+d2.getFullYear()
+       this.dateStart = d2.getFullYear()+'/'+(Number(d2.getMonth())+1)+'/'+d2.getDate()
+       this.queryObject.date_between = this.dateStart+','+this.dateEnd
+       console.log(this.queryObject.date_between)
+       this.queryObject.date_query = ''
       },
       specificDate(){
         this.isCustomDate = false
         this.isIntervalDate = false
         this.isSpecificDate = true
+        this.queryObject.date_between = ''
+
       },
       customDate(){
         this.isSpecificDate = false
         this.isIntervalDate = false
         this.isCustomDate = true
+        this.queryObject.date_query = ''
       }
 
     }
@@ -329,11 +335,6 @@ td{
   text-align: left;
   padding: 8px;
   vertical-align: top;
-}
-.all{
-  border: 2px solid rgb(179, 176, 176);
-  width: 6em;
-  padding: 2px;
 }
 .searchicon{
   cursor: pointer;
@@ -409,5 +410,8 @@ color: #2f4587;
 }
 .knownDate input{
   width: 100%;
+}
+.isActive{
+  background-color: #f5f6fa;
 }
 </style>

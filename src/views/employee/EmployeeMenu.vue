@@ -60,7 +60,7 @@ export default {
              console.log('active year id yyy  = '+year.id)
                this.$store.commit('setSelectedAcademicYearId', year.id)
                   this.$store.commit('setSelectedAcYearId',year.id) 
-                console.log('active acyearr id from state',this.$store.getters['acYearId'])
+                  this.$store.dispatch('registrar/fetchActiveYearSemisters',year.id)
                }     
             })
            }
@@ -103,7 +103,6 @@ export default {
         this.$store.dispatch('registrar/fetchAcadamicMounths')
       this.$store.dispatch('dean/fetchDegreeDepartments')
       this.$store.dispatch('dean/fetchTvetDepartments')
-      this.$store.dispatch('registrar/fetchActiveYearSemisters')
        this.$store.dispatch('registrar/fetchLevels')
          this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')

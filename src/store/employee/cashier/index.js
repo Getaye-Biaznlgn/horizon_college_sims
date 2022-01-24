@@ -154,7 +154,7 @@ export default {
         // },
         async fetchPaidStudents({ commit }, queryObject) {
             try {
-                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_query=' + queryObject.search_id + '&date_between_query=' + queryObject.date_between + '&payment_type_query=' + queryObject.payment_type + '&date_query=' + queryObject.date_query + '&academic_year_id=' + queryObject.academic_year_id + '&date_interval=' + queryObject.interval)
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_query=' + queryObject.search_id + '&date_between_query=' + queryObject.date_between + '&payment_type_query=' + queryObject.payment_type + '&date_query=' + queryObject.date_query + '&academic_year_id=' + queryObject.academic_year_id)
                 if (response.status === 200) {
                     console.log('fetch paid months and semesters ')
                     console.log(response.data)

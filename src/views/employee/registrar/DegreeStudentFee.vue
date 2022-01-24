@@ -78,7 +78,7 @@
   </tbody>
      
 </table>
-<div v-if="!studentFee.data?.length" class="ms-5 px-5  mt-3 pb-2">There is no payment found for Degree students</div>
+<div v-if="!studentFee.data?.length" class="ms-5 px-5  mt-3 pb-2">There is no paid Degree students found </div>
     </div>
 <div v-if="studentFee.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
@@ -94,7 +94,7 @@ Rows per Page
 </select>
 </div>
 <div class="pageno me-3">
-{{studentFee.from+'-'+studentFee.to+' of '+studentFee.total+' pages'}}
+{{studentFee.from+'-'+studentFee.to+' of '+studentFee.total+' Rows'}}
 </div>
 <div class="leftchivron ms-3 me-3">
 <button @click="backChivron()" class="chivronbtn" :class="{active:studentFee.from !== 1}" :disabled="studentFee.from === 1"><i class="fas fa-chevron-left"></i></button>
@@ -108,11 +108,12 @@ Rows per Page
 <base-card>
 <div class="innercontent">
 <div class="d-flex justify-content-end">
- <button @click="addStudent" class="btn me-1 addbtn p-1">
+ <button @click="feeDetail()" class="btn me-1 addbtn p-1">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
     </div>
+    <div id="degreefeeDetail">
     <div class="d-flex justify-content-between mt-3">
     <div class="studentInfo ms-5">
     <div class="name d-flex">
@@ -121,7 +122,7 @@ Rows per Page
 </div>
 <div class="name d-flex">
 <span class="me-2">ID NO :</span>
-<span>{{degreeStudentFeeDetails['id']}}</span>
+<span>{{degreeStudentFeeDetails['student_id']}}</span>
 </div>
 <div class="name d-flex">
 <span class="me-2">Sex :</span>
@@ -146,12 +147,12 @@ Rows per Page
     <hr class="w-100 mt-3 p-0">
     <div v-for="acyear in degreeStudentFeeDetails.years" :key="acyear.year">
     <div class="d-flex mt-3">
-    <span>year :</span>
+    <span class="ms-5">year :</span>
     <span>{{acyear.year}}</span>
     </div>
-     <div class="row mt-2">
-    <div v-for="semester in acyear.semesters" :key="semester.no" class="col-sm-5 me-5">
-    <table class="ms-5 mt-3 me-5 tabeldetail">
+     <div class="d-flex mt-2">
+    <div v-for="semester in acyear.semesters" :key="semester.no" class="mt-3 mt-lg-0 flex-fill me-3">
+    <table>
        <thead>
        <tr class="table-header">
           <th class="text-white text-center" :colspan="Number(semester.months?.length)">{{'Semester '+semester.semester_no}}</th>
@@ -168,7 +169,7 @@ Rows per Page
   <tbody>
   <tr>
   <td v-for="month in semester.months" :key="month">{{month.pad}}</td>
-  <td>total</td>
+  <td>{{semester.total}}</td>
  
   </tr>
   <tr><td :colspan="semester.months?.length+1" class="text-center">Paid months</td>
@@ -176,6 +177,7 @@ Rows per Page
   </tbody>   
 </table>
     </div>
+</div>
 </div>
 <hr class="w-100 mt-4 p-0">
 </div>
@@ -295,6 +297,9 @@ rowNumber(newValue){
          this.$htmlToPaper('degreefee');
          console.log('you have print your tabel')
       },
+      feeDetail(){
+        this.$htmlToPaper('degreefeeDetail');
+      },
       forWardChivron(){
         this.queryObject.page = this.queryObject.page +1
        this.degreeStudentsPaid(this.queryObject)
@@ -398,7 +403,7 @@ td{
 .dialogcontent{
    margin: 3% 5% 5% 5%;
    height: 90vh;
-   overflow-y: scroll;
+   overflow-y: auto;
   
 }
 .error{

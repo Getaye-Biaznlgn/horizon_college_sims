@@ -55,7 +55,7 @@
       <td>{{student.pads.April}}</td>
       <td>{{student.pads.May}}</td>
       <td>{{student.pads.Jun}}</td>
-      <td>{{student.pads.Julay}}</td>
+      <td>{{student.pads.July}}</td>
       <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
       <td><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>

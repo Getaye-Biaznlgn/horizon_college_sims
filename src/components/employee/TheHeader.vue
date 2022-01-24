@@ -73,7 +73,7 @@ export default {
            this.$store.commit('setSelectedAcYearId',event.target.value) 
     this.$store.dispatch('registrar/fetchDegreeStudents',event.target.value)
      this.$store.dispatch('registrar/fetchTvetStudents',event.target.value)
-      //this.$store.dispatch('registrar/fetchCocs',event.target.value)
+      this.$store.dispatch('registrar/fetchActiveYearSemisters',event.target.value)
        
       },
          async fetchNotifications(){

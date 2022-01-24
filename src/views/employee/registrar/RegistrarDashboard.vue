@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="row  my-3">
-          <div class="col-lg-8"> 
+          <div class="col-lg-7"> 
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>Degree Scholarship Students</span>
@@ -64,9 +64,12 @@
                          </tr>
                      </tbody>
                  </table>
+                 <div v-if="!dashboardDatas.degree_scholarship_students?.length" class="ms-5 mt-2">
+                     No Degree scholarship students found
+                 </div>
               </base-card>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-5">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
                 <span>{{dashboardDatas.active_month+' '}} un paid Degree Students</span>
@@ -88,11 +91,14 @@
                          </tr>
                      </tbody>
                  </table>
+                 <div v-if="!dashboardDatas.unpaid_degree_students?.length" class="ms-5 mt-2">
+                     No unpaid Degree students found in {{dashboardDatas.active_month}}
+                 </div>
                </base-card>
           </div>
         </div>
                 <div class="row">
-          <div class="col-lg-8"> 
+          <div class="col-lg-7"> 
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>TVET Scholarship Students</span>
@@ -116,9 +122,12 @@
                          </tr>
                      </tbody>
                  </table>
+                  <div v-if="!dashboardDatas.tvet_scholarship_students?.length" class="ms-5 mt-2">
+                     No TVET scholarship students found
+                 </div>
               </base-card>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-5">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
                 <span>{{dashboardDatas.active_month+' '}} Unpaid TVET Students</span>
@@ -140,6 +149,9 @@
                          </tr>
                      </tbody>
                  </table>
+                 <div v-if="!dashboardDatas.unpaid_tvet_students?.length" class="ms-5 mt-2">
+                     No unpaid Degree students found in {{dashboardDatas.active_month}}
+                 </div>
                </base-card>
           </div>
         </div>

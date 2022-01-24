@@ -424,42 +424,42 @@ export default {
             }
 
         },
-        // async fetchDegreePrograms({ commit, rootState }) {
-        //     try {
-        //         rootState.isLoading = true
-        //         var response = await apiClient.get("/api/degree_programs")
-        //         if (response.status === 200) {
-        //             commit('setDegreePrograms', response.data)
-        //             console.log('DegreePrograms', response.data)
-        //         } else {
-        //             throw 'faild to load programs'
-        //         }
-        //     } catch (e) {
-        //         console.log(e.response)
-        //         throw e
-        //     } finally {
-        //         rootState.isLoading = false
-        //     }
-        // },
-        // async fetchTvetPrograms({ commit, rootState }) {
+        async fetchDegreePrograms({ commit, rootState }) {
+            try {
+                rootState.isLoading = true
+                var response = await apiClient.get("/api/degree_programs")
+                if (response.status === 200) {
+                    commit('setDegreePrograms', response.data)
+                    console.log('DegreePrograms', response.data)
+                } else {
+                    throw 'faild to load programs'
+                }
+            } catch (e) {
+                console.log(e.response)
+                throw e
+            } finally {
+                rootState.isLoading = false
+            }
+        },
+        async fetchTvetPrograms({ commit, rootState }) {
 
-        //     try {
-        //         rootState.isLoading = true
-        //         var response = await apiClient.get("/api/tvet_programs")
-        //         if (response.status === 200) {
-        //             commit('setTvetPrograms', response.data)
-        //             console.log('tvetPrograms', response.data)
-        //         } else {
-        //             throw 'faild to load programs'
-        //         }
-        //     } catch (e) {
-        //         console.log(e.response)
-        //         throw e
-        //     } finally {
-        //         rootState.isLoading = false
+            try {
+                rootState.isLoading = true
+                var response = await apiClient.get("/api/tvet_programs")
+                if (response.status === 200) {
+                    commit('setTvetPrograms', response.data)
+                    console.log('tvetPrograms', response.data)
+                } else {
+                    throw 'faild to load programs'
+                }
+            } catch (e) {
+                console.log(e.response)
+                throw e
+            } finally {
+                rootState.isLoading = false
 
-        //     }
-        // },
+            }
+        },
         async fetchTeachers({ commit, rootState }) {
             rootState.isLoading = true
             try {

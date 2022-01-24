@@ -78,9 +78,8 @@
             v-model="scholarForFilter"
           >
             <option value="all">All Scholarship</option>
-            <option value="none">none</option>
+            <option value="none">none scholar</option>
             <option value="fully">fully schlar</option>
-            <option value="partial">partialy scholar</option>
           </select>
         </div>
         <div class="ms-2 mb-3">
@@ -96,7 +95,11 @@
         </div>
       </div>
     </div>
-    <table class="mt-3" id="tvetstu">
+    <div id="tvetstudent">
+        <div class="ms-5 mt-5">
+    <span class="sr-only">{{levelName+' '+departmentName+' '+ programName+' '+stateName+' Students'}}</span>
+    </div>
+    <table class="mt-3">
       <thead>
         <tr class="table-header">
           <th class="text-white">NO</th>
@@ -108,6 +111,7 @@
           <th class="text-white">Level</th>
           <th class="text-white">Scholarship</th>
           <th class="text-white">State</th>
+           <th class="text-white">Result Form</th>
           <th><span class="sr-only">action</span></th>
         </tr>
       </thead>
@@ -125,16 +129,10 @@
         <span v-if="student.status === 'approved'">{{student.status}}</span>
         <span v-else class="approvebtn p-1 border rounded shadow-sm"><button @click="approveStudent(student)" class="btn error approved">approve</button></span>
       </td>
-          <td>
-            <div class="dropdown">
-              <a
-                class="btn py-0"
-                href="#"
-                role="button"
-                id="dropdownMenuLink"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+      <td>{{changeResultEntryState(student.legible)}}</td>
+     <td>
+       <div class="dropdown">
+         <a class="btn py-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                 <span><i class="fas fa-ellipsis-v"></i></span>
               </a>
 
@@ -142,26 +140,52 @@
                 class="dropdown-menu"
                 aria-labelledby="dropdownMenuLink border rounded shadow-sm"
               >
-                <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Detail</span
-                  >
+                <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Status</span>
                 </li>
-                <li>
-                  <span
-                    @click="deleteStudent(student.id)"
-                    class="dropdown-item px-4 py-2"
-                    >delete Student</span
-                  >
-                </li>
+                <li v-if="Number(tvetStudents.level_no) === 1 && student.status ==='waiting'">
+                  <span @click="deleteStudent(student.id,student.level_id,tvetStudents.level_no)" class="dropdown-item px-4 py-2">Delet Student</span></li>
+                 <li><span @click="editStudent(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
+                  <li><span @click="permitResult(student)" class="dropdown-item px-4 py-2">Open Result Form</span></li>
+                 
               </ul>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
-    <div v-if="!filteredStudents?.length" class="ms-5 px-5 mt-3 pb-2">
-      Students  not found
+    </div>
+    <div v-if="!filteredStudents?.length" class="ms-5 mt-3 px-5 pb-2">
+      No TVET Students found
     </div>
   </base-card>
+   <div v-if="isPermit" class="editwraper">
+<div class="d-flex">
+  <div class="dialogContent ms-auto me-auto border rounded shadow-sm p-5">
+    <div class="form-check me-3">
+  <input class="form-check-input ms-4 p-2" type="radio" name="resultentry" id="open" value="1" v-model="optionValue">
+  <label class="form-check-label ms-2" for="open">
+    Open result entry form
+  </label>
+</div>
+<div class="form-check mt-4">
+  <input class="form-check-input ms-4 p-2" type="radio" name="resultentry" id="close" value="0" v-model="optionValue">
+  <label class="form-check-label ms-2" for="close">
+    Close result entry form
+  </label>
+</div>
+    <div class="d-flex justify-content-end mt-5">
+      <button @click="cancelPermision()" class="btn cancel me-4">Cancel</button>
+       <button type="button" @click="savePermision()" class="btn  px-2 savebtn">
+            <span v-if="isPermiting">
+               <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+               Saving
+            </span>      
+            <span v-else>Save</span>   
+          </button>
+    </div>
+  </div>
+</div>
+   </div>
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -187,7 +211,17 @@ export default {
       queryData:{
         level_no:1,
         academic_year_id:''
-      }
+      },
+      
+     levelName:'Level 1',
+     stateName:'',
+     programName:'',
+     departmentName:'',
+     isPermit:false,
+     isPermiting:false,
+     optionValue:'',
+     levelid:'',
+     studId:''
      
     };
   },
@@ -264,24 +298,52 @@ export default {
            this.queryData.level_no = newValue
            this.queryData.academic_year_id = this.academicYearId
   this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
+      if(newValue === '1'){
+        this.levelName = 'Level 1'
+      }
+      else if(newValue === '2'){
+        this.levelName = 'Level 2'
+      }
+       else if(newValue === '3'){
+        this.levelName = 'Level 3'
+      }
+        else if(newValue === '4'){
+        this.levelName = 'Level 4'
+      }
+    },
+     departmentForFilter(newValue){
+    if(newValue !== 'all'){
+this.tvetDepartments.forEach(department=>{
+  if(department.id === newValue){
+    this.departmentName = department.name+' Department'
+  }
+})
     }
+    else{
+      this.departmentName = ''
+    }
+    },
+    programForFilter(newValue){
+this.tvetPrograms.forEach(program=>{
+  if(newValue === program.id){
+    this.programName = program.name
+  }
+})
+    },
   },
   methods: {
     addStudent() {
       this.$router.push({ name: "TvetStudentRegistration" });
     },
-    // fetchStudent(event){
-    //   this.queryData.level_id = event.target.value
-    //   this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
-    // },
     printTvetStudent() {
-      this.$HtmlToPaper("#tvetstu");
+      this.$htmlToPaper("tvetstudent");
     },
     viewDetail(id) {
             this.$store.dispatch('registrar/fetchTvetStudentDetail',id).then(()=>{
             this.$router.push({name:'TvetStudentDetail',params:{tvetStudId:id}})
       })
       },
+
      async approveStudent(student){
          var studentData={}
          studentData.student_id= student.id,
@@ -301,9 +363,57 @@ export default {
             console.log(e)
           }
       },
-      deleteStudent(id){
-        this.$store.dispatch('registrar/deleteTvetStudent',id)
-      }
+      editStudent(id){
+        this.$router.push({name:'EditTvetStudents',params:{studId:id}})
+      },
+        deleteStudent(id,level_id,level_no){
+         var payload={}
+         payload.id = id
+         payload.level_id = level_id
+         payload.level_no = level_no
+         this.$store.dispatch('registrar/deleteTvetStudent',payload)
+       }, 
+         permitResult(student){
+          this.isPermit = true
+          this.levelId = student.level_id
+          this.studId = student.id
+          this.optionValue = student.legible
+        },
+        async savePermision(){
+           this.isPermiting = true
+          var optionData = {}
+          optionData.student_id = this.studId
+          optionData.level_id = this.levelId
+          optionData.legible = this.optionValue
+          try{
+            var response = await apiClient.post('api/change_result_entry_state_for_tvet/'+optionData.student_id,optionData)
+            if(response.status === 200){
+                 var previousStudents = this.tvetStudents
+                    var index = previousStudents.students.findIndex(student => {
+                        return student.id === optionData.student_id
+                    })
+                    previousStudents.students[index].legible = optionData.legible
+                    this.$store.commit('setTvetStudent', previousStudents)
+                    console.log('index = ',index,'legibility = ',optionData.legible)
+                   
+            }
+          }
+          finally{
+            this.isPermiting = false
+            this.isPermit =false
+          }
+        },
+        changeResultEntryState(state){
+          if(Number(state) === 1){
+          return 'Opened'
+          }
+          else if(Number(state) === 0){
+            return 'Closed'
+          }
+        },
+        cancelPermision(){
+          this.isPermit = false
+        } 
   }
 }
 </script>
@@ -316,6 +426,22 @@ export default {
 .addbtn:hover {
   background-color: #366ad9;
 }
+.savebtn:hover{
+    background-color:#2248b8 ;
+}
+
+.savebtn{
+    background-color: #2f4587;
+    color: #fff;
+    width: 7em;
+}
+.cancel{
+  border: 1px solid gray;
+  width: 7em;
+}
+.cancel:hover{
+  background-color: rgb(192, 189, 189);
+}
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -323,11 +449,12 @@ table {
 }
 .table-header {
   background-color: #366ad9;
-  border-radius: 5px;
+  /* border-radius: 5px; */
 }
 th {
   text-align: center;
-  padding: 8px;
+  padding-bottom: 8px;
+  padding-top: 4px;
 }
 td {
   border: 1px solid #dddddd;
@@ -384,4 +511,19 @@ cursor: pointer;
   .approvebtn:hover{
  background-color: #366ad9;
   }
+  .editwraper{
+ position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh!important;
+    background-color: rgba(17, 17, 17, 0.5);
+    z-index: 1000;
+}
+.dialogContent{
+  width: 40%;
+  margin: auto;
+  margin-top: 10%;
+  background-color: #fff;
+}
 </style>

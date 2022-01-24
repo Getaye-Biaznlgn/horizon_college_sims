@@ -4,9 +4,10 @@
      <button @click="printCocRequest()" class="btn ms-auto me-1 addbtn me-3 p-1">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
-    </button></div>
-      <div id="cocRequest" class="ms-5 mt-5 me-5">
-        <div class="d-flex justify-content-between ms-5 me-5  px-5">
+    </button>
+    </div>
+      <div id="cocRequest" class="m-5">
+        <div class="d-flex justify-content-between ms-5 me-5  px-5 sr-only">
           <div>
           <h3>ሆራይዞን ኮሌጅ</h3>
           <h4><i class="fas fa-phone"></i> 058-3208997</h4>
@@ -19,7 +20,7 @@
           </div>
 
         </div>
-        <hr class="w-100 mt-3" />
+        <hr class="w-100 mt-3 sr-only" />
 
           <div class="sr-only d-flex justify-content-end mt-1 px-5">
               <div>
@@ -69,7 +70,8 @@
         </tr>
       </tbody>
             </table>
-            <div class="ms-5 mt-5">
+            <div v-if="!cocRequestDatas.length" class="mt-3 ms-5 mx-5">Ther is no students registered for this COC</div>
+            <div class="ms-5 mt-5 sr-only">
               <h4>
                 አመልካቾችን ለምዘና የመዘገብብን መሆኑን እየገለጽን የምዘና ቀን በሚውሰንበት ጊዜ
               </h4>
