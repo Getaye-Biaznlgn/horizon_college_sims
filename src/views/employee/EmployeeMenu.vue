@@ -14,22 +14,26 @@
         </div>
     </div>   
  
-<div v-if="isLoading" class="loading-screen p-0  position-fixed top-0 bg-white start-0 w-100 h-100">
+  <div v-if="isLoading" class="loading-screen p-0  position-fixed top-0 bg-white start-0 w-100 h-100">
      <div class="loading-spinner">
           <img src="../../assets/preloader.gif"   alt="slow connection">
      </div>
-</div>     
+  </div>     
+<notification-list/>
 </template>
+
 
 <script>
 import TheHeader from '../../components/employee/TheHeader.vue'
 import TheSidebar from '../../components/employee/Sidebar.vue'
 import apiClient from '../../resources/baseUrl'
+import NotificationList from '../../components/employee/NotificationList.vue'
 import { mapGetters } from 'vuex';
 export default {
     components:{
       TheHeader,
-      TheSidebar
+      TheSidebar,
+      NotificationList
     },
    
     computed:{
@@ -67,6 +71,7 @@ export default {
       let path=this.$route.path || '/staff/dean-dashboard'
       this.$router.push(path)
       this.$store.dispatch('dean/fetchDashboardData')
+
       this.$store.dispatch('dean/fetchTeachers')
       this.$store.dispatch('dean/fetchDepartmentHeads')
       this.$store.dispatch('dean/fetchRegistrars')
@@ -75,27 +80,24 @@ export default {
       this.$store.dispatch('dean/fetchTvetDepartments')
       this.$store.dispatch('dean/fetchCourses')
       this.$store.dispatch('dean/fetchModules')
+
       // this.$store.dispatch('dean/fetchDegreePrograms')
       // this.$store.dispatch('dean/fetchTvetPrograms')
-      this.$store.dispatch('registrar/fetchActiveYearSemister')
-      this.$store.dispatch('registrar/fetchAcadamicMounths')
-      this.$store.dispatch('registrar/fetchDegreeStudents')
-      this.$store.dispatch('registrar/fetchTvetStudents')
-      this.$store.dispatch('registrar/fetchLevels')   
+         //
+      // this.$store.dispatch('registrar/fetchActiveYearSemister')
+      // this.$store.dispatch('registrar/fetchAcadamicMounths')
+      // this.$store.dispatch('registrar/fetchDegreeStudents')
+      // this.$store.dispatch('registrar/fetchTvetStudents')
+      // this.$store.dispatch('registrar/fetchLevels')   
       }
-      else if(this.user.role==='department head'){
-      // this.$store.dispatch('dean/fetchDegreePrograms')
-      // this.$store.dispatch('dean/fetchTvetPrograms')
-    }
+  
       else if(this.user.role==='degree_head'){
         this.$router.push({name:'DegreeHeadDashboard'})
         this.$store.dispatch('degreeHead/fetchCourses')
         this.$store.dispatch('degreeHead/fetchSections')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       }
-      else if(this.user.role === 'cashier'){
-    //actions used by cashier
-      }
+     
       //actions used by registrar
       else if(this.user.role === 'registrar'){
         this.$store.dispatch('registrar/fetchAcadamicMounths')
@@ -209,4 +211,8 @@ input[type="radio"]:checked{
   color: #366ad3;
   cursor: pointer;
 }
+
+
+/* dashboard */
+
 </style>

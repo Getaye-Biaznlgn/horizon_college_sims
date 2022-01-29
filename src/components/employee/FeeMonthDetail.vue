@@ -243,15 +243,20 @@ export default {
          try{
           let response=  await apiClient.put('api/update_semester_month', temp)
             if(response.status===200){
-               alert('goes right month')
+                this.$store.commit('setAlertMessages',{
+                text:'Fee months successfully updated!',
+                type:'success'
+              })
              }else{
                 throw''
              }
          }
          catch(e){
-            //  this.requestStatus.isNotSucceed=true,
-            //  this.requestStatus.message="Failed to add an event"
             this.isSaving=false
+            this.$store.commit('setAlertMessages',{
+                text:'Faild update fee months',
+                type:'danger'
+              })
          }
          finally{
            this.isSaving=false

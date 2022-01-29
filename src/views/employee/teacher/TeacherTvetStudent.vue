@@ -129,6 +129,13 @@ export default {
            this.$htmlToPaper('toPrint')
         },
          showAddDialog(result){
+           if(result.legible===0){
+             this.$store.commit('setAlertMessages',{
+                text:'Student don\'t complete tution fee!',
+                type:'danger'
+              })
+              return;
+           }
            this.result={...result}
            this.actionButtonType='add'
            this.addBaseModal.show()

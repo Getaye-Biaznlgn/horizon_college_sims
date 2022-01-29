@@ -1,6 +1,5 @@
 <template>
-<base-card>
- <span @click="back()" class="backarrow ms-md-3 mt-lg-2"><i class="fas fa-arrow-left"></i>Back</span>
+ <div class="container">
      <div class="ms-md-3 me-md-3 p-md-2 text-md-center textTitle">HORIZON COLLEGE OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATION
        FORM FOR DEGREE AND TVET STUDENTS</div>
       <div class="d-flex mt-1 mt-md-3">
@@ -14,7 +13,8 @@
         <component :is="componentName"></component>
         </keep-alive> 
      </div>
-</base-card>
+ </div>
+ 
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -80,9 +80,7 @@ export default {
       this.$store.dispatch('dean/fetchTvetPrograms')
   },
     methods: {
-       back(){
-        this.$router.back()
-      },
+      
       // personal(){
       //   this.isPersonal = true
       //   this.componentName = 'personal-info'
@@ -193,7 +191,6 @@ export default {
     this.$store.commit('registrar/setResultNotifier',response.data.error)
          this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)
-
   }
 }
 catch(e){
@@ -203,7 +200,6 @@ catch(e){
 }
 finally{
   this.$store.commit('registrar/setIsUploading',false)
-  
 }
       
       },

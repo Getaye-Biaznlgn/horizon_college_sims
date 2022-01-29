@@ -99,7 +99,7 @@
 import { mapGetters } from 'vuex'
 export default {
     computed:{
-        ...mapGetters({user:'user', dashboardData:'dean/dashboardData'}),
+        ...mapGetters({user:'user', dashboardData:'dean/dashboardData', selectedAcademicYearId:'selectedAcademicYearId'}),
         teachers(){
         return this.$store.getters['dean/teachers']
      },
@@ -113,6 +113,11 @@ export default {
              return teacher.type==='partime'
          })?.slice(0,8)
      }
+    },
+    watch:{
+        selectedAcademicYearId(){
+            this.$store.dispatch('dean/fetchDashboardData')
+        }
     }
 }
 </script>

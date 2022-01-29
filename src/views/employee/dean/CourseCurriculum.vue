@@ -65,15 +65,15 @@
     <th>Year</th>
     <th>Semester</th>
     <th>Type</th>
-    <th><span class="sr-only">action</span></th>
+    <th><span></span></th>
   </tr>
   <tr v-for="(course,index) in filteredCourses" :key="course.id">
     <td>{{index+1}}</td>
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
     <td>{{course.cp}}</td>
-    <td>{{course.department.name}}</td>
-    <td>{{course.program}}</td>
+    <td>{{course.department?.name}}</td>
+    <td>{{course.program?.name}}</td>
     <td>{{course.year_no}}</td>
     <td>{{course.semester_no}}</td>
     <td>{{course.type}}</td>
@@ -83,7 +83,7 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li @click="showEditModal(index)"><span role="button"  class="dropdown-item">Edit</span></li>
+             <li @click="showEditModal(course)"><span role="button"  class="dropdown-item">Edit</span></li>
              <li @click="showDeleteModal(course)"><span  role="button"  class="dropdown-item">Delete</span></li>
           </ul>
       </div>
@@ -161,7 +161,7 @@
           </div>
       </div>
       </form>
-      <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
+      <request-status-notifier class="mt-2" :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
 
@@ -178,7 +178,7 @@
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
 import {mapGetters} from 'vuex'
-import { required,alpha,helpers,numeric} from '@vuelidate/validators'
+import { required,alpha,helpers,numeric, maxLength, maxValue} from '@vuelidate/validators'
 
 export default {
 
@@ -244,7 +244,7 @@ computed:{
   //filter by program//
       if(this.programForFilter.toLowerCase() !=='all'){
             tempCourses=tempCourses.filter((item)=>{
-              return item.program.toLowerCase()==this.programForFilter
+              return item.program?.name.toLowerCase()==this.programForFilter
             })
        }
     
@@ -280,7 +280,8 @@ computed:{
                },
              code:{
                  required: helpers.withMessage('Course code can not be empty',required),
-              },
+                 max:helpers.withMessage('Course code shoudn\'t be greater than 20 letters', maxLength(20))
+             },
              cp:{
                  required: helpers.withMessage('Credit point can not be empty',required),
                  numeric: helpers.withMessage('Credit point must be only number',numeric)
@@ -292,8 +293,9 @@ computed:{
                  required: helpers.withMessage('Program should be selected',required),
               },
              year_no:{
-                 required: helpers.withMessage('Program can not be empty',required),
+                 required: helpers.withMessage('Year can not be empty',required),
                  numeric:helpers.withMessage('Year should be only number',numeric),
+                 maxValue:helpers.withMessage('Value too high',maxValue(6))
               },
              semester_no:{
                  required: helpers.withMessage('Semester can not be empty',required),
@@ -315,10 +317,13 @@ computed:{
      
       removeModalValue(){
         this.course={}
+        this.responseMessage=''
         this.v$.$reset()
       },
-      showEditModal(index){
-        this.course={...this.filteredCourses[index]}
+      showEditModal(course){
+        this.course={...course}
+        this.course.degree_department_id=course.department?.id
+        this.course.program_id=course.program?.id
         this.actionButtonType='edit'
         this.addBaseModal.show()
       },
@@ -336,7 +341,6 @@ computed:{
           this.isSaving=true
           await this.$store.dispatch('dean/deleteCourse',this.courseForDelete.id)
           .then(()=>{
-           this.isNotSucceed=false,
           this.deleteBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
@@ -346,12 +350,12 @@ computed:{
          })
        },
       edit(){
-        this.request('dean/updateCourse','Faild to add update')
+        this.request('dean/updateCourse')
       },
       save(){
-        this.request('dean/addCourse','Faild to add course')
+        this.request('dean/addCourse')
       },
-     async request(action, errorMessage){
+     async request(action){
        this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
@@ -360,10 +364,9 @@ computed:{
           .then(()=>{
             this.addBaseModal.hide()
             this.removeModalValue()
-           this.isNotSucceed=false
-         }).catch(()=>{
+         }).catch((e)=>{
            this.isNotSucceed=true,
-           this.responseMessage=errorMessage
+           this.responseMessage=e
          }).finally(()=>{
           this.isSaving=false
          })

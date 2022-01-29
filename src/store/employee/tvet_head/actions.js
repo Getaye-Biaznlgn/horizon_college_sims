@@ -18,7 +18,7 @@ export default{
     async fetchSections(context) {
         context.rootState.isLoading = true
         try {
-            var response = await apiClient.get("/api/tvet_sections")
+            var response = await apiClient.get(`/api/tvet_sections?academic_year_id=${context.rootState.selectedAcademicYearId}`)
             if (response.status === 200) {
                 context.commit('setSections', response.data)
             } else {
@@ -32,7 +32,7 @@ export default{
     async fetchStudentInLevels(context) {
         context.rootState.isLoading = true
         try {
-            var response = await apiClient.get("/api/tvet_department_students")
+            var response = await apiClient.get(`/api/tvet_department_students?academic_year_id=${context.rootState.selectedAcademicYearId}`)
             if (response.status === 200) {
                 context.commit('setStudentInLevels', response.data)
                 console.log('tvet dep students', response.data)

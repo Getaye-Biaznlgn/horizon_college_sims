@@ -1,7 +1,7 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
 <div>
-    <div class="d-flex mb-3">
+    <div class="d-flex mb-2">
         <button class="btn btn-add ms-auto text-white shadow-sm" @click="showAddModal"> Add New Module</button> 
     </div>
     <div class="d-flex me-3">
@@ -53,7 +53,7 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li @click="showEditModal(index)"><span  class="dropdown-item">Edit</span></li>
+             <li @click="showEditModal(modul)"><span  class="dropdown-item">Edit</span></li>
              <li @click="showDeleteModal(modul)"><span class="dropdown-item">Delete</span></li>
           </ul>
       </div>
@@ -64,12 +64,12 @@
   <p v-if="modules.length && !filteredModules.length" class="mt-1 text-center">There is no filtered module</p>
  
 </base-card>
-<base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType">
+<base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearAddModal">
    <template #modalBody>
       <form @submit.prevent>
          <div class="mb-3" :class="{warining:v$.modul.title.$error}">
               <label for="#moduleTitle" class="form-label">Module Title</label>
-              <input class="form-control " v-model.trim="modul.title" @blur="v$.modul.title.$touch" id="moduleTitle" type="text" placeholder="Eg. Work with Others" aria-label=".form-control">
+              <input class="form-control " v-model.trim="modul.title" @blur="v$.modul.title.$touch" id="moduleTitle" type="text" placeholder="Eg. work with others" aria-label=".form-control">
               <span class="error-msg mt-1"  v-for="(error, index) of v$.modul.title.$errors" :key="index">{{ error.$message+", " }}</span>
          </div> 
          <div class="mb-3" :class="{warining:v$.modul.code.$error}">
@@ -132,7 +132,7 @@ export default {
       actionButtonType:'',
       isNotSucceed:'',
       responseMessage:'',
-      selectedDepartment:null,
+      // selectedDepartment:null,
       //for search and filter
       searchValue:'',
       departmentForFilter:'all',
@@ -176,7 +176,16 @@ export default {
   },
    computed:{
     ...mapGetters({modules:'dean/modules',tvetDepartments:'dean/tvetDepartments',tvetPrograms:'dean/tvetPrograms'}),
-    filteredModules(){
+   selectedDepartment(){
+     let dep;
+      this.tvetDepartments.forEach((department)=>{
+          if( department.id==this.modul.department?.id){
+            dep=department
+          }      
+        })
+        return dep
+   },
+   filteredModules(){
       let tempModules=[...this.modules]
        if(this.searchValue!='' && this.searchValue){
          tempModules = tempModules.filter((item) => {
@@ -205,40 +214,39 @@ export default {
         this.actionButtonType='add'
         this.addBaseModal.show()
       },
-      showEditModal(index){
-        this.modul=this.modules[index]
+      showEditModal(modul){
+        this.modul={...modul}
+        this.modul.tvet_department_id=modul.department?.id
         this.actionButtonType='edit'
         this.addBaseModal.show()
       },
-      setDepartmentLevels(event){
-        this.selectedDepartment=this.getDepartmentById(event.target.value)
-      },
+        //  setDepartmentLevels(event){
+       //   this.selectedDepartment=this.getDepartmentById(event.target.value)
+      //    console.log('selected department'+this.selectedDepartment)
+     // },
       // filterByDepartment(event){
-      //  this.filteredModules =  this.modules.filter((module)=>{
-      //      return module.department.id===event.target.value
-      //    })
+     //  this.filteredModules =  this.modules.filter((module)=>{
+    //      return module.department.id===event.target.value
+   //    })
+  // },
+      // getDepartmentById(id){
+      //   let dep;
+      //   this.tvetDepartments.forEach((department)=>{
+      //     if( department.id==id){
+      //       dep=department
+      //     }      
+      //   })
+      //   return dep
       // },
-      getDepartmentById(id){
-        let dep;
-        this.tvetDepartments.forEach((department)=>{
-          if( department.id==id){
-            dep=department
-          }      
-        })
-        return dep
-      },
        
-       showDeleteModal(course){
-        this.moduleForDelete=course
+       showDeleteModal(modul){
+        this.moduleForDelete={...modul}
         this.actionButtonType='delete'
         this.deleteBaseModal.show()
       },
       clearAddModal(){
-         this.modul.title=''
-         this.modul.code=''
-         this.modul.training_hour=''
-         this.modul.tvet_department_id=''
-         this.modul.level_id=''
+         this.modul={}
+         this.responseMessage=''
          this.v$.$reset()
       },
        clearDeleteModal(){
@@ -259,12 +267,12 @@ export default {
          })
        },
       edit(){
-         this.request('dean/updateModule', 'Faild to update module')
+         this.request('dean/updateModule')
       },
       save(){
-         this.request('dean/addModule', 'Faild to add module')
+         this.request('dean/addModule')
       },
-     async request(action, errorMessage){
+     async request(action){
        this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
@@ -272,10 +280,10 @@ export default {
           await this.$store.dispatch(action,this.modul)
           .then(()=>{
            this.addBaseModal.hide()
+           this.clearAddModal()
          }).catch((e)=>{
            this.isNotSucceed=true,
-           this.responseMessage=errorMessage
-           console.log('response with status'+e)
+           this.responseMessage=e
          }).finally(()=>{
           this.isSaving=false
          })

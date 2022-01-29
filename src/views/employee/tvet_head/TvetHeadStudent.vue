@@ -7,12 +7,12 @@
          <i class="fas fa-search"></i>
        </span>           
   </div>
-  <!-- <div class="me-3">
+  <div class="me-3">
    <select v-model="programForFilter" class="form-select" aria-label="year select">
      <option value="all">All Program</option>
      <option v-for="program in tvetPrograms" :key="program.id" :value="program.id" v-text="program.name"></option>
    </select>
- </div> -->
+ </div>
   <div class="me-3">
    <select v-model="levelForFilter" class="form-select" aria-label="year select">
      <option value="1">Level 1</option>
@@ -76,14 +76,14 @@
  </tbody>  
 </table> 
 </div>
-<p v-if="!filteredInLevel.length" class="text-center"> Students don't register for this semester!</p>
+<p v-if="!filteredInLevel.length" class="text-center"> Students don't register for this level!</p>
 <p v-else-if="!filteredStudents.length" class="text-center">There is no matching student</p>
     </base-card>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 export default {
-   
+   props:['program'],
   data() {
     return {
      searchValue:'',
@@ -104,7 +104,7 @@ export default {
       } ,  
       tvetPrograms(){
       return this.programs.filter((program)=>{
-        return program.type==='degree'
+        return program.type==='tvet'
       })
     },
     filteredInLevel(){
@@ -129,6 +129,11 @@ export default {
             return student.status.toString().toLowerCase()===this.statusForFilter.toLowerCase()
          })
       }
+       if(this.programForFilter!=='all'){
+         tempStudents=tempStudents.filter((student)=>{
+            return Number(student.program?.id)===Number(this.programForFilter)
+         })
+      }
       return tempStudents 
      }
   },
@@ -136,7 +141,6 @@ export default {
     exportStudentData(){
        this.$htmlToPaper('departmentStudent')
     },
-   
     programById(id){
       let prog;
      this.programs.forEach((program)=>{
@@ -151,7 +155,14 @@ export default {
    },
 
   },
-
+  created(){
+    if(this.program){
+      let programId=this.tvetPrograms.find((program)=>{
+        return program.name?.toLowerCase()===this.program.toLowerCase()
+      })?.id
+      this.programForFilter=programId
+    }
+  }
 }
 </script>
 

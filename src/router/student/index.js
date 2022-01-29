@@ -3,20 +3,18 @@ export default {
     name: 'StudentHome',
     component: () =>
         import ( /* webpackChunkName: "studenthome" */ '../../views/student/StudentHome.vue'),
-      
+        meta:{studentAuth:true,  typeRequired:'student'},
         children: [{
             path: '/student-home/',
             name: 'MyTutionFee',
             component: () =>
-                import ( /* webpackChunkName: "MyTutionFee" */ '../../views/student/MyTutionFee.vue')
-
+                import ( /* webpackChunkName: "MyTutionFee" */ '../../views/student/MyTutionFee.vue'),
         },
         {
             path: '/my-course',
             name: 'MyCourse',
             component: () =>
                 import ( /* webpackChunkName: "MyCourse" */ '../../views/student/MyCourse.vue')
-
         },
         {
             path: '/my-grade',

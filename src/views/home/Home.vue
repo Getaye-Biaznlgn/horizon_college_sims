@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid main-image position-relative">
-     <button class="btn btn-outline-warning position-absolute bottom-50 start-25">APPLY NOW</button>
+     <button @click="applyNow" class="btn btn-outline-warning position-absolute bottom-50 start-25">APPLY NOW</button>
   </div>
 
   <!-- programs -->
@@ -13,25 +13,25 @@
         <div class="col-sm-6 col-lg-3 position-relative">
             <img src="../../assets/image5.jpg" class="img-fluid rounded rounded">                    
             <div class="overlay w-100 top-0 start-0 h-100 position-absolute">
-                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Management</p>
+                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Database Adminstration</p>
             </div>
          </div>
          <div class="col-sm-6 col-lg-3 position-relative">
             <img src="../../assets/image2.jpg" class="img-fluid rounded rounded">                    
             <div class="overlay w-100 top-0 start-0 h-100 position-absolute">
-                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Accounting & Finance</p>
+                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Accounting and budget service</p>
             </div>
          </div>
          <div class="col-sm-6 col-lg-3 position-relative">
             <img src="../../assets/image3.jpg" class="img-fluid rounded rounded">                    
             <div class="overlay w-100 top-0 start-0 h-100 position-absolute">
-                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Business Management</p>
+                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Accounting and Finance</p>
             </div>
          </div>
          <div class="col-sm-6 col-lg-3 position-relative">
             <img src="../../assets/image4.jpg" class="img-fluid rounded rounded">                    
             <div class="overlay w-100 top-0 start-0 h-100 position-absolute">
-                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Database Adminstration</p>
+                <p class="text-white text start-50 top-50 fw-bold lead position-absolute">Management</p>
             </div>
          </div>
     </div>
@@ -122,6 +122,9 @@ export default{
        }
    },
     methods:{
+      applyNow(){
+      this.$router.push({name:'OnlineRegistration'})
+    },
        getFormatedDate(date){
         return new Date(date).toString().split(' ').slice(1,3).join(' ')
        },

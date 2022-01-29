@@ -1,6 +1,5 @@
 <template>
     <div class="px-0 mx-0 mt-0">
-        
         <div class="position-relative">
             <img src="../../../assets/dashboard_header.png" alt=""  height="200" class="img-fluid">
             <div class="position-absolute top-0 start-0 ms-2 mt-2 text-white">

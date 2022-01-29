@@ -222,8 +222,10 @@ data(){
          try{
           let response= await apiClient.put('api/update_semester', temp)
             if(response.status===200){
-               alert('success')
-               //
+               this.$store.commit('setAlertMessages',{
+                text:'Academic time successfully updated!',
+                type:'success'
+              })
              }else{
                 throw''
              }
