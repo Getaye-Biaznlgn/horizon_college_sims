@@ -8,7 +8,6 @@ export default{
     studentInLevels(state){
         return state.studentInLevels
     },
-    //
     studentForSlip(state){
         return state.studentForSlip
     },

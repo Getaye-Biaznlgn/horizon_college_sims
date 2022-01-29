@@ -49,21 +49,21 @@
 <table class="mt-2">
   <tbody>
   <tr class="table-header">
-    <th class="">No</th>
-    <th class="">Course Code</th>
-    <th class="">Course Title</th>
-    <th class="">Credit hour</th>
-    <th class="">Program</th>
-    <th class="">Year</th>
-    <th class="">Semester</th>
-    <th class="">Type</th>
+    <th>No</th>
+    <th>Course Code</th>
+    <th>Course Title</th>
+    <th>Credit hour</th>
+    <th>Program</th>
+    <th>Year</th>
+    <th>Semester</th>
+    <th>Type</th>
   </tr>
   <tr v-for="(course,index) in filteredCourses" :key="course.id" class="">
     <td>{{index+1}}</td>
     <td>{{course.code}}</td>
     <td>{{course.title}}</td>
     <td>{{course.cp}}</td>
-    <td>{{course.program}}</td>
+    <td>{{course.program?.name}}</td>
     <td>{{course.year_no}}</td>
     <td>{{course.semester_no}}</td>
     <td>{{course.type}}</td>
@@ -112,7 +112,7 @@ computed:{
   //filter by program//
       if(this.programForFilter !=='all'){
             tempCourses=tempCourses.filter((item)=>{
-              return item.program.toLowerCase()===this.programForFilter.toLowerCase()
+              return item.program?.name.toLowerCase()===this.programForFilter.toLowerCase()
             })
        }
    

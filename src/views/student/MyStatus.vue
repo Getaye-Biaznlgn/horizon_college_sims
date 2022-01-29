@@ -12,8 +12,10 @@
            <td>{{status.year}}</td>
            <td>{{status.year_no}}</td>
            <td>{{status.semester_no}}</td>
-           <td>{{status.GPA?.toString().substring(0,4)}}</td>
-           <td>{{status.CGPA?.toString().substring(0,4)}}</td>   
+           <td v-if="status.GPA==0"></td>
+           <td v-else>{{status.GPA?.toString().substring(0,4)}}</td>
+           <td v-if="status.CGPA==0"></td>
+           <td v-else>{{status.CGPA?.toString().substring(0,4)}}</td>   
        </tr>
    </table>
    <table class="bg-white" v-else-if="student?.role==='tvet_student'">

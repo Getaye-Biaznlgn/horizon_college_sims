@@ -1,6 +1,6 @@
 <template>
    <div class="p-1 bg-white shadow-sm d-flex">
-      <img src="../../assets/logo.png" class="ms-3 align-self-center" height="50">
+      <img src="../../assets/logo.png" class="ms-3 align-self-center rounded-circle" height="50" width="60">
       <div class="pt-3">
          <h5 class="d-inline ms-3 fw-bold">HORIZON</h5>
       </div>
@@ -38,7 +38,7 @@
                 <div class="d-flex flex-column">
                    <span class="fw-bold small text-center">{{user.first_name +' '+ user.last_name}}</span>
                    <span v-if="user.role==='department head'">{{user.manage.name +' head'}}</span>
-                   <span v-else class="job-title small align-self-start">{{user.role?.split('_').join(' ')}}</span>
+                   <span v-else class="job-title small align-self-start">{{capitize(user.role?.split('_').join(' '))}}</span>
                 </div>
              </div>
          </div>
@@ -70,8 +70,6 @@ export default {
       changeAcademicYear(event){
         this.$store.commit('setSelectedAcademicYearId',event.target.value)
         this.$store.commit('setSelectedAcademicYear',event.target.value)
-      //   this.$store.dispatch('degreeHead/fetchSections')
-      //   this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       },
       changeAcYear(event){
            this.$store.commit('setSelectedAcYearId',event.target.value) 
@@ -94,8 +92,10 @@ export default {
       },
       gotoApprove(){
          this.$router.push({name:'DegreeStudent'})
-      }
-    
+      },
+    capitize(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+    }
    },
 }
 </script>

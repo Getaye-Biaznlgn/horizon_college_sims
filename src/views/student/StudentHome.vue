@@ -34,7 +34,7 @@
 </div>
   <div v-if="isItemLoading" class="loading-screen route-loading p-0  position-fixed top-0 start-0 w-100 h-100">
       <div class="loading-spinner position-relative">
-         <img src="../../assets/loading.gif" width="70" height="70"  alt="slow connection">
+         <img src="../../assets/loading.gif" width="60" height="60"  alt="slow connection">
       </div>
   </div>  
 
@@ -156,9 +156,7 @@ export default {
            this.isSaving=false
          }
          }
-         else{
-           console.log('form validation faild')
-         }
+       
        },
 
         async logout () {
@@ -168,8 +166,7 @@ export default {
                 apiClient.defaults.headers.common['Authorization'] =null
                 this.$store.dispatch('studentAuth/setStudentToken','')
                 this.$store.dispatch('studentAuth/setStudent')
-                this.$store.dispatch('studentAuth/setIsStudentAuthenticated', false)
-                 
+                this.$store.dispatch('studentAuth/setIsStudentAuthenticated', false)        
                 localStorage.removeItem('student')
                 localStorage.removeItem('studentToken')  
                 this.$router.push({name:'StudentLogin'})
@@ -197,7 +194,6 @@ export default {
      } 
      if(localStorage.getItem('student')){
         let user=localStorage.getItem('student')
-        console.log('user data',user)
         this.$store.dispatch('studentAuth/setStudent', JSON.parse(user))
      }
   

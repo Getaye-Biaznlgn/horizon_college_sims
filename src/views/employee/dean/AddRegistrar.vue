@@ -132,6 +132,7 @@ export default {
            this.registrar.phone_no=''
            this.registrar.email=''
            this.resultNotifier=''
+           this.v$.$reset()
       },
       registerRegistrar(){
         this.resultNotifier=''

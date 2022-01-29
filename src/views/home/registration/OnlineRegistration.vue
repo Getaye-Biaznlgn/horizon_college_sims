@@ -154,7 +154,6 @@ export default {
     this.$store.commit('registrar/setResultNotifier',response.data.error)
          this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)
-
   }
 }
 catch(e){
@@ -164,7 +163,6 @@ catch(e){
 }
 finally{
   this.$store.commit('registrar/setIsUploading',false)
-  
 }
       
       },

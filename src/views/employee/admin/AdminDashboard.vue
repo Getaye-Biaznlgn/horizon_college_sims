@@ -172,21 +172,22 @@ export default {
     }
 }
 </script>
+
 <style scoped>
-  .bg-cyan-light{
+    .bg-cyan-light{
       background-color: #e7fafa;
   }
-  tr,th,td{
+   tr,th,td{
       border: none;
       padding: 5px;
   }
-  tr{
+   tr{
       border-top-right-radius: 2em!important;
   }
   .cards{
       margin-top: -30px;
   }
-  tbody tr:nth-child(2n){
+   tbody tr:nth-child(2n){
       background-color: #f5f6fa;
   }
 </style>

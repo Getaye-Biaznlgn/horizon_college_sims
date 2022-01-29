@@ -35,7 +35,7 @@
      <option value="1">Waiting</option>
    </select> -->
  </div>
-      <button class="btn btn-add ms-auto text-white me-2 shadow-sm" @click="exportStudentData"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
+      <button class="btn btn-add ms-auto text-white  shadow-sm" @click="exportStudentData"><i class="fas fa-sign-out-alt me-2"></i>Export</button> 
 </div>
 
 <div id="departmentStudent">
@@ -184,11 +184,15 @@ export default {
   },
   created(){
     if(this.program){
-      // alert('here program', this.program)
       let programId=this.degreePrograms.find((program)=>{
         return program.name?.toLowerCase()===this.program.toLowerCase()
       })?.id
       this.programForFilter=programId
+    }
+  },
+  watch:{
+    selectedAcademicYearId(){
+      this.$store.dispatch('fetchStudentsInSemesters')
     }
   }
 }

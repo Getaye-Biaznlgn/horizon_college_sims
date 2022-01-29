@@ -12,7 +12,7 @@
   </tr>
   <tr v-for="(item, index) in fetchedNews" :key="item.id">
     <td>{{index+1+(current_page*per_page)-per_page}}</td>
-    <td>{{item.date}}</td>
+    <td>{{item.posted_date}}</td>
     <td>{{item.title}}</td>
     <td>
      <div class="dropdown">

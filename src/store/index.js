@@ -20,7 +20,7 @@ export default createStore({
         auth, //staff auth
         degreeHead,
         tvetHead,
-        teacher
+        teacher,
     },
     state: {
         programs: [], // still im not using it
@@ -29,7 +29,9 @@ export default createStore({
         academicYears: [],
         selectedAcademicYearId: '',
         acYearId: '',
-        notifications: null
+        notifications: null,
+        alertMessages:[]
+
     },
     mutations: {
         setPrograms(state, programs) {
@@ -52,8 +54,18 @@ export default createStore({
         },
         setNotifications(state, value) {
             state.notifications = value
-        }
-
+        },
+       setAlertMessages(state, value){
+           state.alertMessages.push({
+               ...value,
+               id: Math.random().toString(36)+ Date.now().toString(36)
+           })
+       },
+       removeAlerMessage(state, id){
+          state.alertMessages= state.alertMessages.filter((alertMessage)=>{
+              return alertMessage.id!=id
+          })
+       }
     },
     getters: {
         programs(state) {
@@ -79,6 +91,9 @@ export default createStore({
         // },
         notifications(state) {
             return state.notifications
+        },
+        alertMessages(state){
+           return state.alertMessages
         },
         getYearById(state) {
             return function(id) {

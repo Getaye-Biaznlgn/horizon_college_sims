@@ -26,7 +26,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
              <li @click="showDetailModal(index)"><span class="dropdown-item">Detail</span></li>
-             <!-- <li @click="showEditModal(department)"><span  class="dropdown-item" >Edit</span></li> -->
+             <li @click="showEditModal(department)"><span  class="dropdown-item" >Edit</span></li>
              <li @click="showDeleteModal(department)"><span   class="dropdown-item">Delete</span></li>
              <li v-if="!department.department_head" @click="showAssignModal(department)"><span  class="dropdown-item">Assign Head</span></li>
              <li v-else  @click="showUnassignBaseModal(department)"><span class="dropdown-item">Unassign Head</span> </li>
@@ -256,23 +256,22 @@ export default {
           this.deleteBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,
-           this.responseMessage='Faild to Delete Department Head'
+           this.responseMessage='Faild to Delete Department'
          }).finally(()=>{
           this.isSaving=false
          })
        },
-      showEditModal(){
-        // console.log('dep for edit----',dep)
-        // let department=this.tvetDepartments[index]
-        // this.actionButtonType="edit"
-        // this.department.id=department['id']
-        // this.department.name=department.name
-        // this.department.sector=department.sector
-        // this.department.levelOneOccupationName=department?.levels[0].occupation_name
-        // this.department.levelTwoOccupationName=department?.levels[1].occupation_name
-        // this.department.levelThreeOccupationName=department?.levels[2].occupation_name
-        // this.department.levelFourOccupationName=department?.levels[3].occupation_name
-        // this.addBaseModal.show()
+      showEditModal(department){
+        this.actionButtonType="edit"
+        this.department.id=department?.id
+        this.department.name=department.name
+        this.department.short_name=department.short_name
+        this.department.sector=department.sector
+        this.department.levelOneOccupationName=department?.levels?.[0].occupation_name
+        this.department.levelTwoOccupationName=department?.levels?.[1].occupation_name
+        this.department.levelThreeOccupationName=department?.levels?.[2].occupation_name
+        this.department.levelFourOccupationName=department?.levels?.[3].occupation_name
+        this.addBaseModal.show()
       },
         async assignHead(){
          this.responseMessage=''
@@ -347,7 +346,6 @@ export default {
             var response = await apiClient.get("/api/unassigned_department_heads")
             if (response.status === 200) {
               this.unassignedHeads=response.data
-              
             } else {
               throw 'Failed to fetch event'
             }

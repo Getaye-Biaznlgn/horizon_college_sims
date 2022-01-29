@@ -1,4 +1,4 @@
-import store from '../../../store'
+// import store from '../../../store'
 export default[
     {
         path: '/staff/dean-dashboard',
@@ -7,15 +7,14 @@ export default[
             import ( /* webpackChunkName: "DeanDashboard" */ '../../../views/employee/dean/DeanDashboard'),
            meta:{authRequired:true,  typeRequired:'employee'},
            
-         beforeEnter(to, from, next){
-          if(store.getters.user.role!=='dean'){
-              next(from.path)
-          }
-         else{
-             next()
-         }  
-
-        }
+        //  beforeEnter(to, from, next){
+        //   if(store.getters.user.role!=='dean'){
+        //       next(from.path)
+        //   }
+        //   else{
+        //       next()
+        //   }  
+        // }
     
         },
        {

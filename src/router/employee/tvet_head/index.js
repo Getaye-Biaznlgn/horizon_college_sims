@@ -93,6 +93,9 @@ export default[
 {
     path: '/staff/tvet-department-head/student',
     name: 'TvetHeadStudent',
+    props(route) {
+        return  route.query || {}
+     },
     component: () =>
         import ( /* webpackChunkName: "TvetHeadStudent" */ '../../../views/employee/tvet_head/TvetHeadStudent.vue'),
         meta:{authRequired:true, typeRequired:'employee'},

@@ -285,14 +285,19 @@ export default {
          try{
           let response=  await apiClient.put('api/update_semester_activity', temp)
             if(response.status===200){
-              //
-              alert('Here we go semester')
+              this.$store.commit('setAlertMessages',{
+                text:'Academic Activities successfully updated!',
+                type:'success'
+              })
              }else{
                 throw''
              }
          }
          catch(e){
-             //
+            this.$store.commit('setAlertMessages',{
+                text:'Faild to updated academic Activities!',
+                type:'danger'
+              })
          }
          finally{
            this.isSaving=false

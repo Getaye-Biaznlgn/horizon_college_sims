@@ -56,7 +56,7 @@
    
         <div class="mb-3" :class="{warining:v$.fee.amount.$error}">
            <label for="#feeAmount" class="form-label">Fee amount</label>
-           <input class="form-control " v-model.trim="fee.amount" @blur="v$.fee.amount.$touch" id="feeAmount" amount="text" placeholder="Eg. amount" aria-label=".form-control">
+           <input class="form-control " v-model.trim="fee.amount" @blur="v$.fee.amount.$touch" id="feeAmount" type="number" placeholder="Eg. amount" aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.fee.amount.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
       </form>

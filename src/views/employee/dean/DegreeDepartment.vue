@@ -322,12 +322,12 @@ export default {
          this.assignBaseModal.hide()
        },
       async edit(){
-      this.request('dean/updateDegreeDepartment','department updated successfully', 'Faild to update department')
+       this.request('dean/updateDegreeDepartment')
       },
       save() {
-          this.request('dean/addDegreeDepartment','department added successfully', 'Faild to add department')
+          this.request('dean/addDegreeDepartment')
       },
-    async  request(action, successMessage){
+    async  request(action){
        this.responseMessage=''
        this.v$.$validate()
        if(!this.v$.$error){
@@ -348,13 +348,12 @@ export default {
            },
           ]
          }).then(()=>{
-           this.isNotSucceed=false,
-           this.responseMessage=successMessage
+       
            this.addBaseModal.hide()
            this.clearAddModal()
          }).catch((e)=>{
            this.isNotSucceed=true,
-           this.responseMessage=e.response?.data
+           this.responseMessage=e
          }).finally(()=>{
           this.isSaving=false
          })

@@ -177,7 +177,6 @@
   </div>
 </div>
      <div class="mb-4 pt-5 d-flex">
-            <span  class="text-success" :class="{'text-danger':requestStatus.isNotSucceed}">{{requestStatus.message}}</span>
             <button @click="back"  class="btn ms-auto border px-3">Back</button>
             <button @click="submitForm"  :disabled="requestStatus.isSaving" type="button"  class="btn   px-4 btn-add text-white mx-3">
             <span v-if="requestStatus.isSaving">
@@ -220,7 +219,7 @@ import useValidate from '@vuelidate/core'
 import {required, helpers} from '@vuelidate/validators'
 export default {
   components:{VueModal},
-  inject:['setSelectedComponent', 'save','requestStatus'],
+  inject:['setSelectedComponent', 'save'],
   data(){
     return{
       v$:useValidate(),

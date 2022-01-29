@@ -88,15 +88,21 @@ export default {
          try{
           let response= await apiClient.post('api/academic_years', payload)
             if(response.status===201){
-               this.requestStatus.isNotSucceed=false,
-               this.requestStatus.message="Academic calendar is added successfully"
+               this.$store.commit('setAlertMessages',{
+                text:'New Academic Year is created successfully!',
+                type:'success'
+              })
+             
              }else{
                 throw''
              }
          }
          catch(e){
-             this.requestStatus.isNotSucceed=true,
-             this.requestStatus.message="Failed to add academic calendar"
+             this.$store.commit('setAlertMessages',{
+                text:'Faild to create new Academic Year',
+                type:'danger'
+              })
+          
          }
          finally{
            this.requestStatus.isSaving=false
@@ -105,8 +111,6 @@ export default {
   },
   provide(){
       return{
-          // academicTime:this.academicTime,
-          requestStatus:this.requestStatus,
           setAcademicActivities:this.setAcademicActivities,
           setSelectedComponent:this.setSelectedComponent,
           setFeeMonth:this.setFeeMonth,

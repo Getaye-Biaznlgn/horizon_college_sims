@@ -17,7 +17,7 @@ export default{
     async fetchSections(context) {
         context.rootState.isLoading = true
         try {
-            var response = await apiClient.get("/api/degree_sections")
+            var response = await apiClient.get(`/api/degree_sections?academic_year_id=${context.rootState.selectedAcademicYearId}`)
             if (response.status === 200) {
                 context.commit('setSections', response.data)
             } else {
@@ -31,7 +31,7 @@ export default{
     async fetchStudentInSemesters(context) {
         context.rootState.isLoading = true
         try {
-            var response = await apiClient.get("/api/students2")
+            var response = await apiClient.get(`/api/students2?academic_year_id=${context.rootState.selectedAcademicYearId}`)
             if (response.status === 200) {
                 context.commit('setStudentInSemesters', response.data)
             } else {

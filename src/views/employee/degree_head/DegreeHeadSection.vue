@@ -157,7 +157,8 @@ export default {
     ...mapGetters({
       academicYears:'academicYears',
       sections:'degreeHead/sections',
-      programs:'programs'
+      programs:'programs',
+      selectedAcademicYearId:'selectedAcademicYearId'
       }),
     degreePrograms(){
       return this.programs.filter((program)=>{
@@ -260,6 +261,11 @@ export default {
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
    this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
+  },
+  watch:{
+     selectedAcademicYearId(){
+       this.$store.dispatch('degreeHead/fetchSections')
+     }
   },
    validations(){
      return{

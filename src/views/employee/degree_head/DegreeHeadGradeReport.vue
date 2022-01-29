@@ -72,6 +72,7 @@ export default {
    computed:{
      ...mapGetters({
        studentInSemesters:'degreeHead/studentInSemesters',
+       selectedAcademicYearId:'selectedAcademicYearId',
         programs:'programs'}),
 
      filteredInSemester(){
@@ -136,6 +137,9 @@ export default {
  watch:{
    degreePrograms(newValue){
      this.programForFilter=newValue[0]?.id
+   },
+   selectedAcademicYearId(){
+     this.$store.dispatch('fetchStudentsInSemesters')
    }
  }
 }

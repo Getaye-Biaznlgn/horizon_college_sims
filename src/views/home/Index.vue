@@ -18,7 +18,7 @@
 <nav class="navbar navbar-expand-lg py-0 position-sticky top-0 my-nav  navbar-light bg-light">
   <div class="container-fluid py-0">
     <a class="navbar-brand ms-md-3" href="#">
-        <img src="../../assets/logo.png" class="rounded-circle" width="80" height="60" alt="">
+        <img src="../../assets/logo.png" class="rounded-circle" width="70" height="60" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -62,7 +62,7 @@
   <section class="d-none d-lg-block">
      <div class="d-flex px-3 py-4 text-white quick-link justify-content-between">
         <div class=" align-self-center">
-            <img src="../../assets/logo.png" width="80" height="60" alt="">
+            <img src="../../assets/logo.png" class="rounded-circle" width="80" height="70" alt="">
              <span class="fw-bold mx-2 lead">HORIZON COLLEGE</span>
              <span class="d-block mt-2">FOR QUALITY WE STRIVE TOGETHER !</span>
         </div>
@@ -128,7 +128,7 @@
 </section>
   <footer >
       <div class="py-3 text-center  main-color text-white">
-        Website Designed and Developed by <a href="#">AMBA TECHNOLOGIES</a> . Copyright &copy;2022 Horizon College 
+        Website Designed and Developed by <a href="#">AMBA TECHNOLOGIES</a> . Copyright &copy;{{new Date().toString().split(' ').slice(3,4).join(' ')}} Horizon College 
       </div>
   </footer>
    <div v-if="isItemLoading" class="loading-screen route-loading p-0  bg-white position-fixed top-0 start-0 bottom-0 end-0">

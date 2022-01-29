@@ -166,8 +166,8 @@ export default {
          gpa:{
                numeric,
                required:helpers.withMessage('GPA field can not be empty',required),
-               maxValue:helpers.withMessage('Shouldn\'t be greater than 25', maxValue(1.0)),
-               minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(4.0)),
+               maxValue:helpers.withMessage('Shouldn\'t be greater than 4.0', maxValue(4.0)),
+               minValue:helpers.withMessage('Shouldn\'t be less than 0', minValue(0)),
              }
       }
      }
@@ -214,7 +214,7 @@ export default {
          if(response.status === 201){
            this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You have registered one teacher succesfully'
+          //  this.resultNotifier = 'You have registered one teacher succesfully'
            this.isLoading = false
            this.basemodal.hide()
            this.clearAddModal()
@@ -235,13 +235,14 @@ export default {
           this.basemodal.hide()
       },
       clearAddModal(){
-         this.teacher.first_name=''
-         this.teacher.last_name=''
-         this.teacher.phone_no=''
-         this.teacher.email=''
-         this.teacher.qualification=''
-         this.teacher.gpa=''
-         this.teacher.type=''
+        //  this.teacher.first_name=''
+        //  this.teacher.last_name=''
+        //  this.teacher.phone_no=''
+        //  this.teacher.email=''
+        //  this.teacher.qualification=''
+        //  this.teacher.gpa=''
+        //  this.teacher.type=''
+        this.teacher={}
          this.resultNotifier=''
          this.v$.$reset()
       },
@@ -263,8 +264,7 @@ export default {
         this.v$.$validate()
         if(!this.v$.$error){
           this.isLoading = true
-         console.log('edit teacher')
-         console.log(this.teacher)
+        
          this.teacher.id = this.teacherId
        this.$store.dispatch('dean/updateTeacher',this.teacher).then((response)=>{
          console.log(response)
@@ -283,10 +283,7 @@ export default {
           this.isLoading = false
        })
        }
-       else{
-         console.log('error occured')
-       }
-        console.log('you have edited teacher')
+      
       },
       deleteTeacher(id){
          this.$store.dispatch('dean/deleteTeacher',id)

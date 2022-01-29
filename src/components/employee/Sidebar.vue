@@ -71,7 +71,7 @@
 
           <collapse-sidebar-item label="Employee" v-if="user.role==='dean'"> 
             <template #icon>
-              <span><i class="fas fa-user-friends pe-2"></i></span>
+              <span><i class="fas fa-user-friends pe-1"></i></span>
             </template>
             <template #default>
                <sidebar-item :isSubItem="true" :to="{name:'AddTeacher'}">
@@ -88,10 +88,6 @@
                </sidebar-item> 
             </template>
           </collapse-sidebar-item>
-
-        <sidebar-item v-if="user.role==='dean'" :isSubItem="false" :to="{name:'ManageFeeAmount'}">
-            <span><i class="fas fa-receipt pe-2"></i> Fee</span>
-         </sidebar-item>
 
          <collapse-sidebar-item label="User" v-if="user.role==='dean'"> 
             <template #icon>
@@ -110,7 +106,7 @@
           
         <collapse-sidebar-item label="Website" v-if="user.role==='dean'"> 
             <template #icon>
-              <span><i class="fas fa-tachometer-alt pe-3"></i></span>
+              <span><i class="fas fa-tachometer-alt pe-2"></i></span>
             </template>
             <template #default>
               <sidebar-item :isSubItem="true" :to="{name:'ManageEvent'}">
@@ -124,7 +120,11 @@
                </sidebar-item> 
             </template>
         </collapse-sidebar-item>
+          <sidebar-item v-if="user.role==='dean'" :isSubItem="false" :to="{name:'ManageFeeAmount'}">
+            <span><i class="fas fa-receipt pe-2"></i> Fee</span>
+         </sidebar-item>
 
+         
          <!-- //Registrar -->
            <sidebar-item v-if="user?.role==='registrar'" :isSubItem="false" :to="{name:'RegistrarDashboard'}">
                  <span><i class="fas fa-border-all me-3"></i>Dashboard</span>
@@ -279,6 +279,7 @@ export default {
       }
     },
     methods:{
+
      async logout () {
             try {
               var response = await apiClient.post('/api/logout')
