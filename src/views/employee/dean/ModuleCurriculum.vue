@@ -62,8 +62,8 @@
 </table>
   <p v-if="!modules.length" class="mt-1 text-center">There is no added module</p>
   <p v-if="modules.length && !filteredModules.length" class="mt-1 text-center">There is no filtered module</p>
- 
 </base-card>
+
 <base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearAddModal">
    <template #modalBody>
       <form @submit.prevent>
@@ -106,7 +106,6 @@
        <request-status-notifier :notificationMessage='responseMessage' :isNotSucceed="isNotSucceed" ></request-status-notifier>
    </template>
 </base-modal>
-
 
 <!-- delete -->
 <base-modal  id="deleteBaseModal" :button-type="actionButtonType" :isLoading="isSaving" @deleteItem="deleteItem" @cancel="clearDeleteModal">

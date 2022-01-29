@@ -50,8 +50,8 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-             <li><span @click="editTeacher(teacher,'edit')" class="dropdown-item px-4 py-2">edit</span></li>
-             <li><span @click="deleteTeacher(teacher.id)" class="dropdown-item px-4 py-2">delete</span></li>
+             <li><span @click="editTeacher(teacher,'edit')" class="dropdown-item px-4 py-2">Edit</span></li>
+             <li><span @click="deleteTeacher(teacher.id)" class="dropdown-item px-4 py-2">Delete</span></li>
           </ul>
         </div>
     </td>

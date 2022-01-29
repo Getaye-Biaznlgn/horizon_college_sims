@@ -255,6 +255,9 @@
                </sidebar-item>  
             </template>
          </collapse-sidebar-item>
+         <sidebar-item  :to="{name:'AcademicSetting'}" :isSubItem="false" >
+            <span><i class="fas fa-cog pe-2"></i>Academic Setting</span>
+         </sidebar-item>
          <li class="m-2">More</li>
          <sidebar-item  :to="{name:'AccountSetting'}" :isSubItem="false" >
             <span><i class="fas fa-cog pe-2"></i>Setting</span>

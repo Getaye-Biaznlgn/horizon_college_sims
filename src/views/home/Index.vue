@@ -71,6 +71,7 @@
          <router-link :to="{name:'AcademicCalendar'}" class="nav-link ps-0  text-white">Academic Caledar</router-link>
          <router-link :to="{name:'StudentHome'}"  class="nav-link ps-0 text-white">Student Information(SIMS)</router-link>
          <router-link :to="{name:'OnlineRegistration'}" class="nav-link ps-0  text-white">Application Form</router-link>
+         <router-link :to="{name:'EmployeeMenu'}" class="nav-link ps-0 text-white">Local</router-link>
          <router-link :to="{name:'About'}" class="nav-link ps-0 text-white">About Us</router-link>
         </div>
         <div class="d-flex flex-column">
@@ -100,6 +101,7 @@
          <router-link :to="{name:'AcademicCalendar'}" class="nav-link ps-0">Academic Caledar</router-link>
          <router-link :to="{name:'StudentHome'}"  class="nav-link ps-0">Student Information(SIMS)</router-link>
          <router-link :to="{name:'OnlineRegistration'}" class="nav-link ps-0">Application Form</router-link>
+         <router-link :to="{name:'EmployeeMenu'}" class="nav-link ps-0">Local</router-link>
          <router-link :to="{name:'About'}" class="nav-link ps-0">About Us</router-link>
       </div>
       </div>

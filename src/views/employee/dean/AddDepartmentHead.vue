@@ -25,8 +25,8 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm py-0">
-              <li><span @click="editDeptHead(deptHead)" class="dropdown-item px-4 py-2">edit</span></li>
-             <li><span @click="deleteDeptHead(deptHead.id)" class="dropdown-item px-4 py-2">delete</span></li>
+              <li><span @click="editDeptHead(deptHead)" class="dropdown-item px-4 py-2">Edit</span></li>
+             <li><span @click="showDeleteModal(deptHead)" class="dropdown-item px-4 py-2">Delete</span></li>
           </ul>
         </div>
     </td>
@@ -66,6 +66,16 @@
  <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
  </template>    
 </base-modal>
+
+<!-- delete -->
+<base-modal  id="deleteBaseModal" :button-type="buttonType" :isLoading="isLoading" @deleteItem="deleteItem" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Delete</div>
+      <div class="my-3">Do you want to delete <i>{{deleteHead.first_name+' '+deleteHead.last_name}}</i>?</div>
+      <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+   </template>
+</base-modal>
+
 </template>
 <script>
 import { Modal } from 'bootstrap';
@@ -77,6 +87,8 @@ export default {
        return {
          v$:useValidate(),
            basemodal:null,
+           deleteBaseModal:null,
+           deleteHead:'',
            isLoading:false,
            isSuccessed:true,
            isFaild:false,
@@ -114,6 +126,7 @@ export default {
    },
    mounted() {
      this.basemodal = new Modal(document.getElementById('baseModal'))
+     this.deleteBaseModal=new Modal(document.getElementById('deleteBaseModal'))
    },
    computed:{
      deptHeads(){
@@ -124,7 +137,16 @@ export default {
       addDepartmentHead(){
          this.basemodal.show();
          this.buttonType = 'add'
-      } ,
+      }  ,
+      showDeleteModal(head){
+           this.deleteHead={...head}
+           this.buttonType='delete'
+           this.deleteBaseModal.show()
+      },
+      clearDeleteModal(){
+        this.resultNotifier=''
+         this.deleteHead={}
+      },
       clearAddModal(){
         this.departmentHead.first_name =''
         this.departmentHead.last_name = ''
@@ -172,11 +194,7 @@ export default {
          this.departmentHead.id=this.deptHeadId
        this.$store.dispatch('dean/updateDepartmentHead',this.departmentHead).then((response)=>{
          if(response.status === 200){
-           this.isFaild = false
-           this.isSuccessed = true
-           this.resultNotifier = 'You have updated one department Head succesfully'
-           this.isLoading = false
-           
+      
            this.basemodal.hide()
            this.clearAddModal()
          }
@@ -190,8 +208,22 @@ export default {
        }
       
       },
-      deleteDeptHead(id){
-         this.$store.dispatch('dean/deleteDepartmentHead',id)
+      deleteItem(){
+          this.isLoading = true
+       this.$store.dispatch('dean/deleteDepartmentHead',this.deleteHead.id).then((response)=>{
+         if(response.status === 200){
+          
+           this.deleteBaseModal.hide()
+           this.clearAddModal()
+         }
+       }).catch(()=>{
+         this.isSuccessed = false
+         this.isFaild = true
+         this.resultNotifier = 'Faild to delete head'
+       }).finally(()=>{
+         this.isLoading = false
+       })
+         
       }
    }, 
 }

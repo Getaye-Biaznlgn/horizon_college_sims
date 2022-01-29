@@ -26,8 +26,8 @@
           </a>
 
           <ul class="dropdown-menu border rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li><span @click="editCashier(cashier)" class="dropdown-item px-4 py-2">edit</span></li>
-             <li><span @click="deleteCashier(cashier.id)" class="dropdown-item px-4 py-2">delete</span></li>
+              <li><span @click="editCashier(cashier)" class="dropdown-item px-4 py-2">Edit</span></li>
+             <li><span @click="deleteCashier(cashier.id)" class="dropdown-item px-4 py-2">Delete</span></li>
           </ul>
         </div>
     </td>

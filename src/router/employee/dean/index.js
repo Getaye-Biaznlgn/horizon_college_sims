@@ -133,4 +133,11 @@ export default[
                 import ( /* webpackChunkName: "SelectedAcademicYearDetail" */ '../../../views/employee/dean/SelectedAcademicYearDetail'),
                 meta:{authRequired:true,  typeRequired:'employee' } 
           }, 
+          {
+            path: '/staff/academic-setting',
+            name: 'AcademicSetting',
+            component: () =>
+                import ( /* webpackChunkName: "AcademicSetting" */ '../../../views/employee/dean/AcademicSetting'),
+                meta:{authRequired:true,  typeRequired:'employee' } 
+          }, 
 ]
