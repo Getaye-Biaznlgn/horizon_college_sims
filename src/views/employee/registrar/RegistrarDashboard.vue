@@ -3,8 +3,8 @@
         <div class="position-relative">
             <img src="../../../assets/dashboard_header.png" alt=""  height="200" class="img-fluid">
             <div class="position-absolute top-0 start-0 ms-2 mt-2 text-white">
-                <p class="fw-bold">Well come Mrs. Tigist!</p>
-                <p class="small">I will you good day and enjoy you time.</p>
+                <p class="fw-bold">Well come Mr. Netsanet!</p>
+                <p class="small">I wish you a good day and enjoy your time.</p>
             </div> 
         </div>
         <div class="cards d-flex position-relative justify-content-between mx-2">
@@ -60,7 +60,7 @@
                               <td>{{index+1}}</td>
                               <td>{{degreeScholar.student_id}}</td>
                               <td>{{degreeScholar.first_name+' '+degreeScholar.last_name}}</td>
-                              <td>{{degreeScholar.department}}</td>
+                              <td>{{degreeScholar.degree_department?.name}}</td>
                          </tr>
                      </tbody>
                  </table>
@@ -72,7 +72,7 @@
           <div class="col-lg-5">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
-                <span>{{dashboardDatas.active_month+' '}} un paid Degree Students</span>
+                <span v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} un paid Degree Students</span>
                 <a href="/staff/degree-student-fee" class="nav-link fw-bold py-0">SEE ALL</a>
               </div>
                  <table>
@@ -118,7 +118,7 @@
                               <td>{{index+1}}</td>
                               <td>{{tvetScholar.student_id}}</td>
                               <td>{{tvetScholar.first_name+' '+tvetScholar.last_name}}</td>
-                              <td>{{tvetScholar.department}}</td>
+                              <td>{{tvetScholar.tvet_department?.name}}</td>
                          </tr>
                      </tbody>
                  </table>
@@ -130,7 +130,7 @@
           <div class="col-lg-5">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
-                <span>{{dashboardDatas.active_month+' '}} Unpaid TVET Students</span>
+                <span  v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} Unpaid TVET Students</span>
                 <a href="/staff/tvet-student-fee" class="nav-link fw-bold py-0">SEE ALL</a>
               </div>
                  <table>
@@ -185,6 +185,7 @@ acYearId(newValue){
 try{
     var response = await apiClient.get(`api/registrar_dash_board?academic_year_id=${acId}`)
     if(response.status === 200){
+        console.log('dashboard data ',response.data)
         this.dashboardDatas = response.data
     }
 }

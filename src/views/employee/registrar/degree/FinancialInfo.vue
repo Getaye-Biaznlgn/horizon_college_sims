@@ -10,7 +10,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="govt" value="govt" v-model="financial">
   <label class="form-check-label ms-2" for="govt">
-    Geovernment
+    Government
   </label>
 </div>
 <div class="form-check mt-3">
@@ -22,7 +22,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="nongovt" value="nongovt" v-model="financial">
   <label class="form-check-label ms-2" for="nongovt">
-    Non-Geovernment
+    Non-Government
   </label>
 </div>
 <div class="d-flex mb-4">
@@ -41,7 +41,7 @@
    <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
  <div class="d-flex mt-5 mb-3 justify-content-end">
       <button @click="backAdmissionInfoPage()" class="btn back px-2 mx-3 me-3">Back</button>
-        <button type="button" @click="finish()" class="btn  px-2 next text-white mx-3">
+        <button type="button" @click="finish()" class="btn  px-1 next text-white mx-3">
             <span v-if="isUploading">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                Registering

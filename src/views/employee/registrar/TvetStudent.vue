@@ -11,20 +11,12 @@
     </div>
     <div class="d-flex justify-content-between">
       <div class="input-group mt-5 search w-25">
-        <input
-          type="text"
-          class="form-control mt-3"
+        <input type="text" class="form-control form-control-sm mt-3"
           placeholder="Search By Student ID"
           aria-label="Username"
           aria-describedby="addon-wrapping"
-          v-model="searchValue"
-        />
-        <span
-          @click="searchById()"
-          class="input-group-text mt-3 searchbtn"
-          id="addon-wrapping"
-          ><i class="fas fa-search"></i
-        ></span>
+          v-model.trim="searchValue"/>
+        <span class="input-group-text mt-3 searchbtn" id="addon-wrapping"><i class="fas fa-search"></i></span>
       </div>
       <div class="d-flex justify-content-end ms-4 mt-3">
         <div class="mb-3">
@@ -78,8 +70,8 @@
             v-model="scholarForFilter"
           >
             <option value="all">All Scholarship</option>
-            <option value="none">none scholar</option>
-            <option value="fully">fully schlar</option>
+            <option value="none">None Scholarship</option>
+            <option value="fully">Scholarship</option>
           </select>
         </div>
         <div class="ms-2 mb-3">
@@ -89,15 +81,15 @@
             v-model="stateForFilter"
           >
             <option value="all">All State</option>
-            <option value="waiting">waiting</option>
-            <option value="approved">approved</option>
+            <option value="waiting">Waiting</option>
+            <option value="approved">Approved</option>
           </select>
         </div>
       </div>
     </div>
     <div id="tvetstudent">
-        <div class="ms-5 mt-5">
-    <span class="sr-only">{{levelName+' '+departmentName+' '+ programName+' '+stateName+' Students'}}</span>
+        <div class="ms-5 sr-only">
+    <span>{{levelName+' '+departmentName+' '+ programName+' '+stateName+' '+scholarName+' Students'}}</span>
     </div>
     <table class="mt-3">
       <thead>
@@ -140,7 +132,7 @@
                 class="dropdown-menu"
                 aria-labelledby="dropdownMenuLink border rounded shadow-sm"
               >
-                <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Status</span>
+                <li><span @click="viewStatus(student.id)" class="dropdown-item px-4 py-2">View Status</span>
                 </li>
                 <li v-if="Number(tvetStudents.level_no) === 1 && student.status ==='waiting'">
                   <span @click="deleteStudent(student.id,student.level_id,tvetStudents.level_no)" class="dropdown-item px-4 py-2">Delet Student</span></li>
@@ -208,6 +200,7 @@ export default {
       stateForFilter: "all",
       scholarForFilter: "all",
       levelNumber: "",
+
       queryData:{
         level_no:1,
         academic_year_id:''
@@ -217,6 +210,7 @@ export default {
      stateName:'',
      programName:'',
      departmentName:'',
+     scholarName:'',
      isPermit:false,
      isPermiting:false,
      optionValue:'',
@@ -324,12 +318,40 @@ this.tvetDepartments.forEach(department=>{
     }
     },
     programForFilter(newValue){
+      if(newValue !== 'all'){
 this.tvetPrograms.forEach(program=>{
   if(newValue === program.id){
     this.programName = program.name
+    return
   }
 })
+      }
+       else{
+    this.programName = ''
+  }
     },
+    stateForFilter(newValue){
+      if(newValue === 'all'){
+        this.stateName = ''
+      }
+      else if(newValue === 'waiting'){
+        this.stateName = 'Unapproved'
+      }
+       else if(newValue === 'approved'){
+        this.stateName = 'approved'
+      }
+    },
+      scholarForFilter(newValue){
+      if(newValue === 'all'){
+        this.scholarName = ''
+      }
+      else if(newValue === 'fully'){
+        this.scholarName = 'Scholarship'
+      }
+       else if(newValue === 'none'){
+        this.scholarName = 'None Scholarship'
+      }
+    }
   },
   methods: {
     addStudent() {
@@ -338,11 +360,9 @@ this.tvetPrograms.forEach(program=>{
     printTvetStudent() {
       this.$htmlToPaper("tvetstudent");
     },
-    viewDetail(id) {
-            this.$store.dispatch('registrar/fetchTvetStudentDetail',id).then(()=>{
-            this.$router.push({name:'TvetStudentDetail',params:{tvetStudId:id}})
-      })
-      },
+    viewStatus(id) {
+       this.$router.push({name:'TvetStudentStatus',params:{tvetStudId:id}})
+           },
 
      async approveStudent(student){
          var studentData={}

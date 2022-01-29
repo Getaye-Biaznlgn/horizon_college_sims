@@ -74,7 +74,7 @@
     </tr>
   </tbody>   
 </table>
- <div v-if="!tvetStudentFees.data?.length" class="ms-5 px-5 mt-4 pb-3">There is no paid TVET students found</div>
+ <div v-if="!tvetStudentFees.data?.length" class="ms-5 px-5 mt-4 pb-3">There is no TVET students found</div>
     </div>
 <div v-if="tvetStudentFees.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
@@ -194,7 +194,7 @@ export default {
     data() {
         return {
             isDetail:false,
-            rowNumber:5,
+            rowNumber:10,
             studentId:null,
               paid:'paid',
         unpaid:'unpaid',
@@ -231,10 +231,14 @@ export default {
 //   this.tvetStudentsPaid(this.queryObject)
 // },
 acYearId(newValue){
+   this.queryObject.search_id = ''
+  this.studentId = ''
   this.queryObject.academic_year_id = newValue
   this.tvetStudentsPaid(this.queryObject)
 },
 rowNumber(newValue){
+  this.queryObject.search_id = ''
+  this.studentId = ''
   this.queryObject.per_page = newValue
   this.tvetStudentsPaid(this.queryObject)
 }
@@ -244,6 +248,7 @@ rowNumber(newValue){
 this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
         },
           async fetchPaidStudents(event){
+            this.queryObject.search_id = ''
            this.queryObject.month_query = event.target.value
            this.queryObject.academic_year_id = this.acYearId
            if(event.target.value !== 'paid'){
@@ -265,6 +270,7 @@ this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
           }
         },
        async fetchUnpaidStudents(event){
+         this.queryObject.search_id = ''
          this.queryObject.month_query = event.target.value
           this.queryObject.academic_year_id = this.acYearId
           if(event.target.value !== 'unpaid'){
@@ -301,10 +307,14 @@ this.tvetStudentsPaid(this.queryObject)
              document.documentElement.style.overflow = "scroll"
         },
           forWardChivron(){
+            this.queryObject.search_id = ''
+             this.studentId = ''
         this.queryObject.page = this.queryObject.page +1
        this.tvetStudentsPaid(this.queryObject)
       },
       backChivron(){
+        this.queryObject.search_id = ''
+         this.studentId = ''
         this.queryObject.page = this.queryObject.page -1
        this.tvetStudentsPaid(this.queryObject)
       },

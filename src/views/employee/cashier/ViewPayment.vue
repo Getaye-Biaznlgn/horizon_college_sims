@@ -2,7 +2,7 @@
     <base-card>
     <div class="d-flex justify-content-between mt-3">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-2" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue" @keyup.enter="searchByIdNo()">
+  <input type="text" class="form-control p-2" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model.trim="searchValue" @keyup.enter="searchByIdNo()">
    <span @click="searchByIdNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
  <div>
@@ -14,17 +14,19 @@
   </button>
 </div>
  <div>
+   <div class="mx-3">
 <select class="form-select form-select-sm p-2" aria-label="Default select example" v-model="paymentType">
 <option value="all">All</option>
 <option v-for="payment in paymentTypes" :key="payment.id" :value="payment.name">{{payment.name}}</option>
   </select>
+  </div>
 </div>
    <div class="d-flex justify-content-end align-items-center">
     <div class="me-3">
-   <button @click="addNewPayment" class="paymentbtn btn p-1">Add New Payment</button>
+   <button @click="addNewPayment" class="paymentbtn btn p-2">Add New Payment</button>
    </div>
        <div>
-    <button @click="exportData()" class="btn me-1 addbtn ps-3 py-1 d-flex">
+    <button @click="exportData()" class="btn me-1 addbtn ps-3 py-2 d-flex">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
@@ -172,11 +174,11 @@ export default {
          var tempStudents= this.paidStudents.data
         // var student = this.paidStudents.data
     
-      if(this.searchValue!==''){
-         tempStudents=tempStudents.filter((student)=>{
-            return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
-         })
-      }
+      // if(this.searchValue!==''){
+      //    tempStudents=tempStudents.filter((student)=>{
+      //       return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
+      //    })
+      // }
 
             if(this.paymentType!=='all'){
          tempStudents=tempStudents.filter((student)=>{
@@ -224,6 +226,7 @@ this.$store.dispatch('cashier/fetchPaidStudents',queryObject).then(()=>{
          await this.$htmlToPaper('paidStuddentList');
       },
        searchByIdNo(){
+         this.queryObject.page = 1
          this.queryObject.search_id = this.searchValue
           this.studentsPaid(this.queryObject)
 

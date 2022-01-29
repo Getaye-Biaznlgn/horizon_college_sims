@@ -134,6 +134,7 @@ export default {
         addCoc(){
            this.isAddCoc = true
            this.add_or_edit = 'add'
+            this.resultNotifier = ''
            },
                    async fetchCocs(acYearId) {
             this.$store.commit('setIsItemLoading',true)
@@ -177,7 +178,9 @@ export default {
             this.$store.dispatch('registrar/addCocs',this.cocData).then(()=>{
                 this.isFaild = false
                 this.isSuccessed = true
-                this.resultNotifier = 'You have Added COC succesfully'
+                this.isAddCoc = false
+                this.cocData = {}
+                this.v$.$reset()
             })
             }
        catch(e){
@@ -187,8 +190,7 @@ export default {
      }
        finally{
       this.isUploading = false
-       this.isAddCoc = false
-      this.cocData = {}
+       
       }
           }
           else if(this.add_or_edit === 'edit'){
@@ -198,7 +200,9 @@ export default {
             this.$store.dispatch('registrar/updateCocs',this.cocData).then(()=>{
                 this.isFaild = false
                 this.isSuccessed = true
-                this.resultNotifier = 'You have edited COC succesfully'
+                this.isAddCoc = false
+               this.cocData = {}
+               this.v$.$reset()
             })
             }
        catch(e){
@@ -208,8 +212,6 @@ export default {
      }
        finally{
       this.isUploading = false
-        this.isAddCoc = false
-        this.cocData = {}
         }
                 }
                }
@@ -225,6 +227,7 @@ this.$router.push({name:'CocRegistration',params:{cocId:id}})
           this.cocData.exam_week = coc.exam_week
           this.isAddCoc = true
           this.cocData.id = coc.id
+          this.resultNotifier = ''
         },
         deleteCoc(id){
            this.$store.dispatch('registrar/deleteCoc',id)
@@ -275,18 +278,18 @@ cursor: pointer;
 .viewcourse th{
   background-color: #fff;
   color: rgb(17, 17, 17)!important;
-  font-size: 16px;
+  font-size: 15px;
 }
 .viewcourse tr{
-  border-top: 2px solid gray;
-  border-bottom: 2px solid gray;
+  border-top: 2px solid rgb(231, 228, 228);
+  border-bottom: 2px solid rgb(231, 228, 228);
 }
 .viewcourse td{ 
   padding-left: 15px;
   border-left: none;
   border-right: none;
-   border-top: 2px solid gray;
-  border-bottom: 2px solid gray;
+  border-top: 2px solid rgb(231, 228, 228);
+  border-bottom: 2px solid rgb(231, 228, 228);
 }
 
 .editwraper{

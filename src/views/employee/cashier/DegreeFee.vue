@@ -2,7 +2,7 @@
 <base-card>
  <div class="d-flex justify-content-between">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue">
+  <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue" @keyup.enter="searchByStudId()">
    <span @click="searchByStudId()" class="searchicon  input-group-text" id="searchby_id"><i class="fas fa-search"></i></span>
 </div>
   <div class="exportbtn">
@@ -40,7 +40,7 @@
     </tr>
   </thead>
   <tbody>
-     <tr v-for="(student,index) in filteredStudents" :key="student.id">
+     <tr v-for="(student,index) in studentFee.data" :key="student.id">
        <td>{{queryObject.per_page*studentFee.current_page +index+1 - queryObject.per_page }}</td>
       <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
@@ -179,12 +179,11 @@ export default {
     data() {
       return {
         isDetail:false,
-        studentId:null,
         searchValue:'',
-        rowNumber:5,
+        rowNumber:10,
          queryObject:{
             page:1,
-            per_page:5,
+            per_page:10,
             search_id:'',
             path:'api/degree_student_fees',
             }
@@ -202,25 +201,25 @@ export default {
       acYearId(){
   return this.$store.getters.acYearId
  },    
-      filteredStudents(){
-         var tempStudents= this.studentFee.data    
-      if(this.searchValue!==''){
-         tempStudents=tempStudents.filter((student)=>{
-            return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
-         })
-      }
-      return tempStudents
-      }
+      // filteredStudents(){
+      //    var tempStudents= this.studentFee.data    
+      // if(this.searchValue!==''){
+      //    tempStudents=tempStudents.filter((student)=>{
+      //       return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
+      //    })
+      // }
+      // return tempStudents
+      // }
       },
      watch:{
-      studentId(newValue){
-  this.queryObject.search_id = newValue
-},
 rowNumber(newValue){
+  this.queryObject.search_id=''
+  this.queryObject.page = 1
   this.queryObject.per_page = newValue
   this.degreeStudentsPaid(this.queryObject)
 },
 acYearId(newValue){
+  this.queryObject.search_id = ''
   this.queryObject.academic_year_id = newValue
   this.degreeStudentsPaid(this.queryObject)
 }
@@ -240,13 +239,20 @@ printStudentList(){
    this.$htmlToPaper('studentDetail');
 },
       forWardChivron(){
+        this.queryObject.search_id = ''
         this.queryObject.page = this.queryObject.page +1
        this.degreeStudentsPaid(this.queryObject)
       },
       backChivron(){
+        this.queryObject.search_id = ''
         this.queryObject.page = this.queryObject.page -1
        this.degreeStudentsPaid(this.queryObject)
       },
+      searchByStudId(){
+        this.queryObject.page = 1
+        this.queryObject.search_id = this.searchValue
+         this.degreeStudentsPaid(this.queryObject)
+      }
     }
 }
 </script>

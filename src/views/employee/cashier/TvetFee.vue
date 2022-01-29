@@ -2,8 +2,8 @@
 <base-card>
  <div class="d-flex justify-content-between">
      <div class="input-group search w-25">
-  <input type="text" class="form-control p-1" placeholder="Search By pad number" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue" @keyup.enter="searchByPadNo()">
-   <span @click="searchByPadNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
+  <input type="text" class="form-control p-1" placeholder="Search By pad number" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue" @keyup.enter="searchByStudId()">
+   <span @click="searchByStudId()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
   <div>
     <button @click="printStudentFee()" class="btn me-1 addbtn">
@@ -39,7 +39,7 @@
     </tr>
   </thead>
   <tbody>
-     <tr v-for="(student,index) in filteredStudents" :key="student.id">
+     <tr v-for="(student,index) in tvetStudentFee.data" :key="student.id">
       <td>{{queryObject.per_page*tvetStudentFee.current_page +index+1 - queryObject.per_page }}</td>
       <td>{{student.student_id}}</td>
       <td>{{student.full_name}}</td>
@@ -93,12 +93,11 @@ export default {
     data() {
         return {
             isDetail:false,
-            rowNumber:5,
-            studentId:null,
+            rowNumber:10,
             searchValue:'',
             queryObject:{
             page:1,
-            per_page:5,
+            per_page:10,
             search_id:'',
             path:'api/tvet_student_fees'
             }
@@ -114,31 +113,29 @@ export default {
       acYearId(){
         return this.$store.getters.acYearId
       },
-       filteredStudents(){
-         var tempStudents= this.tvetStudentFee.data    
-      if(this.searchValue!==''){
-         tempStudents=tempStudents.filter((student)=>{
-            return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
-         })
-      }
-      return tempStudents
-      }
+      //  filteredStudents(){
+      //    var tempStudents= this.tvetStudentFee.data    
+      // if(this.searchValue!==''){
+      //    tempStudents=tempStudents.filter((student)=>{
+      //       return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
+      //    })
+      // }
+      // return tempStudents
+      // }
     },
           created() {
-     // this.$store.dispatch('cashier/fetchTvetStudentFee')
-      //this.$store.dispatch('cashier/fetchTvetStudentFeeDetails')
         this.queryObject.academic_year_id = this.acYearId
         this.tvetStudentsPaid(this.queryObject)
     },
     watch:{
       acYearId(newValue){
+        this.queryObject.search_id = ''
         this.queryObject.academic_year_id = newValue
         this.tvetStudentsPaid(this.queryObject)
       },
-      studentId(newValue){
-  this.queryObject.search_id = newValue
-},
 rowNumber(newValue){
+  this.queryObject.search_id = ''
+  this.queryObject.page = 1
   this.queryObject.per_page = newValue
   this.tvetStudentsPaid(this.queryObject)
 }
@@ -168,6 +165,11 @@ this.tvetStudentsPaid(this.queryObject)
       },
       printStudentFee(){
         this.$htmlToPaper('tvetFee')
+      },
+         searchByStudId(){
+        this.queryObject.page = 1
+        this.queryObject.search_id = this.searchValue
+         this.tvetStudentsPaid(this.queryObject)
       }
     },
 }

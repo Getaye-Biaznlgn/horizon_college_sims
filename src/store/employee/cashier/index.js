@@ -69,7 +69,7 @@ export default {
         async fetchDegreeStudentFee({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id + '&academic_year_id=' + queryObject.academic_year_id)
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id=' + queryObject.search_id + '&academic_year_id=' + queryObject.academic_year_id)
                 if (response.status === 200) {
                     console.log('fetchDegreeStudent fee')
                     console.log(response.data)
@@ -86,7 +86,7 @@ export default {
         async fetchTvetStudentFee({ commit, rootState }, queryObject) {
             rootState.isLoading = true
             try {
-                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id' + queryObject.search_id + '&academic_year_id=' + queryObject.academic_year_id)
+                var response = await apiClient.get(queryObject.path + '?page=' + queryObject.page + '&per_page=' + queryObject.per_page + '&search_id=' + queryObject.search_id + '&academic_year_id=' + queryObject.academic_year_id)
                 if (response.status === 200) {
                     console.log('fetchTvetStudent fee')
                     console.log(response.data)

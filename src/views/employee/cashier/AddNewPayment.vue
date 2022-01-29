@@ -29,7 +29,7 @@
         <span v-if="isChecking"><span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Searching</span>      
             <span v-else>Search</span>
     </span>
-    <span v-if="lengthValue" class="errorMsg"> The maximum ID length should be 13 Characters</span>
+    <span v-if="lengthValue" class="errorMsg"> The maximum ID length should be 12 Characters</span>
 </div>
     </div>
     </div>
@@ -62,7 +62,7 @@
      <table class="monthtable">
   <thead>
     <tr class="table-header">
-      <th class="text-white text-center" :colspan="semesters.months.length + 1">{{studentFeelists.year_no+' Year '+' Semester '+semesters.semester_no}}</th>
+      <th class="text-white text-center" :colspan="semesters.months.length + 1">{{' Year '+studentFeelists.year_no+' '+ 'Semester '+semesters.semester_no}}</th>
     </tr>
      <tr class="table-header">
       <th class="text-white text-center" :colspan="semesters.months.length">Months</th>
@@ -174,7 +174,7 @@
 <label for="idno" class="form-label">Student ID</label>
 <input class="form-control" type="text" id="idno" placeholder="Ex HCR1013" aria-label=".form-control-sm example" v-model="otherStudId" @input="checkIdLength($event)">
 <span v-if="isIdFieldEmpty && otherStudId === ''" class="errorMsg mt-1">Student ID number is required, </span>
-<span v-if="idLength" class="errorMsg"> The maximum ID length should be 13 Characters</span>
+<span v-if="idLength" class="errorMsg"> The maximum ID length should be 12 Characters</span>
 </div> 
     <div class="col-1 ms-5 mt-4 pt-2">
     <button @click="otherPayment()" class="btn addbtn me-3 p-1"><span v-if="isLoading" class="btn  py-1">
@@ -382,7 +382,7 @@ export default {
         this.$router.back()
       },
       checkIdLength(event){
-        if(event.target.value.length !== 13 &&  event.target.value !== ''){
+        if(event.target.value.trim().length !== 12 &&  event.target.value !== ''){
           this.idLength = true
         }
         else{
@@ -390,7 +390,7 @@ export default {
         }
       },
        checkLengthId(event){
-        if(event.target.value.length !== 13 &&  event.target.value !== ''){
+        if(event.target.value.trim().length !== 12 &&  event.target.value !== ''){
           this.lengthValue = true
         }
         else{
