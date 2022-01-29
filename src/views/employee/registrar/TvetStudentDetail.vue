@@ -62,20 +62,10 @@
 
                   <ul
                     class="dropdown-menu"
-                    aria-labelledby="dropdownMenuLink border rounded shadow-sm"
-                  >
-                    <li>
-                      <span @click="enterResult(level.id)" class="dropdown-item px-4 py-2"
-                        >Enter Result</span
-                      >
-                    </li>
-                    <li>
-                      <span
-                        @click="viewModules(level.id)"
-                        class="dropdown-item px-4 py-2"
-                        >View Modules</span
-                      >
-                    </li>
+                    aria-labelledby="dropdownMenuLink border rounded shadow-sm">
+                    <li><span @click="viewModules(level.id)" class="dropdown-item px-4 py-2">View Modules</span></li>
+                    <li v-if="isActiveYear(level.academic_year_id)">
+                      <span @click="editLevel(level.id,level.academic_year_id)" class="dropdown-item px-4 py-2">Edit Level</span></li>
                   </ul>
                 </div>
               </td>
@@ -112,18 +102,8 @@
         </div>
         <div class="ms-4 mb-3 me-4">
           <span>Level</span>
-          <select
-            class="form-select mt-1"
-            aria-label="Default select example"
-            ref="levelId"
-          >
-            <option
-              v-for="level in departmentBasedLevels"
-              :key="level.id"
-              :value="level.id"
-            >
-              {{ "Level " + level.level_no }}
-            </option>
+          <select class="form-select mt-1" aria-label="Default select example" ref="levelId">
+            <option v-for="level in departmentBasedLevels" :key="level.id" :value="level.id">{{ "Level " + level.level_no }}</option>
           </select>
         </div>
         <p
@@ -138,13 +118,7 @@
           </button>
           <button @click="finishToRegister()" class="btn exportbtn me-4 finish">
             <span v-if="isLoading" class="btn py-1">
-              <span
-                class="spinner-border spinner-border-sm text-white"
-                role="status"
-                aria-hidden="true"
-              ></span
-              >Registering</span
-            >
+              <span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>Registering</span>
             <span v-else>Register</span>
           </button>
         </div>
@@ -152,19 +126,19 @@
     </div>
   </div>
       <div v-if="isViewModule" class="editwraper mb-4">
-          <div class="w-75 ms-auto me-auto">
-              <base-card>
-    <div class="courseview border rounded shadow-lg py-5">
+      <div class="w-75 ms-auto me-auto mt-5 border rounded shadow-sm bg-white">
+    
         <div class="d-flex justify-content-end me-5">
               <span @click="isViewModule = false" class="mt-2 close fs-2"><i class="far fa-times-circle"></i></span>
         </div>
-      <table class="viewcourse">
+        <div class="courseview">
+      <table class="viewcourseTable">
   <thead>
       <tr class="table-header">
       <th class="text-white p-3">Title</th>
       <th class="text-white p-3">Module Code</th>
       <th class="text-white p-3">Training Hours</th>
-      <th class="text-white p-3">Result form 100%</th>
+      <th class="text-white py-3">Result form 100%</th>
       </tr>
       </thead>
   <tbody>
@@ -178,48 +152,43 @@
   </tbody>
     </table>
     </div>
-              </base-card>
-          </div>
+              </div>
 
     </div>
-     <div v-if="isEnterResult" class="editwraper mb-4">
-      <div class="w-75 ms-auto me-auto py-5">
-            <base-card>
-          <div class="d-flex justify-content-end me-5">
-        <span @click="isEnterResult = false" class="mt-2 close fs-2"><i class="far fa-times-circle"></i></span>
-      </div>
-    <div class="courseview border rounded shadow ms-auto me-auto">      
-      <table class="viewcourse">
-  <thead>
-      <tr class="table-header">
-      <th class="text-white p-3">module Title</th>
-      <th class="text-white p-3">module Code</th>
-      <th class="text-white p-3">Result form 100%</th>
-      </tr>
-      </thead>
-  <tbody v-if="levelModules.length">
-  <tr v-for="module in levelModules" :key="module.id">
-  <td>{{module.title}}</td>
-  <td>{{module.code}}</td>
-  <td>
-    <span v-if="module.total_mark">{{module.total_mark}}</span>
-    <span v-else class="ms-5 me-5">
-      <input class="form-control form-control-sm w-50" type="number" :ref="`result${module.id}`"  @blur="setResult(module.id)"></span>
-  </td>
-  </tr>
-  </tbody>
-  <div v-else class="mt-4 ms-5 mb-5">
-    <span class="error">There is no modules found for this semester</span>
+     <div v-if="isEdit" class="editwraper mb-4">
+    <div class="dialogcontent ms-auto me-auto pt-5 w-50">
+      <base-card>
+        <div class="ms-4 mb-3 me-4">
+          <span>Academic Year</span>
+          <select class="form-select mt-1" aria-label="Default select example" v-model="acYearId">
+            <option v-for="acYear in academicYears" :key="acYear.id" :value="acYear.id">{{ acYear.year }}</option>
+          </select>
+        </div>
+        <div class="ms-4 mb-3 me-4">
+          <span>Level</span>
+          <select class="form-select mt-1" aria-label="Default select example" v-model="levelId">
+            <option v-for="level in departmentBasedLevels" :key="level.id" :value="level.id">{{ "Level " + level.level_no }}</option>
+          </select>
+        </div>
+        <p
+          class="ms-5 mt-3 text-center"
+          :class="{ success: isSuccessed, faild: isFaild }"
+        >
+          {{ resultNotifier }}
+        </p>
+        <div class="d-flex justify-content-end mt-3 pt-3">
+          <button @click="cancelLevelEdition()" class="btn cancel me-4">
+            Cancel
+          </button>
+          <button @click="finishToEditLevel()" class="btn exportbtn me-4 finish">
+            <span v-if="isLoading" class="btn py-1">
+              <span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>Registering</span>
+            <span v-else>Register</span>
+          </button>
+        </div>
+      </base-card>
+    </div>
   </div>
-  
-    </table>
-    <div v-if="levelModules.length" class="p-4 d-flex">
-      <button @click="submitmoduleResult()" class="btn exportbtn ms-auto">Submit</button>
-    </div>
-    </div>
-            </base-card>
-      </div>
-    </div>
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -235,8 +204,11 @@ export default {
       isFaild: false,
       resultNotifier: "",
       isViewModule:false,
-      isEnterResult:false,
+      // isEnterResult:false,
       levelModules:'', 
+      isEdit:false,
+      acYearId:'',
+      levelId:'',
         }
     },
      computed: {
@@ -273,6 +245,7 @@ export default {
       this.isNewLevel = true;
       this.resultNotifier = "";
       this.student_id = this.studentLevels.id
+      console.log('student status',this.studentLevels)
     },
     cancelRegistration() {
       this.isNewLevel = false;
@@ -325,44 +298,75 @@ export default {
           this.$store.commit('setIsItemLoading',false)
        }
       },
-     async enterResult(id){
-         this.student_id = this.studentLevels.id
-      this.$store.commit('setIsItemLoading',true)
-       try{
-         var response = await apiClient.get(`api/level_modules/${this.student_id}?semester_id=${id}`)
+      editLevel(levelId,acYearId){
+        this.isEdit = true
+        this.levelId = levelId
+        this.acYearId = acYearId
+      },
+     async finishToEditLevel(){
+       this.isLoading = true
+        try{
+         var response = await apiClient.put(`api/edit_level/${this.tvetStudId}?level_id=${this.levelId}&academic_year_id=${this.acYearId}`)
          if(response.status === 200){
-           this.levelModules = response.data
-            this.isEnterResult = true
-            console.log('level modules ='+this.student_id)
-            console.log(response.data)
+           console.log('successfuly updated')
+           this.isEdit = false
          }
-       }
-         catch(e){
-         console .log('error')
-       }
-       finally{
-          this.$store.commit('setIsItemLoading',false)
-       }
+        }
+        finally{
+          this.isLoading = false
+        }
       },
-      setResult(id){
-        var result = {}
-        result.id = id
-        result.total_mark = this.$refs['result'+id].value
-        this.modules.push(result)
-          console.log('result added=')
-          console.log(this.modules)
+      cancelLevelEdition(){
+       this.isEdit = false
       },
-           async submitModuleResult(){
-         this.student_id = this.studentLevels.id
-       console.log('results sent to the server')
-       console.log(this.modules)
-       var response = await apiClient.post('api/give_module_result/'+this.student_id,{modules:this.modules})
-       if(response.status === 200){
-        console.log('successfuly submited')
-        console.log(response.data)
-       }
-
+      isActiveYear(id){
+        var isCurrent = false
+        this.academicYears.forEach(year=>{
+          if(Number(year.is_current) === 1 && year.id === id){
+            isCurrent = true
+          }
+        })
+        return isCurrent
       }
+
+    //  async enterResult(id){
+    //      this.student_id = this.studentLevels.id
+    //   this.$store.commit('setIsItemLoading',true)
+    //    try{
+    //      var response = await apiClient.get(`api/level_modules/${this.student_id}?semester_id=${id}`)
+    //      if(response.status === 200){
+    //        this.levelModules = response.data
+    //         this.isEnterResult = true
+    //         console.log('level modules ='+this.student_id)
+    //         console.log(response.data)
+    //      }
+    //    }
+    //      catch(e){
+    //      console .log('error')
+    //    }
+    //    finally{
+    //       this.$store.commit('setIsItemLoading',false)
+    //    }
+    //   },
+      // setResult(id){
+      //   var result = {}
+      //   result.id = id
+      //   result.total_mark = this.$refs['result'+id].value
+      //   this.modules.push(result)
+      //     console.log('result added=')
+      //     console.log(this.modules)
+      // },
+      //      async submitModuleResult(){
+      //    this.student_id = this.studentLevels.id
+      //  console.log('results sent to the server')
+      //  console.log(this.modules)
+      //  var response = await apiClient.post('api/give_module_result/'+this.student_id,{modules:this.modules})
+      //  if(response.status === 200){
+      //   console.log('successfuly submited')
+      //   console.log(response.data)
+      //  }
+
+      // }
      },
 }
 </script>
@@ -419,20 +423,21 @@ color: #fff;
 cursor: pointer;
 }
 .courseview{
+  height: 80%;
   overflow-y: auto;
 }
-.viewcourse th{
+.viewcourseTable th{
   background-color: #fff;
   color: rgb(17, 17, 17)!important;
-  font-size: 20px;
+  font-size: 16px;
 }
-.viewcourse tr{
+.viewcourseTable tr{
   padding-top: 4px;
   padding-bottom: 4px;
   border-top: 2px solid gray;
   border-bottom: 2px solid gray;
 }
-.viewcourse td{ 
+.viewcourseTable td{ 
   padding: 10px;
   padding-left: 15px;
   border-left: none;
@@ -453,7 +458,7 @@ cursor: pointer;
     left: 0;
     width: 100%;
     min-height: 100vh!important;
-    background-color: rgba(17, 17, 17, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
 .dialogcontent{

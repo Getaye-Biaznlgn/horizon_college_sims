@@ -133,7 +133,7 @@ export default {
       this.studentInfo.residence_tel = personalData.residence_tel;
       this.studentInfo.residence_office_tel = personalData.residence_office_tel;
       this.studentInfo.phone_no = personalData.residence_phone_no;
-      this.studentInfo.contact_tel = personalData.residence_tel;
+      this.studentInfo.contact_tel = personalData.contact_residence_tel;
         this.studentInfo.contact_relationship = personalData.contact_relationship
       this.studentInfo.contact_office_tel = personalData.contact_office_tel;
       this.studentInfo.contact_phone_no = personalData.contact_phone_no;
@@ -153,7 +153,7 @@ export default {
     admissionDetail(admissionData) {
       this.studentInfo.tvet_department_id = admissionData.tvet_department_id;
       this.studentInfo.program_id = admissionData.program_id;
-      this.studentInfo.fully_scholar = admissionData.fully_scholar;
+      this.studentInfo.fully_scholarship = admissionData.fully_scholar;
       this.studentInfo.level_id = admissionData.level_id;
       this.componentName = "financial-info";
       this.isFinance = true;

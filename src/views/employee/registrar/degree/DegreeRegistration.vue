@@ -127,7 +127,7 @@ export default {
        admissionDetail(admissionData){
        this.studentInfo.degree_department_id = admissionData.degree_department_id
        this.studentInfo.program_id = admissionData.program_id
-       this.studentInfo.fully_scholar = admissionData.fully_scholar
+       this.studentInfo.fully_scholarship = admissionData.fully_scholar
        this.studentInfo.year_no = admissionData.year_no
        this.studentInfo.semester_id = admissionData.semester_id
        this.componentName = 'financial-info'

@@ -73,9 +73,9 @@
              <hr class="my-0 py-0">
              <li><span @click="deleteStudentFromCoc(student.student_id,student.type)"  class="dropdown-item">Delete Student </span></li>
                     <hr class="my-0 py-0">
-             <li><span @click="enterResult(student.id)"  class="dropdown-item">Enter Result </span></li>
+             <li><span @click="enterResult(student.student_id,student.type)"  class="dropdown-item">Enter Result </span></li>
                      <hr class="my-0 py-0">
-             <li><span @click="enterCerteficateNo(student.id)"  class="dropdown-item">Enter Certeficat Number </span></li>
+             <li><span @click="enterCerteficateNo(student.student_id,student.type)"  class="dropdown-item">Enter Certeficat Number </span></li>
           </ul>
         </div>
   </td>
@@ -107,19 +107,17 @@ Rows per Page
    </div>
      <div v-if="isEnterResult" class="editwraper border shadow-sm">
       <div class="w-50 ms-auto content me-auto mt-5 p-5 bg-white">
-   <div class="form-group">
-            <label for="startdate" class="form-label">Certeficate Number</label>
-            <input class="form-control" type="number" id="startdate" v-model="cocData.certeficate_no" aria-label=".form-control-sm example">
-        </div>  
-          <div class="form-group mt-3">
+          <div class="form-group mt-3" :class="{warning:v$.inputValue.$error || Number(inputValue) > 100}">
             <label for="enddate" class="form-label">COC Result</label>
-            <input class="form-control" type="number" id="enddate" v-model="cocData.coc_result" aria-label=".form-control-sm example">
+            <input class="form-control" type="number" id="enddate" v-model="inputValue" aria-label=".form-control-sm example">
+             <span class="error-msg mt-1">{{v$.inputValue.$errors[0]?.$message}}</span>
+              <span v-if="Number(inputValue) > 100" class="error-msg mt-1">value must be lessthan or equal to 100</span>
         </div>   
          <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 <div class="d-flex justify-content-end mt-3 pt-3">
   <button @click="cancelDialog()" class="btn cancel me-4">CANCEL</button>
-  <button @click="saveResult()" class="btn addbtn me-4">
-    <span v-if="isUploading" class="btn  py-1">
+  <button @click="saveResult()" class="btn addbtn px-1">
+    <span v-if="isUploading">
  <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>Saving</span>      
   <span v-else>Save</span>
     </button>
@@ -128,15 +126,17 @@ Rows per Page
     </div>
        <div v-if="isEnterCerteficateNo" class="editwraper border shadow-sm">
       <div class="w-50 h-50 ms-auto content me-auto mt-5 p-5 bg-white">
-   <div class="form-group">
+   <div class="form-group" :class="{warning:v$.inputValue.$error || (inputValue.length> 15)}">
             <label for="startdate" class="form-label">Certeficate Number</label>
-            <input class="form-control" type="number" id="startdate" v-model="certeficate_no" aria-label=".form-control-sm example">
+            <input class="form-control" type="text" id="startdate" v-model="inputValue" aria-label=".form-control-sm example">
+            <span class="error-msg mt-1">{{v$.inputValue.$errors[0]?.$message}}</span>
+               <span v-if="(inputValue?.length > 15)" class="error-msg mt-1">value must be lessthan or equal to 15 digits</span>
         </div>    
          <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 <div class="d-flex justify-content-end mt-3 pt-3">
   <button @click="cancelDialog()" class="btn cancel me-4">CANCEL</button>
-  <button @click="saveCerteficateNo()" class="btn addbtn me-4">
-    <span v-if="isUploading" class="btn  py-1">
+  <button @click="saveCerteficateNo()" class="btn addbtn px-1">
+    <span v-if="isUploading">
  <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>Saving</span>      
   <span v-else>Save</span>
     </button>
@@ -145,11 +145,14 @@ Rows per Page
     </div>
 </template>
 <script>
+import useVuelidate from '@vuelidate/core'
+import {required,helpers} from '@vuelidate/validators'
 import apiClient from '../../../resources/baseUrl'
 export default {
   props:['cocId'],
     data() {
         return {
+          v$:useVuelidate(),
         result:'registered',
         cocData:{},
         isEnterResult:false,
@@ -158,8 +161,11 @@ export default {
          isSuccessed:false,
          isFaild:false,
          resultNotifier:'',
-         certeficate_no:'',
+         certificate_no:'',
+         inputValue:'',
+         coc_result:'',
         studType:'all',
+        studentType:'',
          rowNumber:'10',
           queryObject:{
           page:1,
@@ -168,6 +174,11 @@ export default {
 
         }
         }
+    },
+    validations(){
+      return{
+inputValue:{required:helpers.withMessage('Please Enter value',required)}
+      }
     },
     computed:{
         cocs(){
@@ -259,6 +270,8 @@ cocId(newValue){
         cancelDialog(){
           this.isEnterResult = false
           this.isEnterCerteficateNo = false
+          this.v$.$reset()
+          this.inputValue = ''
         },
         saveCoc(){
             this.$store.dispatch('registrar/addCoc',this.cocData)
@@ -280,15 +293,20 @@ cocId(newValue){
         this.queryObject.page = this.queryObject.page - 1
        this.fechCocTakers(this.queryObject)
       },
-      enterCerteficateNo(id){
+      enterCerteficateNo(id,type){
         this.isEnterCerteficateNo = true
         this.studentId = id
+        this.studentType = type
       },
       async saveCerteficateNo(){
+        this.v$.$validate()
+        if(!this.v$.$error && Number(this.inputValue) <= 100){
+        this.isUploading = true
         var data={}
-        data.certeficate_no = this.certeficate_no
+        data.certificate_no = this.inputValue
         data.coc_id = this.cocId
         data.id = this.studentId
+        data.type = this.studentType
       
               try{
 var response = await apiClient.post('api/give_certeficate_no/'+data.id,data)
@@ -296,46 +314,81 @@ if(response.status === 200){
                 this.isFaild = false
                 this.isSuccessed = true
                 this.resultNotifier = 'Succesfully done'
+         var previousStudents= this.$store.getters['registrar/cocTakerStudents']
+      var index = previousStudents.data.findIndex(student=>{
+        return student.student_id === data.id
+      })
+      var uncertifiedStudent = previousStudents.data[index]
+      uncertifiedStudent.certificate_no = data.certificate_no
+      previousStudents.data[index] = uncertifiedStudent
+      this.$store.commit('registrar/setCocTakerStudents',previousStudents)
         }
          else{
                this.isFaild = true
                 this.isSuccessed = false
-                this.resultNotifier = 'Faild'
+                this.resultNotifier = 'Failed'
 }
         }
             catch(e){
                 this.isFaild = true
                 this.isSuccessed = false
-                this.resultNotifier = 'Faild'
+                this.resultNotifier = 'Failed'
          }
+         finally{
+           this.isUploading =false
+           this.v$.$reset()
+          this.inputValue = ''
+            
+         }
+        }
       },
-      enterResult(id){
+      enterResult(id,type){
         this.isEnterResult = true
         this.studentId = id
+        this.studentType = type
       },
       async saveResult(){
+          this.v$.$validate()
+        if(!this.v$.$error && Number(this.inputValue) <= 100){
+        this.isUploading = true
          var data={}
-        data.coc_result = this.coc_result
+       data.type = this.studentType
         data.coc_id = this.cocId
         data.id = this.studentId
+        data.result = this.inputValue
         try{
-var response = await apiClient.post('api/coc_result/'+data.id,data)
+var response = await apiClient.post('api/give_coc_result/'+data.id,data)
 if(response.status === 200){
                 this.isFaild = false
                 this.isSuccessed = true
                 this.resultNotifier = 'Succesfully done'
+                    var previousStudents= this.$store.getters['registrar/cocTakerStudents']
+      var index = previousStudents.data.findIndex(student=>{
+        return student.student_id === data.id
+      })
+      var uncertifiedStudent = previousStudents.data[index]
+      uncertifiedStudent.result = data.result
+      previousStudents.data[index] = uncertifiedStudent
+      this.$store.commit('registrar/setCocTakerStudents',previousStudents)
         }
          else{
                this.isFaild = true
                 this.isSuccessed = false
-                this.resultNotifier = 'Faild'
+                this.resultNotifier = 'Failed'
 }
         }
             catch(e){
                 this.isFaild = true
                 this.isSuccessed = false
-                this.resultNotifier = 'Faild'
+                this.resultNotifier = 'Failed'
          }
+         finally{
+           this.isUploading = false
+           this.v$.$reset()
+          this.inputValue = ''
+           
+         }
+        }
       },
 
     },
@@ -428,4 +481,19 @@ cursor: pointer;
 .active{
   color: rgb(15, 15, 15);
 }
+.success{
+    color: green;
+  }
+  .faild{
+    color: red;
+  }
+   .warning input{
+    border: 1px red solid;
+  }
+  .warning span{
+    display: inline;
+    color: red;
+
+
+  }
 </style>

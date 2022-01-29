@@ -23,7 +23,7 @@
       </div>
      </div>
      <div id="degreeGraguate">
-        <div class="ms-5 mt-3 sr-only"><u>በ ዲግሪ  ፕሮግራም የተመረቁ ተማሪዎች</u></div>
+        <div class="ms-5 mt-3 sr-only"><u>{{'List of TVET students graduated in ' +selectedYearName}}</u></div>
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -90,8 +90,23 @@ export default {
     academicYearId(){
         return this.$store.getters.acYearId
     },
+   academicYears(){
+        return  this.$store.getters.academicYears
+      },
+       acYearId(){
+        return  this.$store.getters.acYearId
+      },
      degreeGraduates(){
         return this.$store.getters['registrar/degreeGraduates']
+    },
+    selectedYearName(){
+      var yearName
+      this.academicYears.forEach(year=>{
+        if(Number(this.acYearId) === Number(year.id)){
+          yearName = year.name
+        }
+      })
+      return yearName
     },
        },
        created() {

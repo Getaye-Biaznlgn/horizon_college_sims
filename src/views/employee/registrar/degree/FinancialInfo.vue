@@ -40,7 +40,7 @@
 <div class="d-flex justify-content-between">
    <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
  <div class="d-flex mt-5 mb-3 justify-content-end">
-      <button @click="backAdmissionInfoPage()" class="btn back p-1 me-3">Back</button>
+      <button @click="backAdmissionInfoPage()" class="btn back px-2 mx-3 me-3">Back</button>
         <button type="button" @click="finish()" class="btn  px-2 next text-white mx-3">
             <span v-if="isUploading">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

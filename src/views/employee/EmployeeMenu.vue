@@ -63,6 +63,7 @@ export default {
            if(Number(year.is_current) === 1) {
                this.$store.commit('setSelectedAcademicYearId', year.id)
                   this.$store.commit('setSelectedAcYearId',year.id) 
+                  this.$store.dispatch('registrar/fetchActiveYearSemisters',year.id)
                }     
             })
            }
@@ -103,11 +104,10 @@ export default {
         this.$store.dispatch('registrar/fetchAcadamicMounths')
       this.$store.dispatch('dean/fetchDegreeDepartments')
       this.$store.dispatch('dean/fetchTvetDepartments')
-      this.$store.dispatch('registrar/fetchActiveYearSemesters')
        this.$store.dispatch('registrar/fetchLevels')
          this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')
-        
+        this.$router.push({name:'RegistrarDashboard'})
       }
     else if(this.user.role==='tvet_head'){
         this.$store.dispatch('tvetHead/fetchModules')
@@ -123,7 +123,7 @@ export default {
        if(this.user.role==='admin'){
           this.$router.push({name:'AdminDashboard'}) 
        }
-      //  this.$store.dispatch('fetchPrograms') 
+       
     }
 }
 </script>

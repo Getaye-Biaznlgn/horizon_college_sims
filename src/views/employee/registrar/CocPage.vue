@@ -18,7 +18,7 @@
       <th class="text-white p-2"></th>
       </tr>
       </thead>
-  <tbody v-if="cocs.length">
+  <tbody>
   <tr v-for="(coc,index) in cocs" :key="coc.id">
   <td class="py-2">{{index+1}}</td>
   <td class="py-2">{{coc.start_date}}</td>
@@ -42,8 +42,8 @@
   </td>
   </tr>
   </tbody>
-  <div v-else class="ms-5 mt-4 pb-3 error">There is no COC schedules found</div>
     </table>
+    <div v-if="!cocs.length" class="ms-5 px-5 mt-4 pb-3">There is no COC schedules found</div>
     </div>
     </div>
     <div v-if="isAddCoc" class="editwraper border shadow-sm">
@@ -52,14 +52,14 @@
   <select class="form-select form-select-sm" aria-label=".form-select-sm example" ref="acYearId">
   <option v-for="year in academicYears" :key="year.id" :value="year.id">{{year.year}}</option>
 </select>
-   <div class="form-group"  :class="{warning:v$.cocData.start_date.$error}">
+   <div class="form-group mt-3"  :class="{warning:v$.cocData.start_date.$error}">
             <label for="startdate" class="form-label">Start Date</label>
             <input class="form-control form-control-sm" type="date" id="startdate" v-model="cocData.start_date" placeholder=".form-control-sm" aria-label=".form-control-sm example">
             <span class="error-msg mt-1">{{ v$.cocData.start_date.$errors[0]?.$message}}</span>
         </div>  
           <div class="form-group mt-3" :class="{warning:v$.cocData.end_date.$error}">
             <label for="enddate" class="form-label">End Date</label>
-            <input class="form-control form-control-sm" type="date" id="enddate" v-model="cocData.end_date" placeholder=".form-control-sm" aria-label=".form-control-sm example">
+            <input class="form-control form-control-sm" type="date" id="enddate" v-model="cocData.end_date" aria-label=".form-control-sm example">
             <span class="error-msg mt-1">{{ v$.cocData.end_date.$errors[0]?.$message}}</span>
         </div>  
           <div class="form-group mt-3" :class="{warning:v$.cocData.exam_week.$error}">
@@ -99,7 +99,7 @@ export default {
               isFaild:false,
                resultNotifier:'',
                add_or_edit:'add',
-               cocId:''
+               cocId:'',
         }
     },
     validations(){
@@ -135,11 +135,11 @@ export default {
            this.isAddCoc = true
            this.add_or_edit = 'add'
            },
-                   async fetchCocs(caYearId) {
-            this.$store.state.isItemLoading = true
+                   async fetchCocs(acYearId) {
+            this.$store.commit('setIsItemLoading',true)
             console.log('acadamic year id inside action--- ' + this.academicYearId)
             try {
-                var response = await apiClient.get(`api/cocs?academic_year_id=${caYearId}`)
+                var response = await apiClient.get(`api/cocs?academic_year_id=${acYearId}`)
                 console.log('responce code ==++++= ' + response.status)
                 console.log('coc lists from server')
                 console.log(response.data)
@@ -150,7 +150,7 @@ export default {
                 console.log('error ---')
                 console.log(e)
             } finally {
-                this.$store.state.isItemLoading = false
+                this.$store.commit('setIsItemLoading',false)
             }
         },
        async printCocList(){
@@ -160,31 +160,24 @@ export default {
             this.isAddCoc = false
             this.cocData = {}
              this.resultNotifier = ''
+             this.v$.$reset()
         },
         generateCocRequest(id){
         this.$router.push({name:'CocRequestForm',params:{cocId:id}})
         },
         saveCoc(){
           this.v$.$validate()
-               this.isUploading = true
-               if(!this.v$.$error){
+            if(!this.v$.$error){
           if(this.add_or_edit === 'add'){
+            this.isUploading = true
             this.cocData.academic_year_id = this.$refs.acYearId.value
             try{
               console.log('this is the data sent to server')
               console.log(this.cocData)
-            this.$store.dispatch('registrar/addCocs',this.cocData).then((response)=>{
-             if(response.status === 201){
+            this.$store.dispatch('registrar/addCocs',this.cocData).then(()=>{
                 this.isFaild = false
                 this.isSuccessed = true
                 this.resultNotifier = 'You have Added COC succesfully'
-                this.cocData = {}
-              }
-              else{
-            this.isFaild = true
-           this.isSuccessed = false
-           this.resultNotifier = 'Adding COC is faild'
-              }
             })
             }
        catch(e){
@@ -194,9 +187,12 @@ export default {
      }
        finally{
       this.isUploading = false
+       this.isAddCoc = false
+      this.cocData = {}
       }
           }
           else if(this.add_or_edit === 'edit'){
+            this.isUploading = true
             try{
              this.cocData.academic_year_id = this.$refs.acYearId.value
             this.$store.dispatch('registrar/updateCocs',this.cocData).then(()=>{
@@ -212,10 +208,10 @@ export default {
      }
        finally{
       this.isUploading = false
-      setTimeout(function(){
-        this.isAddCoc = false},2000)
-      }
-          }
+        this.isAddCoc = false
+        this.cocData = {}
+        }
+                }
                }
         },
         addStudentToCoc(id){
@@ -324,7 +320,11 @@ cursor: pointer;
 .success{
     color: green;
   }
-  .faild,.error{
+  .faild{
     color: red;
+  }
+  .warning span{
+    color: red;
+
   }
 </style>

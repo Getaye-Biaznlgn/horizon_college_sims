@@ -1,3 +1,0 @@
-<template>
-    Graduated Student
-</template>

@@ -81,6 +81,7 @@
       <th class="text-white px-2">Year</th>
       <th class="text-white px-2">Semester</th>
       <th class="text-white px-2">current State</th>
+      <th class="text-white px-2">Result Form</th>
       <th><span class="sr-only px-2">action</span></th>
     </tr>
   </thead>
@@ -98,25 +99,56 @@
         <span v-if="student.status === 'approved'">{{student.status}}</span>
         <span v-else class="approvebtn border rounded shadow-sm p-1"><button @click="approveStudent(student)" class="btn error" id="approvebtn">approve</button></span>
       </td>
+       <td>{{changeResultEntryState(student.legible)}}</td>
       <td>
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
 
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-             <li><span @click="deleteStudent(student.id)" class="dropdown-item px-4 py-2">Delet Student</span></li>
-             <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
+          <ul class="dropdown-menu py-0" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
+
+             <li v-if="Number(student.year_no) === 1 && student.status === 'waiting'"><span @click="deleteStudent(student.id,student.semester_id,semesterForFilter)" class="dropdown-item px-4 py-2">Delet Student</span></li>
+             <li><span @click="editStudent(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
+             <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Status</span></li>
+              <li><span @click="permitResult(student)" class="dropdown-item px-4 py-2">Permit Result Entry</span></li>
           </ul>
         </div>
     </td>
     </tr>
   </tbody>  
 </table>
- <div  v-if="!filteredStudents?.length" class="px-5 ms-5 mt-3 pb-2"><span class="text-center">Students not found</span></div> 
+ <div  v-if="!filteredStudents?.length" class="px-5 ms-5 mt-3 pb-2"><span class="text-center">No Degree Students found</span></div> 
 </div>
     </base-card>
-   
+   <div v-if="isPermit" class="editwraper">
+<div class="d-flex">
+  <div class="dialogContent ms-auto me-auto border rounded shadow-sm p-5">
+    <div class="form-check me-3">
+  <input class="form-check-input ms-4 p-2" type="radio" name="resultentry" id="open" value="1" v-model="optionValue">
+  <label class="form-check-label ms-2" for="open">
+    Open result entry form
+  </label>
+</div>
+<div class="form-check mt-4">
+  <input class="form-check-input ms-4 p-2" type="radio" name="resultentry" id="close" value="0" v-model="optionValue">
+  <label class="form-check-label ms-2" for="close">
+    Close result entry form
+  </label>
+</div>
+    <div class="d-flex justify-content-end mt-5">
+      <button @click="cancelPermision()" class="btn cancel me-4">Cancel</button>
+       <button type="button" @click="savePermision()" class="btn  px-2 savebtn">
+            <span v-if="isPermiting">
+               <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+               Saving
+            </span>      
+            <span v-else>Save</span>   
+          </button>
+    </div>
+  </div>
+</div>
+   </div>
 </template>
 <script>
 import {mapGetters} from 'vuex'
@@ -131,16 +163,23 @@ export default {
      semesterForFilter:'1',
      stateForFilter:'all', 
      yearForFilter:'1',
-     semesterName:'',
-     yearNo:'',
+     semesterName:'first semester',
+     yearNo:'First year',
      stateName:'',
      programName:'',
      departmentName:'',
      scholarForFilter:'all',
-     //
+       //
+       isEditStudent:false,
       queryData:{
         year_no:1,
-      }
+      },
+      semesterId:'',
+      studentId:'',
+      isPermit:false,
+      isPermiting:false,
+      optionValue:'',
+      stateNotifier:''
 
     }
   },
@@ -172,11 +211,6 @@ export default {
             return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
          })
       }
-      // if(this.yearForFilter!=='all'){
-      //    tempStudents=tempStudents.filter((student)=>{
-      //       return student.year_no.toString()===this.yearForFilter.toString()
-      //    })
-      // }
        if(this.departmentForFilter!=='all'){
          tempStudents=tempStudents.filter((student)=>{
             return student.department.id===this.departmentForFilter
@@ -269,7 +303,10 @@ this.degreePrograms.forEach(program=>{
     this.queryData.year_no = this.yearForFilter
     this.queryData.academic_year_id = newValue
    this.$store.dispatch('registrar/fetchDegreeStudents',this.queryData)
-  }
+  },
+  // optionValue(){
+  //    this.$store.dispatch('registrar/fetchDegreeStudents',this.queryData)
+  // }
   },
   created() {
     this.degreeStudents.forEach((student)=>{
@@ -310,9 +347,66 @@ this.degreePrograms.forEach(program=>{
             console.log(e)
           }
        },
-       deleteStudent(id){
-         this.$store.dispatch('registrar/deleteDegreeStudent',id)
-       },    
+       deleteStudent(id,semester_id,semester_no){
+         var payload={}
+         payload.id = id
+         payload.semester_no = semester_no
+         payload.semester_id = semester_id
+         this.$store.dispatch('registrar/deleteDegreeStudent',payload)
+       }, 
+        editStudent(id){
+         this.$router.push({name:'EditDegreeStudents',params:{studId:id}})
+        } ,
+        permitResult(student){
+          this.isPermit = true
+          this.semesterId = student.semester_id
+          this.studentId = student.id
+          this.optionValue = student.legible
+        },
+        async savePermision(){
+           this.isPermiting = true
+          var optionData = {}
+          optionData.student_id = this.studentId
+          optionData.semester_id = this.semesterId
+          optionData.legible = this.optionValue
+          try{
+            var response = await apiClient.post('api/change_result_entry_state/'+optionData.student_id,optionData)
+            if(response.status === 200){
+                var previousStudent = this.degreeStudents
+                    var index1;
+                    var index2;
+                    index1 = previousStudent.findIndex((semester) => {
+                        return semester.semester_no === this.semesterForFilter
+                    })
+                    index2 = previousStudent[index1].students.findIndex(student => {
+                        return student.id === optionData.student_id
+                    })
+                    // var permitedStudent = previousStudent[index1].students[index2]
+                    // permitedStudent.
+                    previousStudent[index1].students[index2].legible = optionData.legible
+                    this.$store.commit('registrar/setDegreeStudent',previousStudent)
+                    console.log('index1 = ', index1,'index2 = ',index2,'legibility = ',optionData.legible)
+                    console.log('response after changing',response.data)
+                   
+            }        
+                  
+          }
+          finally{
+            this.isPermiting = false
+            this.isPermit =false
+          }
+        },
+        changeResultEntryState(state){
+          if(Number(state) === 1){
+          return 'Opened'
+          }
+          else if(Number(state) === 0){
+            return 'Closed'
+          }
+        },
+        cancelPermision(){
+          this.isPermit = false
+        } 
     },
 
 }
@@ -328,10 +422,11 @@ this.degreePrograms.forEach(program=>{
     vertical-align: middle;
 
 } 
-.addbtn:hover,.exportbtn:hover{
+.addbtn:hover,.exportbtn:hover,.savebtn:hover{
     background-color:#2248b8 ;
 }
-.exportbtn{
+
+.exportbtn,.savebtn{
     background-color: #2f4587;
     color: #fff;
     width: 7em;
@@ -440,13 +535,11 @@ color: rgb(128, 128, 236);
     background-color: rgba(17, 17, 17, 0.5);
     z-index: 1000;
 }
-.dialogcontent{
-   width: 90%;
-   margin: auto;
-   margin-top: 5%;
-   margin-bottom: 5%;
-   height: 80vh;
-   overflow-y: auto;
+.dialogContent{
+  width: 40%;
+  margin: auto;
+  margin-top: 10%;
+  background-color: #fff;
 }
 .cancel{
   border: 1px solid gray;

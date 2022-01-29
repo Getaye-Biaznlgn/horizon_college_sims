@@ -119,9 +119,24 @@ export default [{
     {
         path: '/registrardashboard',
         name: 'RegistrarDashboard',
-        props: true,
         component: () =>
             import ( /* webpackChunkName: "RegistrarDashboard" */ '../../../views/employee/registrar/RegistrarDashboard.vue'),
+        meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' }
+    },
+    {
+        path: '/edit-degree-students/:studId',
+        name: 'EditDegreeStudents',
+        props: true,
+        component: () =>
+            import ( /* webpackChunkName: "EditDegreeStudents" */ '../../../views/employee/registrar/EditDegreeStudent.vue'),
+        meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' }
+    },
+    {
+        path: '/edit-tvet-students/:studId',
+        name: 'EditTvetStudents',
+        props: true,
+        component: () =>
+            import ( /* webpackChunkName: "EditTvetStudents" */ '../../../views/employee/registrar/EditTvetStudent.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' }
     },
 ]

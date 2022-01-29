@@ -8,7 +8,8 @@
     <span>Export</span>
     </button>
     </div>
-    <div id="degreefeedetail">
+    <div id="degreefeedetail" class="mt-2">
+      <span class="ms-5 sr-only"><u>Degree Students fee payment</u></span>
     <div class="d-flex justify-content-between mt-3">
     <div class="studentInfo ms-5">
     <div class="name d-flex">
@@ -41,13 +42,13 @@
     </div>
     <hr class="w-100 mt-3 p-0">
     <div v-for="acyear in degreeStudentFeeDetails.years" :key="acyear.year">
-    <div class="d-flex mt-3">
+    <div class="d-flex ms-5 mt-3">
     <span>year :</span>
     <span>{{acyear.year}}</span>
     </div>
-     <div class="row mt-2">
-    <div v-for="semester in acyear.semesters" :key="semester.no" class="col-sm-5 me-5">
-    <table class="ms-5 mt-3 me-5 tabeldetail">
+     <div class="d-flex mt-2">
+    <div v-for="semester in acyear.semesters" :key="semester.no" class="mt-3 me-3 flex-fill">
+    <table>
        <thead>
        <tr class="table-header">
           <th class="text-white text-center" :colspan="Number(semester.months?.length)">{{'Semester '+semester.semester_no}}</th>

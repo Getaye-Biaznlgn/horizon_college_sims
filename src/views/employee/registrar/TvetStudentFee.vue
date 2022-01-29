@@ -74,7 +74,7 @@
     </tr>
   </tbody>   
 </table>
- <div v-if="!tvetStudentFees.data?.length" class="ms-5 px-5 mt-4 pb-3">There is no payment found for TVET students</div>
+ <div v-if="!tvetStudentFees.data?.length" class="ms-5 px-5 mt-4 pb-3">There is no paid TVET students found</div>
     </div>
 <div v-if="tvetStudentFees.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
@@ -90,7 +90,7 @@ Rows per Page
 </select>
 </div>
 <div class="pageno me-3">
-{{tvetStudentFees.from+'-'+tvetStudentFees.to+' of '+tvetStudentFees.total+' pages'}}
+{{tvetStudentFees.from+'-'+tvetStudentFees.to+' of '+tvetStudentFees.total+' Rows'}}
 </div>
 <div class="leftchivron ms-3 me-3">
 <button @click="backChivron()" class="chivronbtn" :class="{active:tvetStudentFees.from !== 1}" :disabled="tvetStudentFees.from === 1"><i class="fas fa-chevron-left"></i></button>
@@ -103,11 +103,12 @@ Rows per Page
 <div class="dialogcontent">
 <base-card>
 <div class="d-flex justify-content-end">
- <button @click="addStudent" class="btn me-1 addbtn">
+ <button @click="exportTvetFeeDetail()" class="btn me-1 addbtn">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
     </div>
+    <div id="tvetfeedetail">
     <div class="d-flex justify-content-between mt-3 me-5">
     <div class="studentInfo ms-5">
     <div class="name d-flex">
@@ -160,7 +161,7 @@ Rows per Page
     
   </tr>
  <tbody>
- <tr v-for="(acYear,index) in tvetStudentFees.years" :key="index">
+ <tr v-for="(acYear,index) in tvetStudentFeeDetails.years" :key="index">
  <td>{{acYear.year}}</td>
  <td>{{acYear.months.September}}</td>
  <td>{{acYear.months.October}}</td>
@@ -172,12 +173,13 @@ Rows per Page
  <td>{{acYear.months.April}}</td>
  <td>{{acYear.months.May}}</td>
  <td>{{acYear.months.Jun}}</td>
- <td>{{acYear.months.Julay}}</td>
+ <td>{{acYear.months.July}}</td>
  <td>{{acYear.months.August}}</td>
  <td>{{acYear.total}}</td>
  </tr>
   </tbody>
  </table>
+    </div>
 <div class="d-flex justify-content-end mt-3 me-1 p-3">
      <button @click="cancelDetailDialog" class="ms-auto btn addbtn">CANCEL</button>
     </div>
@@ -287,10 +289,12 @@ this.tvetStudentsPaid(this.queryObject)
       exportTvetStudent(){
         this.$htmlToPaper('tvetStudentFee')
       },
+      exportTvetFeeDetail(){
+        this.$htmlToPaper('tvetfeedetail')
+      },
         showDetail(id){
           this.$store.dispatch('cashier/fetchTvetStudentFeeDetails',id)
             this.isDetail = true
-            document.documentElement.style.overflow = "hidden"
         },
         cancelDetailDialog(){
             this.isDetail = false

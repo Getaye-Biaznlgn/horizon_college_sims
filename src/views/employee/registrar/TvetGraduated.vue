@@ -23,7 +23,7 @@
       </div>
      </div>
      <div id="tvetGraguate">
-       <div class="ms-5 mt-3 sr-only"><u>በ TVET  ፕሮግራም የተመረቁ ተማሪዎች</u></div>
+       <div class="ms-5 mt-3 sr-only"><u>{{'List of TVET students graduated in ' +selectedYearName}}</u></div>
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -92,6 +92,18 @@ export default {
     },
      tvetGraduates(){
         return this.$store.getters['registrar/tvetGraduates']
+    },
+     academicYears(){
+        return  this.$store.getters.academicYears
+      },
+    selectedYearName(){
+      var yearName
+      this.academicYears.forEach(year=>{
+        if(Number(this.academicYearId) === Number(year.id)){
+          yearName = year.name
+        }
+      })
+      return yearName
     },
        },
        created() {

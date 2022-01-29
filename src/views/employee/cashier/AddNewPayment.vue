@@ -57,12 +57,12 @@
     </div>
     </div>
     </div>
-    <div v-if="studentFeelists.semesters?.length" class="d-flex justify-content-between mt-3">
-    <div v-for="semesters in studentFeelists.semesters" :key="semesters.id" class="mt-3  ms-4 roundtabel">
+    <div v-if="studentFeelists.semesters?.length" class="d-flex mt-3 px-1">
+    <div v-for="semesters in studentFeelists.semesters" :key="semesters.id" class="me-3 flex-fill roundtabel px-0">
      <table class="monthtable">
   <thead>
     <tr class="table-header">
-      <th class="text-white text-center" :colspan="semesters.months.length + 1">{{'Year '+studentFeelists.year_no+' Semester '+semesters.semester_no}}</th>
+      <th class="text-white text-center" :colspan="semesters.months.length + 1">{{studentFeelists.year_no+' Year '+' Semester '+semesters.semester_no}}</th>
     </tr>
      <tr class="table-header">
       <th class="text-white text-center" :colspan="semesters.months.length">Months</th>
@@ -88,7 +88,7 @@
     </div>
     </div>
     </div>
-    <div v-if="isEmpty && !studentFeelists.semesters?.length && !studentFeelists.months?.length" class="text-center mt-5 notFound">
+    <div v-if="isEmpty && !studentFeelists.semesters?.length && !studentFeelists.months?.length && studId.length" class="text-center mt-5 notFound">
       <span>{{student_type+' '}}Student with ID number{{' '+studId}} Not found </span>
     </div>
     <!-- TVET student payment -->
@@ -155,7 +155,7 @@
     <div class="col-lg-4">
     <span>Fee Type</span>
     <select class="form-select mt-1" aria-label=".form-select-sm example" v-model="paymentTypeId">
-  <option v-for="feeType in paymentTypes" :key="feeType.id" :value="feeType.id">{{feeType.name}}</option>
+  <option v-for="feeType in otherPaymentTypes" :key="feeType.id" :value="feeType.id">{{feeType.name}}</option>
 </select>
     </div>
     <div class="col-lg-4">
@@ -176,7 +176,7 @@
 <span v-if="isIdFieldEmpty && otherStudId === ''" class="errorMsg mt-1">Student ID number is required, </span>
 <span v-if="idLength" class="errorMsg"> The maximum ID length should be 13 Characters</span>
 </div> 
-    <div class="col-1 ms-5 mt-4">
+    <div class="col-1 ms-5 mt-4 pt-2">
     <button @click="otherPayment()" class="btn addbtn me-3 p-1"><span v-if="isLoading" class="btn  py-1">
  <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>PAYING</span>      
   <span v-else>PAY</span>
@@ -196,7 +196,7 @@
 <div v-if="newPayment" class="editwraper">
 <div class="dialogcontent">
 <base-card>
-<div v-if="student_type === 'degree'">
+<div v-if="studentFeelists.type === 'degree'">
 <div class="p-2"> Select Payment Method</div>
 <div class="paymenttype d-flex mt-2 p-1">
 <div class="form-check me-5">
@@ -213,60 +213,10 @@
 </div>
 </div>
 </div>
-<div v-if="paymentType === 'cp'" class="pb-3">
-  <span class="mt-1">Select Month</span>
-<div class="d-flex justify-content-between px-3">
-<div class="ms-2">
-<div class="d-flex ">
-<div class="me-5">
-<div v-for="month in academicMonths.slice(0,6)" :key="month.id" class="form-check">
-  <input class="form-check-input" type="checkbox" :disabled="month.pad" :value="month.id" :id="month.id" v-model="monthsIds">
-  <label class="form-check-label" :for="month.id">
-      {{month.name}}
-  </label>
-</div>
-</div>
-<div class="ms-5">
-<div v-for="month in academicMonths.slice(6,academicMonths.length+1)" :key="month.id" class="form-check">
-  <input class="form-check-input" type="checkbox" :disabled="month.pad" :value="month.id" :id="month.id" v-model="monthsIds">
-  <label class="form-check-label" :for="month.id">
-      {{month.name}}
-  </label>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="d-flex mt-4">
-<span>Amount:</span>
-<span class="ms-3"><strong>{{semesterPayment*monthsIds.length}}</strong></span>
-</div>
-<div class="form-group mt-4 mb-3" :class="{warining:v$.padNumber.$error}">
-<label for="padno" class="form-label">Pad Number</label>
-<input class="form-control form-control-sm" type="text" id="padno" placeholder="Ex 1034" aria-label=".form-control-sm example" v-model="padNumber">
-<span class="error-msg mt-1"  v-for="(error, index) of v$.padNumber.$errors" :key="index">{{ error.$message}}</span>
-</div>
-<div class="form-group mt-4 mb-3" :class="{warining:v$.paidDate.$error}">
-<label for="paiddate" class="form-label">Paid Date</label>
-<input class="form-control form-control-sm" type="date" id="paiddate" aria-label=".form-control-sm example" v-model="paidDate">
- <span class="error-msg mt-1"  v-for="(error, index) of v$.paidDate.$errors" :key="index">{{ error.$message}}</span>
-</div>
- <p class=" mt-5 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
-<div class="d-flex justify-content-between mt-5">
-<button @click="cancelPaymentDialog()" class="btn cancelbtn py-1">CANCEL</button>
-<button @click="payByCp()" class="btn paybtn mx-3 py-1">
-  <span v-if="isLoading">
- <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>PAYING</span>      
-            <span v-else>PAY</span>
-</button>
-</div>
-</div>
-<div v-else-if="paymentType === 'monthly'">
+<div class="paymentForm">
 <span class="mt-1">Select Month</span>
-<div class="d-flex justify-content-between px-3">
-<div class="ms-2">
-<div class="d-flex ">
-<div class="me-5">
+<div class="d-flex justify-content-between ms-2 px-3">
+<div class="me-4">
 <div v-for="month in academicMonths.slice(0,6)" :key="month.id" class="form-check">
   <input class="form-check-input" type="checkbox" :disabled="month.pad" :value="month.id" :id="month.id" v-model="monthsIds">
   <label class="form-check-label" :for="month.id">
@@ -280,15 +230,18 @@
   <label class="form-check-label" :for="month.id">
       {{month.name}}
   </label>
-</div>
-</div>
 </div>
 </div>
 </div>
 <span class="error-msg mt-1 ms-5" :class="{checkmonth:v$.monthsIds.$error}"  v-for="(error, index) of v$.monthsIds.$errors" :key="index">{{ error.$message}}</span>
 <div class="d-flex mt-3">
 <span>Amount:</span>
+<div v-if="paymentType === 'monthly'">
 <span class="ms-3"><strong>{{monthlyPayment*monthsIds.length}}</strong></span>
+</div>
+<div v-else-if="paymentType === 'cp'">
+<span class="ms-3"><strong>{{semesterPayment*monthsIds.length}}</strong></span>
+</div>
 </div>
 <div class="form-group mb-3 mt-4" :class="{warining:v$.padNumber.$error}">
 <label for="padno" class="form-label">Pad Number</label>
@@ -380,10 +333,16 @@ export default {
        paymentTypes(){
           return  this.$store.getters['cashier/paymentTypes']
           },
+          otherPaymentTypes(){
+            var paymentTypes = this.paymentTypes.filter(payment=>{
+              return (payment.name !== 'Monthly Fee' && payment.name !== 'CP Fee')
+            })
+            return paymentTypes
+          },
           acYearId(){
             return this.$store.getters.acYearId
           },
-typeOfPayment(){
+    typeOfPayment(){
     var selctedPayment = this.paymentTypes.filter((payment)=>{
           return this.paymentTypeId === payment.id
         })
@@ -447,21 +406,28 @@ typeOfPayment(){
             this.isOtherFee = true
         },
         async searchStudentById(){
-          var student = {};
-          this.isChecking = true
+          if(!this.lengthValue && this.studId?.length){
+           this.isChecking = true
           this.isEmpty = false
+          var student = {};
           student.id = this.studId
           student.type = this.student_type
           student.academic_year_id = this.$refs.acYearId.value
+          try{
           await this.$store.dispatch('cashier/fetchStudentFeelist',student).then((response)=>{
             if(response.status === 200){
-              this.isChecking = false
               this.isEmpty = true
             }
           })
           .catch(()=>{
             this.isChecking=false
+            this.isEmpty = true
           })
+          }
+          finally{
+            this.isChecking = false
+          }
+          }
         },
          tvetPayment(studentFeelists){
           this.monthlyPayment = studentFeelists.month_payment
@@ -472,6 +438,7 @@ typeOfPayment(){
                    
         },
         selectPaymentType(studentFeelists,semesters){
+           this.resultNotifier = ''
           this.monthlyPayment =  studentFeelists.month_payment
           this.semesterPayment = semesters.monthly_cp_fee 
           this.semester_id = semesters.id
@@ -479,7 +446,7 @@ typeOfPayment(){
           this.activeACyear = this.$refs.acYearId.value
           this.student_id = studentFeelists.id
            this.newPayment = true
-           this.resultNotifier = ''
+          
                    
         },
         isFullPaidSemester(semestermonths){
@@ -509,33 +476,30 @@ typeOfPayment(){
          studentFee.paid_date = this.paidDate
          studentFee.id = this.student_id
          studentFee.student_type = this.student_type
+         if(this.paymentType === 'cp'){
+           studentFee.amount = this.semesterPayment* this.monthsIds.length
+         }
+         else if(this.paymentType === 'monthly'){
          studentFee.amount = this.monthlyPayment*this.monthsIds.length
-         console.log('student fee data')
+         }
+         console.log('student fee data sent to server')
          console.log(studentFee)
             try {
                 var response = await apiClient.post('api/add_tuition_payment/' + studentFee.id, studentFee)
-                console.log('response code',response.status)
+                console.log('response status code',response.status)
                 if (response.status === 200) {
-                    studentFee.months=[]
                this.monthsIds = []
                console.log('after adding the payment ')
               console.log(response.data)
                this.isFaild = false
            this.isSuccessed = true
-          //  this.resultNotifier = 'Your payment is succesfully done'
-           this.isLoading = false
-           this.newPayment = false
            this.v$.$reset()
            this.resetValue()
              var student = {};
             student.id = this.studId
               student.type = this.student_type
           student.academic_year_id = this.$refs.acYearId.value
-          this.$store.dispatch('cashier/fetchStudentFeelist',student).then((response1)=>{
-            console.log('after adding payment')
-            console.log(response1.data)
-      
-                })
+          this.$store.dispatch('cashier/fetchStudentFeelist',student)
                 }
                 else if(response.status === 201){
                this.isFaild = true
@@ -546,9 +510,10 @@ typeOfPayment(){
             catch(e){
                      this.isFaild = true
            this.isSuccessed = false
-           this.resultNotifier = 'error! some thing went wrong'
+           this.resultNotifier = 'error! you may enter incorrect data'
             }
              finally{
+           this.newPayment = false
                this.isLoading = false
            }
           
@@ -556,55 +521,6 @@ typeOfPayment(){
           
            }
           
-        },
-        payByCp(){
-          this.resultNotifier = ''
-           this.v$.$validate()
-           if(!this.v$.$error){
-             this.isLoading = true
-          var studentFee = {};
-          studentFee.receipt_no = this.padNumber
-         studentFee.tuition_type = this.paymentType
-         studentFee.academic_year_id = this.activeACyear
-         studentFee.semester_id = this.semester_id
-         studentFee.id = this.student_id
-         studentFee.paid_date = this.paidDate
-         studentFee.amount = this.semesterPayment
-         console.log('student fee datas')
-         console.log(studentFee)
-         try{
-          this.$store.dispatch('cashier/addNewStudentFee',studentFee).then((response)=>{
-             if(response.status === 200){
-              console.log(response.data)
-               this.isFaild = false
-           this.isSuccessed = true
-           this.isLoading = true
-           this.newPayment = false
-           this.v$.$reset()
-           this.resetValue()
-             }
-            var student = {};
-          student.id = this.studId
-          student.type = this.student_type
-          student.academic_year_id = this.$refs.acYearId.value
-          this.$store.dispatch('cashier/fetchStudentFeelist',student)
-
-          })
-          . catch(()=>{ 
-          this.isFaild = true
-           this.isSuccessed = false
-            this.resultNotifier = 'some thing went wrong'
-          })
-         }
-          catch(e){
-            this.resultNotifier = 'some thing went wrong'
-          }
-          finally{
-            this.resultNotifier = ''
-            this.isLoading = false
-          }
-           
-           }
         },
         resetValue(){
            this.padNumber = ''
@@ -628,7 +544,7 @@ typeOfPayment(){
              this.isDateFieldEmpty = true
              isEmptyFild = true
            }
-           if(!isEmptyFild){
+           if(!isEmptyFild &&  !this.idLength){
          this.isLoading = true
           var studentFee={}
            studentFee.student_id = this.otherStudId
@@ -663,19 +579,19 @@ typeOfPayment(){
           catch(e){
                 this.isFaild = true
            this.isSuccessed = false
-            this.resultNotifier = 'Some thing went wrong'
+            this.resultNotifier = 'error! you may enter incorrect data'
           }
           finally{
             this.isLoading = false
           }
           }
         },
-        changeValue(event){
-        this.otherFeeAmount = this.paymentTypes.find(payment=>{
-        return event.target.value === payment.id
-          })
+        // changeValue(event){
+        // this.otherFeeAmount = this.paymentTypes.find(payment=>{
+        // return event.target.value === payment.id
+        //   })
 
-        }
+        // }
         
     },
 }
@@ -778,19 +694,14 @@ td{
   vertical-align: top;
 }
 .roundtabel{
-  width: 100%;
   border: 1px solid #dddddd;
   border-radius: 13px;
   overflow: hidden;
 }
 .monthtable{
-  width: 100%;
-  height: 100%;
+  width: 100%!important;
+  height: 100%!important;
 }
-/* .cptabel{
-  width: 100%;
-  height: 100%;
-} */
 .editwraper{
  position: fixed;
     top: 0;
@@ -811,9 +722,6 @@ td{
   background-color: #fff;
   border: 1px solid rgb(172, 167, 167);
 }
-/* .optionbtn{
-  width: 7em;
-} */
 .success{
     color: green;
   }
@@ -834,7 +742,7 @@ td{
   .error input{
     border-color: red;
   }
-  .errorMsg{
+  .errorMsg,.error{
     color: red;
   }
 </style>

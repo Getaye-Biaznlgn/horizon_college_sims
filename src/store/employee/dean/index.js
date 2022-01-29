@@ -504,8 +504,7 @@ export default {
         //     } finally {
         //         rootState.isLoading = false
 
-        //     }
-        // },
+            
         async fetchTeachers({ commit, rootState }) {
             rootState.isLoading = true
             try {

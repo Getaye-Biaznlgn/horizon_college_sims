@@ -27,7 +27,7 @@
     </div>
         <div class="d-flex mt-2">
     <span><strong>Year : </strong></span>
-    <span>{{studentSemester?.current_year_number}}</span>
+    <span>{{studentSemesters?.current_year_number}}</span>
     </div>
     </div>
     </div>
@@ -42,13 +42,13 @@
       <th class="text-white p-3"></th>
       </tr>
       </thead>
-  <tbody v-if="studentSemesters.semesters?.length">
+  <tbody>
   <tr v-for="semester in studentSemesters.semesters" :key="semester.start_date">
   <td>{{semester.year_no+' year '+semester.semester_no+' semester'}}</td>
   <td>{{semester.year}}</td>
   <td>{{semester.start_date+' to '+semester.end_date}}</td>
   <td>{{semester.status}}</td>
-  <td>{{semester.GPA}}</td>
+  <td>{{(semester.GPA).toFixed(2)}}</td>
   <td>
       <div class="dropdown me-5 p-1">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,17 +56,17 @@
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-             <li><span @click="enterResult(semester.id)" class="dropdown-item px-4 py-2">Enter Result</span></li>
+             <!-- <li><span @click="editStudentSemester(semester.id)" class="dropdown-item px-4 py-2">Edit</span></li> -->
              <li><span @click="viewCourse(semester.id)"  class="dropdown-item px-4 py-2">View Course</span></li>
           </ul>
         </div>
   </td>
   </tr>
   </tbody>
-    <div v-else class="mt-4 ms-5 mb-5">
-    <span class="error">There is no semester data found</span>
-  </div>
     </table>
+     <div v-if="!studentSemesters.semesters?.length" class="mt-4 ms-5 mb-5">
+    <span>There is no semester data found</span>
+  </div>
     <div class="d-flex justify-content-end mt-5 mb-1"> 
     <button @click="registerForSemester()" class="btn ms-3 me-1 p-1 register addbtn">Register for New Semester</button>
     </div>
@@ -107,13 +107,12 @@
   </base-card>
 </div>
     </div>
-    <div v-if="isViewCourse" class="editwraper pt-5 mb-4">
-      <div class="w-75 ms-auto me-auto mt-5">
-      <base-card>
-    <div class="courseview border rounded shadow-lg  py-5">
+    <div v-if="isViewCourse" class="editwraper">
+      <div class="w-75 ms-auto me-auto mt-5 border rounded shadow-lg bg-white mb-5">
        <div class="d-flex justify-content-end p-0">
         <span @click="isViewCourse = false" class="close fs-2 me-5"><i class="far fa-times-circle"></i></span>
       </div>
+        <div class="courseview">
       <table class="viewcourse">
   <thead>
       <tr class="table-header">
@@ -134,51 +133,12 @@
   </tr>
   </tbody>
     <div v-else class="mt-4 ms-5 mb-3">
-    <span class="error">There is no Courses found for this semester</span>
+    <span>There is no Courses found for this semester</span>
   </div>
     </table>
     </div>
-      </base-card>
       </div>
     </div>
-     <!-- <div v-if="isEnterResult" class="editwraper mb-4">
-       <div class="w-75 m-5 ms-auto me-auto">
-       <base-card>
-      <div class="d-flex justify-content-end">
-        <span @click="isEnterResult = false" class="mt-2 me-5 close fs-2"><i class="far fa-times-circle"></i></span>
-      </div>
-    <div class="courseview border rounded shadow py-5">
-      <table class="viewcourse">
-  <thead>
-      <tr class="table-header">
-      <th class="text-white p-3">Course Title</th>
-      <th class="text-white p-3">Course Code</th>
-      <th class="text-white p-3">Result form 100%</th>
-      </tr>
-      </thead>
-  <tbody v-if="semesterCourses.length">
-  <tr v-for="course in semesterCourses" :key="course.id">
-  <td>{{course.title}}</td>
-  <td>{{course.code}}</td>
-  <td>
-    <span v-if="course.total_mark">{{course.total_mark}}</span>
-    <span v-else class="ms-5 me-5">
-      <input class="form-control form-control-sm w-50" type="number" :ref="`result${course.id}`"  @blur="setResult(course.id,course.cp)"></span>
-  </td>
-  </tr>
-  </tbody>
-  <div v-else class="mt-4 ms-5 mb-5">
-    <span class="error">There is no Courses found for this semester</span>
-  </div>
-  
-    </table>
-    <div v-if="semesterCourses.length" class="p-4 d-flex">
-      <button @click="submitCourseResult()" class="btn exportbtn ms-auto">Submit</button>
-    </div>
-    </div>
-       </base-card>
-       </div>
-    </div> -->
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -294,6 +254,10 @@ finally{
       cancelRegistration(){
 this.isNewSemester = false
       },
+      // editStudentSemester(){
+      //   this.isEditSemester = true
+      //   this.start
+      // },
      async viewCourse(id){
           this.$store.commit('setIsItemLoading',true)
          this.student_id = this.studentSemesters.id
@@ -315,34 +279,6 @@ this.isNewSemester = false
           this.$store.commit('setIsItemLoading',false)
        }
       },
-    //  async enterResult(id){
-    //   this.$store.commit('setIsItemLoading',true)
-    //   this.student_id = this.studentSemesters.id
-    //    try{
-    //      var response = await apiClient.get(`api/semester_courses/${this.student_id}?semester_id=${id}`)
-    //      if(response.status === 200){
-    //        this.semesterCourses = response.data
-    //         this.isEnterResult = true
-    //         console.log('semester courses ='+this.studentId)
-    //         console.log(response.data)
-    //      }
-    //    }
-    //      catch(e){
-    //      console .log('error')
-    //    }
-    //    finally{
-    //       this.$store.commit('setIsItemLoading',false)
-    //    }
-    //   },
-    //   setResult(id,cp){
-    //     var result = {}
-    //     result.id = id
-    //     result.cp = cp
-    //     result.total_mark = this.$refs['result'+id].value
-    //     this.courses.push(result)
-    //       console.log('result added=')
-    //       console.log(this.courses)
-    //   },
     },
 }
 </script>
@@ -399,6 +335,7 @@ color: #fff;
 cursor: pointer;
 }
 .courseview{
+  height: 80%;
   overflow-y: auto;
 }
 .viewcourse th{
@@ -434,7 +371,7 @@ cursor: pointer;
     left: 0;
     width: 100%;
     min-height: 100vh!important;
-    background-color: rgba(17, 17, 17, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
 .dialogcontent{
@@ -463,8 +400,5 @@ ul li{
   }
   .faild{
     color: red;
-  }
-  .error{
-    color: rgb(253, 7, 7);
   }
 </style>

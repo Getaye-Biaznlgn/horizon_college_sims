@@ -7,7 +7,7 @@
     </button>
     </div>
     <div id="tvetfeedetail">
-        <div class="ms-5 mt-3 sr-only">TVET Student Fee tebel</div>
+          <span class="ms-5 sr-only"><u>TVET Students fee payment</u></span>
     <div class="d-flex justify-content-between mt-3 me-5">
     <div class="studentInfo ms-5">
     <div class="name d-flex">
@@ -72,7 +72,7 @@
  <td>{{acYear.months.April}}</td>
  <td>{{acYear.months.May}}</td>
  <td>{{acYear.months.Jun}}</td>
- <td>{{acYear.months.Julay}}</td>
+ <td>{{acYear.months.July}}</td>
  <td>{{acYear.months.August}}</td>
  <td>{{acYear.total}}</td>
  </tr>
