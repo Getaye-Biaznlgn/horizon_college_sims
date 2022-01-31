@@ -1,6 +1,6 @@
 <template>
-<div class="mt-3"><span ><Strong>Full Name</Strong></span></div>
-<div class="row mt-3">
+<div class="mt-3 px-3"><span ><Strong>Full Name</Strong></span></div>
+<div class="row mt-3 px-3">
 <div class="mb-3 col-lg-4" :class="{warning:v$.studentInfo.first_name.$error}">
     <label for="fname" class="form-label">First Name</label>
     <input type="text" class="form-control form-control-sm" id="fname" v-model="studentInfo.first_name">
@@ -17,7 +17,7 @@
      <span class="error-msg mt-1">{{ v$.studentInfo.last_name.$errors[0]?.$message}}</span>
   </div>
 </div>
- <div class="d-flex col-4">
+ <div class="d-flex col-4 px-3">
 <div class="sex mt-4"><span class="me-2"><strong>Sex:-</strong></span></div>
    <div class="form-check ms-5 mt-4 me-3">
   <input class="form-check-input p-2" type="radio" name="sex" value="Male" id="male" v-model="sex">
@@ -32,8 +32,8 @@
   </label>
 </div>
     </div>
-<div class="mt-3"><strong>Place of Birth</strong></div>
-<div class="row mt-3">
+<div class="mt-3 px-3"><strong>Place of Birth</strong></div>
+<div class="row mt-3 px-3">
   <div class="mb-3 col-lg-4" :class="{warning:v$.birth_address.region.$error}">
     <label for="region" class="form-label">Region</label>
     <input type="text" class="form-control form-control-sm" id="region" v-model="birth_address.region">
@@ -60,16 +60,16 @@
    
   </div>
 </div>
-<div><strong>Date of Birth(E.C)</strong></div>
-<div class="row mt-2">
+<div class="px-3"><strong>Date of Birth(E.C)</strong></div>
+<div class="row mt-2 px-3">
     <div class="mb-3 col-lg-5" :class="{warning:v$.studentInfo.birthDay.$error}">
     <label for="birthdate" class="form-label">Date of Birth</label>
     <input type="date" class="form-control form-control-sm" id="birthdate" v-model="studentInfo.birthDay">
     <span class="error-msg mt-1">{{ v$.studentInfo.birthDay.$errors[0]?.$message}}</span>
   </div>
 </div>
-  <div class="mt-3"><strong>Current residential address</strong></div>
-  <div class="row mt-3">
+  <div class="mt-3 px-3"><strong>Current residential address</strong></div>
+  <div class="row mt-3 px-3">
   <div class="mb-3 col-lg-3" :class="{warning:v$.residential_address.subcity.$error}">
     <label for="district" class="form-label">District</label>
     <input type="text" class="form-control form-control-sm" id="district" v-model="residential_address.subcity">
@@ -89,8 +89,8 @@
     <input type="number" class="form-control form-control-sm" id="year" v-model="residential_address.year">
   </div>
   </div>
-  <div class="mt-3"><strong>Tel</strong></div>
-  <div class="row mt-3">
+  <div class="mt-3 px-3"><strong>Tel</strong></div>
+  <div class="row mt-3 px-3">
        <div class="mb-4 col-lg-4" :class="{warning:v$.studentInfo.residence_tel.$error}">
     <label for="residence" class="form-label">Residence</label>
     <input type="tel" class="form-control form-control-sm" id="residence" v-model="studentInfo.residence_tel">
@@ -107,7 +107,7 @@
      <span class="error-msg mt-1">{{ v$.studentInfo.phone_no.$errors[0]?.$message}}</span>
   </div>
   </div>
-    <div class="d-flex">
+    <div class="d-flex px-3">
 <div><span class="me-2"><strong>Marital Status:-</strong></span></div>
 <div class="form-check me-3">
   <input class="form-check-input ms-4 p-2" type="radio" name="marritalstatus" id="married" value="married" v-model="maritial_status">
@@ -128,8 +128,8 @@
   </label>
 </div>
 </div>
-<div class="mt-4"><strong>Person to Contacted incase of Emergency:-</strong></div>
-<div class="row mt-3">
+<div class="mt-4 px-3"><strong>Person to Contacted incase of Emergency:-</strong></div>
+<div class="row mt-3 px-3">
   <div class="mb-3 col-lg-3" :class="{warning:v$.emergency_contact_first_name.$error}">
     <label for="fname" class="form-label">First Name</label>
     <input type="text" class="form-control form-control-sm" id="fname" v-model="emergency_contact_first_name">
@@ -150,7 +150,7 @@
     <input type="text" class="form-control form-control-sm" id="relativesregion" v-model="emergency_address.region">
   </div>
   </div>
-  <div class="row mt-3">
+  <div class="row mt-3 px-3">
   <div class="mb-3 col-lg-3">
     <label for="town" class="form-label">Town</label>
     <input type="text" class="form-control form-control-sm" id="town" v-model="emergency_address.town">
@@ -168,8 +168,8 @@
     <input type="text" class="form-control form-control-sm" id="rel_hou_no" v-model="emergency_address.house_no">
   </div>
   </div>
-   <div class="mt-3"><strong>Tel</strong></div>
-  <div class="row mt-3">
+   <div class="mt-3 px-3"><strong>Tel</strong></div>
+  <div class="row mt-3 px-3">
        <div class="mb-4 col-lg-4" :class="{warning:v$.studentInfo.contact_tel.$error}">
     <label for="residence" class="form-label">Residence</label>
     <input type="tel" class="form-control form-control-sm" id="residence" v-model="studentInfo.contact_tel">

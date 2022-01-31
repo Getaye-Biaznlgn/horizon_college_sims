@@ -6,14 +6,16 @@
   <option v-for="calender in academicYears" :key="calender.id" :value="calender.id">{{calender.year}}</option>
 </select>
     </div>
-  <div class="mb-3 col-md-4" :class="{warning:isEgsse}">
+  <div class="mb-3 col-md-4" :class="{warning:v$.EGSSE_result.$error}">
     <label for="egsseresult" class="form-label">EGSSE Result</label>
     <input type="text" class="form-control" id="egsseresult" v-model="EGSSE_result">
+    <span class="error-msg mt-1">{{ v$.EGSSE_result.$errors[0]?.$message}}</span>
     
   </div>
-  <div class="mb-3 col-md-4" :class="{warning:isEheee}">>
+  <div class="mb-3 col-md-4" :class="{warning:v$.EHEEE_result.$error}">
     <label for="eheeeresult" class="form-label">EHEEE Result</label>
     <input type="text" class="form-control" id="eheeeresult" v-model="EHEEE_result">
+    <span class="error-msg mt-1">{{ v$.EHEEE_result.$errors[0]?.$message}}</span>
   </div>
   </div>
    <div class="mt-2 d-flex">
@@ -40,11 +42,12 @@
   <option v-for="department in degreeDepartments" :key="department.id" :value="department.id">{{department.name}}</option>
 </select>
   </div>
-   <div class="mt-3 mt-lg-0 col-lg-6">
+   <div class="mt-3 mt-lg-0 col-lg-6" :class="{warning:v$.degreeProgramId.$error}">
  <span>Program</span>
-  <select class="form-select" aria-label=".form-select-sm example" ref="degreeProgramId" @change="semesterByProgram($event)">
+  <select class="form-select" aria-label=".form-select-sm example" v-model="degreeProgramId">
   <option v-for="Program in degreePrograms" :key="Program.id" :value="Program.id">{{Program.name}}</option>
 </select>
+  <span class="error-msg mt-1">{{ v$.degreeProgramId.$errors[0]?.$message}}</span>
 </div>
   </div>
   <div class="mt-3 col-md-2"><strong>REGISTER FOR</strong></div>
@@ -105,7 +108,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input ms-lg-4 p-2" type="radio" name="finance" id="govt" value="govt" v-model="financial">
   <label class="form-check-label ms-2" for="govt">
-    Geovernment
+    Government
   </label>
 </div>
 <div class="form-check mt-3">
@@ -117,33 +120,19 @@
 <div class="form-check mt-3">
   <input class="form-check-input ms-lg-4 p-2" type="radio" name="finance" id="nongovt" value="nongovt" v-model="financial">
   <label class="form-check-label ms-2" for="nongovt">
-    Non-Geovernment
+    Non-Government
   </label>
 </div>
 <div class="d-flex mb-4">
 <div class="form-check mt-3 me-1">
   <input class="form-check-input ms-lg-4 p-2" type="radio" name="finance" id="other" value="other" v-model="financial">
   <label class="form-check-label ms-2" for="other">
-    Other(specify)
+    Other
   </label>
-</div>
-<div class="mt-3 col-xs-4" :class="{warning:v$.otherstated.$error}">
-<input class="form-control" type="tex" name="finance" id="othersource" v-model="otherstated">
- <span class="error-msg mt-1">{{ v$.otherstated.$errors[0]?.$message}}</span>
 </div>
 
 </div>
 </div>
- <div class="row">
-      <div class="mt-3 col-md-6">
-      <span class="me-2"><strong>Give Scolarship Chance ?</strong></span></div>
-<div class="form-check mt-3 me-3 col-md-6">
-  <input class="form-check-input ms-2 p-2" type="checkbox" name="scholar" id="fullscolarship" v-model="fully_scholar">
-  <label class="form-check-label ms-2" for="fullscolarship">
-    Fully Funded Scholarship
-  </label>
-</div>
- </div>
  <div class="mt-2">
    <p class="mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
    </div>
@@ -161,7 +150,7 @@
 </template>
 <script>
 import useValidate from '@vuelidate/core'
-import {helpers,maxLength} from '@vuelidate/validators'
+import { required,helpers,maxValue,minValue} from '@vuelidate/validators'
 import {mapGetters} from 'vuex'
 export default {
     inject:['educationalDetail','backPage'],
@@ -176,8 +165,9 @@ export default {
             levelId:'',
             tvetDepartmentId:null,
             studentType:'degree',
-            fully_scholar:'',
+            fully_scholar:0,
             year_no:'1',
+            degreeProgramId:'',
             tvetProgramId:'',
             isEgsse:false,
             isEheee:false
@@ -185,8 +175,14 @@ export default {
     },
     validations(){
       return{
-      otherstated:{ max:helpers.withMessage('you must state with a maximum of 30 characters',maxLength(30))},
-      }
+            EGSSE_result:{minValue:helpers.withMessage('minimum value should not be lessthan 0',minValue(0)),
+             maxValue:helpers.withMessage('maximum value should not be greaterthan 4',maxValue(4))
+             }, 
+           EHEEE_result:{  minValue:helpers.withMessage('minimum value should not be lessthan 0',minValue(0)),
+             maxValue:helpers.withMessage('maximum value should not be greaterthan 700',maxValue(700))
+             }, 
+             degreeProgramId:{required:helpers.withMessage('Please select Program',required)} 
+        }
     },
        computed:{
     ...mapGetters('dean',['degreeDepartments','degreePrograms']),
@@ -226,30 +222,27 @@ export default {
 
     },
     created() {
-         this.semesterAtZero(this.semesters[0])
+      this.degreeProgramId = this.degreePrograms[0]?.id
          this.tvetDepartmentId = this.tvetDepartments[0]?.id
-        //  this.degreeDepartmentId = this.degreeDepartments[0]?.id
         this.tvetProgramId = this.tvetPrograms[0]?.id
         this.levelId = this.departmentBasedLevels[0]?.id
     },
     watch:{
-      studentType(){
-        this.fully_scholar = false
-      },
       departmentBasedLevels(newValues){
         this.levelId = newValues[0]?.id
+      },
+      degreeProgramId(newValue){
+        this.semesterByProgram(newValue)
       }
     },
     methods: {
        finishToRegister(){
          this.v$.$validate()
-              if(this.financial === 'other'){
-           this.financial = this.otherstated
-        }
+         if(!this.v$.$error){
            var educatonData={}
            educatonData.academic_year_id = this.$refs.acYearId.value
            educatonData.degree_department_id = this.$refs.degreeDepartmentId?.value
-           educatonData.degreeProgram_id = this.$refs.degreeProgramId?.value
+           educatonData.degreeProgram_id = this.degreeProgramId
           educatonData.year_no = this.year_no
            educatonData.semester_id = this.$refs.semesterId?.value
            educatonData.EGSSE_result= this.EGSSE_result
@@ -261,21 +254,15 @@ export default {
            educatonData.tvetProgram_id = this.tvetProgramId
            educatonData.level_id = this.levelId
            educatonData.studentType = this.studentType
-           if(!this.v$.$error){
            this.educationalDetail(educatonData)
            }
        },
        backToPersonalInfoPage(){
            this.backPage('personal-info','isEducational')
        } ,
-             semesterAtZero(semister){
-       this.activeSemesters = this.semesters.filter((semester) =>{
-  return Number(semister.program_id) === Number(semester.program_id)
-}) 
-      },
-      semesterByProgram(event){
+      semesterByProgram(degreeProgramId){
 this.activeSemesters = this.semesters.filter((semester) =>{
-  return Number(event.target.value) === Number(semester.program_id)
+  return Number(degreeProgramId) === Number(semester.program_id)
 })
       }, 
     },
@@ -307,8 +294,12 @@ this.activeSemesters = this.semesters.filter((semester) =>{
   .faild{
     color: red;
   }
-  .warning{
-    border-color: red;
+  .warning input{
+    border: 1px red solid;
+  }
+  .warning span{
+    display: inline;
     color: red;
+
   }
 </style>

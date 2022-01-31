@@ -54,10 +54,10 @@
     <input type="text" class="form-control form-control-sm" id="kebele" v-model="birth_address.kebele">
       <span class="error-msg mt-1">{{ v$.birth_address.kebele.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-md-6 col-lg-4">
+  <div class="mb-3 col-md-6 col-lg-4" :class="{warning:v$.birth_address.country.$error}">
     <label for="country" class="form-label">Country (for none Ethiopian)</label>
     <input type="text" class="form-control form-control-sm" id="country" v-model="birth_address.country">
-   
+    <span class="error-msg mt-1">{{ v$.birth_address.country.$errors[0]?.$message}}</span>
   </div>
 </div>
 <div class="row">
@@ -79,13 +79,15 @@
     <input type="text" class="form-control form-control-sm" id="kebele" v-model="residential_address.kebele">
       <span class="error-msg mt-1">{{ v$.residential_address.kebele.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-md-6 col-lg-3">
+  <div class="mb-3 col-md-6 col-lg-3" :class="{warning:v$.residential_address.house_no.$error}">
     <label for="house_ho" class="form-label">House No</label>
     <input type="number" class="form-control form-control-sm" id="house_ho" v-model="residential_address.house_no">
+     <span class="error-msg mt-1">{{ v$.residential_address.house_no.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-md-6 col-lg-3">
+  <div class="mb-3 col-md-6 col-lg-3" :class="{warning:v$.residential_address.year.$error}">
     <label for="year" class="form-label">Year</label>
     <input type="number" class="form-control form-control-sm" id="year" v-model="residential_address.year">
+     <span class="error-msg mt-1">{{ v$.residential_address.year.$errors[0]?.$message}}</span>
   </div>
   </div>
   <div class="mt-3"><strong>Tel :-</strong></div>
@@ -144,27 +146,32 @@
     <input type="text" class="form-control form-control-sm" id="relation" v-model="contact_relationship">
      <span class="error-msg mt-1">{{ v$.contact_relationship.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-md-6 col-lg-3">
+  <div class="mb-3 col-md-6 col-lg-3" :class="{warning:v$.emergency_address.region.$error}">
     <label for="relativesregion" class="form-label">Region</label>
     <input type="text" class="form-control form-control-sm" id="relativesregion" v-model="emergency_address.region">
+      <span class="error-msg mt-1">{{ v$.emergency_address.region.$errors[0]?.$message}}</span>
   </div>
   </div>
   <div class="row mt-3">
-  <div class="mb-3 col-md-6 col-lg-3">
+  <div class="mb-3 col-md-6 col-lg-3" :class="{warning:v$.emergency_address.town.$error}">
     <label for="town" class="form-label">Town</label>
     <input type="text" class="form-control form-control-sm" id="town" v-model="emergency_address.town">
+      <span class="error-msg mt-1">{{ v$.emergency_address.town.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-md-6 col-lg-3">
+  <div class="mb-3 col-md-6 col-lg-3" :class="{warning:v$.emergency_address.subcity.$error}">
     <label for="woreda" class="form-label">Woreda/Subcity</label>
     <input type="text" class="form-control form-control-sm" id="woreda" v-model="emergency_address.subcity">
+      <span class="error-msg mt-1">{{ v$.emergency_address.subcity.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-md-6 col-lg-3">
+  <div class="mb-3 col-md-6 col-lg-3" :class="{warning:v$.emergency_address.kebele.$error}">
     <label for="relativesckebele" class="form-label">Kebele</label>
     <input type="text" class="form-control form-control-sm" id="relativesckebele" v-model="emergency_address.kebele">
+      <span class="error-msg mt-1">{{ v$.emergency_address.kebele.$errors[0]?.$message}}</span>
   </div>
-   <div class="mb-3 col-md-6 col-lg-3">
+   <div class="mb-3 col-md-6 col-lg-3" :class="{warning:v$.emergency_address.house_no.$error}">
     <label for="rel_hou_no" class="form-label">House Number</label>
     <input type="number" class="form-control form-control-sm" id="rel_hou_no" v-model="emergency_address.house_no">
+      <span class="error-msg mt-1">{{ v$.emergency_address.house_no.$errors[0]?.$message}}</span>
   </div>
   </div>
    <div class="mt-3"><strong>Tel :-</strong></div>
@@ -258,12 +265,22 @@ export default {
          max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
         kebele: {required:helpers.withMessage('Birth Address   kebele  is required',required),
          max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
+          country: {max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
       },
       residential_address:{
         subcity:{required:helpers.withMessage('Current Residence Address   Subcity  is required',required),
          max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
          kebele:{required:helpers.withMessage('Current Residence Address   kebele  is required',required),
           max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
+          year: {max:helpers.withMessage('Maximum character length should be 3',maxLength(3))},
+          house_no: {max:helpers.withMessage('Maximum character length should be 5',maxLength(5))},
+      },
+      emergency_address:{
+            subcity:{max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
+         kebele:{max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
+          region: {max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
+          town: {max:helpers.withMessage('Maximum character length should be 15',maxLength(15))},
+           house_no: {max:helpers.withMessage('Maximum character length should be 5',maxLength(5))},
       }
       }
     },
@@ -280,7 +297,7 @@ export default {
           if(!this.v$.$error){
               this.$store.commit('registrar/setResultNotifier','')
             this.personalDetail(this.studentInfo,'educational-info')
-        }
+       }
         }
     },
 }

@@ -1,6 +1,7 @@
 <template>
 <base-card>
-<span class="px-3">PERSONAL INFORMATION</span>
+ <span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i>Back</span>
+<div class="px-3 mt-3">PERSONAL INFORMATION</div>
 <div class="border rounded shadow-sm p-3">
 <div class="mt-3"><span ><Strong>Full Name</Strong></span></div>
 <div class="row mt-3">
@@ -429,6 +430,9 @@ export default {
         }
     },
     methods: {
+       back(){
+        this.$router.back()
+      },
        async fetchStudentDatas(){
             this.$store.commit('setIsItemLoading',true)
             try{
@@ -615,6 +619,13 @@ if(response.status === 200){
 }
 </script>
 <style scoped>
+  .backarrow{
+  cursor: pointer;
+  font-size: 22px;
+}
+.backarrow:hover{
+  color: #1142ac;
+}
 .btn{
     background-color: #2f4587;
     width: 12em;

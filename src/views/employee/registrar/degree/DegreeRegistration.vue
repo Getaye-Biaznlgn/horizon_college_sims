@@ -61,6 +61,9 @@ export default {
 
     }
   },
+  created() {
+     this.$store.commit('registrar/setResultNotifier','')
+  },
     methods: {
        back(){
         this.$router.back()
@@ -114,6 +117,7 @@ export default {
       this.studentInfo.birth_address = personalData.birth_address
       this.studentInfo.residential_address = personalData.residential_address
       this.studentInfo.emergency_address = personalData.emergency_address
+      this.studentInfo.contact_relationship = personalData.contact_relationship
       this.studentInfo.dob = personalData.birthDay
        this.componentName = 'educational-info'
        this.isEducational = true

@@ -1,20 +1,17 @@
 <template>
- <div class="container">
+<base-card>
      <div class="ms-md-3 me-md-3 p-md-2 text-md-center textTitle">HORIZON COLLEGE OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATION
        FORM FOR DEGREE AND TVET STUDENTS</div>
-      <div class="d-flex mt-1 mt-md-3">
-          <div @click="personal()" class="personal pointer me-3 flex-fill" :class="{activePointer:isPersonal,startPointer:isPersonal}">Personal Info</div>
-          <!-- <div @click="educational()" class="educational pointer me-3" :class="{activePointer:isEducational}">Education info</div>
-          <div @click="admission()" class="admission pointer me-3" :class="{activePointer:isAdmission}">Admission</div> -->
+      <div class="d-flex mt-1 mt-md-3 container">
+          <div @click="personal()" class="personal pointer me-3 flex-fill" :class="{activePointer:isPersonal,startPointer:isPersonal}">Personal Info</div> 
           <div @click="educational()" class="educational pointer flex-fill" :class="{activePointer:isEducational,endPointer:isEducational}">Educational Info</div>
       </div>
-      <div class="mt-md-3">
+      <div class="mt-md-3 container">
         <keep-alive>
         <component :is="componentName"></component>
         </keep-alive> 
      </div>
- </div>
- 
+</base-card>
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -65,9 +62,8 @@ export default {
        .then(()=>{
            this.$store.getters.academicYears.forEach((year)=>{
            if(Number(year.is_current) === 1) {
-             console.log('active year id yyy  = '+year.id)
                   this.$store.commit('setSelectedAcYearId',year.id) 
-                console.log('active acyearr id from state',this.$store.getters['acYearId'])
+                   this.$store.dispatch('registrar/fetchActiveYearSemisters',year.id)
                }     
             })
            }
@@ -80,39 +76,6 @@ export default {
       this.$store.dispatch('dean/fetchTvetPrograms')
   },
     methods: {
-      
-      // personal(){
-      //   this.isPersonal = true
-      //   this.componentName = 'personal-info'
-      // },
-      // educational(){
-      //   if(this.isEducational === true){
-      //   this.componentName = 'educational-info'
-      //   }
-      //   else{
-      //     this.isEducational = true
-      //     this.componentName = 'educational-info'
-      //   }
-        
-      // },
-      // admission(){
-      //   if(this.isAdmission === true){
-      //   this.componentName = 'admission-info'
-      //   }
-      //   else{
-      //     this.isAdmission = true
-      //     this.componentName = 'admission-info'
-      //   }
-      // },
-      // finance(){
-      //   if(this.isFinance === true){
-      //   this.componentName = 'financial-info'
-      //   }
-      //   else{
-      //     this.isFinance = true
-      //     this.componentName = 'financial-info'
-      //   }
-      // },
       personalDetail(personalData){
       this.studentInfo.contact_full_name = personalData.contact_full_name
       this.studentInfo.first_name = personalData.first_name
@@ -242,13 +205,6 @@ finally{
 }
 </script>
 <style scoped>
-  .backarrow{
-  cursor: pointer;
-  font-size: 22px;
-}
-.backarrow:hover{
-  color: #1142ac;
-}
 .pointer {
   height: 40px;
   position: relative;

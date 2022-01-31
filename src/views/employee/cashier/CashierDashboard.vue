@@ -4,7 +4,7 @@
             <img src="../../../assets/dashboard_header.png" alt=""  height="200" class="img-fluid">
             <div class="position-absolute top-0 start-0 ms-2 mt-2 text-white">
                 <p class="fw-bold">Well come Mrs. dera!</p>
-                <p class="small">I will you good day and enjoy you time.</p>
+                <p class="small">I wish you a good day and enjoy your time.</p>
             </div> 
         </div>
         <div class="cards d-flex position-relative mx-2">

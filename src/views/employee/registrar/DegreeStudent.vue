@@ -13,7 +13,7 @@
     </div>
     <div class="d-flex justify-content-between mt-4">
      <div class="input-group mt-3 search">
-  <input type="text" class="form-control form-control-sm px-0" placeholder="Search By ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="searchValue">
+  <input type="text" class="form-control form-control-sm px-0" placeholder="Search By ID" aria-label="Username" aria-describedby="addon-wrapping" v-model.trim="searchValue">
    <span class="searchicon input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
   <div class="d-flex ms-3">
@@ -66,8 +66,8 @@
   </div>
   </div>
   <div class="degreestudentlist" id="degreestudentlist">
-    <div class="ms-5 mt-5">
-    <span class="sr-only">{{yearNo+' '+semesterName+' '+departmentName+' '+ programName+' '+stateName+' Students'}}</span>
+    <div class="ms-5 sr-only">
+    <span>{{yearNo+' '+semesterName+' '+departmentName+' '+ programName+' '+stateName+' '+scholarName+' Students'}}</span>
     </div>
      <table class="mt-3">
   <thead>
@@ -82,7 +82,7 @@
       <th class="text-white px-2">Semester</th>
       <th class="text-white px-2">current State</th>
       <th class="text-white px-2">Result Form</th>
-      <th><span class="sr-only px-2">action</span></th>
+      <th><span class="sr-only px-2"></span></th>
     </tr>
   </thead>
   <tbody>
@@ -108,7 +108,8 @@
 
           <ul class="dropdown-menu py-0" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
 
-             <li v-if="Number(student.year_no) === 1 && student.status === 'waiting'"><span @click="deleteStudent(student.id,student.semester_id,semesterForFilter)" class="dropdown-item px-4 py-2">Delet Student</span></li>
+             <li v-if="Number(student.year_no) === 1 && student.status === 'waiting'">
+               <span @click="deleteStudent(student,semesterForFilter)" class="dropdown-item px-4 py-2">Delete Student</span></li>
              <li><span @click="editStudent(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
              <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Status</span></li>
               <li><span @click="permitResult(student)" class="dropdown-item px-4 py-2">Permit Result Entry</span></li>
@@ -168,6 +169,7 @@ export default {
      stateName:'',
      programName:'',
      departmentName:'',
+     scholarName:'',
      scholarForFilter:'all',
        //
        isEditStudent:false,
@@ -206,7 +208,7 @@ export default {
             }
          })
     
-      if(this.searchValue!==''){
+      if(this.searchValue !==''){
          tempStudents=tempStudents.filter((student)=>{
             return student?.student_id?.toLowerCase().includes(this.searchValue.toLowerCase())
          })
@@ -260,11 +262,16 @@ this.degreeDepartments.forEach(department=>{
     }
     },
     programForFilter(newValue){
+      if(newValue !== 'all'){
 this.degreePrograms.forEach(program=>{
   if(newValue === program.id){
     this.programName = program.name
   }
 })
+      }
+      else{
+        this.programName = ''
+      }
     },
     yearForFilter(newValue){
         this.queryData.year_no = newValue
@@ -299,6 +306,17 @@ this.degreePrograms.forEach(program=>{
       this.stateName = ''
     }
   },
+  scholarForFilter(newValue){
+if(newValue === 'all'){
+  this.scholarName = ''
+}
+else if(newValue === 'fully'){
+  this.scholarName = 'scholarship'
+}
+else if(newValue === 'none'){
+  this.scholarName = 'none scholarship'
+}
+  },
   academicYearId(newValue){
     this.queryData.year_no = this.yearForFilter
     this.queryData.academic_year_id = newValue
@@ -325,10 +343,11 @@ this.degreePrograms.forEach(program=>{
         this.$router.push({name:'DegreeStudentRegistration'})
       },
      async viewDetail(id){
-       this.$store.dispatch('registrar/fetchDegreeStudentDetail',id).then(()=>{
-            this.$router.push({name:'DegreeStudentDetail',params:{degreeStudId:id}})
-       })
+        this.$router.push({name:'DegreeStudentStatus',params:{degreeStudId:id}})
      },
+      editStudent(id){
+         this.$router.push({name:'EditDegreeStudents',params:{studId:id}})
+        } ,
        async approveStudent(studentvalue){
          var student={}
          student.student_id= studentvalue.id,
@@ -347,16 +366,15 @@ this.degreePrograms.forEach(program=>{
             console.log(e)
           }
        },
-       deleteStudent(id,semester_id,semester_no){
+       deleteStudent(student,semester_no){
          var payload={}
-         payload.id = id
+         payload.id = student.id
          payload.semester_no = semester_no
-         payload.semester_id = semester_id
-         this.$store.dispatch('registrar/deleteDegreeStudent',payload)
+         payload.semester_id = student.semester_id
+         this.$store.dispatch('registrar/deleteDegreeStudent',payload).then(()=>{
+           student.status = 'approved'
+         })
        }, 
-        editStudent(id){
-         this.$router.push({name:'EditDegreeStudents',params:{studId:id}})
-        } ,
         permitResult(student){
           this.isPermit = true
           this.semesterId = student.semester_id

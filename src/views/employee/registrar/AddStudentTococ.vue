@@ -24,7 +24,7 @@
       <label for="dob" class="form-label"><strong>Student ID</strong></label>
       <input type="text" class="form-control" id="id" v-model="studentId" @input="checkIdLength($event)">
     <span v-if="isIdEmpty" class="error-msg mt-1">Student ID number is required </span>
-     <span v-if="idError" class="error-msg mt-1">Student ID number must be 13 digit long </span>
+     <span v-if="idError" class="error-msg mt-1">Student ID number must be 12 digit long </span>
    </div>
 <div class="px-5 mt-3">
   <span class="py-2">Select Student Type</span>
@@ -292,15 +292,16 @@ export default {
             this.isInternal = true
             this.isExternal = false
             this.resultNotifier = ''
+            this.v$.$reset()
         },
          externalStudent(){
             this.isInternal = false
             this.isExternal = true
             this.resultNotifier = ''
         },
-        cancelInternalDialog(){},
+        // cancelInternalDialog(){},
         checkIdLength(event){
-          if(event.target.value.length !== 13 && event.target.value !== ''){
+          if(event.target.value.length !== 12 && event.target.value !== ''){
             this.idError = true
             this.isIdNo = false
           }
@@ -428,6 +429,7 @@ return isInvalid
                     var previousCocStudents = this.$store.getters['registrar/cocTakerStudents']
                     previousCocStudents.push(response.data)
                     this.$store.commit('registrar/setCocTakerStudents', previousCocStudents)
+                    this.v$.$reset()
                 } else if(response.status === 200) {
                  this.isFaild = true
                  this.isSuccessed = false

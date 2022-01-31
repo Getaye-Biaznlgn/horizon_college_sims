@@ -1,17 +1,17 @@
 <template>
 <base-card>
 <span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span>
-<div class="d-flex">
-     <div class="studenttype col-sm-3 ms-3 me-5">
-    <span class="mt-3 mb-3">Student Type</span>
+<div class="d-flex align-items-center mt-3">
+     <div class="studenttype ms-3 w-25">
+    <span class="mb-3">Student Type</span>
     <select class="form-select form-select-sm mt-1" aria-label=".form-select-sm example" v-model="student_type">
   <option selected value="degree"><strong>Degree</strong></option>
   <option value="tvet"><strong>TVET</strong></option>
 </select>
     </div>
- <div class="mt-2 ms-auto me-3 search">
+ <div class="ms-auto me-5 search">
      <span>Student ID</span>
-    <div class="input-group input-group-sm mt-1 searchdiv">
+    <div class="input-group input-group-sm">
   <input type="text" class="form-control searchinput" aria-label="Sizing example input" placeholder="Student ID" aria-describedby="inputGroup-sizing-sm" v-model="studId" @keyup.enter="searchStudentById()">
   <span @click="searchStudentById()" class="input-group-text searchbtn" id="inputGroup-sizing-sm">
         <span v-if="isLoading"><span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Searching</span>      
@@ -19,9 +19,11 @@
     </span>
 </div>
     </div>
-<div class="d-flex"> <button @click="exportStudentCopy()" class="btn p-1 ms-auto exportbtn"></button></div>
+    <div class="mt-2">
+   <button @click="exportStudentCopy()" class="btn p-1 ms-auto exportbtn">export</button>
+   </div>
 </div>
- <div class="d-flex justify-content-between mt-2">
+ <div class="d-flex justify-content-between mt-5">
     <div class="ms-5">
     <div class="d-flex">
     <span><strong>Student Name:</strong></span>
@@ -43,7 +45,7 @@
     </div>
     <div class="d-flex mt-2">
     <span><strong>Program : </strong></span>
-    <span>{{studentSemesters.program.name}}</span>
+    <span>{{studentSemesters.program?.name}}</span>
     </div>
         <div class="d-flex mt-2">
     <span><strong>Year : </strong></span>
@@ -62,7 +64,7 @@
       <th class="text-white p-3"></th>
       </tr>
       </thead>
-  <tbody v-if="studentSemesters.semesters.length">
+  <tbody v-if="studentSemesters.semesters?.length">
   <tr v-for="semester in studentSemesters.semesters" :key="semester.start_date">
   <td>{{semester.year_no+' year '+semester.semester_no+' semester'}}</td>
   <td>{{semester.year}}</td>
@@ -84,12 +86,9 @@
   </tr>
   </tbody>
     <div v-else class="mt-4 ms-5 mb-5">
-    <span class="error">There is no semester data found</span>
+    <span class="error">There is no data found</span>
   </div>
     </table>
-    <div class="d-flex justify-content-end mt-5 mb-1"> 
-    <button @click="registerForSemester()" class="btn ms-3 me-1 p-1 register addbtn">Register for New Semester</button>
-    </div>
 </base-card>
 </template>
 <script>
@@ -133,6 +132,7 @@ export default {
 .exportbtn{
     background-color: #2f4587;
     width: 7em;
+    color: #fff;
 }
 .exportbtn:hover{
     background-color: #366ad9;

@@ -1,25 +1,27 @@
 <template>
 <base-card>
- <div class="d-flex justify-content-between">
+ <div class="d-flex mb-3 align-items-center">
      <div class="input-group search w-25">
   <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByStudId()">
    <span @click="searchByStudId()" class="searchicon  input-group-text" id="searchby_id"><i class="fas fa-search"></i></span>
 </div>
-<div class="d-flex">
-  <div class="mb-3 me-4">
+<div class="d-flex ms-auto">
+  <div class="me-4">
+    <span>Paid</span>
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="paid" @change="fetchPaidStudents($event)">
-  <option value="paid">paid</option>
+  <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
-  <div class="mb-3 me-4">
+  <div class="me-4">
+    <span>UnPaid</span>
    <select class="form-select form-select-sm" aria-label="Default select example" v-model="unpaid" @change="fetchUnpaidStudents($event)">
-  <option value="unpaid">Unpaid</option>
+  <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
   <div>
-    <button @click="printStudentFeeList()" class="btn me-1 addbtn p-1">
+    <button @click="printStudentFeeList()" class="btn me-1 addbtn p-1 mt-3">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
     </button>
@@ -27,7 +29,7 @@
     </div>
     </div>
     <div id="degreefee">
-      <div class="ms-5 mt-5 sr-only">Degree Student Fee lists</div>
+      <div class="ms-5 sr-only">Degree Student Fee lists</div>
     <table class="mt-2">
   <thead>
     <tr class="table-header">
@@ -78,7 +80,7 @@
   </tbody>
      
 </table>
-<div v-if="!studentFee.data?.length" class="ms-5 px-5  mt-3 pb-2">There is no paid Degree students found </div>
+<div v-if="!studentFee.data?.length" class="ms-5 px-5  mt-3 pb-2">There is no Degree students found </div>
     </div>
 <div v-if="studentFee.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
@@ -196,12 +198,12 @@ export default {
       return {
         isDetail:false,
         studentId:null,
-        rowNumber:5,
-        paid:'paid',
-        unpaid:'unpaid',
+        rowNumber:10,
+        paid:'all',
+        unpaid:'all',
          queryObject:{
             page:1,
-            per_page:5,
+            per_page:10,
             search_id:'',
             month_query:'',
             path:'api/degree_student_fees',
@@ -231,14 +233,14 @@ export default {
      watch:{
        acYearId(newValue){
          this.queryObject.academic_year_id = newValue
+         this.queryObject.search_id = ''
+         this.studentId = ''
          this.degreeStudentsPaid(this.queryObject)
        },
-      studentId(newValue){
-  this.queryObject.search_id = newValue
-  this.degreeStudentsPaid(this.queryObject)
-},
 rowNumber(newValue){
   this.queryObject.per_page = newValue
+   this.studentId = ''
+  this.queryObject.search_id = ''
   this.degreeStudentsPaid(this.queryObject)
 }
     },
@@ -247,9 +249,13 @@ rowNumber(newValue){
           this.$store.dispatch('registrar/fetchDegreeStudentFeesLists',queryObject)
         },
        async fetchPaidStudents(event){
-           this.queryObject.month_query = event.target.value
+          this.queryObject.page = 1
+         this.unpaid = 'all'
+         this.queryObject.search_id = ''
+         this.studentId = ''
+           if(event.target.value !== 'all'){
+            this.queryObject.month_query = event.target.value
            this.queryObject.academic_year_id = this.acYearId
-           if(event.target.value !== 'paid'){
           try{
             console.log('paid students outside')
              var response = await apiClient.get(`api/degree_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
@@ -264,13 +270,19 @@ rowNumber(newValue){
           }
           }
           else{
+            this.paid = 'all'
+            this.queryObject.month_query = ''
             this.degreeStudentsPaid(this.queryObject)
           }
         },
        async fetchUnpaidStudents(event){
-         this.queryObject.month_query = event.target.value
+         this.queryObject.page = 1
+         this.paid = 'all'
+         this.queryObject.search_id = ''
+         this.studentId = ''
+          if(event.target.value !== 'all'){
+             this.queryObject.month_query = event.target.value
           this.queryObject.academic_year_id = this.acYearId
-          if(event.target.value !== 'unpaid'){
           try{
              var response = await apiClient.get(`api/degree_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
             if(response.status ===200){
@@ -282,6 +294,8 @@ rowNumber(newValue){
           }
           }
            else{
+             this.unpaid = 'all'
+              this.queryObject.month_query = ''
             this.degreeStudentsPaid(this.queryObject)
           }
         },
@@ -301,13 +315,23 @@ rowNumber(newValue){
         this.$htmlToPaper('degreefeeDetail');
       },
       forWardChivron(){
+        this.queryObject.search_id = ''
+         this.studentId = ''
         this.queryObject.page = this.queryObject.page +1
        this.degreeStudentsPaid(this.queryObject)
       },
       backChivron(){
+        this.queryObject.search_id = ''
+         this.studentId = ''
         this.queryObject.page = this.queryObject.page -1
        this.degreeStudentsPaid(this.queryObject)
       },
+      searchByStudId(){
+  this.queryObject.search_id = this.studentId
+  this.degreeStudentsPaid(this.queryObject)
+      }
+      
+
     },
 }
 </script>
