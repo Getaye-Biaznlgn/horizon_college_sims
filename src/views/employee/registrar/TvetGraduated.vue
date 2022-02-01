@@ -41,8 +41,8 @@
   <td class="py-2">{{student.student_id}}</td>
   <td class="py-2">{{student.first_name+' '+student.last_name}}</td>
   <td class="py-2">{{student.sex}}</td>
-  <td class="py-2">{{student.degree_department.name}}</td>
-  <td class="py-2">{{student.program.name}}</td>
+  <td class="py-2">{{student.degree_department?.name}}</td>
+  <td class="py-2">{{student.program?.name}}</td>
    </tr>
   </tbody>
     </table>
@@ -82,11 +82,12 @@ export default {
           page:1,
           per_page:5,
 
-        }
+        },
+
         }
     },
        computed:{
-    ...mapGetters('dean',['degreeDepartments','degreePrograms']),
+    ...mapGetters('dean',['tvetDepartments','tvetPrograms']),
     academicYearId(){
         return this.$store.getters.acYearId
     },
@@ -125,7 +126,7 @@ export default {
             await this.$htmlToPaper('tvetGraguate');
             },
         async fetchTvetGraduats(queryObject){
-          this.$store.state.isItemLoading = true
+          this.$store.commit('setIsItemLoading',true)
             try{
               var response = await apiClient.get(`api/registrar_graduated_tvet_students?academic_year_id=${queryObject.acId}&per_page=${queryObject.per_page}`)
               if(response.status === 200){
@@ -137,7 +138,7 @@ export default {
               console.log('error')
             }
             finally{
-              this.$store.state.isItemLoading = false
+              this.$store.commit('setIsItemLoading',false)
             }
         },
                forWardChivron(){

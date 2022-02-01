@@ -62,16 +62,18 @@
                     class="dropdown-menu"
                     aria-labelledby="dropdownMenuLink border rounded shadow-sm">
                     <li><span @click="viewModules(level.id)" class="dropdown-item px-4 py-2">View Modules</span></li>
+                     <li><span @click="giveMoguleResult(level)" class="dropdown-item px-4 py-2">Give Module Result</span></li>
                     <li v-if="isActiveYear(level.academic_year_id)">
-                      <span @click="editLevel(level.id,level.academic_year_id)" class="dropdown-item px-4 py-2">Edit Level</span></li>
+                      <span v-if="level.status==='waiting'" @click="editLevel(level.id,level.academic_year_id)" class="dropdown-item px-4 py-2">Edit Level</span></li>
                   </ul>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
-        <div class="d-flex justify-content-end mt-5 mb-2">
-        <button @click="registerForLevel()" class="btn ms-3 me-1 p-1 register addbtn">Register for New Level
+        <div class="d-flex mt-5 mb-2">
+           <span v-if="!checkCompletion()" class="faild ms-5">Ther is uncompleted Level</span>
+        <button @click="registerForLevel()" class="btn ms-3 me-1 p-1 register addbtn ms-auto" :disabled="!checkCompletion()">Register for New Level
           </button>
         </div>
       </base-card>
@@ -183,6 +185,44 @@
       </base-card>
     </div>
   </div>
+   <div v-if="isGiveResult" class="editwraper pb-5">
+      <div class="resultContainer ms-auto me-auto border rounded shadow-sm bg-white pb-3">
+       <div class="d-flex justify-content-end p-0">
+        <span @click="isGiveResult = false" class="close fs-2 me-5"><i class="far fa-times-circle"></i></span>
+      </div>
+        <div class="result">
+      <table class="viewcourse">
+  <thead>
+      <tr class="table-header">
+        <th class="text-white p-3">NO</th>
+      <th class="text-white p-3">Title</th>
+      <th class="text-white p-3">Course Code</th>
+      <th class="text-white p-3">Result from 20%</th>
+      <th class="text-white p-3">Result from 30%</th>
+      <th class="text-white p-3">Result from 50%</th>
+      <th class="text-white p-3">Total from 100%</th>
+      <th class="text-white p-3"></th>
+      </tr>
+      </thead>
+  <tbody>
+  <tr v-for="(mogule,index) in levelModules" :key="mogule.id">
+    <td>{{index+1}}</td>
+  <td>{{mogule.title}}</td>
+  <td>{{mogule.code}}</td>
+  <td><input type="number" v-model="mogule.from_20" @input="calculetTotal($event,mogule)"></td>
+  <td><input type="number" v-model="mogule.from_30" @input="calculetTotal($event,mogule)"></td>
+  <td><input type="number" v-model="mogule.from_50" @input="calculetTotal($event,mogule)"></td>
+   <td><input type="number" v-model="mogule.total_mark"></td>
+  <td><button @click="setResult(mogule)" class="btn savebtn p-1" :disabled="Number(mogule.is_changed) === 0">Save</button></td>
+  </tr>
+  </tbody>
+    </table>
+     <div v-if="!levelModules.length" class="mt-4 ms-5 mb-3">
+    <span>There is no Modules found for this semester</span>
+  </div>
+    </div>
+      </div>
+    </div>
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -203,7 +243,9 @@ export default {
       isEdit:false,
       acYearId:'',
       newLevelId:'',
-      oldLevelId:''
+      oldLevelId:'',
+      isGiveResult:false,
+      selectedLevelId:''
         }
     },
      computed: {
@@ -239,12 +281,24 @@ export default {
                  back(){
         this.$router.back()
       },
+      checkCompletion(){
+        var isCompleted = true
+        this.studentLevels.levels?.forEach(level=>{
+          if(level.status !== 'finished'){
+            isCompleted = false
+            return
+          }
+          
+        })
+        return isCompleted
+      },
           registerForLevel() {
       this.isNewLevel = true;
       this.resultNotifier = "";
       this.student_id = this.studentLevels.id
       console.log('student status',this.studentLevels)
     },
+
     cancelRegistration() {
       this.isNewLevel = false;
     },
@@ -281,11 +335,11 @@ export default {
              this.student_id = this.studentLevels.id
           this.$store.commit('setIsItemLoading',true)
        try{
-         var response = await apiClient.get(`api/level_modules/${this.student_id}?level_id=${id}`)
+         var response = await apiClient.get(`api/level_modules/${this.tvetStudId}?level_id=${id}`)
          if(response.status === 200){
            this.levelModules = response.data
             this.isViewModule = true
-            console.log('semester modules ='+this.student_id)
+            console.log('level modules ='+this.student_id)
             console.log(response.data)
          }
        }
@@ -334,7 +388,60 @@ export default {
           }
         })
         return isCurrent
-      }
+      },
+       calculetTotal(event,mogule){
+         mogule.is_changed = 1
+      var totalMark = Number(mogule.from_20) + Number(mogule.from_30) +Number(mogule.from_50)
+      mogule.total_mark = totalMark
+      },
+        async giveMoguleResult(level){
+          this.selectedLevelId = level.id
+        //    if(Number(level.legible)=== 0){
+        //    this.$store.commit('setAlertMessages',{
+        //         text:'This studdent do not paid his tuition fee!',
+        //         type:'danger'
+        //       })
+        //  }
+        //  else if(Number(level.is_allowed_now)=== 0){
+        //    this.$store.commit('setAlertMessages',{
+        //         text:'Student result entry date is passed!',
+        //         type:'danger'
+        //       })
+        //  }
+        //  else{
+         this.$store.commit('setIsItemLoading',true)         
+       try{
+         var response = await apiClient.get(`api/level_modules/${this.tvetStudId}?level_id=${level.id}`)
+         if(response.status === 200){
+           this.levelModules = response.data
+           this.isGiveResult = true
+            console.log('mogules',response.data)
+         }
+       }
+       catch(e){
+         console .log('error')
+       }
+       finally{
+          this.$store.commit('setIsItemLoading',false)
+       }
+        
+        //  }
+      },
+       async setResult(mogule){
+         mogule.level_id = this.selectedLevelId
+        console.log('course result sent to server',mogule)
+        var response = await apiClient.post('api/give_module_result/'+this.tvetStudId,mogule)
+        if(response.status === 200){
+          console.log('result successfully sent')
+          mogule.is_changed = 0
+           this.$store.commit('setAlertMessages',{
+                text:'Result is saved!',
+                type:'success'
+              })
+          console.log('mogule result from server',response.data)
+        }
+      },
+
      },
 }
 </script>
@@ -355,6 +462,14 @@ export default {
 } 
 .addbtn:hover,.exportbtn:hover{
     background-color:#2248b8 ;
+}
+.savebtn{
+  width: 5em;
+  background-color: #2f4587;
+  color: #fff;
+}
+.savebtn:hover{
+  background-color: #366ad9;
 }
 .exportbtn{
     background-color: #2f4587;
@@ -420,7 +535,28 @@ cursor: pointer;
 .close:hover{
   color: #366ad9;
 }
-
+.viewcourse th{
+  background-color: #fff;
+  color: rgb(17, 17, 17)!important;
+  font-size: 16px;
+}
+.viewcourse tr{
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-top: 2px solid rgb(237, 240, 241);
+  border-bottom: 2px solid rgb(237, 240, 241);;
+}
+.viewcourse td{ 
+  padding: 10px;
+  padding-left: 15px;
+  border-left: none;
+  border-right: none;
+   border-top: 2px solid rgb(237, 240, 241);;
+  border-bottom: 2px solid rgb(237, 240, 241);;
+}
+td input{
+  width: 90%;
+}
 .editwraper{
  position: fixed;
     top: 0;
@@ -435,6 +571,16 @@ cursor: pointer;
    margin: auto;
    margin-top: 5%;
    margin-bottom: 5%;
+   height: 80vh;
+   overflow-y: auto;
+}
+.resultContainer{
+  width: 96%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+.result{
+   width: 100%;
    height: 80vh;
    overflow-y: auto;
 }

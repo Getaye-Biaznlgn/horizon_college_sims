@@ -96,7 +96,7 @@
       <td>{{student.year_no}}</td>
       <td>{{semesterForFilter}}</td>
       <td class="text-center">
-        <span v-if="student.status === 'approved'">{{student.status}}</span>
+        <span v-if="student.status !== 'waiting'">{{student.status}}</span>
         <span v-else class="approvebtn border rounded shadow-sm p-1"><button @click="approveStudent(student)" class="btn error" id="approvebtn">approve</button></span>
       </td>
        <td>{{changeResultEntryState(student.legible)}}</td>

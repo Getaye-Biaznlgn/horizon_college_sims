@@ -406,7 +406,7 @@ this.tvetPrograms.forEach(program=>{
           optionData.level_id = this.levelId
           optionData.legible = this.optionValue
           try{
-            var response = await apiClient.post('api/change_result_entry_state_for_tvet/'+optionData.student_id,optionData)
+            var response = await apiClient.post('api/change_result_entry_state_tvet/'+optionData.student_id,optionData)
             if(response.status === 200){
                  var previousStudents = this.tvetStudents
                     var index = previousStudents.students.findIndex(student => {

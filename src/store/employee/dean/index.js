@@ -16,7 +16,7 @@ export default {
         events: [],
         yearMonths: [],
         dashboardData: {},
-        selectedAcademicCalendarDetail:{}
+        selectedAcademicCalendarDetail: {}
     },
     getters: {
         teachers(state) {
@@ -67,7 +67,7 @@ export default {
         yearMonths(state) {
             return state.yearMonths
         },
-        selectedAcademicCalendarDetail(state){
+        selectedAcademicCalendarDetail(state) {
             return state.selectedAcademicCalendarDetail
         }
     },
@@ -81,8 +81,8 @@ export default {
         setTvetDepartments(state, tvetDepartments) {
             state.tvetDepartments = tvetDepartments
         },
-        setSelectedAcademicCalendarDetail(state, yearDetail){
-            state.selectedAcademicCalendarDetail=yearDetail
+        setSelectedAcademicCalendarDetail(state, yearDetail) {
+            state.selectedAcademicCalendarDetail = yearDetail
         },
         setCourses(state, courses) {
             state.courses = courses
@@ -155,46 +155,46 @@ export default {
         },
         async addDegreeDepartment(context, degreeDepartment) {
             let response;
-            try{
-               response = await apiClient.post('/api/degree_departments', JSON.stringify(degreeDepartment))
-            if (response.status === 201) {
-                var previousData = context.getters.degreeDepartments
-                previousData.unshift(response.data)
-                context.commit('setDegreeDepartments', previousData)
-            } else {
-                throw 'faild to add'
-            }
-            }catch{
-                if(response.status===202){
+            try {
+                response = await apiClient.post('/api/degree_departments', JSON.stringify(degreeDepartment))
+                if (response.status === 201) {
+                    var previousData = context.getters.degreeDepartments
+                    previousData.unshift(response.data)
+                    context.commit('setDegreeDepartments', previousData)
+                } else {
+                    throw 'faild to add'
+                }
+            } catch {
+                if (response.status === 202) {
                     throw 'Department name and abbreviation must be unique.'
-                }else{
+                } else {
                     throw ''
-                } 
+                }
             }
-            
+
         },
         async updateDegreeDepartment(context, paylode) {
-            let response=""
-            try{
-              response = await apiClient.put('/api/degree_departments/' + paylode.id, JSON.stringify(paylode),)
-            if (response.status === 200) {
-                var previousData = context.getters.degreeDepartments
-                const editedIndex = previousData.findIndex((department) => {
-                    return department.id === paylode.id
-                })
-                previousData[editedIndex] = response.data
-                context.commit('setDegreeDepartments', previousData)
-            } else {
-                throw ''
-            }
-            }catch{
-                if(response.status===202){
+            let response = ""
+            try {
+                response = await apiClient.put('/api/degree_departments/' + paylode.id, JSON.stringify(paylode), )
+                if (response.status === 200) {
+                    var previousData = context.getters.degreeDepartments
+                    const editedIndex = previousData.findIndex((department) => {
+                        return department.id === paylode.id
+                    })
+                    previousData[editedIndex] = response.data
+                    context.commit('setDegreeDepartments', previousData)
+                } else {
+                    throw ''
+                }
+            } catch {
+                if (response.status === 202) {
                     throw 'Department name and abbreviation must be unique.'
-                }else{
+                } else {
                     throw 'Faild to update Department'
-                } 
+                }
             }
-            
+
 
         },
         async deleteDegreeDepartment(context, id) {
@@ -331,25 +331,23 @@ export default {
             }
         },
         async addCourse(context, course) {
-            let response=''
-           try{
-              response = await apiClient.post('/api/courses', JSON.stringify(course))
-            if (response.status === 201) {
-                var previousData = context.getters.courses
-                previousData.unshift(response.data)
-                context.commit('setCourses', previousData)
-            } 
-           
-            else {
-                throw 'Faild to add course'
-            } 
-           } catch{
-               if(response.status===202)
-               throw 'Course code must be unique'
-               else
-               throw 'Faild to add course'
-           }
-            
+            let response = ''
+            try {
+                response = await apiClient.post('/api/courses', JSON.stringify(course))
+                if (response.status === 201) {
+                    var previousData = context.getters.courses
+                    previousData.unshift(response.data)
+                    context.commit('setCourses', previousData)
+                } else {
+                    throw 'Faild to add course'
+                }
+            } catch {
+                if (response.status === 202)
+                    throw 'Course code must be unique'
+                else
+                    throw 'Faild to add course'
+            }
+
         },
         async deleteCourse(context, id) {
             var response = await apiClient.delete('/api/courses/' + id)
@@ -365,7 +363,7 @@ export default {
             }
         },
         async updateCourse(context, paylode) {
-            let response=''
+            let response = ''
             try {
                 response = await apiClient.put('api/courses/' + paylode.id, JSON.stringify(paylode))
                 if (response.status === 200) {
@@ -375,16 +373,15 @@ export default {
                     })
                     previousData[editedIndex] = response.data
                     context.commit('setCourses', previousData)
-                } 
-                else {
+                } else {
                     throw ''
                 }
             } catch {
-                if(response.status===202){
+                if (response.status === 202) {
                     throw 'Course code must be unique.'
-                }else{
+                } else {
                     throw 'Faild to update course'
-                } 
+                }
             }
         },
         async fetchYearMonths(context) {
@@ -414,46 +411,46 @@ export default {
             }
         },
         async addModule(context, tvetModule) {
-           let response=''
-           try{
-            response = await apiClient.post('/api/modules', JSON.stringify(tvetModule))
-            if (response.status === 201) {
-                var previousData = context.getters.modules
-                previousData.unshift(response.data)
-                context.commit('setModules', previousData)
-            } else {
-                throw 'faild to add'
-            } 
-           }catch{
-            if(response.status===202){
-                throw 'Module code must be unique.'
-            }else{
-                throw 'Faild to add module'
-            } 
-           }
-            
+            let response = ''
+            try {
+                response = await apiClient.post('/api/modules', JSON.stringify(tvetModule))
+                if (response.status === 201) {
+                    var previousData = context.getters.modules
+                    previousData.unshift(response.data)
+                    context.commit('setModules', previousData)
+                } else {
+                    throw 'faild to add'
+                }
+            } catch {
+                if (response.status === 202) {
+                    throw 'Module code must be unique.'
+                } else {
+                    throw 'Faild to add module'
+                }
+            }
+
         },
         async updateModule(context, paylode) {
-            try{
-               var response = await apiClient.put('/api/modules/' + paylode.id, JSON.stringify(paylode))
-            if (response.status === 200) {
-                var previousData = context.getters.modules
-                const editedIndex = previousData.findIndex((module) => {
-                    return module.id === paylode.id
-                })
-                previousData[editedIndex] = response.data
-                context.commit('setModules', previousData)
-            } else {
-                throw 'faild to update module'
-            } 
-          }catch{
-            if(response.status===202){
-                throw 'Module code must be unique.'
-            }else{
-                throw 'Faild to update module'
-            } 
-          }
-            
+            try {
+                var response = await apiClient.put('/api/modules/' + paylode.id, JSON.stringify(paylode))
+                if (response.status === 200) {
+                    var previousData = context.getters.modules
+                    const editedIndex = previousData.findIndex((module) => {
+                        return module.id === paylode.id
+                    })
+                    previousData[editedIndex] = response.data
+                    context.commit('setModules', previousData)
+                } else {
+                    throw 'faild to update module'
+                }
+            } catch {
+                if (response.status === 202) {
+                    throw 'Module code must be unique.'
+                } else {
+                    throw 'Faild to update module'
+                }
+            }
+
         },
         async deleteModule(context, id) {
             var response = await apiClient.delete('/api/modules/' + id)
@@ -470,41 +467,43 @@ export default {
             }
 
         },
-        // async fetchDegreePrograms({ commit, rootState }) {
-        //     try {
-        //         rootState.isLoading = true
-        //         var response = await apiClient.get("/api/degree_programs")
-        //         if (response.status === 200) {
-        //             commit('setDegreePrograms', response.data)
-        //             console.log('DegreePrograms', response.data)
-        //         } else {
-        //             throw 'faild to load programs'
-        //         }
-        //     } catch (e) {
-        //         console.log(e.response)
-        //         throw e
-        //     } finally {
-        //         rootState.isLoading = false
-        //     }
-        // },
+        async fetchDegreePrograms({ commit, rootState }) {
+            try {
+                rootState.isLoading = true
+                var response = await apiClient.get("/api/degree_programs")
+                if (response.status === 200) {
+                    commit('setDegreePrograms', response.data)
+                    console.log('DegreePrograms', response.data)
+                } else {
+                    throw 'faild to load programs'
+                }
+            } catch (e) {
+                console.log(e.response)
+                throw e
+            } finally {
+                rootState.isLoading = false
+            }
+        },
 
-        // async fetchTvetPrograms({ commit, rootState }) {
-        //     try {
-        //         rootState.isLoading = true
-        //         var response = await apiClient.get("/api/tvet_programs")
-        //         if (response.status === 200) {
-        //             commit('setTvetPrograms', response.data)
-        //             console.log('tvetPrograms', response.data)
-        //         } else {
-        //             throw 'faild to load programs'
-        //         }
-        //     } catch (e) {
-        //         console.log(e.response)
-        //         throw e
-        //     } finally {
-        //         rootState.isLoading = false
+        async fetchTvetPrograms({ commit, rootState }) {
+            try {
+                rootState.isLoading = true
+                var response = await apiClient.get("/api/tvet_programs")
+                if (response.status === 200) {
+                    commit('setTvetPrograms', response.data)
+                    console.log('tvetPrograms', response.data)
+                } else {
+                    throw 'faild to load programs'
+                }
+            } catch (e) {
+                console.log(e.response)
+                throw e
+            } finally {
+                rootState.isLoading = false
+            }
+        },
 
-            
+
         async fetchTeachers({ commit, rootState }) {
             rootState.isLoading = true
             try {
@@ -596,7 +595,7 @@ export default {
             try {
                 var response = await apiClient.post('api/employees', cashier)
                 if (response.status === 201) {
-                   var previousCashier = context.getters.cashiers
+                    var previousCashier = context.getters.cashiers
                     previousCashier.push(response.data)
                     context.commit('setCashier', previousCashier)
                 } else {
@@ -629,7 +628,7 @@ export default {
             try {
                 var response = await apiClient.put('api/teachers/' + teacher.id, teacher)
                 if (response.status === 200) {
-                   
+
                     var previousTeacher = context.getters.teachers
                     var index = previousTeacher.findIndex((oneTeacher) => {
                         return oneTeacher.id === teacher.id
@@ -668,7 +667,7 @@ export default {
             try {
                 var response = await apiClient.put('api/employees/' + registrar.id, registrar)
                 if (response.status === 200) {
-                 var previousregistrar = context.getters.registrars
+                    var previousregistrar = context.getters.registrars
                     var index = previousregistrar.findIndex((oneRegistrar) => {
                         return oneRegistrar.id === registrar.id
                     })
@@ -730,7 +729,7 @@ export default {
                 console.log('response code')
                 console.log(response.status)
                 if (response.status === 200) {
-                    
+
                     var previousDeptHead = context.getters.departmentHeads
                     var index = previousDeptHead.findIndex((oneTeacher) => {
                         return oneTeacher.id === deptHeadId
@@ -747,11 +746,11 @@ export default {
             }
         },
         async deleteRegistrar(context, registrarId) {
-            
+
             try {
                 var response = await apiClient.delete('api/employees/' + registrarId)
                 if (response.status === 200) {
-                   
+
                     var previousRegistrar = context.getters.registrars
                     var index = previousRegistrar.findIndex((oneRegistrar) => {
                         return oneRegistrar.id === registrarId

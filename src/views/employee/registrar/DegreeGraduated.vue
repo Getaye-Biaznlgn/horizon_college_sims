@@ -41,13 +41,13 @@
   <td class="py-2">{{student.student_id}}</td>
   <td class="py-2">{{student.first_name+' '+student.last_name}}</td>
   <td class="py-2">{{student.sex}}</td>
-  <td class="py-2">{{student.degree_department.name}}</td>
-  <td class="py-2">{{student.program.name}}</td>
+  <td class="py-2">{{student.degree_department?.name}}</td>
+  <td class="py-2">{{student.program?.name}}</td>
    </tr>
   </tbody>
     </table>
      </div>
-    <div v-if="degreeGraduates.data.length" class="d-flex justify-content-end mt-3 me-5">
+    <div v-if="degreeGraduates.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
@@ -78,7 +78,7 @@ export default {
     data() {
         return {
          rowNumber:'10',
-          queryObject:{
+         queryObject:{
           page:1,
           per_page:5,
 

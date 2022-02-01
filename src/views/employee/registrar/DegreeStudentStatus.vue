@@ -56,8 +56,10 @@
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-            <li><span @click="viewCourse(semester.id)"  class="dropdown-item px-4 py-2">View Course</span></li>
-            <li><span @click="editStudentSemester(semester,studentSemesters.program?.id)" class="dropdown-item px-4 py-2">Edit Semester registration</span></li>
+            <li><span @click="viewCourse(semester.id)" class="dropdown-item px-4 py-2">View Course</span></li>
+            <li v-if="semester.status==='waiting'">
+              <span @click="editStudentSemester(semester,studentSemesters.program?.id)" class="dropdown-item px-4 py-2">Edit Semester </span></li>
+             <li><span @click="giveCoursResult(semester)" class="dropdown-item px-4 py-2">Give Result </span></li>
           </ul>
         </div>
   </td>
@@ -67,9 +69,9 @@
      <div v-if="!studentSemesters.semesters?.length" class="mt-4 ms-5 mb-5">
     <span>There is no semester data found</span>
   </div>
-    <div class="d-flex justify-content-end mt-5 mb-1"> 
-      <span class="faild">Ther is uncompleted semester</span>
-    <button @click="registerForSemester()" class="btn ms-3 me-1 p-1 register addbtn" :disabled ="!checkComplation()">Register for New Semester</button>
+    <div class="d-flex mt-5 mb-1"> 
+      <span v-if="!checkComplation()" class="faild ms-5">Ther is uncompleted semester</span>
+    <button @click="registerForSemester()" class="btn ms-3 me-1 p-1 register addbtn ms-auto" :disabled ="!checkComplation()">Register for New Semester</button>
     </div>
 </base-card>
   <div v-if="isNewSemester" class="editwraper mb-3">
@@ -109,14 +111,15 @@
 </div>
     </div>
     <div v-if="isViewCourse" class="editwraper">
-      <div class="w-75 ms-auto me-auto mt-5 border rounded shadow-sm bg-white mb-5 pb-5">
+      <div class="resultContainer ms-auto me-auto mt-4 border rounded shadow-sm bg-white pb-3">
        <div class="d-flex justify-content-end p-0">
         <span @click="isViewCourse = false" class="close fs-2 me-5"><i class="far fa-times-circle"></i></span>
       </div>
-        <div class="courseview">
+        <div class="result">
       <table class="viewcourse">
   <thead>
       <tr class="table-header">
+        <th class="text-white p-3">NO</th>
       <th class="text-white p-3">Title</th>
       <th class="text-white p-3">Course Code</th>
       <th class="text-white p-3">Credit Point</th>
@@ -124,8 +127,9 @@
       <th class="text-white p-3">Grade</th>
       </tr>
       </thead>
-  <tbody v-if="semesterCourses.length">
-  <tr v-for="course in semesterCourses" :key="course.id">
+  <tbody>
+  <tr v-for="(course,index) in semesterCourses" :key="course.id">
+    <td>{{index+1}}</td>
   <td>{{course.title}}</td>
   <td>{{course.code}}</td>
   <td>{{course.cp}}</td>
@@ -133,10 +137,10 @@
   <td>{{course.grade_point}}</td>
   </tr>
   </tbody>
-    <div v-else class="mt-4 ms-5 mb-3">
+    </table>
+     <div v-if="!semesterCourses.length" class="mt-4 ms-5 mb-3">
     <span>There is no Courses found for this semester</span>
   </div>
-    </table>
     </div>
       </div>
     </div>
@@ -177,6 +181,48 @@
   </base-card>
 </div>
     </div>
+    <div v-if="isGiveResult" class="editwraper">
+      <div class="resultContainer ms-auto me-auto border rounded shadow-sm bg-white pb-4">
+       <div class="d-flex justify-content-end p-0">
+        <span @click="isGiveResult = false" class="close fs-2 me-5"><i class="far fa-times-circle"></i></span>
+      </div>
+        <div class="result">
+      <table class="viewcourse">
+  <thead>
+      <tr class="table-header">
+        <th class="text-white p-3">NO</th>
+      <th class="text-white p-3">Title</th>
+      <th class="text-white p-3">Course Code</th>
+      <th class="text-white p-3">Result from 5%</th>
+      <th class="text-white p-3">Result from 5%</th>
+      <th class="text-white p-3">Result from 25%</th>
+      <th class="text-white p-3">Result from 25%</th>
+      <th class="text-white p-3">Result from 40%</th>
+      <th class="text-white p-3">Total From 100%</th>
+      <th class="text-white p-3"></th>
+      </tr>
+      </thead>
+  <tbody>
+  <tr v-for="(course,index) in semesterCourses" :key="course.id">
+    <td>{{index+1}}</td>
+  <td>{{course.title}}</td>
+  <td>{{course.code}}</td>
+  <td><input type="number" v-model="course.from_5" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" v-model="course.from_5s" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" v-model="course.from_25" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" v-model="course.from_25s" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" v-model="course.from_40" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" v-model="course.total_mark"></td>
+  <td><button @click="setResult(course)" class="btn savebtn p-1" :disabled="Number(course.is_changed) === 0">Save</button></td>
+  </tr>
+  </tbody>
+    </table>
+     <div v-if="!semesterCourses.length" class="mt-4 ms-5 mb-3">
+    <span>There is no Courses found for this semester</span>
+  </div>
+    </div>
+      </div>
+    </div>
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -202,8 +248,8 @@ export default {
       programId:'',
       //isEnterResult:false,
       isViewCourse:false,
+      isGiveResult:false,
       semesterCourses:'',
-      total:'',
       courses:[],
       isEditSemester:false,
       lodSemesterId:'',
@@ -211,6 +257,7 @@ export default {
       newYearNo:'',
       oldYearNo:'',
       selectedYear:'',
+     selectedSemesterId:'',
         }
     },
     computed:{
@@ -243,11 +290,7 @@ export default {
          })
           this.$store.dispatch('registrar/fetchDegreeStudentDetail',this.degreeStudId)
     },
-    watch:{
-      degreeStudId(newValue){
-          this.$store.dispatch('registrar/fetchDegreeStudentDetail',newValue)
-      }
-    },
+    
     methods: {
         back(){
         this.$router.back()
@@ -260,12 +303,69 @@ export default {
         this.isNewSemester = true
          this.resultNotifier=''
          this.programId = this.studentSemesters.program.id
-         this.studentId= this.studentSemesters.id
+         this.studentId= this.degreeStudId
          console.log('student semester data ',this.studentSemesters)
+      },
+       async giveCoursResult(semester){
+          if(Number(semester.is_closed)=== 1){
+           this.$store.commit('setAlertMessages',{
+                text:'This semester is Closed!',
+                type:'danger'
+              })
+         }
+         else if(Number(semester.legible)=== 0){
+           this.$store.commit('setAlertMessages',{
+                text:'This studdent do not paid his tuition fee!',
+                type:'danger'
+              })
+         }
+         else if(Number(semester.is_allowed_now)=== 0){
+           this.$store.commit('setAlertMessages',{
+                text:'Student result entry date is passed!',
+                type:'danger'
+              })
+         }
+         
+         else{
+         this.$store.commit('setIsItemLoading',true)
+         this.student_id = this.studentSemesters.id
+         this.programId = this.studentSemesters.program.id
+         this.selectedSemesterId = semester.id
+         
+       try{
+         var response = await apiClient.get(`api/semester_courses/${this.degreeStudId}?semester_id=${semester.id}`)
+         if(response.status === 200){
+           this.semesterCourses = response.data
+           this.isGiveResult = true
+            console.log(response.data)
+         }
+       }
+       catch(e){
+         console .log('error')
+       }
+       finally{
+          this.$store.commit('setIsItemLoading',false)
+       }
+        }
+        
+      },
+      async setResult(course){
+       course.semester_id = this.selectedSemesterId
+        console.log('course result sent to server',course)
+        var response = await apiClient.post('api/give_course_result/'+this.degreeStudId,course)
+        if(response.status === 200){
+          console.log('result successfully sent')
+          console.log('course result from server',response.data)
+          course.is_changed = 0
+           this.$store.commit('setAlertMessages',{
+                text:'Result is saved!',
+                type:'success'
+              })
+        }
       },
       checkComplation(){
         var isCopleted = true
-     this.studentSemesters.semesters.forEach(semester=>{
+     this.studentSemesters.semesters?.forEach(semester=>{
            if(semester.status !== 'finished'){
              isCopleted = false
              console.log('state of semester',isCopleted)
@@ -313,7 +413,7 @@ finally{
          this.programId = this.studentSemesters.program.id
          
        try{
-         var response = await apiClient.get(`api/semester_courses/${this.student_id}?semester_id=${id}`)
+         var response = await apiClient.get(`api/semester_courses/${this.degreeStudId}?semester_id=${id}`)
          if(response.status === 200){
            this.semesterCourses = response.data
             this.isViewCourse = true
@@ -327,6 +427,11 @@ finally{
        finally{
           this.$store.commit('setIsItemLoading',false)
        }
+      },
+      calculetTotal(event,course){
+        course.is_changed = 1
+      var totalMark = Number(course.from_5) + Number(course.from_5s) +Number(course.from_25) +Number(course.from_25s) + Number(course.from_40)
+      course.total_mark = totalMark
       },
       cancelRegistration(){
 this.isNewSemester = false
@@ -391,6 +496,14 @@ this.resultNotifier = ''
 .addbtn:hover,.exportbtn:hover{
     background-color:#2248b8 ;
 }
+.savebtn{
+  width: 5em;
+  background-color: #2f4587;
+  color: #fff;
+}
+.savebtn:hover{
+  background-color: #366ad9;
+}
 .exportbtn{
     background-color: #2f4587;
     color: #fff;
@@ -425,6 +538,16 @@ background-color: #366ad9;
 color: #fff;
 cursor: pointer;
 }
+.resultContainer{
+  width: 96%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+.result{
+   width: 100%;
+   height: 82vh;
+   overflow-y: auto;
+}
 .courseview{
    width: 100%;
    margin-bottom: 5%;
@@ -449,6 +572,9 @@ cursor: pointer;
   border-right: none;
    border-top: 2px solid rgb(237, 240, 241);;
   border-bottom: 2px solid rgb(237, 240, 241);;
+}
+td input{
+  width: 90%;
 }
 .close{
   margin-right: 15%;

@@ -6,15 +6,15 @@
     <input type="text" class="form-control form-control-sm" id="fname" v-model="studentInfo.first_name">
     <span class="error-msg mt-1">{{ v$.studentInfo.first_name.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-lg-4" :class="{warning:v$.studentInfo.middle_name.$error}">
+  <div class="mb-3 col-lg-4" :class="{warning:v$.studentInfo.last_name.$error}">
     <label for="mname" class="form-label">Middle Name</label>
     <input type="text" class="form-control form-control-sm" id="mname" v-model="studentInfo.last_name">
-     <span class="error-msg mt-1">{{ v$.studentInfo.middle_name.$errors[0]?.$message}}</span>
+     <span class="error-msg mt-1">{{ v$.studentInfo.last_name.$errors[0]?.$message}}</span>
   </div>
-  <div class="mb-3 col-lg-4" :class="{warning:v$.studentInfo.last_name.$error}">
+  <div class="mb-3 col-lg-4" :class="{warning:v$.studentInfo.middle_name.$error}">
     <label for="lname" class="form-label">Last Name</label>
     <input type="text" class="form-control form-control-sm" id="lname" v-model="studentInfo.middle_name">
-     <span class="error-msg mt-1">{{ v$.studentInfo.last_name.$errors[0]?.$message}}</span>
+     <span class="error-msg mt-1">{{ v$.studentInfo.middle_name.$errors[0]?.$message}}</span>
   </div>
 </div>
  <div class="d-flex col-4 px-3">
@@ -216,10 +216,10 @@ export default {
          studentInfo:{
      first_name:{required:helpers.withMessage('first name is required',required),
           max:helpers.withMessage('Maximum character length should be 20',maxLength(20))},
-        middle_name:{required:helpers.withMessage('middle name is required',required),
+        middle_name:{required:helpers.withMessage('last name is required',required),
          max:helpers.withMessage('Maximum character length should be 20',maxLength(20))
         },
-        last_name:{required:helpers.withMessage('last name is required',required),
+        last_name:{required:helpers.withMessage('middel name is required',required),
          max:helpers.withMessage('Maximum character length should be 20',maxLength(20))},
       phone_no:{required:helpers.withMessage('Mobile number  is required',required),
                   numeric,

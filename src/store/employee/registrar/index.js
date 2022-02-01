@@ -207,7 +207,7 @@ export default {
             rootState.isLoading = true
             try {
                 var response = await apiClient.get('api/levels')
-                if (response.status === 200) {  
+                if (response.status === 200) {
                     commit('setLevels', response.data)
                 } else {
                     throw 'faild to load levels'
@@ -271,6 +271,7 @@ export default {
             try {
                 var response = await apiClient.get('api/student_levels/' + id)
                 if (response.status === 200) {
+                    console.log('tvetlevels ----', response.data)
                     commit('setTvetStudentDetails', response.data)
                 }
             } catch (e) {
