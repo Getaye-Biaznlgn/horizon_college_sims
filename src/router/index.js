@@ -37,23 +37,17 @@ const routes = [
 ]
 
 const router = createRouter({
-        history: createWebHistory(process.env.BASE_URL),
-        routes,
-        linkActiveClass: 'active'
-    })
-    // router.beforeEach((to, from, next) => {
-    //     if (to.matched.some(record => record.meta.authRequired) && !localStorage.getItem('token')) {
-    //         if (to.meta.typeRequired === 'employee')
-    //             return next({ name: 'EmployeeLogin', query: { to: to.path } })
-    //         else {
-    //             return next(from.path)
-    //         }
-    //     } else if (to.matched.some(record => record.meta.studentAuth) && !localStorage.getItem('studentToken')) {
-    //         if (to.meta.typeRequired === 'student')
-    //             return next({ name: 'StudentLogin', query: { to: to.path } })
-    //         else {
-    //             return next(from.path)
-    //         }
-    //     }
-    // })
+    history: createWebHistory(process.env.BASE_URL),
+    routes,
+    linkActiveClass: 'active'
+})
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.authRequired) && !localStorage.getItem('token') && to.meta.typeRequired === 'employee') {
+        return next({ name: 'EmployeeLogin', query: { to: to.path } })
+    } else if (to.matched.some(record => record.meta.studentAuth) && !localStorage.getItem('studentToken') && to.meta.typeRequired === 'student') {
+        return next({ name: 'StudentLogin', query: { to: to.path } })
+    }
+    return next()
+
+})
 export default router

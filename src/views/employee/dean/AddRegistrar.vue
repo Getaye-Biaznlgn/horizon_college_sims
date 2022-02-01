@@ -24,9 +24,8 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-                 <li><span @click="editRegistrar(registrar)" class="dropdown-item px-4 py-2">edit</span></li>
-                 <hr class="w-100 mb-0 mt-0">
-             <li><span @click="deleteRegistrar(registrar.id)" class="dropdown-item px-4 py-2">delete</span></li>
+             <li><span @click="editRegistrar(registrar)" class="dropdown-item px-4 py-2">Edit</span></li>
+             <li><span @click="showDeleteModal(registrar)" class="dropdown-item px-4 py-2">Delete</span></li>
           </ul>
         </div>
     </td>
@@ -38,7 +37,7 @@
     <!-- registrar registration form dialog-->
     <base-modal :is-loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar" @cancel="clearAddModal">
     <template #modalBody>
-    <div class="bg-white p-3">
+   
 
     <form>
       <div class="mb-3" :class="{warining:v$.registrar.first_name.$error}">
@@ -62,10 +61,19 @@
   <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.email.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 </form>
-    </div>
-    <p class="text-center mt-1" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+    <p class="text-center mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
  </template>    
   </base-modal>
+
+  <!-- delete -->
+<base-modal  id="deleteBaseModal" :button-type="buttonType" :isLoading="isLoading" @deleteItem="deleteItem" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Delete</div>
+      <div class="my-3">Do you want to delete <i>{{registrarForDelete.first_name+' '+registrarForDelete.last_name}}</i>?</div>
+      <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+   </template>
+</base-modal>
+
 </template>
 <script>
 import { Modal } from 'bootstrap';
@@ -76,11 +84,13 @@ export default {
        return {
          v$:useValidate(),
            basemodal:null,
+           deleteBaseModal:null,
            isLoading:false,
            isSuccessed:true,
            isFaild:false,
            resultNotifier:'',
            registrarType:'',
+           registrarForDelete:'',
            buttonType:'',
            registrarId:'',
            registrar:{
@@ -115,6 +125,7 @@ export default {
    },
    mounted() {
      this.basemodal = new Modal(document.getElementById('baseModal'))
+     this.deleteBaseModal=new Modal(document.getElementById('deleteBaseModal'))
    },
    computed:{
      registrars(){
@@ -134,6 +145,15 @@ export default {
            this.resultNotifier=''
            this.v$.$reset()
       },
+      showDeleteModal(registrar){
+           this.registrarForDelete={...registrar}
+           this.buttonType='delete'
+           this.deleteBaseModal.show()
+      },
+      clearDeleteModal(){
+        this.resultNotifier=''
+         this.registrarForDelete={}
+      },
       registerRegistrar(){
         this.resultNotifier=''
        this.v$.$validate()
@@ -141,11 +161,11 @@ export default {
          this.isLoading = true
        this.$store.dispatch('dean/addRegistrar',this.registrar).then((response)=>{
          if(response.status === 201){
-           this.isFaild = false
-           this.isSuccessed = true
-           this.resultNotifier = 'You have registered one registrar succesfully'
-           this.isLoading = false
-            this.basemodal.hide()
+          //  this.isFaild = false
+          //  this.isSuccessed = true
+          //  this.resultNotifier = 'You have registered one registrar succesfully'
+          //  this.isLoading = false
+          this.basemodal.hide()
          }
           else{
          console.log('form faild validation ')
@@ -170,6 +190,7 @@ export default {
         this.registrar.email = registrar.email
         this.registrarId = registrar.id
       },
+      
       saveEditedRegistrar(){
         this.resultNotifier=''
         this.v$.$validate()
@@ -192,8 +213,23 @@ export default {
        })
        }
       },
-      deleteRegistrar(id){
-         this.$store.dispatch('dean/deleteRegistrar',id)
+      deleteItem(){
+        
+         this.isLoading = true
+
+       this.$store.dispatch('dean/deleteRegistrar',this.registrarForDelete.id).then((response)=>{
+         if(response.status === 200){
+          
+           this.deleteBaseModal.hide()
+           this.clearAddModal()
+         }
+       }).catch(()=>{
+         this.isSuccessed = false
+         this.isFaild = true
+         this.resultNotifier = 'Faild to delete head'
+       }).finally(()=>{
+         this.isLoading = false
+       })
       }
    }, 
 }

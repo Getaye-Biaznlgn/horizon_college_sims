@@ -17,6 +17,7 @@
             <span v-show="current_page!==last_page" @click="navigate(current_page+1)" role="button"><i class="fas fa-chevron-right fs-4"></i></span>
          </div>
     </div>
+   
 </template>
 <script>
 import apiClient from '../../resources/baseUrl'
@@ -26,7 +27,7 @@ export default {
           events:[],
           current_page:'',
           per_page:'',
-          last_page:''
+          last_page:'',
       }
     },
     methods:{

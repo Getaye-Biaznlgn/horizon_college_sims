@@ -20,7 +20,7 @@ const options = {
     ],
     styles: [
         'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
-        `${basePath}/printing.css`
+        `${basePath}/printing.css`,
     ]
 }
 const app = createApp(App);
