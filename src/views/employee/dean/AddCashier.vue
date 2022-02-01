@@ -27,7 +27,7 @@
 
           <ul class="dropdown-menu border rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
               <li><span @click="editCashier(cashier)" class="dropdown-item px-4 py-2">Edit</span></li>
-             <li><span @click="deleteCashier(cashier.id)" class="dropdown-item px-4 py-2">Delete</span></li>
+             <li><span @click="showDeleteModal(cashier)" class="dropdown-item px-4 py-2">Delete</span></li>
           </ul>
         </div>
     </td>
@@ -40,8 +40,7 @@
     <!-- cashier registration form dialog-->
     <base-modal :is-Loading="isLoading" id="baseModal" :button-Type="buttonType" @edit="saveEditedCashier" @save="registerCashier" @cancel="clearAddModal">
     <template #modalBody>
-    <div class="bg-white p-3">
-
+    
     <form>
     <div class="mb-3" :class="{warining:v$.cashier.first_name.$error}">
   <label for="fname" class="form-label">First Name</label>
@@ -64,10 +63,19 @@
   <span class="error-msg mt-1"  v-for="(error, index) of v$.cashier.email.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 </form>
-    </div>
+   
     <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
  </template>    
   </base-modal>
+
+  <!-- delete -->
+<base-modal  id="deleteBaseModal" :button-type="buttonType" :isLoading="isLoading" @deleteItem="deleteItem" @cancel="clearDeleteModal">
+   <template #modalBody>
+      <div class="form-label fw-bold">Delete</div>
+      <div class="my-3">Do you want to delete <i>{{deleteCashierTemp.first_name+' '+deleteCashierTemp.last_name}}</i>?</div>
+      <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+   </template>
+</base-modal>
 </template>
 <script>
 
@@ -79,6 +87,8 @@ export default {
        return {
          v$:useValidate(),
            basemodal:null,
+           deleteBaseModal:null,
+           deleteCashierTemp:'',
            isLoading:false,
            isSuccessed:true,
            isFaild:false,
@@ -120,6 +130,7 @@ export default {
    },
    mounted() {
      this.basemodal = new Modal(document.getElementById('baseModal'))
+     this.deleteBaseModal=new Modal(document.getElementById('deleteBaseModal'))
    },
    computed:{
      cashiers(){
@@ -128,12 +139,19 @@ export default {
    },
    methods: {
      clearAddModal(){
-         this.cashier.first_name='',
-            this.cashier.last_name=''
-            this.cashier.phone_no=''
-            this.cashier.email=''
-            this.resultNotifier=''
+         this.cashier={}
+         this.resultNotifier=''
      },
+     showDeleteModal(cashier){
+           this.deleteCashierTemp={...cashier}
+           this.buttonType='delete'
+           this.deleteBaseModal.show()
+      },
+      clearDeleteModal(){
+        this.resultNotifier=''
+         this.deleteHead={}
+      },
+
       addCashier(){
          this.basemodal.show();
          this.buttonType = 'add'
@@ -191,8 +209,21 @@ export default {
        }
       
      },
-     deleteCashier(id){
-       this.$store.dispatch('dean/deleteCashier',id)
+     deleteItem(){
+       this.isLoading = true
+       this.$store.dispatch('dean/deleteCashier',this.deleteCashierTemp.id).then((response)=>{
+         if(response.status === 200){
+           this.deleteBaseModal.hide()
+           this.clearAddModal()
+         }
+       }).catch(()=>{
+         this.isSuccessed = false
+         this.isFaild = true
+         this.resultNotifier = 'Faild to delete head'
+       }).finally(()=>{
+         this.isLoading = false
+       })
+         
      }
    }, 
 }

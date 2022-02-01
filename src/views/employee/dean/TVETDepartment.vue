@@ -74,7 +74,7 @@
               <input class="form-control" v-model.trim="department.levelThreeOccupationName" id="level3" type="text"  aria-label=".form-control-lg">
            </div> 
            <div class="mb-3">
-              <label class="form-label " for="#level4">Level VI Occupation Name</label>
+              <label class="form-label " for="#level4">Level IV Occupation Name</label>
               <input class="form-control" v-model.trim="department.levelFourOccupationName" id="level4" type="text"  aria-label=".form-control-lg">
            </div> 
       </form>
@@ -198,6 +198,8 @@ export default {
         this.addBaseModal.show()
       },
       clearAddModal(){
+       this.department={} 
+       this.responseMessage=''
        this.v$.$reset()
       },
       showDetailModal(index){
@@ -267,10 +269,10 @@ export default {
         this.department.name=department.name
         this.department.short_name=department.short_name
         this.department.sector=department.sector
-        this.department.levelOneOccupationName=department?.levels?.[0].occupation_name
-        this.department.levelTwoOccupationName=department?.levels?.[1].occupation_name
-        this.department.levelThreeOccupationName=department?.levels?.[2].occupation_name
-        this.department.levelFourOccupationName=department?.levels?.[3].occupation_name
+        this.department.levelOneOccupationName=department?.levels?.[0]?.occupation_name
+        this.department.levelTwoOccupationName=department?.levels?.[1]?.occupation_name
+        this.department.levelThreeOccupationName=department?.levels?.[2]?.occupation_name
+        this.department.levelFourOccupationName=department?.levels?.[3]?.occupation_name
         this.addBaseModal.show()
       },
         async assignHead(){
@@ -330,6 +332,7 @@ export default {
          })
          .then(()=>{
            this.isNotSucceed=false,
+           this.clearAddModal()
            this.addBaseModal.hide()
          }).catch(()=>{
            this.isNotSucceed=true,

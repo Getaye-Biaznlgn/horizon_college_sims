@@ -37,7 +37,7 @@
     <!-- registrar registration form dialog-->
     <base-modal :is-loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedRegistrar" @save="registerRegistrar" @cancel="clearAddModal">
     <template #modalBody>
-    <div class="bg-white p-3">
+   
 
     <form>
       <div class="mb-3" :class="{warining:v$.registrar.first_name.$error}">
@@ -61,8 +61,7 @@
   <span class="error-msg mt-1"  v-for="(error, index) of v$.registrar.email.$errors" :key="index">{{ error.$message+", " }}</span>
 </div>
 </form>
-    </div>
-    <p class="text-center mt-1" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
+    <p class="text-center mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
  </template>    
   </base-modal>
 

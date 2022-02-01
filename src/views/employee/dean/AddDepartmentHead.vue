@@ -39,7 +39,6 @@
     <!-- department head registration form dialog-->
 <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead" @cancel="clearAddModal">
   <template #modalBody>
-    <div class="bg-white p-3">
       <form>
         <div class="mb-3" :class="{warining:v$.departmentHead.first_name.$error}">
           <label for="fname" class="form-label">First Name</label>
@@ -62,7 +61,6 @@
            <span class="error-msg mt-1"  v-for="(error, index) of v$.departmentHead.email.$errors" :key="index">{{ error.$message+", " }}</span>
          </div>
      </form>
- </div>
  <p class="ms-2 mt-3" :class="{'text-success':isSuccessed,'text-danger':isFaild}">{{resultNotifier}}</p>
  </template>    
 </base-modal>
@@ -209,7 +207,7 @@ export default {
       
       },
       deleteItem(){
-          this.isLoading = true
+      this.isLoading = true
        this.$store.dispatch('dean/deleteDepartmentHead',this.deleteHead.id).then((response)=>{
          if(response.status === 200){
           
