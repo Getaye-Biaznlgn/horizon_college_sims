@@ -48,6 +48,5 @@ router.beforeEach((to, from, next) => {
         return next({ name: 'StudentLogin', query: { to: to.path } })
     }
     return next()
-
 })
 export default router

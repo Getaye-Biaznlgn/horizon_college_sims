@@ -31,7 +31,7 @@
     <th>Program</th>
     <th>Year</th>
     <th>Semester</th>
-    <th><span class="sr-only"></span></th>
+    <th v-show="!isPriting"><span class="sr-only"></span></th>
   </tr>
 
   <tr v-for="(section, index) in filteredSections" :key="section.id">
@@ -41,7 +41,7 @@
       <td>{{section.program?.name}}</td>
       <td>{{section.year_no}}</td>
       <td>{{section.semester?.number}}</td>
-      <td>
+      <td v-show="!isPriting"> 
       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -141,6 +141,7 @@ export default {
       yearForFilter:'all',
       programForFilter:'all',
       semesterForFilter:'all',
+      isPrinting:false,
       section:{
          id:'',
          name:'',
@@ -200,7 +201,10 @@ export default {
 
   methods:{
     generatePaper(){
-     this.$htmlToPaper('generatedFile')
+      this.isPrinting=true
+     this.$htmlToPaper('generatedFile',()=>{
+       this.isPrinting=false
+     })
     },
       showAddModal(){
         this.responseMessage=''
@@ -261,6 +265,9 @@ export default {
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
    this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
+  },
+  created(){
+    this.$store.dispatch('degreeHead/fetchSections')
   },
   watch:{
      selectedAcademicYearId(){

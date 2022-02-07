@@ -192,7 +192,7 @@ export default {
   },
   watch:{
     selectedAcademicYearId(){
-      this.$store.dispatch('fetchStudentsInSemesters')
+      this.$store.dispatch('degreeHead/fetchStudentInSemesters')
     }
   }
 }

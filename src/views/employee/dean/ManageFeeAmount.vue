@@ -8,7 +8,9 @@
       <i class="fas fa-print me-2"></i> 
        Print
    </button> 
-  
+  <div v-if="!isPriting">
+     zemene kassie
+  </div>
 </div>
 <div id="paymentPage">
     <div class="sr-only  text-center">
@@ -19,13 +21,13 @@
      <th>No</th>
      <th>Fee Type</th>
      <th>Amount</th>
-     <th><span class="sr-only"></span></th>
+     <th v-if="!isPrinting"><span class="sr-only"></span></th>
    </tr>
    <tr v-for="(fee, index) in fees" :key="fee.id">
      <td>{{index+1}}</td>
      <td>{{fee.name}}</td>
      <td>{{fee.amount}}</td>
-     <td>
+     <td v-if="!isPrinting">
        <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -83,6 +85,7 @@ export default {
       //
       isSaving:false,
       actionButtonType:'',
+      isPrinting:false,
       //server response issue
       responseMessage:'',
       isNotSucceed:true,
@@ -92,7 +95,9 @@ export default {
         name:'',
         amount:''
       },
+      
     }
+    
   },
   computed:{
      ...mapGetters({selectedYearId:'selectedAcademicYearId'}),
@@ -114,8 +119,12 @@ export default {
   },
  
   methods:{
-      printPaymentAmount(){
-        this.$htmlToPaper('paymentPage') 
+     async printPaymentAmount(){
+        this.isPrinting=true
+        // const options=null
+      await this.$htmlToPaper('paymentPage',null,()=>{
+          this.isPrinting=false
+        }) 
       },
       showEditModal(fee){
         this.actionButtonType="edit"
@@ -195,6 +204,11 @@ export default {
  },
  created(){
    this.fetchFeeAmount(this.selectedYearId)
+ },
+ watch:{
+   selectedYearId(newValue){
+     this.fetchFeeAmount(newValue)
+   }
  }
 }
 </script>

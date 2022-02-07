@@ -1,7 +1,6 @@
 <template>
 <div class="position-relative">
 
-
 <div class="d-flex text-white py-1 justify-content-between top-address">
     <div class="d-flex">
         <span class="small mx-3 d-none d-lg-block"><i class="fas fa-map-marker-alt pe-2"></i>Bahir Dar, Ethiopia</span>

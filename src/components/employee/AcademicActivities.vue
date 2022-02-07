@@ -176,6 +176,7 @@
     </div>
   </div>
 </div>
+{{requestStatus.isSaving}}
      <div class="mb-4 pt-5 d-flex">
             <button @click="back"  class="btn ms-auto border px-3">Back</button>
             <button @click="submitForm"  :disabled="requestStatus.isSaving" type="button"  class="btn   px-4 btn-add text-white mx-3">
@@ -219,7 +220,7 @@ import useValidate from '@vuelidate/core'
 import {required, helpers} from '@vuelidate/validators'
 export default {
   components:{VueModal},
-  inject:['setSelectedComponent', 'save'],
+  inject:['setSelectedComponent','requestStatus', 'save'],
   data(){
     return{
       v$:useValidate(),

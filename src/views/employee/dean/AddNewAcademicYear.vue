@@ -20,15 +20,14 @@ export default {
   components:{Activities, FeeMonth, AcademicTime},
   data(){
       return{
-          selectedComponent:'AcademicTime',
+          selectedComponent:'Activities',
           feeMonth:'',
           academicTime:'',
           months:[],
           requestStatus:{
             isSaving:false,
-            message:'',
-            isNotSucceed:''
           }
+          
       }
   },
   methods:{
@@ -49,7 +48,6 @@ export default {
         },
      
        async saveAcadamicYear(activities){
-        this.requestStatus.message=""
         this.requestStatus.isSaving=true
             let payload={};
             payload.year=this.academicTime.academicYear?.split('-').slice(0,1).join(' ')
@@ -115,7 +113,8 @@ export default {
           setSelectedComponent:this.setSelectedComponent,
           setFeeMonth:this.setFeeMonth,
           setAcademicTime:this.setAcademicTime,
-          save:this.saveAcadamicYear
+          save:this.saveAcadamicYear,
+          requestStatus: this.requestStatus
       }
   },
   created(){

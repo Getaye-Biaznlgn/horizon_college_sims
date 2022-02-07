@@ -3,7 +3,7 @@
         <strong class="d-block text-center mb-2 mt-3">{{year}} Degree Regular Students Academic Calendar</strong>
             <div class="row g-4">
                 <div class="col-lg-6 py-3">
-                    <table class="">
+                    <table>
                         <tr>
                             <th colspan="2" class="text-center">First Semester</th>
                         </tr>
@@ -18,7 +18,7 @@
                     </table>
                 </div>
                  <div class="col-lg-6 py-3">
-                    <table class="">
+                    <table>
                         <tr>
                             <th colspan="2" class="text-center">Second Semester</th>
                         </tr>
@@ -39,7 +39,7 @@
         <strong class="d-block text-center mb-2 mt-3">{{year}} Degree Extension Students Academic Calendar</strong>
             <div class="row g-4">
                 <div class="col-lg-6 py-3">
-                    <table class="">
+                    <table>
                         <tr>
                             <th colspan="2" class="text-center">First Semester</th>
                         </tr>
@@ -54,7 +54,7 @@
                     </table>
                 </div>
                  <div class="col-lg-6 py-3">
-                    <table class="">
+                    <table>
                         <tr>
                             <th colspan="2" class="text-center">Second Semester</th>
                         </tr>
@@ -69,7 +69,7 @@
                     </table>
                 </div>
                  <div class="col-lg-6 py-3">
-                    <table class="">
+                    <table>
                         <tr>
                             <th colspan="2" class="text-center">Third Semester</th>
                         </tr>
@@ -89,10 +89,7 @@
     <div class="container mb-5">
          <strong class="d-block text-center mb-2 mt-3">{{year}} TVET Students Academic Calendar</strong>
          <div class=" py-3">
-                    <table class="">
-                        <tr>
-                            <th colspan="2" class="text-center">Third Semester</th>
-                        </tr>
+                    <table>
                         <tr>
                             <th class="text-center">Date</th>
                             <th class="text-center">Activity</th>

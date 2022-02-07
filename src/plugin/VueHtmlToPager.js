@@ -8,7 +8,7 @@ function addStyles(win, styles) {
       win.document.getElementsByTagName("head")[0].appendChild(link);
     });
   }
-  
+
   const VueHtmlToPaper = {
     install(app, options = {}) {
       app.config.globalProperties.$htmlToPaper = (
@@ -19,7 +19,10 @@ function addStyles(win, styles) {
         let defaultName = "_blank",
           defaultSpecs = ["fullscreen=yes", "titlebar=yes", "scrollbars=yes"],
           defaultReplace = true,
-          defaultStyles = [];
+          defaultStyles = [
+            'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
+            `/printing.css`,
+          ];
         let {
           name = defaultName,
           specs = defaultSpecs,

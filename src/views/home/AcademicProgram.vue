@@ -2,7 +2,7 @@
     <div class="container py-4">
       <p>Horizon College provides the following field of studies with distance, regular and extension program</p>
        <div class="d-lg-flex my-3 justify-content-around">
-        <div class="flex-fill me-3 my-3 my-md-0">
+        <div class="flex-fill me-md-3 my-3 my-md-0">
             <strong>Degree Program</strong>
             <table class="mt-2">
                 <tr>

@@ -22,13 +22,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadGradeReport" */ '../../../views/employee/degree_head/DegreeHeadGradeReport.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/degree-grade-report-preview',
@@ -39,13 +39,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadGradeReportPreview" */ '../../../views/employee/degree_head/DegreeHeadGradeReportPreview.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/dashboard',
@@ -53,13 +53,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadDashboard" */ '../../../views/employee/degree_head/DegreeHeadDashboard.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/section',
@@ -67,13 +67,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadSection" */ '../../../views/employee/degree_head/DegreeHeadSection.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/slip-report',
@@ -81,13 +81,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadSlipReport" */ '../../../views/employee/degree_head/DegreeHeadSlipReport.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/slip-preview',
@@ -98,13 +98,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadSlipPreview" */ '../../../views/employee/degree_head/DegreeHeadSlipPreview.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/student',
@@ -130,13 +130,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeHeadStudentDetail" */ '../../../views/employee/degree_head/DegreeHeadStudentDetail.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/degree-section-student/:sectionId',
@@ -145,13 +145,13 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeSectionStudent" */ '../../../views/employee/degree_head/DegreeSectionStudent.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 {
     path: '/staff/department-head/degree-section-course/:sectionId',
@@ -160,12 +160,12 @@ export default[
     component: () =>
         import ( /* webpackChunkName: "DegreeSectioncourse" */ '../../../views/employee/degree_head/DegreeSectionCourse.vue'),
         meta:{authRequired:true, typeRequired:'employee'},
-        beforeEnter(to, from, next){
-            if(store.getters.user.role!=='degree_head'){
-                next(from.path)
-                return;
-            }
-            next()
-        }
+        // beforeEnter(to, from, next){
+        //     if(store.getters.user.role!=='degree_head'){
+        //         next(from.path)
+        //         return;
+        //     }
+        //     next()
+        // }
 },
 ]

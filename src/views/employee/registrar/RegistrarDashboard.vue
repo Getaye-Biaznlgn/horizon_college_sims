@@ -72,7 +72,7 @@
           <div class="col-lg-5">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
-                <span v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} un paid Degree Students</span>
+                <span v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} Unpaid Degree Students</span>
                 <a href="/staff/degree-student-fee" class="nav-link fw-bold py-0">SEE ALL</a>
               </div>
                  <table>

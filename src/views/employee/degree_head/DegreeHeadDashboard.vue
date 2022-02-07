@@ -100,7 +100,7 @@ export default {
       }
     },
     computed:{
-        ...mapGetters({user:'user',studentInSemesters:'degreeHead/studentInSemesters',}),
+        ...mapGetters({user:'user',studentInSemesters:'degreeHead/studentInSemesters',selectedYearId:'selectedAcademicYearId'}),
         regularStudents(){
             let temp=[...this.studentInSemesters]            
             return temp[0]?.students?.filter((student)=>{
@@ -119,7 +119,7 @@ export default {
         async fetchDashboardData(){
         this.$store.commit('setIsItemLoading', true)
          try {
-             var response = await apiClient.get("/api/degree_head_dash_board")
+             var response = await apiClient.get("/api/degree_head_dash_board?academic_year_id="+this.selectedYearId)
              if (response.status === 200) {
                this.statistics=response.data
              } else {
@@ -132,6 +132,12 @@ export default {
     },
     created(){
        this.fetchDashboardData()
+    },
+    watch:{
+        selectedYearId(){
+            this.$store.dispatch('degreeHead/fetchStudentInSemesters')
+            this.fetchDashboardData()
+        }
     }
 }
 </script>
