@@ -8,9 +8,7 @@
       <i class="fas fa-print me-2"></i> 
        Print
    </button> 
-  <div v-if="!isPriting">
-     zemene kassie
-  </div>
+
 </div>
 <div id="paymentPage">
     <div class="sr-only  text-center">
@@ -21,19 +19,19 @@
      <th>No</th>
      <th>Fee Type</th>
      <th>Amount</th>
-     <th v-if="!isPrinting"><span class="sr-only"></span></th>
+     <th></th>
    </tr>
    <tr v-for="(fee, index) in fees" :key="fee.id">
      <td>{{index+1}}</td>
      <td>{{fee.name}}</td>
      <td>{{fee.amount}}</td>
-     <td v-if="!isPrinting">
-       <div class="dropdown">
+     <td>
+       <div class="dropdown" v-show="!isPrinting">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li ><span  @click="showEditModal(fee)" class="dropdown-item">Edit</span></li>
+             <li><span  @click="showEditModal(fee)" class="dropdown-item">Edit</span></li>
           </ul>
        </div>
      </td>
@@ -120,10 +118,12 @@ export default {
  
   methods:{
      async printPaymentAmount(){
-        this.isPrinting=true
-        // const options=null
-      await this.$htmlToPaper('paymentPage',null,()=>{
-          this.isPrinting=false
+       setTimeout(()=>{
+       this.isPrinting=true
+       },1000)
+        
+        await this.$htmlToPaper('paymentPage',null,()=>{
+           this.isPrinting=false
         }) 
       },
       showEditModal(fee){

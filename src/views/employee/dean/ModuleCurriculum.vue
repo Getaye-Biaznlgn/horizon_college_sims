@@ -131,7 +131,7 @@ export default {
       actionButtonType:'',
       isNotSucceed:'',
       responseMessage:'',
-      // selectedDepartment:null,
+      
       //for search and filter
       searchValue:'',
       departmentForFilter:'all',
@@ -178,7 +178,7 @@ export default {
    selectedDepartment(){
      let dep;
       this.tvetDepartments.forEach((department)=>{
-          if( department.id==this.modul.department?.id){
+          if( department.id==this.modul.tvet_department_id){
             dep=department
           }      
         })
