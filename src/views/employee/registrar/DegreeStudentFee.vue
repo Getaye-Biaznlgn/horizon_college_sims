@@ -34,7 +34,7 @@
   <thead>
     <tr class="table-header">
       <th class="text-white" rowspan="2">NO</th>
-       <th class="text-white"  rowspan="2">Stud ID</th>
+       <th class="text-white"  rowspan="2">Student ID</th>
       <th class="text-white"  rowspan="2">Full Name</th>
       <th class="text-white"  rowspan="2">Sex</th>
       <th class="text-white text-center" colspan="12">Months</th>

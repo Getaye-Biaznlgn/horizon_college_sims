@@ -65,7 +65,7 @@
   <tbody>
   <tr>
   <td v-for="month in semester.months" :key="month">{{month.pad}}</td>
-  <td>total</td>
+  <td>{{semester.total}}</td>
  
   </tr>
   <tr><td :colspan="semester.months?.length+1" class="text-center">Paid months</td>

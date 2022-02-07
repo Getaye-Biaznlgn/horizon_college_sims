@@ -7,16 +7,16 @@
     </button>
     </div>
       <div id="cocRequest" class="m-5">
-        <div class="d-flex justify-content-between ms-5 me-5  px-5 sr-only">
+        <div class="d-flex justify-content-between ms-3 me-3 mt-2 sr-only">
           <div>
           <h3>ሆራይዞን ኮሌጅ</h3>
-          <h4><i class="fas fa-phone"></i> 058-3208997</h4>
-          <h4> <i class="fas fa-envelope-square"></i> 927Bahi Dar</h4>
+          <h4> <span><img src="../../../assets/teleIcon.jpg" alt="tel icon" width="25" height="25"></span> 058-3208997</h4>
+          <h4> <span><img src="../../../assets/envelop.jpg" alt="tel icon" width="25" height="25"></span> 927Bahi Dar</h4>
           </div>
           <div> <img src="../../../assets/logo.png" alt="horizon logo" width="80" height="80" class="me-5"></div>
           <div class="ms-5"><h3>Horizon College</h3>
           <h4>Fax:058-3208997</h4>
-          <h6>E-mail:horizoncollege@gmail.com</h6>
+          <h4>E-mail:<i>horizoncollege@gmail.com</i></h4>
           </div>
 
         </div>
@@ -25,7 +25,7 @@
           <div class="sr-only d-flex justify-content-end mt-1 px-5">
               <div>
                    <h5><u>ቁጥር:</u>{{'_________________'}}</h5><br />
-              <h5><u>ቀን {{'    '+new Date().getMonth()+1+'/'+new Date().getDate()+'/'+new Date().getFullYear()}}</u></h5>
+              <h5><u>ቀን {{'    '+(Number(new Date().getMonth())+1+'/'+new Date().getDate()+'/'+new Date().getFullYear())}}</u></h5>
               </div>
           </div>
           <div class="sr-only cocTitel ms-5 mt-3">

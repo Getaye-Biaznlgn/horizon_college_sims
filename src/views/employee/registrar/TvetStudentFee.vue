@@ -5,15 +5,18 @@
   <input type="text" class="form-control p-1" placeholder="Search By studdent ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByIdNo()">
    <span @click="searchByIdNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
+<div class="d-flex">
  <div class="mb-3 me-4">
+    <span>paid Students</span>
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="paid" @change="fetchPaidStudents($event)">
-  <option value="paid">paid Students</option>
+  <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
   <div class="mb-3 me-4">
+    <span>Unpaid Students</span>
    <select class="form-select form-select-sm" aria-label="Default select example" v-model="unpaid" @change="fetchUnpaidStudents($event)">
-  <option value="unpaid">Unpaid Students</option>
+  <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
@@ -23,6 +26,7 @@
     <span>Export</span>
     </button>
     </div>
+ </div>
     </div>
     <div id="tvetStudentFee">
       <div class="ms-5 mt-3 sr-only">TVET Student tuition fee list</div>
@@ -30,7 +34,7 @@
   <thead>
     <tr class="table-header">
       <th class="text-white" rowspan="2">NO</th>
-       <th class="text-white"  rowspan="2">Stud ID</th>
+       <th class="text-white"  rowspan="2">Student ID</th>
       <th class="text-white"  rowspan="2">Full Name</th>
       <th class="text-white"  rowspan="2">Sex</th>
       <th class="text-white text-center" colspan="12">Months</th>
@@ -117,7 +121,7 @@ Rows per Page
 </div>
 <div class="name d-flex">
 <span class="me-2">ID NO :</span>
-<span>{{tvetStudentFeeDetails.id}}</span>
+<span>{{tvetStudentFeeDetails.student_id}}</span>
 </div>
 <div class="name d-flex">
 <span class="me-2">Sex :</span>
@@ -196,8 +200,8 @@ export default {
             isDetail:false,
             rowNumber:10,
             studentId:null,
-              paid:'paid',
-        unpaid:'unpaid',
+              paid:'all',
+        unpaid:'all',
             queryObject:{
             page:1,
             per_page:10,
@@ -248,12 +252,15 @@ rowNumber(newValue){
 this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
         },
           async fetchPaidStudents(event){
-            this.queryObject.search_id = ''
-           this.queryObject.month_query = event.target.value
+             this.queryObject.page = 1
+         this.unpaid = 'all'
+         this.queryObject.search_id = ''
+         this.studentId = ''
+           if(event.target.value !== 'all'){
+            this.queryObject.month_query = event.target.value
            this.queryObject.academic_year_id = this.acYearId
-           if(event.target.value !== 'paid'){
           try{
-            console.log('paid students outside')
+           console.log('paid students outside')
              var response = await apiClient.get(`api/tvet_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
             if(response.status ===200){
               console.log(response.data)
@@ -266,14 +273,19 @@ this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
           }
           }
           else{
+            this.paid = 'all'
+            this.queryObject.month_query = ''
             this.tvetStudentsPaid(this.queryObject)
-          }
+          }            
         },
        async fetchUnpaidStudents(event){
+          this.queryObject.page = 1
+         this.paid = 'all'
          this.queryObject.search_id = ''
-         this.queryObject.month_query = event.target.value
+         this.studentId = ''
+          if(event.target.value !== 'all'){
+             this.queryObject.month_query = event.target.value
           this.queryObject.academic_year_id = this.acYearId
-          if(event.target.value !== 'unpaid'){
           try{
              var response = await apiClient.get(`api/tvet_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
             if(response.status ===200){
@@ -285,6 +297,8 @@ this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
           }
           }
            else{
+             this.unpaid = 'all'
+              this.queryObject.month_query = ''
             this.tvetStudentsPaid(this.queryObject)
           }
         },

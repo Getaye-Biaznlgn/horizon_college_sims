@@ -1,6 +1,13 @@
 <template>
       <base-card>
-      <span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span>
+      <div class="d-flex justify-content-between">
+     <div><span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span></div>
+       <button @click="printTvetStudentStatus()" class="btn me-2 p-1 exportbtn">
+    <span class="me-1 py-0"><i class="fas fa-upload"></i></span>
+    <span class="py-0">Export</span>
+    </button>
+      </div>
+      <div id="studentStatus" class="mt-2">
         <div class="d-flex justify-content-between mt-2">
           <div class="nameanid ms-5">
             <div class="d-flex">
@@ -31,7 +38,8 @@
             </div>
           </div>
         </div>
-        <table class="mt-4">
+        <div class="ms-5 mt-3 sr-only">Acadamic Status</div>
+        <table class="mt-2">
           <thead>
             <tr class="table-header">
               <th class="text-white">Level</th>
@@ -71,6 +79,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
         <div class="d-flex mt-5 mb-2">
            <span v-if="!checkCompletion()" class="faild ms-5">Ther is uncompleted Level</span>
         <button @click="registerForLevel()" class="btn ms-3 me-1 p-1 register addbtn ms-auto" :disabled="!checkCompletion()">Register for New Level
@@ -122,15 +131,16 @@
     </div>
   </div>
       <div v-if="isViewModule" class="editwraper">
-      <div class="w-75 ms-auto me-auto mt-5 border rounded shadow-sm bg-white mb-3">
+      <div class="resultContainer ms-auto me-auto mt-4 border rounded shadow-sm bg-white pb-4">
     
         <div class="d-flex justify-content-end me-5">
               <span @click="isViewModule = false" class="mt-2 close fs-2"><i class="far fa-times-circle"></i></span>
         </div>
-        <div class="courseview">
+        <div class="result">
       <table class="viewcourseTable">
   <thead>
       <tr class="table-header">
+        <th class="text-white p-3">NO</th>
       <th class="text-white p-3">Title</th>
       <th class="text-white p-3">Module Code</th>
       <th class="text-white p-3">Training Hours</th>
@@ -138,7 +148,8 @@
       </tr>
       </thead>
   <tbody>
-  <tr v-for="module in levelModules" :key="module.id">
+  <tr v-for="(module,index) in levelModules" :key="module.id">
+    <td>{{index+1}}</td>
   <td>{{module.title}}</td>
   <td>{{module.code}}</td>
   <td>{{module.training_hour}}</td>
@@ -281,6 +292,9 @@ export default {
                  back(){
         this.$router.back()
       },
+      printTvetStudentStatus(){
+        this.$htmlToPaper('studentStatus')
+      },
       checkCompletion(){
         var isCompleted = true
         this.studentLevels.levels?.forEach(level=>{
@@ -396,19 +410,19 @@ export default {
       },
         async giveMoguleResult(level){
           this.selectedLevelId = level.id
-        //    if(Number(level.legible)=== 0){
-        //    this.$store.commit('setAlertMessages',{
-        //         text:'This studdent do not paid his tuition fee!',
-        //         type:'danger'
-        //       })
-        //  }
-        //  else if(Number(level.is_allowed_now)=== 0){
-        //    this.$store.commit('setAlertMessages',{
-        //         text:'Student result entry date is passed!',
-        //         type:'danger'
-        //       })
-        //  }
-        //  else{
+           if(Number(level.legible)=== 0){
+           this.$store.commit('setAlertMessages',{
+                text:'This studdent do not paid his/her tuition fee!',
+                type:'danger'
+              })
+         }
+         else if(Number(level.is_allowed_now)=== 0){
+           this.$store.commit('setAlertMessages',{
+                text:'Student result entry date is passed!',
+                type:'danger'
+              })
+         }
+         else{
          this.$store.commit('setIsItemLoading',true)         
        try{
          var response = await apiClient.get(`api/level_modules/${this.tvetStudId}?level_id=${level.id}`)
@@ -425,7 +439,7 @@ export default {
           this.$store.commit('setIsItemLoading',false)
        }
         
-        //  }
+          }
       },
        async setResult(mogule){
          mogule.level_id = this.selectedLevelId

@@ -251,7 +251,7 @@
 </div>
  </div>
   <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier3}}</p>
-    <div class="d-flex justify-content-end mt-5 mb-3">
+    <div v-if="status === 'waiting'" class="d-flex justify-content-end mt-5 mb-3">
        <button type="button" @click="saveAdmisionData()" class="btn  px-2 next text-white mx-3">
             <span v-if="isUploading3">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -275,7 +275,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="govt" value="govt" v-model="financial">
   <label class="form-check-label ms-2" for="govt">
-    Geovernment
+    Geverment
   </label>
 </div>
 <div class="form-check mt-3">
@@ -287,7 +287,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="nongovt" value="nongovt" v-model="financial">
   <label class="form-check-label ms-2" for="nongovt">
-    Non-Geovernment
+    Non-Geverment
   </label>
 </div>
 <div class="d-flex mb-4">
@@ -354,6 +354,7 @@ export default {
             resultNotifier2:'',
             resultNotifier3:'',
             resultNotifier4:'',
+            status:null
         }
     },
     validations(){
@@ -447,7 +448,7 @@ export default {
             try{
 var response = await apiClient.get('api/tvet_student_info_detail/'+this.studId)
 if(response.status === 200){
-  console.log('detail data',response.data)
+  console.log('tvet student detail data',response.data)
     this.student_id = response.data.id
     this.studentInfo.first_name = response.data.first_name
     this.studentInfo.last_name = response.data.last_name
@@ -490,6 +491,7 @@ if(response.status === 200){
             else if(Number(scolar) === 0){ this.fully_scholarship = false}
             // financial source
             this.financial = response.data.financial_source
+            this.status = response.data.status
     
 }
             }

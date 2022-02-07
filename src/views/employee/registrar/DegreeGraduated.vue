@@ -23,7 +23,7 @@
       </div>
      </div>
      <div id="degreeGraguate">
-        <div class="ms-5 mt-3 sr-only"><u>{{'List of TVET students graduated in ' +selectedYearName}}</u></div>
+        <div class="ms-5 mt-3 sr-only fw-bold">{{'List of Degree students graduated in ' +selectedYearName}}</div>
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -80,7 +80,7 @@ export default {
          rowNumber:'10',
          queryObject:{
           page:1,
-          per_page:5,
+          per_page:10,
 
         }
         }
@@ -103,7 +103,7 @@ export default {
       var yearName
       this.academicYears.forEach(year=>{
         if(Number(this.acYearId) === Number(year.id)){
-          yearName = year.name
+          yearName = year.year
         }
       })
       return yearName
