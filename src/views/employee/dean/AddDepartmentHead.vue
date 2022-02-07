@@ -39,6 +39,7 @@
     <!-- department head registration form dialog-->
 <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead" @cancel="clearAddModal">
   <template #modalBody>
+    {{departmentHead}}
       <form>
         <div class="mb-3" :class="{warining:v$.departmentHead.first_name.$error}">
           <label for="fname" class="form-label">First Name</label>
@@ -99,7 +100,7 @@ export default {
              last_name:'',
              phone_no:'',
              email:'',
-             role:'department_head'
+             role:''
            }
        }
    },
@@ -155,6 +156,7 @@ export default {
       },
       registerDepartmentHead(){
         this.resultNotifier=''
+        this.departmentHead.role='department_head'
         this.v$.$validate()
         if(!this.v$.$error){
           this.isLoading = true
@@ -182,6 +184,7 @@ export default {
         this.departmentHead.phone_no = departmentHead.phone_no
         this.departmentHead.profession = departmentHead.profession
         this.departmentHead.email = departmentHead.email
+        this.departmentHead.role=departmentHead.role
         this.deptHeadId = departmentHead.id
       },
       saveEditedDeptHead(){

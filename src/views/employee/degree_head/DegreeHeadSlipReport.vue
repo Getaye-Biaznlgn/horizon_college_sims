@@ -138,10 +138,11 @@ export default {
      this.programForFilter=newValue[0]?.id
    },
     selectedAcademicYearId(){
-      this.$store.dispatch('fetchStudentsInSemesters')
+      this.$store.dispatch('degreeHead/fetchStudentInSemesters')
     }
  }
 }
+
 </script>
 <style scoped>
 .btn-add{

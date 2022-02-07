@@ -50,10 +50,7 @@
 import apiClient from '../../resources/baseUrl'
 import { mapGetters } from 'vuex'
 export default {
-   data(){
-      return{
-      }
-   },
+ 
    created() {
         if(this.user.role=== 'registrar'){
          this.fetchNotifications()
@@ -69,7 +66,8 @@ export default {
    methods:{
       changeAcademicYear(event){
         this.$store.commit('setSelectedAcademicYearId',event.target.value)
-        this.$store.commit('setSelectedAcademicYear',event.target.value)
+        if(this.user.role==='degree_head')
+        this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       },
       changeAcYear(event){
            this.$store.commit('setSelectedAcYearId',event.target.value) 

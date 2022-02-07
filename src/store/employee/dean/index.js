@@ -746,7 +746,6 @@ export default {
             }
         },
         async deleteRegistrar(context, registrarId) {
-
             try {
                 var response = await apiClient.delete('api/employees/' + registrarId)
                 if (response.status === 200) {
@@ -785,6 +784,5 @@ export default {
                 throw e
             }
         },
-
     }
 }

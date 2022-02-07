@@ -120,10 +120,13 @@
                </sidebar-item> 
             </template>
         </collapse-sidebar-item>
+         <sidebar-item  :to="{name:'AcademicSetting'}" v-if="user.role==='dean'" :isSubItem="false" >
+            <span><i class="fas fa-cog pe-2"></i>Academic Setting</span>
+         </sidebar-item>
           <sidebar-item v-if="user.role==='dean'" :isSubItem="false" :to="{name:'ManageFeeAmount'}">
             <span><i class="fas fa-receipt pe-2"></i> Fee</span>
          </sidebar-item>
-
+         
          
          <!-- //Registrar -->
            <sidebar-item v-if="user?.role==='registrar'" :isSubItem="false" :to="{name:'RegistrarDashboard'}">
@@ -255,9 +258,7 @@
                </sidebar-item>  
             </template>
          </collapse-sidebar-item>
-         <sidebar-item  :to="{name:'AcademicSetting'}" :isSubItem="false" >
-            <span><i class="fas fa-cog pe-2"></i>Academic Setting</span>
-         </sidebar-item>
+        
          <li class="m-2">More</li>
          <sidebar-item  :to="{name:'AccountSetting'}" :isSubItem="false" >
             <span><i class="fas fa-cog pe-2"></i>Setting</span>

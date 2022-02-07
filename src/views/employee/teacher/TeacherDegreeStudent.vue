@@ -150,13 +150,21 @@ export default {
            this.$htmlToPaper('toPrint')
         },
          showAddDialog(result){
-           if(result.legible===0){
+          if(!result.is_allowed_now){
+            this.$store.commit('setAlertMessages',{
+                text:'Not allowed  to enter result now',
+                type:'danger'
+              })
+            return 
+          }
+         else if(!result.legible){
              this.$store.commit('setAlertMessages',{
                 text:'Student don\'t complete tution fee!',
                 type:'danger'
               })
              return;
            }
+          
               
            this.result={...result}
            this.actionButtonType='add'

@@ -136,7 +136,14 @@ export default {
                 text:message,
                 type:'success'
               })
-            } else {
+            }
+            else if(response.status===202){
+              this.$store.commit('setAlertMessages',{
+                text:'Semesters should be closed before!',
+                type:'danger'
+              })
+            }
+            else {
               throw 'Failed to fetch event'
             }
         }catch{
@@ -216,9 +223,9 @@ export default {
             if (response.status === 200) {
               this.academicControls.result_related.change_degree_registrar_time=response.data
               if(response.data)
-                var message='You have closed registrar degree result entry'
+                var message='You have opened registrar degree result entry'
                else
-                 message='You have opened registrar degree result entry'
+                 message='You have closed registrar degree result entry'
                this.$store.commit('setAlertMessages',{
                 text:message,
                 type:'success'
@@ -245,9 +252,9 @@ export default {
             if (response.status === 200) {
                 this.academicControls.result_related.change_tvet_registrar_time=response.data
               if(response.data)
-                var message='You have closed registrar tvet result entry'
+                var message='You have opened registrar tvet result entry'
                else
-                 message='You have opened registrar tvet result entry'
+                 message='You have closed registrar tvet result entry'
                this.$store.commit('setAlertMessages',{
                 text:message,
                 type:'success'
@@ -275,9 +282,9 @@ export default {
             if (response.status === 200) {
                 this.academicControls.result_related.change_degree_teacher_time=response.data
               if(response.data)
-                var message='You have closed teacher degree result entry'
+                var message='You have opened teacher degree result entry'
                else
-                 message='You have opened teacher degree result entry'
+                 message='You have closed teacher degree result entry'
                this.$store.commit('setAlertMessages',{
                 text:message,
                 type:'success'
@@ -305,9 +312,9 @@ export default {
             if (response.status === 200) {
                  this.academicControls.result_related.change_tvet_teacher_time=response.data
               if(response.data)
-                var message='You have closed teacher tvet result entry'
+                var message='You have opened teacher tvet result entry'
                else
-                 message='You have opened teacher tvet result entry'
+                 message='You have closed teacher tvet result entry'
                this.$store.commit('setAlertMessages',{
                 text:message,
                 type:'success'
@@ -328,10 +335,9 @@ export default {
    async getData(){
         this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get("/api/get_setting_data")
+            var response = await apiClient.get("/api/get_setting_data?academic_year_id="+this.selectedAcademicYearId)
             if (response.status === 200) {
               this.academicControls=response.data
-              console.log('acc setting', response.data)
               //regular first
               this.regularFirst=response.data.regular?.find((semester)=>{
                   return semester.number===1
@@ -362,6 +368,11 @@ export default {
   },
   created(){
      this.getData()
+  },
+  watch:{
+    selectedAcademicYearId(){
+        this.getData()
+    }
   }
 }
 </script>
