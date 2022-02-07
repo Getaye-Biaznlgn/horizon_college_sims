@@ -426,7 +426,7 @@ export default {
         },
         async deleteTvetStudent(context, payload) {
             try {
-                var response = await apiClient.delete(`api/delete_tvet_students/${payload.id}?level_id=${payload.level_id}`)
+                var response = await apiClient.delete(`api/tvet_students/${payload.id}?level_id=${payload.level_id}`)
                 console.log('status = ', response.status)
                 if (response.status === 200) {
                     console.log('Deleteed student from seerver olala')

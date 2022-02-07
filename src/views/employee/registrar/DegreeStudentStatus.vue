@@ -1,6 +1,13 @@
 <template>
 <base-card>
-<span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span>
+<div class="d-flex justify-content-between">
+ <div><span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span></div> 
+   <button @click="printDegreeStudentStatus()" class="btn me-2 p-1 exportbtn">
+    <span class="me-1"><i class="fas fa-upload"></i></span>
+    <span>Export</span>
+    </button>
+</div>
+<div id="studentStatus">
  <div class="d-flex justify-content-between mt-2">
     <div class="ms-5">
     <div class="d-flex">
@@ -31,7 +38,8 @@
     </div>
     </div>
     </div>
-      <table class="mt-4">
+    <div class="ms-5 mt-3 sr-only">Acadamic Status</div>
+      <table class="mt-2">
   <thead>
       <tr class="table-header">
       <th class="text-white p-3">Semester</th>
@@ -66,6 +74,7 @@
   </tr>
   </tbody>
     </table>
+</div>
      <div v-if="!studentSemesters.semesters?.length" class="mt-4 ms-5 mb-5">
     <span>There is no semester data found</span>
   </div>
@@ -182,7 +191,7 @@
 </div>
     </div>
     <div v-if="isGiveResult" class="editwraper">
-      <div class="resultContainer ms-auto me-auto border rounded shadow-sm bg-white pb-4">
+      <div class="resultContainer ms-auto me-auto border rounded shadow-sm bg-white pb-3">
        <div class="d-flex justify-content-end p-0">
         <span @click="isGiveResult = false" class="close fs-2 me-5"><i class="far fa-times-circle"></i></span>
       </div>
@@ -207,12 +216,12 @@
     <td>{{index+1}}</td>
   <td>{{course.title}}</td>
   <td>{{course.code}}</td>
-  <td><input type="number" v-model="course.from_5" @input="calculetTotal($event,course)"></td>
-  <td><input type="number" v-model="course.from_5s" @input="calculetTotal($event,course)"></td>
-  <td><input type="number" v-model="course.from_25" @input="calculetTotal($event,course)"></td>
-  <td><input type="number" v-model="course.from_25s" @input="calculetTotal($event,course)"></td>
-  <td><input type="number" v-model="course.from_40" @input="calculetTotal($event,course)"></td>
-  <td><input type="number" v-model="course.total_mark"></td>
+  <td><input type="number" min="0" max="5" v-model="course.from_5" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" min="0" max="5" v-model="course.from_5s" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" min="0" max="25" v-model="course.from_25" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" min="0" max="25" v-model="course.from_25s" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" min="0" max="40" v-model="course.from_40" @input="calculetTotal($event,course)"></td>
+  <td><input type="number" min="0" max="100" v-model="course.total_mark"></td>
   <td><button @click="setResult(course)" class="btn savebtn p-1" :disabled="Number(course.is_changed) === 0">Save</button></td>
   </tr>
   </tbody>
@@ -294,6 +303,9 @@ export default {
     methods: {
         back(){
         this.$router.back()
+      },
+      printDegreeStudentStatus(){
+        this.$htmlToPaper('studentStatus')
       },
       cancelEditDialog(){
         this.isEditSemester = false
@@ -432,6 +444,9 @@ finally{
         course.is_changed = 1
       var totalMark = Number(course.from_5) + Number(course.from_5s) +Number(course.from_25) +Number(course.from_25s) + Number(course.from_40)
       course.total_mark = totalMark
+      if(course.from_5 >5){
+        this.from
+      }
       },
       cancelRegistration(){
 this.isNewSemester = false
@@ -494,7 +509,7 @@ this.resultNotifier = ''
 
 } 
 .addbtn:hover,.exportbtn:hover{
-    background-color:#2248b8 ;
+    background-color:#375fd4 ;
 }
 .savebtn{
   width: 5em;
@@ -507,7 +522,7 @@ this.resultNotifier = ''
 .exportbtn{
     background-color: #2f4587;
     color: #fff;
-    width: 7em;
+    width: 8em;
 }
 table {
   font-family: arial, sans-serif;
@@ -546,12 +561,6 @@ cursor: pointer;
 .result{
    width: 100%;
    height: 82vh;
-   overflow-y: auto;
-}
-.courseview{
-   width: 100%;
-   margin-bottom: 5%;
-   height: auto;
    overflow-y: auto;
 }
 .viewcourse th{

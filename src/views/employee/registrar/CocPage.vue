@@ -8,6 +8,7 @@
     </button>
       </div>
       <div id="coclist">
+        <div class="sr-only ms-3 mt-2 mb-2">List of COC Schegules in {{activeYear}} </div>
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -71,13 +72,23 @@
 <div class="d-flex justify-content-end mt-3 pt-3">
   <button @click="cancelDialog()" class="btn cancel me-4">CANCEL</button>
   <button @click="saveCoc()" class="btn addbtn me-4">
-    <span v-if="isUploading" class="btn  py-1">
+    <span v-if="isSaving" class="btn  py-1">
  <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>ADDING</span>      
   <span v-else>ADD</span>
     </button>
 </div>  
 </div>
     </div>
+     <div v-if="isDelete" class="editwraper d-flex">
+     <div class="editDialogContent ms-auto me-auto border rounded shadow-sm p-5">
+      <div>Do you want to delete COC ?</div>
+      <div class="d-flex justify-content-end mt-5">
+         <button @click="yesDelete()" class="btn me-5 confirm">Yes</button>
+        <button @click="cancelDeletion()" class="btn confirm">NO</button>
+       
+      </div>
+     </div>
+   </div>
 </template>
 <script>
 import useValidate from '@vuelidate/core'
@@ -94,12 +105,14 @@ export default {
             exam_week:null,
             isCocRequest:false,
            },
-              isUploading:false,
+              isSaving:false,
                isSuccessed:false,
               isFaild:false,
                resultNotifier:'',
                add_or_edit:'add',
                cocId:'',
+               isDelete:false,
+               deletedCocId:null,
         }
     },
     validations(){
@@ -120,6 +133,15 @@ export default {
     },
     academicYearId(){
       return this.$store.getters.acYearId
+    },
+    activeYear(){
+      var selectedYear
+      this.academicYears.forEach(year=>{
+        if(Number(year.id) === Number(this.academicYearId)){
+          selectedYear= year.year
+        }
+      })
+      return selectedYear
     }
     },
     created() {
@@ -157,6 +179,17 @@ export default {
        async printCocList(){
          await this.$htmlToPaper('coclist')
        },
+        yesDelete(){
+          this.$store.dispatch('registrar/deleteCoc',this.deletedCocId)
+          this.isDelete = false
+       },
+       cancelDeletion(){
+          this.isDelete = false
+       },
+         deleteCoc(id){
+          this.deletedCocId = id
+          this.isDelete = true
+        },
         cancelDialog(){
             this.isAddCoc = false
             this.cocData = {}
@@ -168,9 +201,8 @@ export default {
         },
         saveCoc(){
           this.v$.$validate()
-            if(!this.v$.$error){
-          if(this.add_or_edit === 'add'){
-            this.isUploading = true
+            if(!this.v$.$error && this.add_or_edit === 'add'){
+            this.isSaving = true
             this.cocData.academic_year_id = this.$refs.acYearId.value
             try{
               console.log('this is the data sent to server')
@@ -189,12 +221,12 @@ export default {
            this.resultNotifier = 'Adding COC is faild'
      }
        finally{
-      this.isUploading = false
+      this.isSaving = false
        
       }
           }
-          else if(this.add_or_edit === 'edit'){
-            this.isUploading = true
+          else if(!this.v$.$error && this.add_or_edit === 'edit'){
+            this.isSaving = true
             try{
              this.cocData.academic_year_id = this.$refs.acYearId.value
             this.$store.dispatch('registrar/updateCocs',this.cocData).then(()=>{
@@ -211,10 +243,9 @@ export default {
            this.resultNotifier = 'editing COC is faild'
      }
        finally{
-      this.isUploading = false
+      this.isSaving = false
         }
-                }
-               }
+        }
         },
         addStudentToCoc(id){
           this.$store.dispatch('registrar/fetchCocStudents',id)
@@ -229,9 +260,6 @@ this.$router.push({name:'CocRegistration',params:{cocId:id}})
           this.cocData.id = coc.id
           this.resultNotifier = ''
         },
-        deleteCoc(id){
-           this.$store.dispatch('registrar/deleteCoc',id)
-        }
     },
 }
 </script>
@@ -291,7 +319,19 @@ cursor: pointer;
   border-top: 2px solid rgb(231, 228, 228);
   border-bottom: 2px solid rgb(231, 228, 228);
 }
-
+.confirm{
+  width: 5em;
+  border: 1px solid gainsboro;
+}
+.confirm:hover{
+  background-color: gainsboro;
+}
+.editDialogContent{
+  width: 40%;
+  margin: auto;
+  margin-top: 10%;
+  background-color: #fff;
+}
 .editwraper{
  position: fixed;
     top: 0;

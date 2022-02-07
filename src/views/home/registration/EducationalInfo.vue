@@ -138,8 +138,8 @@
    </div>
 <div class="d-flex justify-content-end finishbtn mt-5 mb-3">
       <button @click="backToPersonalInfoPage()" class="btn back p-1 me-3">Back</button>
-      <button  @click="finishToRegister()" class="btn  px-2 next text-white mx-3">
-               <span v-if="isUploading" class="btn">
+      <button  @click="finishToRegister()" class="btn  px-1 next text-white mx-3">
+               <span v-if="isUploading">
                <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
                Registering
             </span>      

@@ -191,7 +191,7 @@
      <div v-if="isCheck" class="editwraper d-flex">
        <div class="alertBox border rounded shadow-sm p-3 bg-white ms-auto me-auto">
        <div class="mt-5 d-flex">
-          <p class="text-center">{{resultNotifier}}</p>
+          <p class="text-center">{{isTheStudentFromHorizon}}</p>
           <button @click="closeDialog" class="btn closebtn ms-auto mt-5 me-5">Close</button>
        </div>
      </div>
@@ -234,6 +234,7 @@ export default {
              isSuccessed:false,
               isFaild:false,
                resultNotifier:'',
+               isTheStudentFromHorizon:'',
                isChecking:false,
                registrationNoError:false,
                occupationError:false,
@@ -270,11 +271,11 @@ export default {
             if(response.status === 200){
               this.student_id = response.data.id
               this.isCheck = true
-              this.resultNotifier='the searched student is from Horizon College'
+              this.isTheStudentFromHorizon='the searched student is from Horizon College'
             }
             else if(response.status === 201){
               this.isCheck = true
-              this.resultNotifier='the searched student is out of Horizon College'
+              this.isTheStudentFromHorizon='the searched student is out of Horizon College'
             }
           }
           catch(e){
@@ -287,6 +288,7 @@ export default {
         },
       closeDialog(){
         this.isCheck = false
+       this.isTheStudentFromHorizon = ''
       },
             internalStudent(){
             this.isInternal = true
@@ -381,9 +383,9 @@ return isInvalid
                   this.isFaild = false
                   this.isSuccessed = true
                   this.resultNotifier = 'You have Registered a student to COC succesfully'
-                    // var previousCocs = this.$store.getters['registrar/cocTakerStudents']
-                    // previousCocs.push(response.data)
-                    // this.$store.commit('registrar/setCocTakerStudents', previousCocs)
+                    var previousCocs = this.$store.getters['registrar/cocTakerStudents']
+                    previousCocs.data.push(response.data)
+                    this.$store.commit('registrar/setCocTakerStudents', previousCocs)
                 } else if(response.status === 200) {
                  this.isFaild = true
                  this.isSuccessed = false
@@ -421,13 +423,13 @@ return isInvalid
           this.cocStudent .nature_of_assesment = this.nature_of_assesment
           var response = await apiClient.post('api/register_external_student', this.cocStudent)
                 if (response.status === 201) {
-                    console.log('respose from adding external coc taker ')
+                    console.log('response from adding external coc taker ')
                     console.log(response.data)
                    this.isFaild = false
                   this.isSuccessed = true
                   this.resultNotifier = 'You have Registered a student to COC succesfully'
                     var previousCocStudents = this.$store.getters['registrar/cocTakerStudents']
-                    previousCocStudents.push(response.data)
+                    previousCocStudents.data.push(response.data)
                     this.$store.commit('registrar/setCocTakerStudents', previousCocStudents)
                     this.v$.$reset()
                 } else if(response.status === 200) {

@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="row  my-3">
-          <div class="col-lg-7"> 
+          <div class="col-lg-6"> 
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>Degree Scholarship Students</span>
@@ -69,36 +69,7 @@
                  </div>
               </base-card>
           </div>
-          <div class="col-lg-5">
-               <base-card>
-                <div class="d-flex justify-content-between mb-2">
-                <span v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} Unpaid Degree Students</span>
-                <a href="/staff/degree-student-fee" class="nav-link fw-bold py-0">SEE ALL</a>
-              </div>
-                 <table>
-                     <thead class="bg-secondary text-white">
-                         <tr>
-                             <th>No</th>
-                             <th>ID</th>
-                             <th>Full Name</th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                         <tr v-for="(student,index) in dashboardDatas.unpaid_degree_students" :key="student.student_id">
-                              <td>{{index+1}}</td>
-                              <td>{{student.student_id}}</td>
-                              <td>{{student.first_name+' '+student.last_name}}</td>
-                         </tr>
-                     </tbody>
-                 </table>
-                 <div v-if="!dashboardDatas.unpaid_degree_students?.length" class="ms-5 mt-2">
-                     No unpaid Degree students found in {{dashboardDatas.active_month}}
-                 </div>
-               </base-card>
-          </div>
-        </div>
-                <div class="row">
-          <div class="col-lg-7"> 
+           <div class="col-lg-6"> 
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>TVET Scholarship Students</span>
@@ -127,7 +98,36 @@
                  </div>
               </base-card>
           </div>
-          <div class="col-lg-5">
+        </div>
+                <div class="row">
+          <div class="col-lg-6">
+               <base-card>
+                <div class="d-flex justify-content-between mb-2">
+                <span v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} un paid Degree Students</span>
+                <a href="/staff/degree-student-fee" class="nav-link fw-bold py-0">SEE ALL</a>
+              </div>
+                 <table>
+                     <thead class="bg-secondary text-white">
+                         <tr>
+                             <th>No</th>
+                             <th>ID</th>
+                             <th>Full Name</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr v-for="(student,index) in dashboardDatas.unpaid_degree_students" :key="student.student_id">
+                              <td>{{index+1}}</td>
+                              <td>{{student.student_id}}</td>
+                              <td>{{student.first_name+' '+student.last_name}}</td>
+                         </tr>
+                     </tbody>
+                 </table>
+                 <div v-if="!dashboardDatas.unpaid_degree_students?.length" class="ms-5 mt-2">
+                     No unpaid Degree students found in {{dashboardDatas.active_month}}
+                 </div>
+               </base-card>
+          </div>
+          <div class="col-lg-6">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
                 <span  v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} Unpaid TVET Students</span>
@@ -150,7 +150,7 @@
                      </tbody>
                  </table>
                  <div v-if="!dashboardDatas.unpaid_tvet_students?.length" class="ms-5 mt-2">
-                     No unpaid Degree students found in {{dashboardDatas.active_month}}
+                     No unpaid TVET students found in {{dashboardDatas.active_month}}
                  </div>
                </base-card>
           </div>

@@ -190,8 +190,9 @@
     <span class="error-msg mt-1">{{ v$.studentInfo.contact_phone_no.$errors[0]?.$message}}</span>
   </div>
   </div>
+  <div class="mt-5">
         <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier1}}</p>
-       <div class="d-flex justify-content-end mt-5 mb-3">
+       <div class="d-flex justify-content-end mb-3">
          <button type="button" @click="savePersonalInfo()" class="btn  px-2 next text-white mx-3">
             <span v-if="isUploading1">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -199,6 +200,7 @@
             </span>      
             <span v-else>Save Change</span>   
           </button>
+       </div>
   </div>
   </div>
       <!-- Educational information -->
@@ -214,8 +216,9 @@
     <input type="text" class="form-control form-control-sm" id="eheeeresult" v-model="EHEEE_result">
   </div>
   </div>
+  <div class="mt-5">
    <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier2}}</p>
-       <div class="d-flex justify-content-end mt-5 mb-3">
+       <div class="d-flex justify-content-end mb-3">
          <button type="button" @click="saveEducationalData()" class="btn  px-2 next text-white mx-3">
             <span v-if="isUploading2">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -223,6 +226,7 @@
             </span>      
             <span v-else>Save Change</span>   
           </button>
+       </div>
   </div>
   </div>
       <!-- Admission info -->
@@ -250,8 +254,9 @@
   </label>
 </div>
  </div>
+ <div class="mt-5">
   <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier3}}</p>
-    <div class="d-flex justify-content-end mt-5 mb-3">
+    <div v-if="status==='waiting'" class="d-flex justify-content-end mb-3">
          <button type="button" @click="seveAdmissionData()" class="btn  px-2 next text-white mx-3">
             <span v-if="isUploading3">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -260,12 +265,13 @@
             <span v-else>Save Change</span>   
           </button>
   </div>
+  </div>
       </div>
       </div>
       <!-- finance info -->
       <div class="px-3 mt-5">FINANCIAL SOURCE</div>
       <div class="border rounded shadow-sm p-3">
-            <div class="mt-5"><strong>State Your Finantial Source</strong></div>
+            <div><strong>State Your Finantial Source</strong></div>
    <div class="mt-3 ms-3">
 <div class="form-check">
   <input class="form-check-input p-2" type="radio" name="finance" id="selfsupport" value="selfsupport" v-model="financial">
@@ -276,7 +282,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="govt" value="govt" v-model="financial">
   <label class="form-check-label ms-2" for="govt">
-    Geovernment
+    Geverment
   </label>
 </div>
 <div class="form-check mt-3">
@@ -288,7 +294,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="nongovt" value="nongovt" v-model="financial">
   <label class="form-check-label ms-2" for="nongovt">
-    Non-Geovernment
+    Non-Geverment
   </label>
 </div>
 <div class="d-flex mb-4">
@@ -303,9 +309,9 @@
 </span> -->
 </div>
 </div>
-<div class="d-flex justify-content-between">
-   <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier4}}</p>
- <div class="d-flex mt-5 mb-3 justify-content-end">
+<div class="d-flex justify-content-end mt-5">
+   <p class="ms-5 mt-3 me-5 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier4}}</p>
+ <div class="d-flex mb-3 justify-content-end">
         <button type="button" @click="saveFinanceData()" class="btn  px-2 next text-white mx-3">
             <span v-if="isUploading4">
                <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -354,6 +360,7 @@ export default {
             resultNotifier2:'',
             resultNotifier3:'',
             resultNotifier4:'',
+            status:null,
            
 
         }
@@ -438,6 +445,7 @@ export default {
             try{
 var response = await apiClient.get('api/degree_student_info_detail/'+this.studId)
 if(response.status === 200){
+  console.log('degree student detail',response.data)
     this.student_id = response.data.id
     this.studentInfo.first_name = response.data.first_name
     this.studentInfo.last_name = response.data.last_name
@@ -484,7 +492,7 @@ if(response.status === 200){
           
             // financial source
             this.financial = response.data.financial_source
-    
+          this.status = response.data.status
 }
             }
             catch(e){
@@ -595,7 +603,7 @@ if(response.status === 200){
             this.resultNotifier2 = ''
               this.resultNotifier3 = ''
                this.resultNotifier4 = ''
-          this.isUploading4 = false
+          this.isUploading4 = true
           try{
                     console.log('edited data',this.financial)
            var response= await apiClient.put('api/update_degree_student_finance_info/'+this.student_id,{financial_source:this.financial})

@@ -1,6 +1,6 @@
 <template>
-<base-card>
-<span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span>
+<div class="bg-white">
+  <div class="mt-2"><span @click="back()" class="backarrow ms-3"><i class="fas fa-arrow-left"></i></span></div>
 <div class="d-flex align-items-center mt-3">
      <div class="studenttype ms-3 w-25">
     <span class="mb-3">Student Type</span>
@@ -19,10 +19,11 @@
     </span>
 </div>
     </div>
-    <div class="mt-2">
+    <div class="mt-3">
    <button @click="exportStudentCopy()" class="btn p-1 ms-auto exportbtn">export</button>
    </div>
 </div>
+<div id="studentCopy">
  <div class="d-flex justify-content-between mt-5">
     <div class="ms-5">
     <div class="d-flex">
@@ -56,15 +57,15 @@
       <table class="mt-4">
   <thead>
       <tr class="table-header">
-      <th class="text-white p-3">Semester</th>
-      <th class="text-white p-3">Year</th>
-      <th class="text-white p-3">Time</th>
-      <th class="text-white p-3">State</th>
-      <th class="text-white p-3">GPA</th>
-      <th class="text-white p-3"></th>
+      <th class="p-3">Semester</th>
+      <th class="p-3">Year</th>
+      <th class="p-3">Time</th>
+      <th class="p-3">State</th>
+      <th class="p-3">GPA</th>
+      <th class="p-3"></th>
       </tr>
       </thead>
-  <tbody v-if="studentSemesters.semesters?.length">
+  <tbody>
   <tr v-for="semester in studentSemesters.semesters" :key="semester.start_date">
   <td>{{semester.year_no+' year '+semester.semester_no+' semester'}}</td>
   <td>{{semester.year}}</td>
@@ -78,22 +79,30 @@
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-             <li><span @click="enterResult(semester.id)" class="dropdown-item px-4 py-2">Enter Result</span></li>
-             <li><span @click="viewCourse(semester.id)"  class="dropdown-item px-4 py-2">View Course</span></li>
+             <!-- <li><span @click="enterResult(semester.id)" class="dropdown-item px-4 py-2">Enter Result</span></li>
+             <li><span @click="viewCourse(semester.id)"  class="dropdown-item px-4 py-2">View Course</span></li> -->
           </ul>
         </div>
   </td>
   </tr>
   </tbody>
-    <div v-else class="mt-4 ms-5 mb-5">
-    <span class="error">There is no data found</span>
-  </div>
     </table>
-</base-card>
+     <div v-if="!studentSemesters.semesters?.length" class="mt-4 ms-5 mb-5 pb-2">
+    <span class="error text-center">There is no Student Copy found</span>
+  </div>
+</div>
+</div>
 </template>
 <script>
 //import apiClient from '../../../store/baseUrl';
 export default {
+  data() {
+    return {
+      student_type:'degree',
+      studId:'',
+      isLoading:''
+    }
+  },
      computed:{
         studentSemesters(){
         return this.$store.getters['registrar/degreeStudentDetail']
@@ -109,7 +118,9 @@ export default {
           back(){
         this.$router.back()
       },
-      exportStudentCopy(){},
+      exportStudentCopy(){
+        this.$htmlToPaper('studentCopy')
+      },
      async searchStudentById(){
       // try{
       //   var response = await apiClient.get('api/student_copy')

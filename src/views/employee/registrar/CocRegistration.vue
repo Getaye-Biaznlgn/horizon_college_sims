@@ -69,13 +69,14 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu py-0" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-             <li><span @click="edit(student)" class="dropdown-item">Edit Student Info</span></li>
-             <hr class="my-0 py-0">
-             <li><span @click="deleteStudentFromCoc(student.student_id,student.type)"  class="dropdown-item">Delete Student </span></li>
-                    <hr class="my-0 py-0">
+             <!-- <li><span @click="edit(student)" class="dropdown-item">Edit Student Info</span></li>
+             <hr class="my-0 py-0"> -->             
              <li><span @click="enterResult(student.student_id,student.type)"  class="dropdown-item">Enter Result </span></li>
                      <hr class="my-0 py-0">
              <li><span @click="enterCerteficateNo(student.student_id,student.type)"  class="dropdown-item">Enter Certeficat Number </span></li>
+             <hr class="my-0 py-0">
+             <li><span @click="deleteStudentFromCoc(student.student_id,student.type,student.full_name)"  class="dropdown-item">Delete Student </span></li>
+                    
           </ul>
         </div>
   </td>
@@ -143,6 +144,16 @@ Rows per Page
 </div>  
 </div>
     </div>
+      <div v-if="isDelete" class="editwraper d-flex">
+     <div class="editDialogContent ms-auto me-auto border rounded shadow-sm p-5">
+      <div>Do you want to delete {{deletedStudentName}} from COC ?</div>
+      <div class="d-flex justify-content-end mt-5">
+         <button @click="yesDelete()" class="btn me-5 confirm">Yes</button>
+        <button @click="cancelDeletion()" class="btn confirm">NO</button>
+       
+      </div>
+     </div>
+   </div>
 </template>
 <script>
 import useVuelidate from '@vuelidate/core'
@@ -172,7 +183,10 @@ export default {
           per_page:'',
           path:'api/coc_students',
 
-        }
+        },
+        isDelete:false,
+        deletedStudent:{},
+        deletedStudentName:''
         }
     },
     validations(){
@@ -212,7 +226,7 @@ inputValue:{required:helpers.withMessage('Please Enter value',required)}
         }
         if(this.studType === 'internal'){
           tempStudent = tempStudent.filter(student=>{
-            return student.type === 'internal'
+            return student.type !== 'external'
           })
         }
         if(this.studType === 'external'){
@@ -272,17 +286,26 @@ cocId(newValue){
           this.isEnterCerteficateNo = false
           this.v$.$reset()
           this.inputValue = ''
+          this.resultNotifier = ''
         },
         saveCoc(){
             this.$store.dispatch('registrar/addCoc',this.cocData)
         },
-        deleteStudentFromCoc(id,type){
-          var student={}
-          student.id = id
-          student.type = type
-          student.coc_id = this.cocId
-          console.log('deleted student',student)
-          this.$store.dispatch('registrar/deleteStudentFromCoc',student)
+         yesDelete(){
+          console.log('deleted student',this.deletedStudent)
+          this.$store.dispatch('registrar/deleteStudentFromCoc',this.deletedStudent)
+          this.isDelete = false
+         
+       },
+       cancelDeletion(){
+          this.isDelete = false
+       },
+        deleteStudentFromCoc(id,type,name){
+          this.deletedStudent.id = id
+          this.deletedStudent.type = type
+          this.deletedStudent.coc_id = this.cocId
+          this.deletedStudentName = name
+          this.isDelete = true
         },
         editCoc(){},
               forWardChivron(){
@@ -297,6 +320,7 @@ cocId(newValue){
         this.isEnterCerteficateNo = true
         this.studentId = id
         this.studentType = type
+        this.resultNotifier = ''
       },
       async saveCerteficateNo(){
         this.v$.$validate()
@@ -346,6 +370,7 @@ if(response.status === 200){
         this.isEnterResult = true
         this.studentId = id
         this.studentType = type
+        this.resultNotifier = ''
       },
       async saveResult(){
           this.v$.$validate()
@@ -461,6 +486,19 @@ cursor: pointer;
    margin-bottom: 5%;
    height: 80vh;
    overflow-y: auto;
+}
+.editDialogContent{
+  width: 40%;
+  margin: auto;
+  margin-top: 10%;
+  background-color: #fff;
+}
+.confirm{
+  width: 5em;
+  border: 1px solid gainsboro;
+}
+.confirm:hover{
+  background-color: gainsboro;
 }
 .cancel{
   border: 1px solid gray;

@@ -52,8 +52,8 @@
             v-model="scholarForFilter"
           >
             <option value="all">All</option>
-            <option value="none">none Scholar</option>
-            <option value="fully">fully scholar</option>
+            <option value="none">Scholarship</option>
+            <option value="fully">Non scholarship</option>
           </select>
         </div>
 <div class="mb-3">
@@ -73,16 +73,16 @@
   <thead>
     <tr class="table-header">
       <th class="text-white px-2">NO</th>
-       <th class="text-white px-2">Stud ID</th>
+       <th class="text-white px-2">Student ID</th>
       <th class="text-white px-2">Full Name</th>
       <th class="text-white px-2">sex</th>
       <th class="text-white px-2">progarm</th>
       <th class="text-white px-2">Department</th>
       <th class="text-white px-2">Year</th>
       <th class="text-white px-2">Semester</th>
-      <th class="text-white px-2">current State</th>
-      <th class="text-white px-2">Result Form</th>
-      <th><span class="sr-only px-2"></span></th>
+      <th v-show="!isPrinting" class="text-white px-2">current State</th>
+      <th v-show="!isPrinting" class="text-white px-2">Result Form</th>
+      <th v-show="!isPrinting"><span class="sr-only px-2"></span></th>
     </tr>
   </thead>
   <tbody>
@@ -95,31 +95,30 @@
       <td>{{student.department?.name}}</td>
       <td>{{student.year_no}}</td>
       <td>{{semesterForFilter}}</td>
-      <td class="text-center">
+      <td v-show="!isPrinting" class="text-center">
         <span v-if="student.status !== 'waiting'">{{student.status}}</span>
         <span v-else class="approvebtn border rounded shadow-sm p-1"><button @click="approveStudent(student)" class="btn error" id="approvebtn">approve</button></span>
       </td>
-       <td>{{changeResultEntryState(student.legible)}}</td>
-      <td>
+       <td v-show="!isPrinting">{{changeResultEntryState(student.legible)}}</td>
+      <td v-show="!isPrinting">
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
 
           <ul class="dropdown-menu py-0" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
-
-             <li v-if="Number(student.year_no) === 1 && student.status === 'waiting'">
-               <span @click="deleteStudent(student,semesterForFilter)" class="dropdown-item px-4 py-2">Delete Student</span></li>
+            <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Status</span></li>
              <li><span @click="editStudent(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
-             <li><span @click="viewDetail(student.id)" class="dropdown-item px-4 py-2">View Status</span></li>
               <li><span @click="permitResult(student)" class="dropdown-item px-4 py-2">Permit Result Entry</span></li>
+              <li v-if="Number(student.year_no) === 1 && student.status === 'waiting'">
+               <span @click="deleteStudent(student,semesterForFilter)" class="dropdown-item px-4 py-2">Delete Student</span></li>
           </ul>
         </div>
     </td>
     </tr>
   </tbody>  
 </table>
- <div  v-if="!filteredStudents?.length" class="px-5 ms-5 mt-3 pb-2"><span class="text-center">No Degree Students found</span></div> 
+ <div  v-if="!filteredStudents?.length" class="px-5 ms-5 mt-3 pb-2"><span class="text-center">No {{yearNo}} Degree Students found</span></div> 
 </div>
     </base-card>
    <div v-if="isPermit" class="editwraper">
@@ -149,6 +148,16 @@
     </div>
   </div>
 </div>
+   </div>
+   <div v-if="isDelete" class="editwraper d-flex">
+     <div class="dialogContent ms-auto me-auto border rounded shadow-sm p-5">
+      <div>Do you want to delete {{studentFullName}} from Horizon ?</div>
+      <div class="d-flex justify-content-end mt-5">
+         <button @click="yesDelete()" class="btn me-5 confirm">Yes</button>
+        <button @click="cancelDeletion()" class="btn confirm">NO</button>
+       
+      </div>
+     </div>
    </div>
 </template>
 <script>
@@ -181,7 +190,12 @@ export default {
       isPermit:false,
       isPermiting:false,
       optionValue:'',
-      stateNotifier:''
+      stateNotifier:'',
+      isPrinting:false,
+      isDelete:false,
+      payload:{},
+      studentFullName:'',
+      setTimeOutFunction:null
 
     }
   },
@@ -337,7 +351,15 @@ else if(newValue === 'none'){
   },
       methods: {
        async printDegreeStudent(){
-         await this.$htmlToPaper('degreestudentlist');
+         this.isPrinting = true
+         var setTimeOutFunction
+        setTimeOutFunction =setTimeout(()=>{
+             this.$htmlToPaper('degreestudentlist',null,()=>{
+                this.isPrinting = false
+                clearTimeout(setTimeOutFunction);
+             })
+              
+         },300)       
         },
       addStudent(){
         this.$router.push({name:'DegreeStudentRegistration'})
@@ -367,14 +389,22 @@ else if(newValue === 'none'){
           }
        },
        deleteStudent(student,semester_no){
-         var payload={}
-         payload.id = student.id
-         payload.semester_no = semester_no
-         payload.semester_id = student.semester_id
-         this.$store.dispatch('registrar/deleteDegreeStudent',payload).then(()=>{
-           student.status = 'approved'
-         })
+         this.isDelete=true
+         this.payload.id = student.id
+         this.payload.semester_no = semester_no
+         this.payload.semester_id = student.semester_id
+         this.studentFullName = student.first_name+' '+student.last_name
+       
        }, 
+       yesDelete(){
+          this.$store.dispatch('registrar/deleteDegreeStudent',this.payload).then(()=>{
+          //  student.status = 'approved'
+          this.isDelete = false
+         })
+       },
+       cancelDeletion(){
+          this.isDelete = false
+       },
         permitResult(student){
           this.isPermit = true
           this.semesterId = student.semester_id
@@ -448,6 +478,13 @@ else if(newValue === 'none'){
     background-color: #2f4587;
     color: #fff;
     width: 7em;
+}
+.confirm{
+  width: 5em;
+  border: 1px solid gainsboro;
+}
+.confirm:hover{
+  background-color: gainsboro;
 }
 table {
   font-family: arial, sans-serif;

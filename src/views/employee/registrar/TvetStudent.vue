@@ -4,7 +4,7 @@
       <button @click="addStudent" class="btn p-1 addbtn">
         Register New Student
       </button>
-      <button @click="printTvetStudent()" class="btn ms-3 p-1 exportbtn addbtn">
+      <button @click="printTvetStudent()" class="btn ms-3 p-1 exportbtn">
         <span class="me-3"><i class="fas fa-upload"></i></span>
         <span>Export</span>
       </button>
@@ -64,22 +64,16 @@
           </select>
         </div>
         <div class="ms-2 mb-3">
-          <select
-            class="form-select form-select-sm"
-            aria-label="Default select example"
-            v-model="scholarForFilter"
-          >
-            <option value="all">All Scholarship</option>
-            <option value="none">None Scholarship</option>
+          <select class="form-select form-select-sm" aria-label="Default select example" v-model="scholarForFilter">
+            <option value="all">All</option>
             <option value="fully">Scholarship</option>
+            <option value="none">None Scholarship</option>            
           </select>
         </div>
         <div class="ms-2 mb-3">
-          <select
-            class="form-select form-select-sm"
+          <select class="form-select form-select-sm"
             aria-label="Default select example"
-            v-model="stateForFilter"
-          >
+            v-model="stateForFilter">
             <option value="all">All State</option>
             <option value="waiting">Waiting</option>
             <option value="approved">Approved</option>
@@ -89,22 +83,22 @@
     </div>
     <div id="tvetstudent">
         <div class="ms-5 sr-only">
-    <span>{{levelName+' '+departmentName+' '+ programName+' '+stateName+' '+scholarName+' Students'}}</span>
+    <span>{{levelName+' '+departmentName+' '+ programName+' '+stateName+' '+scholarName+' TVET Students'}}</span>
     </div>
     <table class="mt-3">
       <thead>
         <tr class="table-header">
           <th class="text-white">NO</th>
-          <th class="text-white">Stud ID</th>
+          <th class="text-white">Student ID</th>
           <th class="text-white">Full Name</th>
           <th class="text-white">sex</th>
           <th class="text-white">Department</th>
           <th class="text-white">progarm</th>
           <th class="text-white">Level</th>
           <th class="text-white">Scholarship</th>
-          <th class="text-white">State</th>
-           <th class="text-white">Result Form</th>
-          <th><span class="sr-only">action</span></th>
+          <th v-show="!isPrinting" class="text-white">State</th>
+           <th v-show="!isPrinting" class="text-white">Result Form</th>
+          <th v-show="!isPrinting"><span class="sr-only">action</span></th>
         </tr>
       </thead>
       <tbody>
@@ -117,12 +111,12 @@
           <td>{{ student.program.name }}</td>
           <td>{{ tvetStudents.level_no }}</td>
           <td>{{ student.scholarship }}</td>
-          <td>
+          <td v-show="!isPrinting">
         <span v-if="student.status === 'approved'">{{student.status}}</span>
         <span v-else class="approvebtn p-1 border rounded shadow-sm"><button @click="approveStudent(student)" class="btn error approved">approve</button></span>
       </td>
-      <td>{{changeResultEntryState(student.legible)}}</td>
-     <td>
+      <td v-show="!isPrinting">{{changeResultEntryState(student.legible)}}</td>
+     <td v-show="!isPrinting">
        <div class="dropdown">
          <a class="btn py-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                 <span><i class="fas fa-ellipsis-v"></i></span>
@@ -130,14 +124,13 @@
 
               <ul
                 class="dropdown-menu"
-                aria-labelledby="dropdownMenuLink border rounded shadow-sm"
-              >
+                aria-labelledby="dropdownMenuLink border rounded shadow-sm">
                 <li><span @click="viewStatus(student.id)" class="dropdown-item px-4 py-2">View Status</span>
                 </li>
-                <li v-if="Number(tvetStudents.level_no) === 1 && student.status ==='waiting'">
-                  <span @click="deleteStudent(student.id,student.level_id,tvetStudents.level_no)" class="dropdown-item px-4 py-2">Delet Student</span></li>
                  <li><span @click="editStudent(student.id)" class="dropdown-item px-4 py-2">View Detail</span></li>
                   <li><span @click="permitResult(student)" class="dropdown-item px-4 py-2">Open Result Form</span></li>
+                      <li v-if="Number(tvetStudents.level_no) === 1 && student.status ==='waiting'">
+                  <span @click="deleteStudent(student,tvetStudents.level_no)" class="dropdown-item px-4 py-2">Delet Student</span></li>
                  
               </ul>
             </div>
@@ -147,7 +140,7 @@
     </table>
     </div>
     <div v-if="!filteredStudents?.length" class="ms-5 mt-3 px-5 pb-2">
-      No TVET Students found
+      No {{levelName }}TVET Students found
     </div>
   </base-card>
    <div v-if="isPermit" class="editwraper">
@@ -178,6 +171,16 @@
   </div>
 </div>
    </div>
+    <div v-if="isDelete" class="editwraper d-flex">
+     <div class="dialogContent ms-auto me-auto border rounded shadow-sm p-5">
+      <div>Do you want to delete {{studentFullName}} from Horizon ?</div>
+      <div class="d-flex justify-content-end mt-5">
+         <button @click="yesDelete()" class="btn me-5 confirm">Yes</button>
+        <button @click="cancelDeletion()" class="btn confirm">NO</button>
+       
+      </div>
+     </div>
+   </div>
 </template>
 <script>
 import apiClient from '../../../resources/baseUrl'
@@ -206,7 +209,7 @@ export default {
         academic_year_id:''
       },
       
-     levelName:'Level 1',
+     levelName:'Level One',
      stateName:'',
      programName:'',
      departmentName:'',
@@ -215,7 +218,12 @@ export default {
      isPermiting:false,
      optionValue:'',
      levelid:'',
-     studId:''
+     studId:'',
+     isPrinting:false,
+     isDelete:false,
+     studentFullName:'',
+     payload:{},
+
      
     };
   },
@@ -293,16 +301,16 @@ export default {
            this.queryData.academic_year_id = this.academicYearId
   this.$store.dispatch('registrar/fetchTvetStudents',this.queryData)
       if(newValue === '1'){
-        this.levelName = 'Level 1'
+        this.levelName = 'Level One'
       }
       else if(newValue === '2'){
-        this.levelName = 'Level 2'
+        this.levelName = 'Level Two'
       }
        else if(newValue === '3'){
-        this.levelName = 'Level 3'
+        this.levelName = 'Level Three'
       }
         else if(newValue === '4'){
-        this.levelName = 'Level 4'
+        this.levelName = 'Level Four'
       }
     },
      departmentForFilter(newValue){
@@ -357,9 +365,17 @@ this.tvetPrograms.forEach(program=>{
     addStudent() {
       this.$router.push({ name: "TvetStudentRegistration" });
     },
-    printTvetStudent() {
-      this.$htmlToPaper("tvetstudent");
-    },
+    async printTvetStudent() {
+      this.isPrinting = true
+      var timeOutFunction
+     timeOutFunction= setTimeout(()=>{
+        this.$htmlToPaper("tvetstudent",null,()=>{
+              this.isPrinting = false
+              clearTimeout(timeOutFunction)
+        })
+      
+      },300)
+        },
     viewStatus(id) {
        this.$router.push({name:'TvetStudentStatus',params:{tvetStudId:id}})
            },
@@ -386,13 +402,23 @@ this.tvetPrograms.forEach(program=>{
       editStudent(id){
         this.$router.push({name:'EditTvetStudents',params:{studId:id}})
       },
-        deleteStudent(id,level_id,level_no){
-         var payload={}
-         payload.id = id
-         payload.level_id = level_id
-         payload.level_no = level_no
-         this.$store.dispatch('registrar/deleteTvetStudent',payload)
+
+        deleteStudent(student,level_no){
+         this.payload.id = student.id
+         this.payload.level_id = student.level_id
+         this.payload.level_no = level_no
+         this.studentFullName = student.first_name + " " + student.last_name 
+         this.isDelete = true
+         
        }, 
+       yesDelete(){
+         this.$store.dispatch('registrar/deleteTvetStudent',this.payload).then(()=>{
+           this.isDelete = false
+         })
+       },
+       cancelDeletion(){
+         this.isDelete =false
+       },
          permitResult(student){
           this.isPermit = true
           this.levelId = student.level_id
@@ -446,11 +472,11 @@ this.tvetPrograms.forEach(program=>{
 .addbtn:hover {
   background-color: #366ad9;
 }
-.savebtn:hover{
+.savebtn:hover,.exportbtn:hover{
     background-color:#2248b8 ;
 }
 
-.savebtn{
+.savebtn,.exportbtn{
     background-color: #2f4587;
     color: #fff;
     width: 7em;
@@ -461,6 +487,13 @@ this.tvetPrograms.forEach(program=>{
 }
 .cancel:hover{
   background-color: rgb(192, 189, 189);
+}
+.confirm{
+  width: 5em;
+  border: 1px solid gainsboro;
+}
+.confirm:hover{
+  background-color: gainsboro;
 }
 table {
   font-family: arial, sans-serif;

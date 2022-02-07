@@ -10,7 +10,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="govt" value="govt" v-model="financial">
   <label class="form-check-label ms-2" for="govt">
-    Government
+    Geverment
   </label>
 </div>
 <div class="form-check mt-3">
@@ -22,7 +22,7 @@
 <div class="form-check mt-3">
   <input class="form-check-input p-2" type="radio" name="finance" id="nongovt" value="nongovt" v-model="financial">
   <label class="form-check-label ms-2" for="nongovt">
-    Non-Government
+    Non-Geverment
   </label>
 </div>
 <div class="d-flex mb-4">
