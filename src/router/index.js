@@ -42,7 +42,7 @@ const router = createRouter({
     linkActiveClass: 'active'
 })
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.authRequired) && !localStorage.getItem('token') && to.meta.typeRequired === 'employee') {
+    if (to.matched.some(record => record.meta.authRequired && record.meta.typeRequired === 'employee') && !localStorage.getItem('token')) {
         return next({ name: 'EmployeeLogin', query: { to: to.path } })
     } else if (to.matched.some(record => record.meta.studentAuth) && !localStorage.getItem('studentToken') && to.meta.typeRequired === 'student') {
         return next({ name: 'StudentLogin', query: { to: to.path } })

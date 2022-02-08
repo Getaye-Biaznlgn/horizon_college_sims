@@ -27,15 +27,14 @@
     <th>Section Name</th>
     <th>Program</th>
     <th>Level</th>
-    <th><span class="sr-only"></span></th>
+    <th v-show="!isPrinting"><span class="sr-only">Action</span></th>
   </tr>
   <tr v-for="(section, index) in filteredSections" :key="section.id">
-    <!-- {{section}} -->
       <td>{{index+1}}</td>
       <td>{{section.name}}</td>
       <td>{{section.program?.name}}</td>
       <td>{{section.level?.level_no}}</td>
-      <td>
+      <td v-show="!isPrinting">
       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -119,7 +118,8 @@ export default {
       responseMessage:'',
       selectedSection:null,
       selectedSectionForDelete:null,
-      
+      isPrinting:false,
+      printTimeout:null,
       //filter
       levelForFilter:'all',
       programForFilter:'all',
@@ -172,7 +172,13 @@ export default {
       this.v$.$reset()
     },
     generatePaper(){
-     this.$htmlToPaper('generatedFile')
+     this.isPrinting=true
+     this.printTimeout= setTimeout(()=>{
+      this.$htmlToPaper('generatedFile',null,()=>{
+         this.isPrinting=false
+       })
+     },0)
+     
     },
     showAddModal(){
       this.responseMessage=''
@@ -223,20 +229,29 @@ export default {
           await this.$store.dispatch(action,payload)
           .then(()=>{
            this.addBaseModal.hide()
-         }).catch((e)=>{
+         }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage=errorMessage
-           console.log('response with status'+e)
          }).finally(()=>{
           this.isSaving=false
          })
-       }
-      
+        }
       },
     },
+    created(){
+        this.$store.dispatch('tvetHead/fetchSections')
+    },
+     watch:{
+     selectedAcademicYearId(){
+       this.$store.dispatch('tvetHead/fetchSections')
+     }
+  },
   mounted() {
    this.addBaseModal = new Modal(document.getElementById('addBaseModal'));
    this.deleteBaseModal = new Modal(document.getElementById('deleteBaseModal'));
+  },
+  beforeUnmount(){
+     clearTimeout(this.printTimeout)
   },
    validations(){
      return{

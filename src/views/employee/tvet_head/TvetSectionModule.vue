@@ -102,12 +102,13 @@ export default {
         section_id:this.sectionId
       },
       modules:[],
-      teachers:[]
+      teachers:[],
+      
     }
   },
 computed:{
     ...mapGetters({
-    sections:'tvetHead/sections'}),
+    sections:'tvetHead/sections', selectedYearId:'selectedAcademicYearId'} ),
     section(){
      return this.sections.find((section)=>{
        return section.id===Number(this.sectionId) 
@@ -190,7 +191,11 @@ computed:{
         }
       },
     },
-  
+  watch:{
+   selectedYearId(){
+     this.$router.back()
+   }
+ }
  }
  </script>
 

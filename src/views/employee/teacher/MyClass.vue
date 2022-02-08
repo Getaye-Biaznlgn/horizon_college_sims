@@ -2,10 +2,9 @@
     <div class="row g-4 pt-2">
         <div v-for="section in mySections" :key="section.id" class="col-md-6 col-lg-4">
           <base-card class="px-0">
-            <h4  class="text-center">{{section.name}}</h4>
+            <div  class="text-center">{{section.department}} <b>{{section.name}}</b></div>
             <hr  class="my-0 mb-1">
             <div class="px-3 pb-1"><strong>Type :</strong>  <span class="ms-2">{{section.type}}</span></div>
-            <div class="px-3 pb-1"><strong>Department :</strong>  <span class="ms-2">{{section.department}}</span></div>
             <div class="px-3 pb-1"><strong>Program :</strong>  <span class="ms-2">{{section.program}}</span></div>
             <div v-if="section.year" class="px-3 pb-1"><strong>Year :</strong>  <span class="ms-2">{{section.year}}</span></div>
             <div v-else-if="section.level" class="px-3 pb-1"><strong>Level :</strong>  <span class="ms-2">{{section.level}}</span></div>
@@ -26,10 +25,14 @@ export default {
   },
   methods:{
     showSectionStudent(section){
-      if(section.type==='degree')
-      this.$router.push({name:'TeacherDegreeStudent', query:{id:section.id,courseId:section.course_id}})
-      else if(section.type==='tvet')
-      this.$router.push({name:'TeacherTvetStudent', query:{id:section.id,courseId:section.course_id}})
+      console.log('here section', section)
+      if(section.type==='degree'){
+              this.$router.push({name:'TeacherDegreeStudent', query:{id:section.id,courseId:section.course_id}})
+
+      }
+      else if(section.type==='tvet'){
+         this.$router.push({name:'TeacherTvetStudent', query:{id:section.id,courseId:section.course_id}})
+      }
     }
   }
 }

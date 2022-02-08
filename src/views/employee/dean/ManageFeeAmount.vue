@@ -8,9 +8,7 @@
       <i class="fas fa-print me-2"></i> 
        Print
    </button> 
-  <div v-if="!isPriting">
-     zemene kassie
-  </div>
+
 </div>
 <div id="paymentPage">
     <div class="sr-only  text-center">
@@ -21,19 +19,19 @@
      <th>No</th>
      <th>Fee Type</th>
      <th>Amount</th>
-     <th v-if="!isPrinting"><span class="sr-only"></span></th>
+     <th v-show="!isPrinting"></th>
    </tr>
    <tr v-for="(fee, index) in fees" :key="fee.id">
      <td>{{index+1}}</td>
      <td>{{fee.name}}</td>
      <td>{{fee.amount}}</td>
-     <td v-if="!isPrinting">
+     <td v-show="!isPrinting">
        <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-             <li ><span  @click="showEditModal(fee)" class="dropdown-item">Edit</span></li>
+             <li><span  @click="showEditModal(fee)" class="dropdown-item">Edit</span></li>
           </ul>
        </div>
      </td>
@@ -89,6 +87,7 @@ export default {
       //server response issue
       responseMessage:'',
       isNotSucceed:true,
+      printTimeOut:null,
       //edited fee
       fee:{
         id:'',
@@ -117,14 +116,19 @@ export default {
            }
         }
   },
- 
+  beforeUnmount(){
+    clearTimeout(this.printTimeOut)
+  },
   methods:{
      async printPaymentAmount(){
-        this.isPrinting=true
-        // const options=null
-      await this.$htmlToPaper('paymentPage',null,()=>{
-          this.isPrinting=false
+       this.isPrinting=true
+      this.printTimeOut= setTimeout(()=>{
+        this.$htmlToPaper('paymentPage',null,()=>{
+           this.isPrinting=false
         }) 
+       },1000)
+        
+       
       },
       showEditModal(fee){
         this.actionButtonType="edit"

@@ -28,7 +28,7 @@
       <th>40%</th>
       <th>100%</th>
       <th>Grade</th>
-      <th></th>
+      <th v-show="!isPrinting"><span class="sr-only">Action</span></th>
     </tr>
   </thead>
   <tbody>
@@ -44,7 +44,7 @@
       <td>{{student.from_40}}</td>
       <td>{{student.result}}</td>
       <td>{{student.letter_grade}}</td>
-      <td>
+      <td v-show="!isPrinting">
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -127,7 +127,9 @@ export default {
             actionButtonType:'',
             isSaving:false,
             searchValue:'',
-
+            //for print
+            isPrinting:false,
+            printTimeout:null
         }
     },
     computed:{
@@ -147,7 +149,13 @@ export default {
     },
     methods:{
         exportStudentResult(){
-           this.$htmlToPaper('toPrint')
+          this.isPrinting=true
+          this.printTimeout=setTimeout(()=>{
+            this.$htmlToPaper('toPrint', null,()=> {
+                this.isPrinting=false
+            })
+          },0)
+           
         },
          showAddDialog(result){
           if(!result.is_allowed_now){
@@ -269,6 +277,9 @@ export default {
     },
     created(){
       this.fetchStudentsResult(this.section?.id, {teacher_id:this.user.id, type:this.section?.type, course_id:this.courseId})
+    },
+    beforeUnmount(){
+         clearTimeout(this.printTimeout)
     },
     watch:{
       section(newValue){

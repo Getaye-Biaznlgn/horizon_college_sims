@@ -49,8 +49,8 @@
       <th>Full Name</th>
       <th>sex</th>
       <th>progarm</th>
-      <th>State</th>
-      <th></th>
+      <th v-show="!isPrinting">State</th>
+      <th v-show="!isPrinting"><span class="sr-only">Action</span></th>
     </tr>
   </thead>
   <tbody>
@@ -61,8 +61,8 @@
       <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
       <td>{{student.program?.name}}</td>
-      <td>{{student.status}}</td>
-      <td>
+      <td v-show="!isPrinting">{{student.status}}</td>
+      <td v-show="!isPrinting">
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -90,6 +90,10 @@ export default {
      programForFilter:'all',
      statusForFilter:'all', 
      levelForFilter:'1',
+
+     //for printing
+     printTimeout:null,
+     isPrinting:false
     }
   },
    computed:{
@@ -139,7 +143,13 @@ export default {
   },
   methods:{
     exportStudentData(){
-       this.$htmlToPaper('departmentStudent')
+      this.isPrinting=true
+      this.printTimeout=setTimeout(()=>{
+       this.$htmlToPaper('departmentStudent', null,()=>{
+        this.isPrinting=false
+      })
+     },0)
+    
     },
     programById(id){
       let prog;
@@ -162,7 +172,10 @@ export default {
       })?.id
       this.programForFilter=programId
     }
-  }
+  },
+  beforeUnmount(){
+   clearTimeout(this.printTimeout)
+ }
 }
 </script>
 

@@ -68,6 +68,8 @@ export default {
         this.$store.commit('setSelectedAcademicYearId',event.target.value)
         if(this.user.role==='degree_head')
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
+        if(this.user.role==='tvet_head')
+        this.$store.dispatch('tvetHead/fetchStudentInLevels')
       },
       changeAcYear(event){
            this.$store.commit('setSelectedAcYearId',event.target.value) 

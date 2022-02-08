@@ -128,8 +128,9 @@
   </tr>
   <tr v-for="program in detailShowingDepartment?.programs"   :key="program.name">
     <td>{{program.name}}</td>
-    <td>{{program.no_of_semester}}</td>
     <td>{{program.no_of_year}}</td>
+    <td>{{program.no_of_semester}}</td>
+    
   </tr> 
  </table>
  </template>
@@ -229,8 +230,8 @@ export default {
         this.department.short_name=dep.short_name
         this.department.regular.noYear=dep.programs[0].no_of_year
         this.department.regular.noSemester=dep.programs[0].no_of_semester
-        this.department.extension.noYear=dep.programs[0].no_of_year
-        this.department.extension.noSemester=dep.programs[0].no_of_semester
+        this.department.extension.noYear=dep.programs[1].no_of_year
+        this.department.extension.noSemester=dep.programs[1].no_of_semester
         this.actionButtonType="edit"
         //addBaseModal used for add and edit
         this.addBaseModal.show()

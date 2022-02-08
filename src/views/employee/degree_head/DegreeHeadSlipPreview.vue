@@ -1,9 +1,11 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
+
      <span @click="back" class="back pe-2 fw-bold" role="button"><i class="fas  fa-arrow-left"></i>Back</span>
         <div class="d-flex" v-if="studentForSlip.length">
             <button  @click="printSlip" class="btn btn-add ms-auto text-white me-2 mb-3 shadow-sm"><i class="fas fa-print me-2"></i>Print Slip</button> 
         </div>
+        
          <div v-else class="mt-2">Faild to preview Students slip. Select Students and try again please!</div> 
     <div id="slip">
        <div v-for="slip in studentForSlip" :key="slip.id"  style="height: 256mm; overflow-y:hidden;">
@@ -20,7 +22,7 @@
                </div>
            </div>
            <div>
-              <span class="pe-2">Department: <u>{{slip?.degree_department?.name}}</u></span> 
+              <span class="pe-2">Department: <u>{{user.manage?.name}}</u></span> 
               <span class="pe-2">Academic Year: <u>{{getYearById.year}}</u></span> 
               <span class="pe-2">Year: <u>{{year_no}}</u></span>  
               <span class="pe-2">Semester: <u>{{semester_no}}</u></span> 
@@ -83,7 +85,7 @@ export default {
         }
     },
     computed:{
-       ...mapGetters({studentForSlip:'degreeHead/studentForSlip', selectedAcademicYearId:'selectedAcademicYearId'}),
+       ...mapGetters({studentForSlip:'degreeHead/studentForSlip', selectedAcademicYearId:'selectedAcademicYearId', user:'user'}),
        totalCP(){
            let totalCP=0
            this.slipCourses.forEach((course)=>{

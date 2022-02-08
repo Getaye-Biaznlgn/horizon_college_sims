@@ -135,7 +135,7 @@ export default {
     },
     watch:{
         selectedYearId(){
-            this.$store.dispatch('degreeHead/fetchStudentInSemesters')
+            // this.$store.dispatch('degreeHead/fetchStudentInSemesters')
             this.fetchDashboardData()
         }
     }
