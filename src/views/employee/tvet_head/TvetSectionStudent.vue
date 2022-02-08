@@ -22,7 +22,7 @@
       <th>Stud ID</th>
       <th>Full Name</th>
       <th>sex</th>
-      <th><span class="sr-only"></span></th>
+      <th v-show="!isPrinting"><span class="sr-only">Action</span></th>
     </tr>
   </thead>
   <tbody>
@@ -31,7 +31,7 @@
       <td>{{student.student_id}}</td>
       <td>{{student.first_name+' '+student.last_name}}</td>
       <td>{{student.sex}}</td>
-      <td>
+      <td v-show="!isPrinting">
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -106,13 +106,15 @@ export default {
     isSaving:false,  
     modalState:false,
     responseMessage:'',
+    isPrinting:false,
+    printTimeout:null,
     students:[],
     suggestedStudents:[],
     studentsTobeAdded:[]
     }
   },
    computed:{
-   ...mapGetters({sections:'tvetHead/sections',}),
+   ...mapGetters({sections:'tvetHead/sections',selectedYearId:'selectedAcademicYearId'}),
    section(){
      return this.sections.find((section)=>{
        return section.id===Number(this.sectionId)
@@ -120,6 +122,7 @@ export default {
    },
 
   },
+
   created() {
    this.fetchSectionStudent(this.sectionId)
    this.fetchSuggestedSectionStudent(this.sectionId)
@@ -152,8 +155,15 @@ export default {
       document.documentElement.style.overflow = 'scroll'
     },
    print(){
-     this.$htmlToPaper('printed')
+     this.isPrinting=true
+     this.printTimeout=setTimeout(()=>{
+       this.$htmlToPaper('printed', null,()=>{
+        this.isPrinting=false
+      })
+     },0)
+    
    },
+
     back(){
       this.$router.back()
     },
@@ -179,9 +189,6 @@ export default {
             this.responseMessage={message:'Faild to add students', status:0}
         }finally{
           this.isSaving=false
-          setTimeout(()=>{
-            this.responseMessage=''
-          }, 5000)
         }
     },
     toggleSelectAll(event){
@@ -221,7 +228,14 @@ export default {
         }
       },
   },
- 
+ watch:{
+   selectedYearId(){
+     this.$router.back()
+   }
+ },
+ beforeUnmount(){
+   clearTimeout(this.printTimeout)
+ }
 }
 </script>
 <style scoped>

@@ -17,9 +17,11 @@
             meta:{authRequired:true,  typeRequired:'employee' } 
     },
     {
-        path: '/staff/instructor-tvet-student/:id',
+        path: '/staff/instructor-tvet-student',
         name: 'TeacherTvetStudent',
-        props:true,
+        props(route) {
+            return  route.query || {}
+          },
         component: () =>
             import ( /* webpackChunkName: "TeacherTvetStudent" */ '../../../views/employee/teacher/TeacherTvetStudent'),
             meta:{authRequired:true,  typeRequired:'employee' } 

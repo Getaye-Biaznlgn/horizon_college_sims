@@ -14,7 +14,7 @@
                  <div>Full Name: <u>{{slip.first_name +' '+slip.last_name}}</u></div>
                </div>
                <div>
-                 <div class="fw-bold">{{slip?.program?.name}}</div>
+                 <div class="fw-bold">{{slip.program?.name}}</div>
                  <div>ID NO: {{slip.student_id}}</div>
                </div>
            </div>
@@ -30,7 +30,7 @@
                        <th>Title</th>
                        <th>Code</th>
                        <th>Training Hour</th>
-                   </tr>
+                   </tr> 
                </thead>
                <tbody>
                    <tr v-for="(modul, index) in slipModules" :key="modul.id">
@@ -42,7 +42,7 @@
                
                </tbody>
            </table>
-           <div v-if="!student.modules?.length" class="text-center mt-1">
+           <div v-if="!slipModules.length" class="text-center mt-1">
                Module not found!
            </div>
            <div class="d-flex ">
@@ -107,7 +107,6 @@ export default {
               this.slipModules=response.data.module
               this.monthlyFee=response.data.monthlyFee
               this.registrationFee=response.data.registrationFee
-              console.log('slipdata', response.data)
             } else {
                 throw 'faild to load course for slip'
             }
@@ -122,7 +121,7 @@ export default {
         this.fetchSlipForLevel({
              level_no:this.level_no,
              academic_year_id:this.selectedAcademicYearId
-            })
+         })
     }
 
 }

@@ -138,4 +138,5 @@ export default {
   tbody tr:nth-child(2n){
       background-color: #f5f6fa;
   }
+
 </style>

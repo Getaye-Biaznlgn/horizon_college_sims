@@ -141,6 +141,7 @@ export default {
      clearAddModal(){
          this.cashier={}
          this.resultNotifier=''
+         this. v$.$reset()
      },
      showDeleteModal(cashier){
            this.deleteCashierTemp={...cashier}
@@ -150,6 +151,7 @@ export default {
       clearDeleteModal(){
         this.resultNotifier=''
          this.deleteHead={}
+
       },
 
       addCashier(){
@@ -162,19 +164,15 @@ export default {
          this.isLoading = true
        this.$store.dispatch('dean/addCashier',JSON.stringify(this.cashier)).then((response)=>{
          if(response.status === 201){
-           this.isFaild = false
-           this.isSuccessed = true
-           this.resultNotifier = 'You have registered one Cashier succesfully'
-            this.basemodal.hide()
-            this.v$.$reset()  
-            this.resultNotifier=''
+           this.basemodal.hide()
+           this.clearAddModal()
            this.isLoading = false
          }
          else{
-         console.log('form faild validation ')
+         throw ''
        }
        }).catch(e=>{
-         this.isSuccessed = false
+         this.isLoading = false
          this.isFaild = true
          this.resultNotifier = e.error
        })

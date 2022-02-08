@@ -13,7 +13,7 @@
 
 <div id="toPrint">
   <div class="m-2 sr-only">
-    {{section?.department+' '+section?.program?.toLowerCase()+' section '+section?.name+' student result'}}
+    {{section?.department+' '+section?.program?.toLowerCase()+' section '+section?.name+' students '+ section?.course_title+' result'}}
   </div>
  <table class="mt-2">
   <thead>
@@ -26,12 +26,11 @@
       <th>30%</th>
       <th>50%</th>
       <th>100%</th>
-      <th><span class="sr-only"></span></th>
+      <th v-show="!isPrinting"><span class="sr-onl">Action</span></th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="(student,index) in filteredStudents" :key="student?.id">
-      <!-- {{student}} -->
       <td>{{index+1}}</td>
       <td>{{student.student_id}}</td>
       <td>{{student.first_name+' '+student.last_name}}</td>
@@ -40,7 +39,7 @@
       <td>{{student.from_30}}</td>
       <td>{{student.from_50}}</td>
       <td>{{student.result}}</td>
-      <td>
+      <td v-show="!isPrinting">
           <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -67,7 +66,7 @@
            <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_20.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
          <div class="mb-3" :class="{warining:v$.result.from_30.$error}">
-           <label for="#from_30" class="form-label">From 20%</label>
+           <label for="#from_30" class="form-label">From 30%</label>
            <input class="form-control" v-model.trim="result.from_30" @blur="v$.result.from_30.$touch" id="from_30" type="text"  aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.result.from_30.$errors" :key="index">{{ error.$message+", " }}</span>
         </div>
@@ -89,7 +88,7 @@ import {numeric, helpers, maxValue, minValue, required} from '@vuelidate/validat
 import apiClient from '../../../resources/baseUrl'
 import { mapGetters } from 'vuex'
 export default {
-  props:['id'],
+  props:['id', 'courseId'],
     data(){
         return{
             v$:vuelidate(),
@@ -107,11 +106,13 @@ export default {
             actionButtonType:'',
             isSaving:false,
             searchValue:'',
+            isPrinting:false,
+            printTimeout:null
         }
     },
     computed:{
        section(){
-         return this.$store.getters['teacher/sectionById'](this.id)
+         return this.$store.getters['teacher/sectionById'](this.id,this.courseId)
        },
        ...mapGetters(['user']),
        filteredStudents(){
@@ -126,16 +127,30 @@ export default {
     },
     methods:{
         exportStudentResult(){
-           this.$htmlToPaper('toPrint')
+          this.isPrinting=true
+          this.printTimeout=setTimeout(()=>{
+             this.$htmlToPaper('toPrint', null, ()=>{
+               this.isPrinting=false
+             })
+          },0)
+           
         },
          showAddDialog(result){
-           if(result.legible===0){
+            if(!result.is_allowed_now){
+            this.$store.commit('setAlertMessages',{
+                text:'Not allowed  to enter result now',
+                type:'danger'
+              })
+            return 
+          }
+         else if(!result.legible){
              this.$store.commit('setAlertMessages',{
                 text:'Student don\'t complete tution fee!',
                 type:'danger'
               })
-              return;
+             return;
            }
+
            this.result={...result}
            this.actionButtonType='add'
            this.addBaseModal.show()
@@ -146,27 +161,29 @@ export default {
             this.v$.$reset()
          },
         async save(){
+          this.requestStatus.message=''
              this.v$.$validate()
              if(!this.v$.$error){
                  this.isSaving=true
                  try{
                     let response= await apiClient.post('api/teacher_set_result/'+this.result.id, {
                       type:this.section.type,
+                      section_id:this.section.id,
                       course_id:this.section.course_id,
-                      total_mark:Number(this.result.from_20)+Number(this.result.from_5)+Number(this.result.from_5s)+Number(this.result.from_30)+Number(this.result.from_50),
+                      result:Number(this.result.from_20)+Number(this.result.from_30)+Number(this.result.from_50),
                       from_20:this.result.from_20,
                       from_30:this.result.from_30,
                       from_50:this.result.from_50,
                       
                     })
-                    this.result.result=Number(this.result.from_20)+Number(this.result.from_5)+Number(this.result.from_5s)+Number(this.result.from_30)+Number(this.result.from_50)
+                    this.result.result=Number(this.result.from_20)+Number(this.result.from_30)+Number(this.result.from_50)
                     if(response.status===200){
                       const index=this.students.findIndex((student)=>{
                           return student.id===this.result.id
                       })
                       this.students[index]=this.result
-                       this.requestStatus.isNotSucceed=false,
-                       this.requestStatus.message="Result is submitted successfully"
+                      this. clearModal()
+                      this.addBaseModal.hide()
                     }else{
                         throw''
                     }
@@ -189,7 +206,7 @@ export default {
             var response = await apiClient.post('/api/teacher_section_students/'+id, payload)
             if (response.status === 200) {
               this.students=response.data
-            
+              console.log('tvet students result...', this.students)
             } else {
               throw 'Failed to fetch event'
             }
@@ -228,14 +245,17 @@ export default {
     mounted(){
         this.addBaseModal=new Modal(document.getElementById('addBaseModal'))
     },
-    created(){
-      this.fetchStudentsResult(this.id, {teacher_id:this.user.id, type:this.section?.type, course_id:this.section?.course_id})
+   created(){
+      this.fetchStudentsResult(this.section?.id, {teacher_id:this.user.id, type:this.section?.type, course_id:this.courseId})
     },
-    
+    beforeUnmount(){
+         clearTimeout(this.printTimeout)
+    },
     watch:{
       section(newValue){
-         this.fetchStudentsResult(this.id, {teacher_id:this.user.id, type:newValue.type, course_id:this.section?.course_id})
+         this.fetchStudentsResult(this.newValue?.id, {teacher_id:this.user.id, type:newValue.type, course_id:this.courseId})
       }
     }
+    
 }
 </script>

@@ -130,6 +130,7 @@ export default {
             var response = await apiClient.get("/api/admin_dashboard2")
             if (response.status === 200) {
               this.studentStatistics=response.data
+              
              } else {
               throw 'Failed to fetch news'
             }

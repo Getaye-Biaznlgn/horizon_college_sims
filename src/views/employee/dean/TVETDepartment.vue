@@ -59,23 +59,27 @@
            <input class="form-control" v-model.trim="department.sector" @blur="v$.department.sector.$touch" id="departmentSector" type="text" aria-label=".form-control">
            <span class="error-msg mt-1"  v-for="(error, index) of v$.department.sector.$errors" :key="index">{{ error.$message+", " }}</span>
        </div> 
-           <div class="mb-3">
+           <div class="mb-3" :class="{warining:v$.department.levelOneOccupationName.$error}">
               <label class="form-label" for="#level1">Level I Occupation Name</label>
-              <input class="form-control" v-model.trim="department.levelOneOccupationName" id="level1"  type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelOneOccupationName" id="level1" @blur="v$.department.levelOneOccupationName.$touch"  type="text"  aria-label=".form-control-lg">
+              <span class="error-msg mt-1"  v-for="(error, index) of v$.department.levelOneOccupationName.$errors" :key="index">{{ error.$message+", " }}</span>
            </div> 
 
-           <div class="mb-3">
+           <div class="mb-3" :class="{warining:v$.department.levelTwoOccupationName.$error}">
               <label class="form-label" for="#level2">Level II Occupation Name</label>
-              <input class="form-control" v-model.trim="department.levelTwoOccupationName" id="level2" type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelTwoOccupationName" id="level2" type="text" @blur="v$.department.levelTwoOccupationName.$touch"  aria-label=".form-control-lg">
+              <span class="error-msg mt-1"  v-for="(error, index) of v$.department.levelTwoOccupationName.$errors" :key="index">{{ error.$message+", " }}</span>
            </div> 
         
-           <div class="mb-3">
+           <div class="mb-3" :class="{warining:v$.department.levelThreeOccupationName.$error}">
               <label class="form-label" for="#level3">Level III Occupation Name</label>
-              <input class="form-control" v-model.trim="department.levelThreeOccupationName" id="level3" type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelThreeOccupationName" id="level3" type="text" @blur="v$.department.levelThreeOccupationName.$touch"  aria-label=".form-control-lg">
+              <span class="error-msg mt-1"  v-for="(error, index) of v$.department.levelThreeOccupationName.$errors" :key="index">{{ error.$message+", " }}</span>
            </div> 
-           <div class="mb-3">
+           <div class="mb-3" :class="{warining:v$.department.levelFourOccupationName.$error}">
               <label class="form-label " for="#level4">Level IV Occupation Name</label>
-              <input class="form-control" v-model.trim="department.levelFourOccupationName" id="level4" type="text"  aria-label=".form-control-lg">
+              <input class="form-control" v-model.trim="department.levelFourOccupationName" id="level4" type="text" @blur="v$.department.levelFourOccupationName.$touch"  aria-label=".form-control-lg">
+              <span class="error-msg mt-1"  v-for="(error, index) of v$.department.levelFourOccupationName.$errors" :key="index">{{ error.$message+", " }}</span>
            </div> 
       </form>
       <request-status-notifier :notificationMessage="responseMessage" :isNotSucceed="isNotSucceed" ></request-status-notifier>
@@ -185,6 +189,18 @@ export default {
              },
              sector:{
                required: helpers.withMessage('sector can not be empty',required),
+             },
+             levelOneOccupationName:{
+              required
+             },
+             levelTwoOccupationName:{
+              required
+             },
+             levelThreeOccupationName:{
+               required
+             },
+             levelFourOccupationName:{
+               required
              },
         }
      }

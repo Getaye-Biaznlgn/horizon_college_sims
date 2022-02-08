@@ -96,7 +96,7 @@ export default {
       }
     },
     computed:{
-        ...mapGetters({user:'user',studentInLevels:'tvetHead/studentInLevels',}),
+        ...mapGetters({user:'user', selectedYearId:'selectedAcademicYearId',studentInLevels:'tvetHead/studentInLevels',}),
         regularStudents(){
             let temp=[...this.studentInLevels]            
             return temp[0]?.students?.filter((student)=>{
@@ -114,7 +114,7 @@ export default {
         async fetchDashboardData(){
          this.$store.commit('setIsItemLoading', true)
         try {
-            var response = await apiClient.get("/api/tvet_head_dash_board")
+            var response = await apiClient.get("/api/tvet_head_dash_board?academic_year_id="+this.selectedYearId)
             if (response.status === 200) {
               this.statistics=response.data
             } else {
@@ -127,7 +127,12 @@ export default {
     },
     created(){
        this.fetchDashboardData()
-       console.log('tve')
+    },
+    watch:{
+        selectedYearId(){
+            this.fetchDashboardData()
+            
+        }
     }
 }
 </script>

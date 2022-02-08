@@ -1,14 +1,14 @@
 <template>
 <base-card class="px-3 mx-4 mt-3">
      <span @click="back" class="back pe-2 fw-bold" role="button"><i class="fas  fa-arrow-left"></i>Back</span>
-        <div class="d-flex" v-if="studentCourses.length">
+        <div class="d-flex" v-if="studentModules.length">
             <button  @click="printGradeReport" class="btn btn-add ms-auto text-white me-2 mb-3 shadow-sm"><i class="fas fa-print me-2"></i>Print Grade Report</button> 
         </div>
     <div v-else class="mt-2">Faild to preview Students grade report. Select Students and try again please!</div> 
        
     <div id="slip">
-       <div v-for="student in studentCourses" :key="student.id"  style="height:260mm; overflow-y:hidden;">
-           <div class="d-flex justify-content-between fw-bold my-2">
+       <div v-for="student in studentModules" :key="student.id"  style="height:260mm; overflow-y:hidden;">
+           <div class="d-flex justify-content-between fw-bold">
              <div>
                 Horizon College<br>
                 College of the Registrar <br>
@@ -70,7 +70,7 @@ export default {
     props:['program_id','level_no'],
     data(){
         return{
-            studentCourses:[],
+            studentModules:[],
         }
     },
     computed:{
@@ -91,8 +91,7 @@ export default {
         try {
             var response = await apiClient.post("/api/tvet_grade_reports",payload)
             if (response.status === 200) {
-              this.studentCourses=response.data
-              console.log('grade report load data', response.data)
+              this.studentModules=response.data
               } else {
                 throw 'faild to load course for slip'
             }

@@ -19,14 +19,14 @@
      <th>No</th>
      <th>Fee Type</th>
      <th>Amount</th>
-     <th></th>
+     <th v-show="!isPrinting"></th>
    </tr>
    <tr v-for="(fee, index) in fees" :key="fee.id">
      <td>{{index+1}}</td>
      <td>{{fee.name}}</td>
      <td>{{fee.amount}}</td>
-     <td>
-       <div class="dropdown" v-show="!isPrinting">
+     <td v-show="!isPrinting">
+       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
           </a>
@@ -87,6 +87,7 @@ export default {
       //server response issue
       responseMessage:'',
       isNotSucceed:true,
+      printTimeOut:null,
       //edited fee
       fee:{
         id:'',
@@ -115,16 +116,19 @@ export default {
            }
         }
   },
- 
+  beforeUnmount(){
+    clearTimeout(this.printTimeOut)
+  },
   methods:{
      async printPaymentAmount(){
-       setTimeout(()=>{
        this.isPrinting=true
-       },1000)
-        
-        await this.$htmlToPaper('paymentPage',null,()=>{
+      this.printTimeOut= setTimeout(()=>{
+        this.$htmlToPaper('paymentPage',null,()=>{
            this.isPrinting=false
         }) 
+       },1000)
+        
+       
       },
       showEditModal(fee){
         this.actionButtonType="edit"

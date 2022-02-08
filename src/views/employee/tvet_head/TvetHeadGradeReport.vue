@@ -54,7 +54,7 @@ export default {
      levelForFilter:1,
      programForFilter:'',
      studentsForGrade:[],
-     rAllSelected:false
+     rAllSelected:false,
     }
   },
    computed:{

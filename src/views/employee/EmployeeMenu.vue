@@ -111,7 +111,6 @@ export default {
       }
     else if(this.user.role==='tvet_head'){
         this.$store.dispatch('tvetHead/fetchModules')
-        this.$store.dispatch('tvetHead/fetchSections')
         this.$store.dispatch('tvetHead/fetchStudentInLevels')
       }
     else if(this.user.role==='teacher'){

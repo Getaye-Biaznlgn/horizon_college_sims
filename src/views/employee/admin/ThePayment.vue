@@ -92,6 +92,7 @@ export default {
               this.current_page=response.data.current_page
               this.per_page=response.data.per_page
               this.last_page=response.data.last_page
+              console.log('admin payment ',response.data)
               
             } else {
               throw 'Failed to fetch news'
