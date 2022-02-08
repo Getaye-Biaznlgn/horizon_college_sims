@@ -78,7 +78,7 @@
 </base-modal>
 </template>
 <script>
-
+import apiClient from '../../../resources/baseUrl'
 import { Modal } from 'bootstrap';
 import useValidate from '@vuelidate/core'
 import { required, email, minLength,numeric,helpers, maxLength} from '@vuelidate/validators'
@@ -141,6 +141,7 @@ export default {
      clearAddModal(){
          this.cashier={}
          this.resultNotifier=''
+         this.v$.$reset()
      },
      showDeleteModal(cashier){
            this.deleteCashierTemp={...cashier}
@@ -150,34 +151,43 @@ export default {
       clearDeleteModal(){
         this.resultNotifier=''
          this.deleteHead={}
+         
       },
 
       addCashier(){
          this.basemodal.show();
          this.buttonType = 'add'
       } ,
-      registerCashier(){
+     async registerCashier(){
+        console.log('added cashier data',this.cashier)
        this.v$.$validate()
        if(!this.v$.$error){
          this.isLoading = true
-       this.$store.dispatch('dean/addCashier',JSON.stringify(this.cashier)).then((response)=>{
-         if(response.status === 201){
-           this.isFaild = false
+         try {
+         var response = await apiClient.post('api/employees', this.cashier)
+         if (response.status === 201) {
+          this.isFaild = false
            this.isSuccessed = true
-           this.resultNotifier = 'You have registered one Cashier succesfully'
             this.basemodal.hide()
-            this.v$.$reset()  
-            this.resultNotifier=''
-           this.isLoading = false
+            this.v$.$reset()              
+            var previousRegistrar = this.$store.getters['dean/registrars']
+                    previousRegistrar.push(response.data)
+                    this.$store.commit('dean/setRegistrar', previousRegistrar)
+                }
+         else if(response.status === 200){
+           this.isFaild = true
+           this.isSuccessed = false
+           this.resultNotifier = 'This person is already registered'
          }
-         else{
-         console.log('form faild validation ')
-       }
-       }).catch(e=>{
-         this.isSuccessed = false
+         }
+         catch(e){
+           this.isSuccessed = false
          this.isFaild = true
-         this.resultNotifier = e.error
-       })
+         this.resultNotifier = 'some thing went wrong'
+         }
+       finally{       
+         this.isLoading = false
+       }
        }
       },
      editCashier(cashier){

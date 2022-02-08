@@ -74,7 +74,7 @@
       <td>{{student.pads.Julay}}</td>
       <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
-      <td><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
+      <td v-if="!isPrinting"><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
       
     </tr>
   </tbody>
@@ -201,13 +201,15 @@ export default {
         rowNumber:10,
         paid:'all',
         unpaid:'all',
+        isPrinting:false,
          queryObject:{
             page:1,
             per_page:10,
             search_id:'',
             month_query:'',
             path:'api/degree_student_fees',
-            }
+            },
+            pamentStatus:''
         
       }
     },
@@ -254,8 +256,10 @@ rowNumber(newValue){
          this.queryObject.search_id = ''
          this.studentId = ''
            if(event.target.value !== 'all'){
+             this.$store.commit('setIsItemLoading',true)
             this.queryObject.month_query = event.target.value
            this.queryObject.academic_year_id = this.acYearId
+           this.pamentStatus = event.target.value
           try{
             console.log('paid students outside')
              var response = await apiClient.get(`api/degree_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
@@ -268,8 +272,12 @@ rowNumber(newValue){
           catch(e){
             console.log('error')
           }
+          finally{
+             this.$store.commit('setIsItemLoading',false)
+          }
           }
           else{
+            
             this.paid = 'all'
             this.queryObject.month_query = ''
             this.degreeStudentsPaid(this.queryObject)
@@ -280,9 +288,11 @@ rowNumber(newValue){
          this.paid = 'all'
          this.queryObject.search_id = ''
          this.studentId = ''
-          if(event.target.value !== 'all'){
+          if(event.target.value !== 'all'){            
+             this.$store.commit('setIsItemLoading',true)          
              this.queryObject.month_query = event.target.value
           this.queryObject.academic_year_id = this.acYearId
+          this.pamentStatus = event.target.value
           try{
              var response = await apiClient.get(`api/degree_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
             if(response.status ===200){
@@ -292,6 +302,9 @@ rowNumber(newValue){
           catch(e){
             console.log('error')
           }
+             finally{
+             this.$store.commit('setIsItemLoading',false)
+              }
           }
            else{
              this.unpaid = 'all'
@@ -308,7 +321,15 @@ rowNumber(newValue){
         this.isDetail = false
       },
         printStudentFeeList(){
-         this.$htmlToPaper('degreefee');
+          this.isPrinting = true
+         var timeOutFuncion
+         timeOutFuncion = setTimeout(()=>{
+            this.$htmlToPaper('degreefee',null,()=>{
+            this.isPrinting = false
+            clearTimeout(timeOutFuncion)
+         });
+         },300)
+         
          console.log('you have print your tabel')
       },
       feeDetail(){
@@ -317,12 +338,14 @@ rowNumber(newValue){
       forWardChivron(){
         this.queryObject.search_id = ''
          this.studentId = ''
+         this.queryObject.month_query = this.pamentStatus
         this.queryObject.page = this.queryObject.page +1
        this.degreeStudentsPaid(this.queryObject)
       },
       backChivron(){
         this.queryObject.search_id = ''
          this.studentId = ''
+         this.queryObject.month_query = this.pamentStatus
         this.queryObject.page = this.queryObject.page -1
        this.degreeStudentsPaid(this.queryObject)
       },

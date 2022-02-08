@@ -5,14 +5,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "TvetStudentFee" */ '../../../views/employee/registrar/TvetStudentFee'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/staff/degree-student-fee',
@@ -20,14 +20,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "DegreeStudentFee" */ '../../../views/employee/registrar/DegreeStudentFee'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/degreestudent/',
@@ -35,14 +35,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "DegreeStudent" */ '../../../views/employee/registrar/DegreeStudent.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/tvetstudent/',
@@ -50,14 +50,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "DegreeStudent" */ '../../../views/employee/registrar/TvetStudent.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/degreestudentregistration/',
@@ -65,14 +65,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "DegreeStudentRegistration" */ '../../../views/employee/registrar/degree/DegreeRegistration.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/tvetstudentregistration/',
@@ -80,14 +80,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "TvetStudentRegistration" */ '../../../views/employee/registrar/tvet/TvetRegistration.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/viewcoc/',
@@ -109,14 +109,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "Graduation" */ '../../../views/employee/registrar/GraduatedStudent.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/degreegraduated/',
@@ -124,14 +124,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "DegreeGraduated" */ '../../../views/employee/registrar/DegreeGraduated.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/tvetgraduated/',
@@ -139,14 +139,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "TvetGraduated" */ '../../../views/employee/registrar/TvetGraduated.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/studentcopy/',
@@ -154,14 +154,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "StudentCopy" */ '../../../views/employee/registrar/StudentCopy.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/degreestudentstatus/:degreeStudId',
@@ -170,14 +170,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "DegreeStudentStatus" */ '../../../views/employee/registrar/DegreeStudentStatus.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/tvet-student-status/:tvetStudId',
@@ -186,14 +186,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "TvetStudentStatus" */ '../../../views/employee/registrar/TvetStudentStatus.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/cocregistration/:cocId',
@@ -202,14 +202,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "CocRegistration" */ '../../../views/employee/registrar/CocRegistration.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/addstudenttococ/:cocId',
@@ -218,14 +218,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "AddStudentTococ" */ '../../../views/employee/registrar/AddStudentTococ.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/cocrequestform/:cocId',
@@ -234,14 +234,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "CocRequestForm" */ '../../../views/employee/registrar/CocRequest.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/registrardashboard',
@@ -249,14 +249,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "RegistrarDashboard" */ '../../../views/employee/registrar/RegistrarDashboard.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/edit-degree-students/:studId',
@@ -265,14 +265,14 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "EditDegreeStudents" */ '../../../views/employee/registrar/EditDegreeStudent.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
     {
         path: '/edit-tvet-students/:studId',
@@ -281,13 +281,13 @@ export default [{
         component: () =>
             import ( /* webpackChunkName: "EditTvetStudents" */ '../../../views/employee/registrar/EditTvetStudent.vue'),
         meta: { authRequired: true, requiredRole: "registrar", typeRequired: 'employee' },
-        beforeEnter(to, from, next) {
-            if (store.getters.user.role !== 'registrar') {
-                next(from.path)
-            } else {
-                next()
-            }
+        // beforeEnter(to, from, next) {
+        //     if (store.getters.user.role !== 'registrar') {
+        //         next(from.path)
+        //     } else {
+        //         next()
+        //     }
 
-        }
+        // }
     },
 ]

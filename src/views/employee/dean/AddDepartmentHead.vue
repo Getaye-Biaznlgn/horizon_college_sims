@@ -39,7 +39,6 @@
     <!-- department head registration form dialog-->
 <base-modal :is-Loading="isLoading" id="baseModal" :button-type="buttonType" @edit="saveEditedDeptHead" @save="registerDepartmentHead" @cancel="clearAddModal">
   <template #modalBody>
-    {{departmentHead}}
       <form>
         <div class="mb-3" :class="{warining:v$.departmentHead.first_name.$error}">
           <label for="fname" class="form-label">First Name</label>

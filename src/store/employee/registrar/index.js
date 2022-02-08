@@ -343,7 +343,7 @@ export default {
                     console.log(response.data)
                     var previousCocs = context.getters.cocs
                     var index = previousCocs.findIndex(coc => {
-                        return coc.id = newValue.id
+                        return coc.id === newValue.id
                     })
                     previousCocs[index] = response.data
                     context.commit('setCocs', previousCocs)

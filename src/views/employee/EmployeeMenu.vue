@@ -95,19 +95,19 @@ export default {
       else if(this.user.role==='degree_head'){
         this.$router.push({name:'DegreeHeadDashboard'})
         this.$store.dispatch('degreeHead/fetchCourses')
-        
         this.$store.dispatch('degreeHead/fetchStudentInSemesters')
       }
      
       //actions used by registrar
       else if(this.user.role === 'registrar'){
+         this.$router.push({name:'RegistrarDashboard'})
         this.$store.dispatch('registrar/fetchAcadamicMounths')
       this.$store.dispatch('dean/fetchDegreeDepartments')
       this.$store.dispatch('dean/fetchTvetDepartments')
        this.$store.dispatch('registrar/fetchLevels')
          this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')
-        this.$router.push({name:'RegistrarDashboard'})
+       
       }
     else if(this.user.role==='tvet_head'){
         this.$store.dispatch('tvetHead/fetchModules')

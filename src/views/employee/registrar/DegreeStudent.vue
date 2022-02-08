@@ -195,7 +195,6 @@ export default {
       isDelete:false,
       payload:{},
       studentFullName:'',
-      setTimeOutFunction:null
 
     }
   },

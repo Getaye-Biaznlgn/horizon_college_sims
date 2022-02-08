@@ -74,7 +74,7 @@
       <td>{{student.pads.Julay}}</td>
       <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
-      <td><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
+      <td v-if="!isPrinting"><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
     </tr>
   </tbody>   
 </table>
@@ -201,7 +201,8 @@ export default {
             rowNumber:10,
             studentId:null,
               paid:'all',
-        unpaid:'all',
+              unpaid:'all',
+             isPrinting:false,
             queryObject:{
             page:1,
             per_page:10,
@@ -307,7 +308,15 @@ this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
 this.tvetStudentsPaid(this.queryObject)
       },
       exportTvetStudent(){
-        this.$htmlToPaper('tvetStudentFee')
+        this.isPrinting = true
+        var timeOutFunction
+        timeOutFunction = setTimeout(()=>{
+          this.$htmlToPaper('tvetStudentFee',null,()=>{
+            this.isPrinting = false
+            clearTimeout(timeOutFunction)
+          })
+        },300)
+        
       },
       exportTvetFeeDetail(){
         this.$htmlToPaper('tvetfeedetail')

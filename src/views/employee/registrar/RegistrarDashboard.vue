@@ -44,7 +44,7 @@
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>Degree Scholarship Students</span>
-                <a href="/degreestudent/" class="nav-link fw-bold py-0">SEE ALL</a>
+                <a role="button" @click="$router.push('/degreestudent/')" class="nav-link fw-bold py-0">SEE ALL</a>
               </div>
                  <table>
                      <thead class="bg-secondary text-white">
@@ -73,7 +73,7 @@
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>TVET Scholarship Students</span>
-                <a href="/tvetstudent/" class="nav-link fw-bold py-0">SEE ALL</a>
+                <a role="button" @click="$router.push('/tvetstudent/')"  class="nav-link fw-bold py-0">SEE ALL</a>
               </div>
                  <table>
                      <thead class="bg-secondary text-white">
@@ -104,7 +104,7 @@
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
                 <span v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} un paid Degree Students</span>
-                <a href="/staff/degree-student-fee" class="nav-link fw-bold py-0">SEE ALL</a>
+                <a role="button" @click="$router.push('/staff/degree-student-fee')" class="nav-link fw-bold py-0">SEE ALL</a>
               </div>
                  <table>
                      <thead class="bg-secondary text-white">
@@ -131,7 +131,7 @@
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
                 <span  v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} Unpaid TVET Students</span>
-                <a href="/staff/tvet-student-fee" class="nav-link fw-bold py-0">SEE ALL</a>
+                <a role="button" @click="$router.push('/staff/tvet-student-fee')" class="nav-link fw-bold py-0">SEE ALL</a>
               </div>
                  <table>
                      <thead class="bg-secondary text-white">

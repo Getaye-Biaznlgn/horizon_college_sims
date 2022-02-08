@@ -71,8 +71,8 @@
          <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
 <div class="d-flex justify-content-end mt-3 pt-3">
   <button @click="cancelDialog()" class="btn cancel me-4">CANCEL</button>
-  <button @click="saveCoc()" class="btn addbtn me-4">
-    <span v-if="isSaving" class="btn  py-1">
+  <button @click="saveCoc()" class="btn addbtn p-1 me-4">
+    <span v-if="isSaving">
  <span  class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>ADDING</span>      
   <span v-else>ADD</span>
     </button>
@@ -248,7 +248,6 @@ export default {
         }
         },
         addStudentToCoc(id){
-          this.$store.dispatch('registrar/fetchCocStudents',id)
 this.$router.push({name:'CocRegistration',params:{cocId:id}})
         },
         editCoc(coc){
@@ -256,8 +255,8 @@ this.$router.push({name:'CocRegistration',params:{cocId:id}})
           this.cocData.start_date = coc.start_date
           this.cocData.end_date = coc.end_date
           this.cocData.exam_week = coc.exam_week
-          this.isAddCoc = true
           this.cocData.id = coc.id
+          this.isAddCoc = true        
           this.resultNotifier = ''
         },
     },

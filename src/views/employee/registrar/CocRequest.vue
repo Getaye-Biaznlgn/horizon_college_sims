@@ -1,6 +1,7 @@
 <template>
 <base-card>
 <div class="d-flex"> 
+   <div><span @click="$router.back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span></div> 
      <button @click="printCocRequest()" class="btn ms-auto me-1 addbtn me-3 p-1">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
@@ -151,6 +152,13 @@ finally{
 }
 </script>
 <style scoped>
+.backarrow{
+  cursor: pointer;
+  font-size: 22px;
+}
+.backarrow:hover{
+  color: #1142ac;
+}
 .addbtn{
     background-color: #2f4587;
     color: #fff;

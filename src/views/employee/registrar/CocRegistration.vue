@@ -1,6 +1,7 @@
 <template>
 <div class="border rounded shadow-sm m-3 bg-white">
-<div class="mt-3 d-flex justify-content-between align-items-center">
+   <div><span @click="$router.back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i></span></div> 
+<div class="d-flex justify-content-between align-items-center">
     <div class="d-flex">
 <div class="form-check ms-3 me-4">
   <input class="form-check-input p-2" type="radio" name="coc" id="registerd" value="registered" v-model="result">
@@ -21,7 +22,7 @@
   </label>
 </div>
     </div>
-      <div class="d-flex justify-content-end mt-3">
+      <div class="d-flex justify-content-end mt-1">
            <div class="limit me-3">
        <select class="form-select form-select-sm" aria-label=".form-select-sm example" v-model="studType">
          <option value="all">All</option>
@@ -36,7 +37,7 @@
     </button>
       </div>
      </div>
-     <div id="coctakers">
+     <div id="coctakers" class="mt-3">
       <table class="viewcourse courseview mt-2">
   <thead>
       <tr class="table-header">
@@ -83,8 +84,9 @@
   </tr>
   </tbody>
     </table>
-     </div>
-    <div class="d-flex justify-content-end mt-3 mb-3 me-5">
+    <div v-if="!filteredStudnt?.length" class="p-2 ms-5 px-5">There is no students registered for this COC exam</div>
+     </div> 
+    <div v-if="filteredStudnt?.length" class="d-flex justify-content-end mt-3 mb-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
 </div>
@@ -255,6 +257,7 @@ inputValue:{required:helpers.withMessage('Please Enter value',required)}
       }
     },
     created() {
+      this.$store.dispatch('registrar/fetchCocStudents',this.cocId)
       this.queryObject.per_page = this.rowNumber
       this.queryObject.cocId = this.cocId
       console.log('COC id inside created = ',this.cocId)
@@ -420,6 +423,13 @@ if(response.status === 200){
 }
 </script>
 <style scoped>
+.backarrow{
+  cursor: pointer;
+  font-size: 22px;
+}
+.backarrow:hover{
+  color: #1142ac;
+}
 .addbtn{
     background-color: #2f4587;
     color: #fff;
