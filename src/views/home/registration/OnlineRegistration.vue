@@ -1,7 +1,6 @@
 <template>
 <base-card>
 <div class="d-flex container">
-  <div class="mt-2 me-3"><span @click="back()" class="backarrow ms-3"><i class="fas fa-arrow-left"></i></span></div>
      <div class="ms-md-5 me-md-3 p-md-2 text-md-center textTitle">HORIZON COLLEGE OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATION
        FORM FOR DEGREE AND TVET STUDENTS</div>
 </div>
@@ -79,9 +78,6 @@ export default {
       this.$store.dispatch('dean/fetchTvetPrograms')
   },
     methods: {
-         back(){
-        this.$router.back()
-      },
       personalDetail(personalData){
       this.studentInfo.contact_full_name = personalData.contact_full_name
       this.studentInfo.first_name = personalData.first_name
@@ -211,13 +207,6 @@ finally{
 }
 </script>
 <style scoped>
-.backarrow{
-  cursor: pointer;
-  font-size: 22px;
-}
-.backarrow:hover{
-  color: #1142ac;
-}
 .pointer {
   height: 40px;
   position: relative;

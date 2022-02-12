@@ -1,6 +1,7 @@
 <template>
 <base-card>
-<div class="d-flex justify-content-end">
+<div class="d-flex justify-content-between">
+   <span @click="$router.back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i>Back</span>
  <button @click="exportTvetFeeDetail()" class="btn me-1 addbtn">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
@@ -105,6 +106,13 @@ export default {
 }
 </script>
 <style scoped>
+.backarrow{
+  cursor: pointer;
+  font-size: 22px;
+}
+.backarrow:hover{
+  color: #1142ac;
+}
 .addbtn{
     background-color: #2f4587;
     color: #fff;

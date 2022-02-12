@@ -74,7 +74,16 @@
       <td>{{student.pads.Julay}}</td>
       <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
-      <td v-if="!isPrinting"><button @click="showDetail(student.id)" class="px-1 viewdetailbtn"><i class="fas fa-ellipsis-v"></i></button></td>
+      <td v-if="!isPrinting">
+        <div class="dropdown">
+          <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><i class="fas fa-ellipsis-v"></i></span>
+          </a>
+          <ul class="dropdown-menu py-0" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
+            <li><span @click="showDetail(student.id)" class="dropdown-item px-4 py-2">View Fee Detail</span></li>
+          </ul>
+        </div>
+        </td>
       
     </tr>
   </tbody>
@@ -455,5 +464,13 @@ td{
 }
 .error{
   color: red;
+}
+li span{
+  cursor: pointer;
+  background-color: #eff0ee;
+}
+li span:hover{
+  color: #fff;
+  background-color: #366ad9;
 }
 </style>

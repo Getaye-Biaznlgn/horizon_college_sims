@@ -89,8 +89,8 @@ export default {
       },
     personalDetail(personalData) {
       this.studentInfo.first_name = personalData.first_name;
-      this.studentInfo.middle_name = personalData.middle_name;
-      this.studentInfo.last_name = personalData.last_name;
+      this.studentInfo.middle_name = personalData.last_name;
+      this.studentInfo.last_name = personalData.middle_name;
       this.studentInfo.contact_full_name = personalData.contact_full_name;
       this.studentInfo.sex = personalData.sex;
       this.studentInfo.maritial_status = personalData.maritial_status;

@@ -257,7 +257,7 @@ inputValue:{required:helpers.withMessage('Please Enter value',required)}
       }
     },
     created() {
-      this.$store.dispatch('registrar/fetchCocStudents',this.cocId)
+      // this.$store.dispatch('registrar/fetchCocStudents',this.cocId)
       this.queryObject.per_page = this.rowNumber
       this.queryObject.cocId = this.cocId
       console.log('COC id inside created = ',this.cocId)

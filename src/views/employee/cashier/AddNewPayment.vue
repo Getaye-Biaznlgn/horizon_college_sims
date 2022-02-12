@@ -134,7 +134,7 @@
   <tr>
   <td :colspan="studentFeelists.months?.length">
   <div class="d-flex justify-content-end py-2">
-  <button @click="tvetPayment(studentFeelists)" class="btn paybtn mt-1 me-3">Pay</button>
+  <button @click="tvetPayment(studentFeelists)" class="btn completed mt-1 me-3" :disabled="!isFullPaidSemester(studentFeelists.months)" :class="{paybtn:isFullPaidSemester(studentFeelists.months)}">Pay</button>
   </div>
   </td>
   </tr>

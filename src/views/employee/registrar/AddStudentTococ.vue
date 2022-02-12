@@ -20,12 +20,6 @@
   </span>
 </div>
 </div>
-    <div class="mb-3 mt-3 px-5"  :class="{warning:isIdEmpty || idError}">
-      <label for="dob" class="form-label"><strong>Student ID</strong></label>
-      <input type="text" class="form-control" id="id" v-model="studentId" @input="checkIdLength($event)">
-    <span v-if="isIdEmpty" class="error-msg mt-1">Student ID number is required </span>
-     <span v-if="idError" class="error-msg mt-1">Student ID number must be 12 digit long </span>
-   </div>
 <div class="px-5 mt-3">
   <span class="py-2">Select Student Type</span>
 <select class="form-select" aria-label=".form-select-sm example" v-model="student_type">
@@ -33,6 +27,12 @@
   <option value="tvet">TVET</option>
 </select>
 </div>
+    <div class="mb-3 mt-3 px-5"  :class="{warning:isIdEmpty || idError}">
+      <label for="dob" class="form-label"><strong>Student ID</strong></label>
+      <input type="text" class="form-control" id="id" v-model="studentId" @input="checkIdLength($event)">
+    <span v-if="isIdEmpty" class="error-msg mt-1">Student ID number is required </span>
+     <span v-if="idError" class="error-msg mt-1">Student ID number must be 12 digit long </span>
+   </div>
 <div class="mt-3 mb-3 px-5">
   <span class="pt-3"><strong>Select Level</strong></span>
 <select class="form-select" aria-label=".form-select-sm example" v-model="level_no">

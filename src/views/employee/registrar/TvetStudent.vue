@@ -439,7 +439,7 @@ this.tvetPrograms.forEach(program=>{
                         return student.id === optionData.student_id
                     })
                     previousStudents.students[index].legible = optionData.legible
-                    this.$store.commit('setTvetStudent', previousStudents)
+                    this.$store.commit('registrar/setTvetStudent', previousStudents)
                     console.log('index = ',index,'legibility = ',optionData.legible)
                    
             }

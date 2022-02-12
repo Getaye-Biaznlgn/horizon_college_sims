@@ -69,8 +69,9 @@ export default {
            }
           )
     if(this.user.role==='dean'){  
-      let path=this.$route.path || '/staff/dean-dashboard'
-      this.$router.push(path)
+      // let path=this.$route.path || '/staff/dean-dashboard'
+      // this.$router.push(path)
+      this.$router.push({name:'DeanDashboard'}) 
       this.$store.dispatch('dean/fetchDashboardData')
 
       this.$store.dispatch('dean/fetchTeachers')
@@ -80,16 +81,7 @@ export default {
       this.$store.dispatch('dean/fetchDegreeDepartments')
       this.$store.dispatch('dean/fetchTvetDepartments')
       this.$store.dispatch('dean/fetchCourses')
-      this.$store.dispatch('dean/fetchModules')
-
-      // this.$store.dispatch('dean/fetchDegreePrograms')
-      // this.$store.dispatch('dean/fetchTvetPrograms')
-         //
-      // this.$store.dispatch('registrar/fetchActiveYearSemister')
-      // this.$store.dispatch('registrar/fetchAcadamicMounths')
-      // this.$store.dispatch('registrar/fetchDegreeStudents')
-      // this.$store.dispatch('registrar/fetchTvetStudents')
-      // this.$store.dispatch('registrar/fetchLevels')   
+      this.$store.dispatch('dean/fetchModules') 
       }
   
       else if(this.user.role==='degree_head'){
@@ -109,13 +101,17 @@ export default {
       this.$store.dispatch('dean/fetchTvetPrograms')
        
       }
+         else if(this.user.role==='cashier'){
+      this.$router.push({name:'CashierDashboard'})
+    }
     else if(this.user.role==='tvet_head'){
+      this.$router.push({name:'TvetHeadDashboard'}) 
         this.$store.dispatch('tvetHead/fetchModules')
         this.$store.dispatch('tvetHead/fetchStudentInLevels')
       }
     else if(this.user.role==='teacher'){
        this.$store.dispatch('teacher/fetchMySections', this.user.id)
-    }
+    } 
       
     this.$store.dispatch('fetchPrograms')
        

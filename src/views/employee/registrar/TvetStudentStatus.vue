@@ -201,7 +201,7 @@
        <div class="d-flex justify-content-end p-0">
         <span @click="isGiveResult = false" class="close fs-2 me-5"><i class="far fa-times-circle"></i></span>
       </div>
-        <div class="result">
+        <div class="moduleResult">
       <table class="viewcourse">
   <thead>
       <tr class="table-header">
@@ -443,6 +443,7 @@ export default {
       },
        async setResult(mogule){
          mogule.level_id = this.selectedLevelId
+         if(mogule.from_20 <= 20 && mogule.from_30 <= 30 && mogule.from_50 <= 50){
         console.log('course result sent to server',mogule)
         var response = await apiClient.post('api/give_module_result/'+this.tvetStudId,mogule)
         if(response.status === 200){
@@ -454,6 +455,13 @@ export default {
               })
           console.log('mogule result from server',response.data)
         }
+         }
+         else{
+this.$store.commit('setAlertMessages',{
+                text:'Incorrect Value!',
+                type:'danger'
+              })
+         }
       },
 
      },
@@ -596,6 +604,11 @@ td input{
 .result{
    width: 100%;
    height: 80vh;
+   overflow-y: auto;
+}
+.moduleResult{
+  width: 100%;
+   height: 70vh;
    overflow-y: auto;
 }
 /* .viewMogule{

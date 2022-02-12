@@ -143,7 +143,7 @@
   <td>{{course.code}}</td>
   <td>{{course.cp}}</td>
   <td>{{course.total_mark}}</td>
-  <td>{{course.grade_point}}</td>
+  <td>{{course.letter_grade}}</td>
   </tr>
   </tbody>
     </table>
@@ -195,7 +195,7 @@
        <div class="d-flex justify-content-end p-0">
         <span @click="isGiveResult = false" class="close fs-2 me-5"><i class="far fa-times-circle"></i></span>
       </div>
-        <div class="result">
+        <div class="courseResult">
       <table class="viewcourse">
   <thead>
       <tr class="table-header">
@@ -299,7 +299,11 @@ export default {
          })
           this.$store.dispatch('registrar/fetchDegreeStudentDetail',this.degreeStudId)
     },
-    
+    watch:{
+      acYearId(newValue){
+       this.$store.dispatch('registrar/fetchActiveYearSemisters',newValue)
+      }
+    },
     methods: {
         back(){
         this.$router.back()
@@ -362,6 +366,7 @@ export default {
         
       },
       async setResult(course){
+        if(course.from_5 <= 5 && course.from_5s <= 5 && course.from_5 <= 25 && course.from_25s <= 25 && course.from_40 <= 40 ){
        course.semester_id = this.selectedSemesterId
         console.log('course result sent to server',course)
         var response = await apiClient.post('api/give_course_result/'+this.degreeStudId,course)
@@ -372,6 +377,13 @@ export default {
            this.$store.commit('setAlertMessages',{
                 text:'Result is saved!',
                 type:'success'
+              })
+        }
+        }
+        else{
+           this.$store.commit('setAlertMessages',{
+                text:'Incorrect value!',
+                type:'danger'
               })
         }
       },
@@ -561,6 +573,11 @@ cursor: pointer;
 .result{
    width: 100%;
    height: 82vh;
+   overflow-y: auto;
+}
+.courseResult{
+   width: 100%;
+   height: 70vh;
    overflow-y: auto;
 }
 .viewcourse th{

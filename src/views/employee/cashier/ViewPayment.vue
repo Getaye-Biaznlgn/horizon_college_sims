@@ -62,6 +62,7 @@
    
 </table>
     </div>
+    <div v-if="!filteredStudents?.length" class="ms-5 mx-5 mt-3">no students found</div>
 <div v-if="paidStudents.data?.length" class="d-flex justify-content-end mt-3 me-5">
 <div class="rowsperpage me-3">
 Rows per Page
@@ -125,7 +126,7 @@ import {mapGetters} from 'vuex'
 export default {
   data() {
     return {
-        rowNumber:5,
+        rowNumber:10,
         paymentType:'all',
         searchValue:'',
         startDate:'',
@@ -211,7 +212,13 @@ this.queryObject.academic_year_id = newValue
 this.studentsPaid(this.queryObject)
     
     },
+    searchValue(newValue){
+      if(newValue === ''){
+      this.searchByIdNo()
+      }
+    }
   },
+
       methods: {
         studentsPaid(queryObject){
           this.$store.commit('setIsItemLoading',true)

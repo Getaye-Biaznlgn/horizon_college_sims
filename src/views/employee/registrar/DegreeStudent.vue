@@ -52,8 +52,8 @@
             v-model="scholarForFilter"
           >
             <option value="all">All</option>
-            <option value="none">Scholarship</option>
-            <option value="fully">Non scholarship</option>
+            <option value="fully">Scholarship</option>
+            <option value="none">Non scholarship</option>
           </select>
         </div>
 <div class="mb-3">
@@ -80,6 +80,7 @@
       <th class="text-white px-2">Department</th>
       <th class="text-white px-2">Year</th>
       <th class="text-white px-2">Semester</th>
+      <th class="text-white px-2">Scholarship</th>
       <th v-show="!isPrinting" class="text-white px-2">current State</th>
       <th v-show="!isPrinting" class="text-white px-2">Result Form</th>
       <th v-show="!isPrinting"><span class="sr-only px-2"></span></th>
@@ -95,6 +96,7 @@
       <td>{{student.department?.name}}</td>
       <td>{{student.year_no}}</td>
       <td>{{semesterForFilter}}</td>
+      <td>{{student.scholarship}}</td>
       <td v-show="!isPrinting" class="text-center">
         <span v-if="student.status !== 'waiting'">{{student.status}}</span>
         <span v-else class="approvebtn border rounded shadow-sm p-1"><button @click="approveStudent(student)" class="btn error" id="approvebtn">approve</button></span>
