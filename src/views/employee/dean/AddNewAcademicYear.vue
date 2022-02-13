@@ -20,7 +20,7 @@ export default {
   components:{Activities, FeeMonth, AcademicTime},
   data(){
       return{
-          selectedComponent:'Activities',
+          selectedComponent:'AcademicTime',
           feeMonth:'',
           academicTime:'',
           months:[],

@@ -112,7 +112,7 @@
           <td>{{ tvetStudents.level_no }}</td>
           <td>{{ student.scholarship }}</td>
           <td v-show="!isPrinting">
-        <span v-if="student.status === 'approved'">{{student.status}}</span>
+        <span v-if="student.status !== 'waiting'">{{student.status}}</span>
         <span v-else class="approvebtn p-1 border rounded shadow-sm"><button @click="approveStudent(student)" class="btn error approved">approve</button></span>
       </td>
       <td v-show="!isPrinting">{{changeResultEntryState(student.legible)}}</td>

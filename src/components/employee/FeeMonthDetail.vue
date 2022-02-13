@@ -89,8 +89,8 @@
            <div class="body">
               <strong class="fw-bold d-block my-2">Select Months</strong>
               <div v-for="month in suggestedMonths" :key="month.id" class="form-check">
-              <input class="form-check-input" type="checkbox" v-model="months" :value="month.id" id="july">
-              <label class="form-check-label" for="july">   {{month.name}} </label>
+              <input class="form-check-input" type="checkbox" v-model="months" :value="month.id" :id="month.id">
+              <label class="form-check-label" :for="month.id">   {{month.name}} </label>
             </div> 
         </div>
          <div class="footer">

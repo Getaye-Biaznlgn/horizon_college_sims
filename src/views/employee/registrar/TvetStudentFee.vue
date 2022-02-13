@@ -202,7 +202,7 @@ Rows per Page
 
 </template>
 <script>
-import apiClient from '../../../resources/baseUrl'
+//import apiClient from '../../../resources/baseUrl'
 export default {
     data() {
         return {
@@ -216,7 +216,9 @@ export default {
             page:1,
             per_page:10,
             search_id:'',
-            path:'api/tvet_student_fees'
+            path:'api/tvet_student_fees',
+            paid:'',
+            unpaid:'',
             },
         }
     },
@@ -265,50 +267,35 @@ this.$store.dispatch('registrar/fetchTvetStudentFees',queryObject)
              this.queryObject.page = 1
          this.unpaid = 'all'
          this.queryObject.search_id = ''
+         this.queryObject.unpaid = ''
          this.studentId = ''
            if(event.target.value !== 'all'){
-            this.queryObject.month_query = event.target.value
-           this.queryObject.academic_year_id = this.acYearId
-          try{
-           console.log('paid students outside')
-             var response = await apiClient.get(`api/tvet_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
-            if(response.status ===200){
-              console.log(response.data)
-                this.$store. commit('registrar/setTvetStudentFees', response.data)
-                console.log('paid students')
-            }
-          }
-          catch(e){
-            console.log('error')
-          }
+            this.queryObject.paid = event.target.value
+           this.queryObject.academic_year_id = this.acYearId         
+           this.tvetStudentsPaid(this.queryObject)
           }
           else{
             this.paid = 'all'
-            this.queryObject.month_query = ''
+            this.queryObject.paid = ''
+            this.queryObject.unpaid = ''
             this.tvetStudentsPaid(this.queryObject)
           }            
         },
        async fetchUnpaidStudents(event){
-          this.queryObject.page = 1
+         this.queryObject.page = 1
          this.paid = 'all'
          this.queryObject.search_id = ''
+         this.queryObject.paid = ''
          this.studentId = ''
           if(event.target.value !== 'all'){
-             this.queryObject.month_query = event.target.value
+             this.queryObject.unpaid = event.target.value
           this.queryObject.academic_year_id = this.acYearId
-          try{
-             var response = await apiClient.get(`api/tvet_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
-            if(response.status ===200){
-                this.$store. commit('registrar/setTvetStudentFees', response.data)
-            }
-          }
-          catch(e){
-            console.log('error')
-          }
+          this.tvetStudentsPaid(this.queryObject)
           }
            else{
              this.unpaid = 'all'
-              this.queryObject.month_query = ''
+            this.queryObject.paid = ''
+            this.queryObject.unpaid = ''
             this.tvetStudentsPaid(this.queryObject)
           }
         },

@@ -294,10 +294,10 @@ export default {
             this.studentInfo.residential_address = this.residential_address
             this.studentInfo.maritial_status = this.maritial_status
             this.studentInfo.emergency_address = this.emergency_address
-          if(!this.v$.$error){
+          // if(!this.v$.$error){
               this.$store.commit('registrar/setResultNotifier','')
             this.personalDetail(this.studentInfo,'educational-info')
-       }
+      //  }
         }
     },
 }

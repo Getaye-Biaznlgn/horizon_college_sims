@@ -2,7 +2,7 @@
      <div class="row mt-5">
     <div class="calender col-md-4">
     <span class="mt-3">Select Current Academic Year</span>
-    <select class="form-select mt-1" aria-label=".form-select-sm example" ref="acYearId">
+    <select class="form-select mt-1" aria-label=".form-select-sm example" ref="acYearId" @change="fetchSemesters($event)">
   <option v-for="calender in academicYears" :key="calender.id" :value="calender.id">{{calender.year}}</option>
 </select>
     </div>
@@ -55,11 +55,11 @@
   <div class="mt-3 col-lg-6">
   <span>Year</span>
   <select class="form-select" aria-label=".form-select-sm example" v-model="year_no">
- <option value="1" selected>first year</option>
- <option value="2">Second Year</option>
+ <option value="1">first year</option>
+ <!-- <option value="2">Second Year</option>
  <option value="3">Third Year</option>
  <option value="4">Fourth Year</option>
- <option value="5">Fifth Year</option>
+ <option value="5">Fifth Year</option> -->
 </select>
   </div>
    <div class="mt-3 col-lg-6">
@@ -226,6 +226,7 @@ export default {
          this.tvetDepartmentId = this.tvetDepartments[0]?.id
         this.tvetProgramId = this.tvetPrograms[0]?.id
         this.levelId = this.departmentBasedLevels[0]?.id
+        console.log('semesters',this.semesters)
     },
     watch:{
       departmentBasedLevels(newValues){
@@ -261,10 +262,13 @@ export default {
            this.backPage('personal-info','isEducational')
        } ,
       semesterByProgram(degreeProgramId){
-this.activeSemesters = this.semesters.filter((semester) =>{
-  return Number(degreeProgramId) === Number(semester.program_id)
+     this.activeSemesters = this.semesters.filter((semester) =>{
+      return Number(degreeProgramId) === Number(semester.program_id)
 })
       }, 
+      fetchSemesters(event){
+             this.$store.dispatch('registrar/fetchActiveYearSemisters',event.target.value)
+      }
     },
 }
 </script>

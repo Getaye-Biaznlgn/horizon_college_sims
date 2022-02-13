@@ -201,7 +201,7 @@ Rows per Page
 </div>
 </template>
 <script>
-import apiClient from '../../../resources/baseUrl'
+//import apiClient from '../../../resources/baseUrl'
 export default {
     data() {
       return {
@@ -215,7 +215,8 @@ export default {
             page:1,
             per_page:10,
             search_id:'',
-            month_query:'',
+            paid:'',
+            unpaid:'',
             path:'api/degree_student_fees',
             },
             pamentStatus:''
@@ -261,63 +262,69 @@ rowNumber(newValue){
         },
        async fetchPaidStudents(event){
           this.queryObject.page = 1
+          this.queryObject.unpaid = ''
          this.unpaid = 'all'
          this.queryObject.search_id = ''
          this.studentId = ''
            if(event.target.value !== 'all'){
-             this.$store.commit('setIsItemLoading',true)
-            this.queryObject.month_query = event.target.value
+            this.queryObject.paid = event.target.value
            this.queryObject.academic_year_id = this.acYearId
-           this.pamentStatus = event.target.value
-          try{
-            console.log('paid students outside')
-             var response = await apiClient.get(`api/degree_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
-            if(response.status ===200){
-              console.log(response.data)
-                this.$store. commit('registrar/setDegreeStudentFees', response.data)
-                console.log('paid students')
-            }
-          }
-          catch(e){
-            console.log('error')
-          }
-          finally{
-             this.$store.commit('setIsItemLoading',false)
-          }
+          this.degreeStudentsPaid(this.queryObject)
+           
+          // try{
+          //   console.log('paid students outside')
+          //    var response = await apiClient.get(`api/degree_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
+          //   if(response.status ===200){
+          //     console.log(response.data)
+          //       this.$store. commit('registrar/setDegreeStudentFees', response.data)
+          //       console.log('paid students')
+          //   }
+          // }
+          // catch(e){
+          //   console.log('error')
+          // }
+          // finally{
+          //    this.$store.commit('setIsItemLoading',false)
+          // }
           }
           else{
             
             this.paid = 'all'
-            this.queryObject.month_query = ''
+            this.queryObject.paid = ''
+            this.queryObject.unpaid = ''
+            this.queryObject.academic_year_id = this.acYearId
             this.degreeStudentsPaid(this.queryObject)
           }
         },
        async fetchUnpaidStudents(event){
          this.queryObject.page = 1
+         this.queryObject.paid = ''
          this.paid = 'all'
          this.queryObject.search_id = ''
          this.studentId = ''
-          if(event.target.value !== 'all'){            
-             this.$store.commit('setIsItemLoading',true)          
-             this.queryObject.month_query = event.target.value
+          if(event.target.value !== 'all'){                     
+             this.queryObject.unpaid = event.target.value
           this.queryObject.academic_year_id = this.acYearId
-          this.pamentStatus = event.target.value
-          try{
-             var response = await apiClient.get(`api/degree_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
-            if(response.status ===200){
-                this.$store. commit('registrar/setDegreeStudentFees', response.data)
-            }
-          }
-          catch(e){
-            console.log('error')
-          }
-             finally{
-             this.$store.commit('setIsItemLoading',false)
-              }
+          this.degreeStudentsPaid(this.queryObject)
+        
+          // try{
+          //    var response = await apiClient.get(`api/degree_unpaid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
+          //   if(response.status ===200){
+          //       this.$store. commit('registrar/setDegreeStudentFees', response.data)
+          //   }
+          // }
+          // catch(e){
+          //   console.log('error')
+          // }
+          //    finally{
+          //    this.$store.commit('setIsItemLoading',false)
+          //     }
           }
            else{
              this.unpaid = 'all'
-              this.queryObject.month_query = ''
+          this.queryObject.unpaid = ''
+              this.queryObject.paid = ''
+              this.queryObject.academic_year_id = this.acYearId
             this.degreeStudentsPaid(this.queryObject)
           }
         },

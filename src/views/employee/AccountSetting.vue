@@ -70,6 +70,7 @@ export default {
          this.password.oldPassword=''
          this.password.confirmPassword=''
          this.v$.$reset()
+         this.requestStatus.message = ''
        },
     async save(){
         this.v$.$validate()

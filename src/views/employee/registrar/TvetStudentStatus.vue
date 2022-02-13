@@ -223,7 +223,7 @@
   <td><input type="number" v-model="mogule.from_20" @input="calculetTotal($event,mogule)"></td>
   <td><input type="number" v-model="mogule.from_30" @input="calculetTotal($event,mogule)"></td>
   <td><input type="number" v-model="mogule.from_50" @input="calculetTotal($event,mogule)"></td>
-   <td><input type="number" v-model="mogule.total_mark"></td>
+   <td><input type="number" v-model="mogule.total_mark" disabled></td>
   <td><button @click="setResult(mogule)" class="btn savebtn p-1" :disabled="Number(mogule.is_changed) === 0">Save</button></td>
   </tr>
   </tbody>
@@ -410,15 +410,15 @@ export default {
       },
         async giveMoguleResult(level){
           this.selectedLevelId = level.id
-           if(Number(level.legible)=== 0){
+         if(Number(level.is_allowed_now)=== 0){
            this.$store.commit('setAlertMessages',{
-                text:'This studdent do not paid his/her tuition fee!',
+                text:'Student result entry date is passed!',
                 type:'danger'
               })
          }
-         else if(Number(level.is_allowed_now)=== 0){
+          else if(Number(level.legible)=== 0){
            this.$store.commit('setAlertMessages',{
-                text:'Student result entry date is passed!',
+                text:'This studdent do not paid his/her tuition fee!',
                 type:'danger'
               })
          }
@@ -445,6 +445,8 @@ export default {
          mogule.level_id = this.selectedLevelId
          if(mogule.from_20 <= 20 && mogule.from_30 <= 30 && mogule.from_50 <= 50){
         console.log('course result sent to server',mogule)
+
+        try{
         var response = await apiClient.post('api/give_module_result/'+this.tvetStudId,mogule)
         if(response.status === 200){
           console.log('result successfully sent')
@@ -456,6 +458,14 @@ export default {
           console.log('mogule result from server',response.data)
         }
          }
+          catch(e){
+            this.$store.commit('setAlertMessages',{
+                text:'Faild to save!',
+                type:'danger'
+              })
+         }
+          }
+         
          else{
 this.$store.commit('setAlertMessages',{
                 text:'Incorrect Value!',

@@ -221,7 +221,7 @@
   <td><input type="number" min="0" max="25" v-model="course.from_25" @input="calculetTotal($event,course)"></td>
   <td><input type="number" min="0" max="25" v-model="course.from_25s" @input="calculetTotal($event,course)"></td>
   <td><input type="number" min="0" max="40" v-model="course.from_40" @input="calculetTotal($event,course)"></td>
-  <td><input type="number" min="0" max="100" v-model="course.total_mark"></td>
+  <td><input type="number" min="0" max="100" v-model="course.total_mark" disabled></td>
   <td><button @click="setResult(course)" class="btn savebtn p-1" :disabled="Number(course.is_changed) === 0">Save</button></td>
   </tr>
   </tbody>
@@ -329,19 +329,18 @@ export default {
                 type:'danger'
               })
          }
-         else if(Number(semester.legible)=== 0){
-           this.$store.commit('setAlertMessages',{
-                text:'This studdent do not paid his tuition fee!',
-                type:'danger'
-              })
-         }
          else if(Number(semester.is_allowed_now)=== 0){
            this.$store.commit('setAlertMessages',{
                 text:'Student result entry date is passed!',
                 type:'danger'
               })
          }
-         
+         else if(Number(semester.legible)=== 0){
+           this.$store.commit('setAlertMessages',{
+                text:'This studdent do not paid his tuition fee!',
+                type:'danger'
+              })
+         }         
          else{
          this.$store.commit('setIsItemLoading',true)
          this.student_id = this.studentSemesters.id

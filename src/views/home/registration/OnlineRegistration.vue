@@ -34,12 +34,12 @@ export default {
       studentInfo:{},
     }
   },
-     computed:{
-   acYearId(){
-     return this.$store.getters.acYearId
-   }
+  //    computed:{
+  //  acYearId(){
+  //    return this.$store.getters.acYearId
+  //  }
    
-   },
+  //  },
   provide(){
     return{
         personalDetail:this.personalDetail,
@@ -72,7 +72,6 @@ export default {
           )
           this.$store.dispatch('dean/fetchDegreeDepartments')
       this.$store.dispatch('dean/fetchTvetDepartments')
-      this.$store.dispatch('registrar/fetchActiveYearSemisters')
        this.$store.dispatch('registrar/fetchLevels')
          this.$store.dispatch('dean/fetchDegreePrograms')
       this.$store.dispatch('dean/fetchTvetPrograms')
