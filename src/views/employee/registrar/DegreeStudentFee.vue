@@ -52,7 +52,7 @@
       <th class="text-white">May</th>
       <th class="text-white">Jun</th>
       <th class="text-white">Jul</th>
-      <th class="text-white">Augu</th>
+      <th class="text-white">Aug</th>
     </tr>
   </thead>
   <tbody>
@@ -71,7 +71,7 @@
       <td>{{student.pads.April}}</td>
       <td>{{student.pads.May}}</td>
       <td>{{student.pads.Jun}}</td>
-      <td>{{student.pads.Julay}}</td>
+      <td>{{student.pads.July}}</td>
       <td>{{student.pads.August}}</td>
       <td>{{student.total}}</td>
       <td v-if="!isPrinting">

@@ -56,8 +56,8 @@
       <th>sex</th>
       <th>progarm</th>
       <th>Year</th>
-      <th>State</th>
-      <th></th>
+      <th v-if="!isPrinting">State</th>
+      <th v-if="!isPrinting"></th>
     </tr>
   </thead>
     <tr v-for="(student,index) in filteredStudents" :key="student.id">
@@ -67,8 +67,8 @@
       <td>{{student.sex}}</td>
       <td>{{student.program?.name}}</td>
       <td>{{student.year_no}}</td>
-      <td>{{student.status}}</td>
-      <td>
+      <td v-if="!isPrinting">{{student.status}}</td>
+      <td v-if="!isPrinting">
         <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -96,6 +96,7 @@ export default {
      semesterForFilter:'1',
      stateForFilter:'all', 
      yearForFilter:'all',
+     isPrinting:false
     
     }
   },
@@ -147,7 +148,15 @@ export default {
   },
   methods:{
     exportStudentData(){
-       this.$htmlToPaper('departmentStudent')
+      this.isPrinting = true
+     var timeOutFunction= setTimeout(()=>{
+this.$htmlToPaper('departmentStudent',null,()=>{
+  this.isPrinting = false
+  clearTimeout(timeOutFunction)
+
+})
+      },0)
+       
     },
     previousPage(){
        if(this.currentPage>1){

@@ -47,7 +47,7 @@
       <th class="text-white p-3">Time</th>
       <th class="text-white p-3">State</th>
       <th class="text-white p-3">GPA</th>
-      <th class="text-white p-3"></th>
+      <th v-if="!isPrinting" class="text-white p-3"></th>
       </tr>
       </thead>
   <tbody>
@@ -57,7 +57,7 @@
   <td>{{semester.start_date+'  to  '+semester.end_date}}</td>
   <td>{{semester.status}}</td>
   <td>{{(semester.GPA).toFixed(2)}}</td>
-  <td>
+  <td v-if="!isPrinting">
       <div class="dropdown me-5 p-1">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -267,6 +267,7 @@ export default {
       oldYearNo:'',
       selectedYear:'',
      selectedSemesterId:'',
+     isPrinting:false
         }
     },
     computed:{
@@ -279,7 +280,10 @@ export default {
         academicYears(){
       return this.$store.getters['academicYears']
     },
-            filterdSemesters(){
+     notifications(){
+      return this.$store.getters.notifications
+    },
+     filterdSemesters(){
        var semesters = this.academicSemesters.filter(semester=>{
          return Number(semester.academic_year_id)===Number(this.acYearId)
          })
@@ -309,7 +313,14 @@ export default {
         this.$router.back()
       },
       printDegreeStudentStatus(){
-        this.$htmlToPaper('studentStatus')
+        this.isPrinting = true
+        var timeOutFunction = setTimeout(()=>{
+          this.$htmlToPaper('studentStatus',null,()=>{
+            this.isPrinting = false
+            clearTimeout(timeOutFunction)
+          })
+        },0)
+        
       },
       cancelEditDialog(){
         this.isEditSemester = false
@@ -409,10 +420,14 @@ var response = await apiClient.post('api/register_student_for_semester',semester
 if(response.status === 201){
 console.log('students registerd to new semester')
 console.log(response.data)
-this.studentSemesters.semesters.push(response.data)
+
+ var previousSemester = this.studentSemesters
+ previousSemester.semesters.push(response.data)
+this.$store.commit('registrar/setDegreeStudentDetails',previousSemester)
 this.isFaild = false
 this.isSuccessed = true
 this.resultNotifier = 'You have registered student succesfully'
+this.$store.commit('setNotifications',Number(this.notifications) + 1)
 }
 else if(response.status === 200){
   this.isFaild = true

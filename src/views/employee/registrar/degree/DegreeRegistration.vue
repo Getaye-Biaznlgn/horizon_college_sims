@@ -48,6 +48,9 @@ export default {
   },
      computed:{
    ...mapGetters(['acYearId']),
+    notifications(){
+      return this.$store.getters.notifications
+    },
    
    },
   provide(){
@@ -163,25 +166,14 @@ export default {
   var response = await apiClient.post('api/degree_students',this.studentInfo)
   console.log('status code '+response.status)
   if(response.status === 201){
-        //  this.resultNotifier.notification = 'You have registered a student successfully'
-        //  this.resultNotifier.isSuccessed = true
-        //  this.resultNotifier.isFaild = false
     console.log('response from adding degree student')
     console.log(response.data)
-  //    var previousStudent = this.$store.getters['registrar/degreeStudents']
-  //   var index = previousStudent.findIndex(student => {
-  //    return student.semester_no === response.data.semester_no
-  //    })
-  // previousStudent[index].students.push(response.data)
-  // this.$store.commit('registrar/setDegreeStudent',previousStudent)
   this.$store.commit('registrar/setResultNotifier','You have registered a Degree student successfully')
      this.$store.commit('registrar/setIsSuccessed',true)
       this.$store.commit('registrar/setIsFaild',false)
+      this.$store.commit('setNotifications',Number(this.notifications) + 1)
   }
   else if(response.status === 200){
-      // this.resultNotifier.notification = ''
-      //    this.resultNotifier.isSuccessed = false
-      //    this.resultNotifier.isFaild = true
           this.$store.commit('registrar/setResultNotifier','You have already registered this Student')
      this.$store.commit('registrar/setIsSuccessed',false)
       this.$store.commit('registrar/setIsFaild',true)

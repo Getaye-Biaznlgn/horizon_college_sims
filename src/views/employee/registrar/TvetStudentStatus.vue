@@ -45,7 +45,7 @@
               <th class="text-white">Level</th>
               <th class="text-white">Year</th>
               <th class="text-white">State</th>
-              <th class="text-white"></th>
+              <th v-if="!isPrinting" class="text-white"></th>
             </tr>
           </thead>
           <tbody>
@@ -53,19 +53,11 @@
               <td>{{ "level " + level.level_no }}</td>
               <td>{{ level.year }}</td>
               <td>{{ level.status }}</td>
-              <td>
+              <td v-if="!isPrinting">
                 <div class="dropdown">
-                  <a
-                    class="btn py-0"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
+                  <a class="btn py-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                     <span><i class="fas fa-ellipsis-v"></i></span>
                   </a>
-
                   <ul
                     class="dropdown-menu"
                     aria-labelledby="dropdownMenuLink border rounded shadow-sm">
@@ -111,10 +103,7 @@
             <option v-for="level in departmentBasedLevels" :key="level.id" :value="level.id">{{ "Level " + level.level_no }}</option>
           </select>
         </div>
-        <p
-          class="ms-5 mt-3 text-center"
-          :class="{ success: isSuccessed, faild: isFaild }"
-        >
+        <p class="ms-5 mt-3 text-center" :class="{ success: isSuccessed, faild: isFaild }">
           {{ resultNotifier }}
         </p>
         <div class="d-flex justify-content-end mt-3 pt-3">
@@ -220,9 +209,9 @@
     <td>{{index+1}}</td>
   <td>{{mogule.title}}</td>
   <td>{{mogule.code}}</td>
-  <td><input type="number" v-model="mogule.from_20" @input="calculetTotal($event,mogule)"></td>
-  <td><input type="number" v-model="mogule.from_30" @input="calculetTotal($event,mogule)"></td>
-  <td><input type="number" v-model="mogule.from_50" @input="calculetTotal($event,mogule)"></td>
+  <td><input type="number" min="0" max="20" v-model="mogule.from_20" @input="calculetTotal($event,mogule)"></td>
+  <td><input type="number" min="0" max="30" v-model="mogule.from_30" @input="calculetTotal($event,mogule)"></td>
+  <td><input type="number" min="0" max="50" v-model="mogule.from_50" @input="calculetTotal($event,mogule)"></td>
    <td><input type="number" v-model="mogule.total_mark" disabled></td>
   <td><button @click="setResult(mogule)" class="btn savebtn p-1" :disabled="Number(mogule.is_changed) === 0">Save</button></td>
   </tr>
@@ -256,7 +245,8 @@ export default {
       newLevelId:'',
       oldLevelId:'',
       isGiveResult:false,
-      selectedLevelId:''
+      selectedLevelId:'',
+      isPrinting:false
         }
     },
      computed: {
@@ -272,6 +262,9 @@ export default {
     },
      studentLevels() {
       return this.$store.getters["registrar/tvetStudentDetail"];
+    },
+     notifications(){
+      return this.$store.getters.notifications
     },
     departmentBasedLevels() {
       var levels = this.levels.filter((level) => {
@@ -293,8 +286,14 @@ export default {
         this.$router.back()
       },
       printTvetStudentStatus(){
-        this.$htmlToPaper('studentStatus')
-      },
+          this.isPrinting = true
+        var timeOutFunction = setTimeout(()=>{
+          this.$htmlToPaper('studentStatus',null,()=>{
+            this.isPrinting = false
+            clearTimeout(timeOutFunction)
+          })
+        },0)
+        },
       checkCompletion(){
         var isCompleted = true
         this.studentLevels.levels?.forEach(level=>{
@@ -330,6 +329,11 @@ export default {
           this.isFaild = false;
           this.isSuccessed = true;
           this.resultNotifier = "You have registered student succesfully";
+          var previousLevels = this.studentLevels
+          previousLevels.levels.push(response.data)
+          this.$store.commit('registrar/setTvetStudentDetails',previousLevels)
+          this.$store.commit('setNotifications',Number(this.notifications) + 1)
+          
         }
         else if(response.status === 200){
            this.isFaild = true;

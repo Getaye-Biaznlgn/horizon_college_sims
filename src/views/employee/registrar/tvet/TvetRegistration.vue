@@ -69,6 +69,9 @@ export default {
   },
   computed: {
     ...mapGetters(["acYearId"]),
+     notifications(){
+      return this.$store.getters.notifications
+    },
   },
   provide() {
     return {
@@ -151,6 +154,7 @@ export default {
   this.$store.commit('registrar/setResultNotifier','You have registered a student successfully')
       this.$store.commit('registrar/setIsSuccessed',true)
       this.$store.commit('registrar/setIsFaild',false)
+       this.$store.commit('setNotifications',Number(this.notifications) + 1)
   }
   else if(response.status === 200){
     this.$store.commit('registrar/setResultNotifier',response.data.error)
