@@ -65,7 +65,7 @@
    <div class="mt-3 col-lg-6">
  <span>Semester</span>
   <select class="form-select" aria-label=".form-select-sm example" ref="semesterId">
-  <option v-for="semister in activeSemesters" :key="semister.id" :value="semister.id">{{'semesters '+semister.number}}</option>
+  <option v-for="semister in activeSemesters" :key="semister.id" :value="semister.id">{{'semester '+semister.number}}</option>
 </select>
 </div>
   </div>
@@ -267,7 +267,10 @@ export default {
 })
       }, 
       fetchSemesters(event){
-             this.$store.dispatch('registrar/fetchActiveYearSemisters',event.target.value)
+             this.$store.dispatch('registrar/fetchActiveYearSemisters',event.target.value).then(()=>{
+               this.semesterByProgram(this.degreeProgramId)
+             })
+             console.log('event.target.value=',event.target.value)
       }
     },
 }
