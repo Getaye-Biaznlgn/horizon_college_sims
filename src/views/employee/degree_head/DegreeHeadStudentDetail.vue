@@ -31,13 +31,14 @@
     <td>{{item.year}}</td>
     <td>{{item.start_date+'----'+item.end_date}}</td>
     <td>{{item.status}}</td>
-    <td>{{item.GPA}}</td>
+    <td>{{item.GPA.toFixed(2)}}</td>
   </tr>
  </tbody>
   <p v-if="!studentSemester.semesters?.length" class="my-2">No history found yet!</p>
 </table>
  <div class="mt-3 d-flex">
-    <button class="btn btn-add ms-auto text-white shadow-sm" @click="showAddModal">Add To Next Semester</button> 
+   <div v-if="!checkComplation(studentSemester.semesters)" class="incomplet">Ther is Incomplet semester</div>
+    <button class="btn btn-add ms-auto text-white shadow-sm" @click="showAddModal" :disabled ="!checkComplation(studentSemester.semesters)">Register for Next Semester</button> 
  </div>
 
 </div>
@@ -117,6 +118,16 @@ export default {
       }
     },
     methods:{
+      checkComplation(semesters){
+          var isCopleted = true
+     semesters?.forEach(semester=>{
+           if(semester.status !== 'finished'){
+             isCopleted = false
+             console.log('state of semester',isCopleted)
+           }
+         })
+         return isCopleted
+      },
       showAddModal(){
         this.actionButtonType='add'
         this.addBaseModal.show()
@@ -213,3 +224,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.incomplet{
+  color: red;
+}
+</style>

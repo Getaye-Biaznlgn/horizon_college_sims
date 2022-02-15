@@ -62,7 +62,7 @@
  </div>
 </base-card>
 
-<base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType">
+<base-modal @save="save" @edit="edit" :isLoading="isSaving" id="addBaseModal" :button-type="actionButtonType" @cancel="clearModal()">
    <template #modalBody>
       <form @submit.prevent>
          <div class="mb-3" :class="{warining:v$.section.name.$error}">
@@ -227,6 +227,10 @@ export default {
         this.section.academic_year_id=section.semester.academic_year_id
         this.actionButtonType='edit'
         this.addBaseModal.show()
+      },
+      clearModal(){
+        this.v$.$reset()
+        this.section={}
       },
       async deleteSection(){
         this.isSaving=true

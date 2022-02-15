@@ -384,14 +384,14 @@ this.tvetPrograms.forEach(program=>{
          var studentData={}
          studentData.student_id= student.id,
          studentData.level_id= student.level_id
-         studentData.uer_id = this.user.id
+         studentData.user_id = this.user.id
          
           try{
             console.log('data sent to approve',studentData)
          var response = await apiClient.post('api/tvet_approve',studentData)
          console.log('response code=',response.status)
          if(response.status === 200){
-           student.status = response.data.status
+           student.status = 'approved'
            this.$store.commit('setNotifications',Number(this.notifications)-1)
          }
           }

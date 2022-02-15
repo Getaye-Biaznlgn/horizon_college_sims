@@ -63,8 +63,8 @@
                     aria-labelledby="dropdownMenuLink border rounded shadow-sm">
                     <li><span @click="viewModules(level.id)" class="dropdown-item px-4 py-2">View Modules</span></li>
                      <li><span @click="giveMoguleResult(level)" class="dropdown-item px-4 py-2">Give Module Result</span></li>
-                    <li v-if="isActiveYear(level.academic_year_id)">
-                      <span v-if="level.status==='waiting'" @click="editLevel(level.id,level.academic_year_id)" class="dropdown-item px-4 py-2">Edit Level</span></li>
+                    <li v-if="level.status!=='finished'">
+                      <span  @click="editLevel(level)" class="dropdown-item px-4 py-2">Edit Level</span></li>
                   </ul>
                 </div>
               </td>
@@ -73,7 +73,7 @@
         </table>
       </div>
         <div class="d-flex mt-5 mb-2">
-           <span v-if="!checkCompletion()" class="faild ms-5">Ther is uncompleted Level</span>
+           <span v-if="!checkCompletion()" class="faild ms-5">Ther is Incomplete Level</span>
         <button @click="registerForLevel()" class="btn ms-3 me-1 p-1 register addbtn ms-auto" :disabled="!checkCompletion()">Register for New Level
           </button>
         </div>
@@ -83,18 +83,8 @@
       <base-card>
         <div class="ms-4 mb-3 me-4">
           <span>Academic Year</span>
-          <select
-            class="form-select mt-1"
-            aria-label="Default select example"
-            ref="acYearId"
-          >
-            <option
-              v-for="acYear in academicYears"
-              :key="acYear.id"
-              :value="acYear.id"
-            >
-              {{ acYear.year }}
-            </option>
+          <select class="form-select mt-1" aria-label="Default select example" ref="acYearId">
+            <option v-for="acYear in academicYears" :key="acYear.id" :value="acYear.id">{{ acYear.year }}</option>
           </select>
         </div>
         <div class="ms-4 mb-3 me-4">
@@ -156,7 +146,7 @@
       <base-card>
         <div class="ms-4 mb-3 me-4">
           <span>Academic Year</span>
-          <select class="form-select mt-1" aria-label="Default select example" v-model="acYearId">
+          <select class="form-select mt-1" aria-label="Default select example" v-model="newAcYearId">
             <option v-for="acYear in academicYears" :key="acYear.id" :value="acYear.id">{{ acYear.year }}</option>
           </select>
         </div>
@@ -234,14 +224,15 @@ export default {
       isNewLevel: false,
       student_id: '',
       isLoading: false,
-      isSuccessed: true,
+      isSuccessed: false,
       isFaild: false,
       resultNotifier: "",
       isViewModule:false,
       // isEnterResult:false,
       levelModules:'', 
       isEdit:false,
-      acYearId:'',
+      newAcYearId:'',
+      oldAcYearId:'',
       newLevelId:'',
       oldLevelId:'',
       isGiveResult:false,
@@ -368,45 +359,54 @@ export default {
           this.$store.commit('setIsItemLoading',false)
        }
       },
-      editLevel(levelId,acYearId){
+      editLevel(level){
         this.isEdit = true
-        this.newLevelId = levelId
-        this.oldLevelId = levelId
-        this.acYearId = acYearId
+        this.newLevelId = level.id
+        this.oldLevelId = level.id
+        this.oldAcYearId = level.academic_year_id
+        this.newAcYearId = level.academic_year_id
+        this.resultNotifier = ''
       },
      async finishToEditLevel(){
        this.isLoading = true
         try{
-         var response = await apiClient.put(`api/update_student_for_level/${this.tvetStudId}?level_id=${this.newLevelId}&old_level_id=${this.oldLevelId}&academic_year_id=${this.acYearId}`)
+         var response = await apiClient.put(`api/update_student_for_level/${this.tvetStudId}?level_id=${this.newLevelId}&old_level_id=${this.oldLevelId}&academic_year_id=${this.newAcYearId}&old_academic_year_id=${this.oldAcYearId}`)
          if(response.status === 201){
-          this.resultNotifier='successfuly updated'
+          this.resultNotifier='successfuly Edited'
+          this.isSuccessed = true
+          this.isFaild = false
           console.log('response',response.data)
           var tempStudents = this.studentLevels
           var index = tempStudents.levels.findIndex(level=>{
             return Number(level.id) === Number(this.oldLevelId)
           })
           tempStudents.levels[index].level_no = response.data.level_no
+           tempStudents.levels[index].year = response.data.year
           this.$store.commit('registrar/setTvetStudentDetails',tempStudents)
 
+         }
+         else if(response.status === 200){
+           this.resultNotifier = response.data.error
+           this.isSuccessed = false
+          this.isFaild = true
          }
         }
         finally{
           this.isLoading = false
-           this.isEdit = false
         }
       },
       cancelLevelEdition(){
        this.isEdit = false
       },
-      isActiveYear(id){
-        var isCurrent = false
-        this.academicYears.forEach(year=>{
-          if(Number(year.is_current) === 1 && year.id === id){
-            isCurrent = true
-          }
-        })
-        return isCurrent
-      },
+      // isActiveYear(id){
+      //   var isCurrent = false
+      //   this.academicYears.forEach(year=>{
+      //     if(Number(year.is_current) === 1 && year.id === id){
+      //       isCurrent = true
+      //     }
+      //   })
+      //   return isCurrent
+      // },
        calculetTotal(event,mogule){
          mogule.is_changed = 1
       var totalMark = Number(mogule.from_20) + Number(mogule.from_30) +Number(mogule.from_50)

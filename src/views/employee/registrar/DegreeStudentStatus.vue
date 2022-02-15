@@ -65,7 +65,7 @@
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink border rounded shadow-sm">
             <li><span @click="viewCourse(semester.id)" class="dropdown-item px-4 py-2">View Course</span></li>
-            <li v-if="semester.status==='waiting'">
+            <li v-if="semester.status!=='finished'">
               <span @click="editStudentSemester(semester,studentSemesters.program?.id)" class="dropdown-item px-4 py-2">Edit Semester </span></li>
              <li><span @click="giveCoursResult(semester)" class="dropdown-item px-4 py-2">Give Result </span></li>
           </ul>
@@ -79,7 +79,7 @@
     <span>There is no semester data found</span>
   </div>
     <div class="d-flex mt-5 mb-1"> 
-      <span v-if="!checkComplation()" class="faild ms-5">Ther is uncompleted semester</span>
+      <span v-if="!checkComplation()" class="faild ms-5">Ther is Incomplete semester</span>
     <button @click="registerForSemester()" class="btn ms-3 me-1 p-1 register addbtn ms-auto" :disabled ="!checkComplation()">Register for New Semester</button>
     </div>
 </base-card>
@@ -104,7 +104,7 @@
 </div>
   <div class="mb-3 ms-4 me-4">
     <span>Semester</span>
-<select class="form-select mt-1" aria-label="Default select example" ref="semester_id">
+<select class="form-select mt-1" aria-label="Default select example" v-model="semesterId">
   <option v-for="semester in filterdSemesters" :key="semester.id" :value="semester.id">{{semester.number}}</option>
   </select>
 </div>
@@ -158,9 +158,8 @@
   <base-card>
   <div class="ms-4 mb-3 me-4">
     <span>Academic Year</span>
-<select class="form-select mt-1" aria-label="Default select example">
-<option selected>{{selectedYear}}</option>
-  </select>
+<select class="form-select mt-1" aria-label="Default select example" v-model="newAcYearId">
+  <option v-for="acYear in academicYears" :key="acYear.id" :value="acYear.id">{{acYear.year}}</option>  </select>
 </div>
   <div class="ms-4 mb-3 me-4">
     <span>Year Number</span>
@@ -175,7 +174,7 @@
   <div class="mb-3 ms-4 me-4">
     <span>Semester</span>
 <select class="form-select mt-1" aria-label="Default select example" v-model="newSemesterId">
-  <option v-for="semester in filterdSemesters" :key="semester.id" :value="semester.id">{{semester.number}}</option>
+  <option v-for="semester in filterdSemestersForEdit" :key="semester.id" :value="semester.id">{{semester.number}}</option>
   </select>
 </div>
  <p class="ms-5 mt-3 text-center" :class="{success:isSuccessed,faild:isFaild}">{{resultNotifier}}</p>
@@ -255,6 +254,7 @@ export default {
       isFaild:false,
       resultNotifier:'',
       programId:'',
+      semesterId:'',
       //isEnterResult:false,
       isViewCourse:false,
       isGiveResult:false,
@@ -265,7 +265,8 @@ export default {
       newSemesterId:'',
       newYearNo:'',
       oldYearNo:'',
-      selectedYear:'',
+      newAcYearId:'',
+      oldAcYearId:'',
      selectedSemesterId:'',
      isPrinting:false
         }
@@ -293,18 +294,37 @@ export default {
          console.log('filtered semesters=')
          console.log(semesters)
        return requiredSemeester
+     },
+      filterdSemestersForEdit(){
+       var semesters = this.academicSemesters.filter(semester=>{
+         return Number(semester.academic_year_id)===Number(this.newAcYearId)
+         })
+         var requiredSemeester = semesters.filter(semester=>{
+             return semester.program_id === this.programId
+         })
+         console.log('program id=',this.programId)
+         console.log('newAcYearId=',this.newAcYearId)
+         console.log('filtered semesters=')
+         console.log(requiredSemeester)
+       return requiredSemeester
      }
     },
     created() {
               this.academicYears.forEach((year)=>{
     if(Number(year.is_current) === 1){
       this.acYearId = year.id
+      return
     }
          })
           this.$store.dispatch('registrar/fetchDegreeStudentDetail',this.degreeStudId)
     },
     watch:{
       acYearId(newValue){
+       this.$store.dispatch('registrar/fetchActiveYearSemisters',newValue).then(()=>{
+         this.semesterId = this.filterdSemesters[0]?.id
+       })
+      },
+       newAcYearId(newValue){
        this.$store.dispatch('registrar/fetchActiveYearSemisters',newValue)
       }
     },
@@ -332,6 +352,7 @@ export default {
          this.programId = this.studentSemesters.program.id
          this.studentId= this.degreeStudId
          console.log('student semester data ',this.studentSemesters)
+         this.semesterId = this.filterdSemesters[0]?.id
       },
        async giveCoursResult(semester){
           if(Number(semester.is_closed)=== 1){
@@ -412,7 +433,7 @@ export default {
         var semester = {}
         semester.student_id = this.studentId
       semester.academic_year_id = this.acYearId
-       semester.semester_id = this.$refs.semester_id.value
+       semester.semester_id = this.semesterId
         semester.year_no = this.$refs.year_no.value
 try{
   console.log(semester)
@@ -481,18 +502,19 @@ this.resultNotifier = ''
       editStudentSemester(semester,programId){
         this.oldSemesterId = semester.id
         this.newSemesterId = semester.id
-        this.acYearId = semester.academic_year_id
+        this.oldAcYearId = semester.academic_year_id
+        this.newAcYearId = semester.academic_year_id
         this.newYearNo = semester.year_no
         this.oldYearNo = semester.year_no
         this.programId = programId
         this.isEditSemester = true
-        this.selectedYear = semester.year
         this.resultNotifier = ''
       },
       async finishToEdit(){
         this.isLoading = true
         try{
-       var response = await apiClient.put(`api/update_student_for_semester/${this.degreeStudId}?old_semester_id=${this.oldSemesterId}&semester_id=${this.newSemesterId}&year_no=${this.newYearNo}&old_year_no=${this.oldYearNo}&academic_year_id=${this.acYearId}`)
+          console.log('oldAcYearId=',this.oldAcYearId,' newAcYearId =',this.newAcYearId,' oldYearNo=',this.oldYearNo,' newYearNo=',this.newYearNo,' oldSemester =',this.oldSemesterId,' newSemesterId=',this.newSemesterId)
+       var response = await apiClient.put(`api/update_student_for_semester/${this.degreeStudId}?old_semester_id=${this.oldSemesterId}&semester_id=${this.newSemesterId}&year_no=${this.newYearNo}&old_year_no=${this.oldYearNo}&academic_year_id=${this.newAcYearId}&old_academic_year_id=${this.oldAcYearId}`)
        if(response.status === 201){
          console.log('response from server',response.data)
         var tempStudent = this.studentSemesters
@@ -501,16 +523,22 @@ this.resultNotifier = ''
              })
          tempStudent.semesters[index].year_no = response.data.year_no
          tempStudent.semesters[index].semester_no = response.data.semester_no
+          tempStudent.semesters[index].year = response.data.year
          this.$store.commit('registrar/setDegreeStudentDetails',tempStudent)
-         this.resultNotifier = 'Successfully updated'
+         this.resultNotifier = 'Successfully Edited'
          this.isFaild = false
          this.isSuccessed = true
       }
       else if(response.status === 200){
-         this.resultNotifier = 'already registerd for this semester'
+         this.resultNotifier = response.data.error
          this.isFaild = true
          this.isSuccessed = false
       }
+      }
+      catch(e){
+         this.resultNotifier = 'Faild to update !'
+         this.isFaild = true
+         this.isSuccessed = false
       }
       finally{
         this.isLoading = false

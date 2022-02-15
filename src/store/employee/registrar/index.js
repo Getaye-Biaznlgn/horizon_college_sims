@@ -169,8 +169,8 @@ export default {
                 rootState.isLoading = false
             }
         },
-        async fetchActiveYearSemisters({ commit, rootState }, yearId) {
-            rootState.isLoading = true
+        async fetchActiveYearSemisters({ commit }, yearId) {
+            // rootState.isLoading = true
             try {
                 var response = await apiClient.get(`api/semesters?academic_year_id=${yearId}`)
                 if (response.status === 200) {
@@ -182,9 +182,10 @@ export default {
                 }
             } catch (e) {
                 console.log('error occurd')
-            } finally {
-                rootState.isLoading = false
             }
+            //finally {
+            //     rootState.isLoading = false
+            // }
         },
         async fetchAcadamicMounths({ commit, rootState }) {
             rootState.isLoading = true

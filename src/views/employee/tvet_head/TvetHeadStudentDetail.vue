@@ -31,7 +31,9 @@
 </table>
   <p v-if="!studentLevel.levels?.length" class="mt-1 text-center">No history found yet!</p>
  <div class="mt-3 d-flex">
-    <button class="btn btn-add ms-auto text-white shadow-sm" @click="showAddModal">Add To Next Level</button> 
+    <div v-if="!checkCompletion(studentLevel.levels)" class="incomplete ms-5 mt-4 mb-2">Ther is Incomplete Level</div>
+    <button class="btn btn-add ms-auto text-white shadow-sm" @click="showAddModal" :disabled="!checkCompletion(studentLevel.levels)">Register for Next Level</button> 
+    
  </div>
 
 </div>
@@ -94,6 +96,17 @@ export default {
       },
     },
     methods:{
+      checkCompletion(levels){
+         var isCompleted = true
+        levels?.forEach(level=>{
+          if(level.status !== 'finished'){
+            isCompleted = false
+            return
+          }
+          
+        })
+        return isCompleted
+      },      
       showAddModal(){
         this.actionButtonType='add'
         this.addBaseModal.show()
@@ -205,3 +218,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.incomplete{
+  color: red;
+}
+</style>
