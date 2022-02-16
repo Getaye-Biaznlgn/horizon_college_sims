@@ -31,7 +31,7 @@
     <th>Program</th>
     <th>Year</th>
     <th>Semester</th>
-    <th v-show="!isPriting"><span class="sr-only"></span></th>
+    <th v-show="!isPrinting"><span class="sr-only"></span></th>
   </tr>
 
   <tr v-for="(section, index) in filteredSections" :key="section.id">
@@ -41,7 +41,7 @@
       <td>{{section.program?.name}}</td>
       <td>{{section.year_no}}</td>
       <td>{{section.semester?.number}}</td>
-      <td v-show="!isPriting"> 
+      <td v-show="!isPrinting"> 
       <div class="dropdown">
           <a class="btn py-0 " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
               <span><i class="fas fa-ellipsis-v"></i></span>
@@ -172,7 +172,7 @@ export default {
         let index = this.academicYears.findIndex((year)=>{
             return year.id===this.section.academic_year_id
          })
-          tempSemesters=this.academicYears[index].semesters.filter((semester)=>{
+          tempSemesters=this.academicYears[index]?.semesters.filter((semester)=>{
             return semester.program_id===this.section.program_id
           })
      }
@@ -216,6 +216,7 @@ export default {
          this.selectedSectionForDelete=section
          this.actionButtonType='delete'
          this.deleteBaseModal.show()
+         console.log('selected to delete section',this.selectedSectionForDelete)
       },
       showEditModal(section){
         this.responseMessage=''
@@ -236,7 +237,9 @@ export default {
         this.isSaving=true
           await this.$store.dispatch('degreeHead/deleteSection',this.selectedSectionForDelete.id)
           .then(()=>{
-           this.addBaseModal.hide()
+           this.deleteBaseModal.hide()
+           this.selectedSectionForDelete= {}
+           this.v$.$reset()
          }).catch(()=>{
            this.isNotSucceed=true,
            this.responseMessage='Faild to delete section'
@@ -248,7 +251,10 @@ export default {
          this.request('degreeHead/updateSection', this.section,'Faild to update section')
       },
       save(){
-         this.request('degreeHead/addSection',this.section,'Faild to add section')
+         this.request('degreeHead/addSection',this.section,'Faild to add section').then(()=>{
+           this.section = {}
+           this.v$.$reset()
+         })
       },
      async request(action, payload, errorMessage){
        this.v$.$validate()

@@ -220,6 +220,8 @@ export default {
       save(){
          this.section.tvet_department_id=this.user.managet.id
          this.request('tvetHead/addSection',this.section, 'Faild to add section')
+         this.section = {}
+         this.v$.$reset()
       },
      async request(action, payload, errorMessage){
        this.responseMessage=''

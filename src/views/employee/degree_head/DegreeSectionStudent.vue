@@ -36,7 +36,7 @@
               <span><i class="fas fa-ellipsis-v"></i></span>
             </a>
             <ul class="dropdown-menu bordre rounded shadow-sm py-0" aria-labelledby="dropdownMenuLink">
-              <li @click="removeStudent(student.id)"><span class="dropdown-item py-2">Remove</span></li>
+              <li @click="removeStudent(student.id,student.status)"><span class="dropdown-item py-2">Remove</span></li>
             </ul>
           </div>
         </td>
@@ -129,7 +129,15 @@ export default {
     print(){
      this.$htmlToPaper('sectionStudent')
     },
-    async removeStudent(id){
+    async removeStudent(id,status){
+           if(status ==='finished'){
+             this.$store.commit('setAlertMessages',{
+                text:'Impossible to remove students from completed semester!',
+                type:'danger'
+              })
+         
+           }
+           else{
        try {
        const response= await apiClient.post('/api/remove_section_students/'+id, {section_id:this.sectionId})
          if(response.status === 200){
@@ -145,6 +153,7 @@ export default {
         }finally{
           this.isSaving=false
         }
+           }
     },
     showAddModal(){
        this.modalState=!this.modalState
@@ -212,6 +221,7 @@ export default {
             console.log('degree_section_students ',response.data)
             if (response.status === 200) {
               this.students=response.data
+              console.log('section students',this.students)
             } else {
                 throw 'faild to load degree department'
             }
