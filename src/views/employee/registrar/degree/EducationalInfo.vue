@@ -2,12 +2,14 @@
      <div class="row mt-5">
   <div class="mb-3 col-lg-6" :class="{warning:v$.EGSSE_result.$error}">
     <label for="egsseresult" class="form-label">EGSSE Result</label>
-    <input type="text" class="form-control form-control-sm" id="egsseresult" v-model="EGSSE_result">
+    <input type="text" class="form-control form-control-sm" id="egsseresult"
+     v-model="EGSSE_result">
      <span class="error-msg mt-1">{{ v$.EGSSE_result.$errors[0]?.$message}}</span>
   </div>
   <div class="mb-3 col-lg-6" :class="{warning:v$.EHEEE_result.$error}">
     <label for="eheeeresult" class="form-label">EHEEE Result</label>
-    <input type="text" class="form-control form-control-sm" id="eheeeresult" v-model="EHEEE_result">
+    <input type="text" class="form-control form-control-sm" id="eheeeresult"
+     v-model="EHEEE_result">
      <span class="error-msg mt-1">{{ v$.EHEEE_result.$errors[0]?.$message}}</span>
   </div>
   </div>
