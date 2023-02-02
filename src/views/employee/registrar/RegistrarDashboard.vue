@@ -3,37 +3,37 @@
         <div class="position-relative">
             <img src="../../../assets/dashboard_header.png" alt=""  height="200" class="img-fluid">
             <div class="position-absolute top-0 start-0 ms-2 mt-2 text-white">
-                <p class="fw-bold">Well come Mr. Netsanet!</p>
+                <p class="fw-bold">Well Come!</p>
                 <p class="small">I wish you a good day and enjoy your time.</p>
             </div> 
         </div>
         <div class="cards d-flex position-relative justify-content-between mx-2">
-            <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
+            <div class=" bg-cyan-light shadow rounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">Total TVET Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.total_tvet_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
+             <div class=" bg-cyan-light shadowrounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">Total Degree Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.total_degree_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">New TVET Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.new_tvet_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">New Degree Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.new_degree_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1 mx-4">Total COC</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.total_coc}}</span>
             </div>
-             <div class=" bg-cyan-light shadow p-2 rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">Current COC Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.current_coc_students}}</span>

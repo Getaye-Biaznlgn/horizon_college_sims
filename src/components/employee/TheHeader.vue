@@ -2,7 +2,7 @@
    <div class="p-1 bg-white shadow-sm d-flex">
       <img src="../../assets/logo.png" class="ms-3 align-self-center rounded-circle" height="50" width="60">
       <div class="pt-3">
-         <h5 class="d-inline ms-3 fw-bold">HORIZON</h5>
+         <h5 class="d-inline ms-3 fw-bold">Gilgel Abbay</h5>
       </div>
       <div class="ms-5 ps-4 pt-1 d-flex">
          <select v-if="user.role==='dean' || user.role==='tvet_head' || user.role==='degree_head'" class="form-select" @change="changeAcademicYear($event)"  aria-label="select ">

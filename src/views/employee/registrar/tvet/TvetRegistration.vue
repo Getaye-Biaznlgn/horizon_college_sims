@@ -1,8 +1,10 @@
 <template>
   <base-card>
-  <span @click="back()" class="backarrow ms-3 mt-2"><i class="fas fa-arrow-left"></i>Back</span>
+    <span @click="back()" class="backarrow ms-3 mt-2"
+      ><i class="fas fa-arrow-left"></i>Back</span
+    >
     <div class="ms-3 me-3 p-2 text-center">
-      HORIZON COLLEGE OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATIONS
+      Gilgelabbay College OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATIONS
     </div>
     <div class="text-center mb-3">FORM FOR DEGREE STUDENT</div>
     <div class="d-flex justify-content-center mt-3">
@@ -54,7 +56,7 @@ export default {
     PersonalInfo,
     EducationalInfo,
     AdmissionInfo,
-    FinancialInfo,
+    FinancialInfo
   },
   data() {
     return {
@@ -63,15 +65,14 @@ export default {
       isAdmission: false,
       isFinance: false,
       componentName: "personal-info",
-      studentInfo: {},
-      
+      studentInfo: {}
     };
   },
   computed: {
     ...mapGetters(["acYearId"]),
-     notifications(){
-      return this.$store.getters.notifications
-    },
+    notifications() {
+      return this.$store.getters.notifications;
+    }
   },
   provide() {
     return {
@@ -79,17 +80,17 @@ export default {
       educationalDetail: this.educationalDetail,
       admissionDetail: this.admissionDetail,
       financeDetail: this.financeDetail,
-      backPage: this.backPage,
+      backPage: this.backPage
     };
   },
   created() {
-     this.$store.commit('registrar/setResultNotifier','')
+    this.$store.commit("registrar/setResultNotifier", "");
   },
   methods: {
- back(){
-        this.$router.back()
-         this.$store.commit('registrar/setResultNotifier','')
-      },
+    back() {
+      this.$router.back();
+      this.$store.commit("registrar/setResultNotifier", "");
+    },
     personalDetail(personalData) {
       this.studentInfo.first_name = personalData.first_name;
       this.studentInfo.middle_name = personalData.last_name;
@@ -101,7 +102,7 @@ export default {
       this.studentInfo.residence_office_tel = personalData.residence_office_tel;
       this.studentInfo.phone_no = personalData.residence_phone_no;
       this.studentInfo.contact_tel = personalData.contact_residence_tel;
-        this.studentInfo.contact_relationship = personalData.contact_relationship
+      this.studentInfo.contact_relationship = personalData.contact_relationship;
       this.studentInfo.contact_office_tel = personalData.contact_office_tel;
       this.studentInfo.contact_phone_no = personalData.contact_phone_no;
       this.studentInfo.birth_address = personalData.birth_address;
@@ -140,47 +141,55 @@ export default {
       this.componentName = pageName;
     },
     async registerTvetStudent() {
-      this.$store.commit('registrar/setResultNotifier','')
-       this.$store.commit('registrar/setIsUploading',true)
+      this.$store.commit("registrar/setResultNotifier", "");
+      this.$store.commit("registrar/setIsUploading", true);
       this.studentInfo.academic_year_id = this.acYearId;
       console.log("the data sent to the server");
       console.log(this.studentInfo);
       try {
-        var response = await apiClient.post('api/tvet_students',this.studentInfo);
+        var response = await apiClient.post(
+          "api/tvet_students",
+          this.studentInfo
+        );
         console.log("status code = " + response.status);
         if (response.status === 201) {
-          console.log('response from adding tvet student')
-    console.log(response.data)
-  this.$store.commit('registrar/setResultNotifier','You have registered a student successfully')
-      this.$store.commit('registrar/setIsSuccessed',true)
-      this.$store.commit('registrar/setIsFaild',false)
-       this.$store.commit('setNotifications',Number(this.notifications) + 1)
+          console.log("response from adding tvet student");
+          console.log(response.data);
+          this.$store.commit(
+            "registrar/setResultNotifier",
+            "You have registered a student successfully"
+          );
+          this.$store.commit("registrar/setIsSuccessed", true);
+          this.$store.commit("registrar/setIsFaild", false);
+          this.$store.commit(
+            "setNotifications",
+            Number(this.notifications) + 1
+          );
+        } else if (response.status === 200) {
+          this.$store.commit(
+            "registrar/setResultNotifier",
+            response.data.error
+          );
+          this.$store.commit("registrar/setIsSuccessed", false);
+          this.$store.commit("registrar/setIsFaild", true);
+        }
+      } catch (e) {
+        this.$store.commit("registrar/setResultNotifier", "Registration Faild");
+        this.$store.commit("registrar/setIsSuccessed", false);
+        this.$store.commit("registrar/setIsFaild", true);
+      } finally {
+        this.$store.commit("registrar/setIsUploading", false);
+      }
+    }
   }
-  else if(response.status === 200){
-    this.$store.commit('registrar/setResultNotifier',response.data.error)
-         this.$store.commit('registrar/setIsSuccessed',false)
-      this.$store.commit('registrar/setIsFaild',true)
-
-  }
-}
-catch(e){
-     this.$store.commit('registrar/setResultNotifier','Registration Faild')
-         this.$store.commit('registrar/setIsSuccessed',false)
-      this.$store.commit('registrar/setIsFaild',true)
-}
-finally{
-  this.$store.commit('registrar/setIsUploading',false)
-}
-    },
-  },
 };
 </script>
 <style scoped>
-  .backarrow{
+.backarrow {
   cursor: pointer;
   font-size: 22px;
 }
-.backarrow:hover{
+.backarrow:hover {
   color: #1142ac;
 }
 .pointer {

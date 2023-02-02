@@ -103,8 +103,9 @@
 <!-- google map -->
   <section class="container pb-0">
       <div class="bg-light text-center py-3">FIND US</div>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3908.6563916841346!2d37.37226391407756!3d11.576471891781688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1644d3527cc10dc5%3A0xe7690893986bd5e2!2sHorizon%20Academy!5e0!3m2!1sen!2set!4v1640874259059!5m2!1sen!2set"
-       class="w-100 my-0 pb-0" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3368.532548393408!2d36.343956663014424!3d11.158804331770678!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x165a6dbc48e085a1%3A0x5c35473338180f61!2sGilgelBeles%20Town!5e0!3m2!1sen!2set!4v1675326170513!5m2!1sen!2set" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3908.6563916841346!2d37.37226391407756!3d11.576471891781688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1644d3527cc10dc5%3A0xe7690893986bd5e2!2sHorizon%20Academy!5e0!3m2!1sen!2set!4v1640874259059!5m2!1sen!2set"
+       class="w-100 my-0 pb-0" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe> -->
   </section>
 </template>
 
