@@ -5,22 +5,22 @@
   <input type="text" class="form-control p-1" placeholder="Search By Student Id" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByStudId()">
    <span @click="searchByStudId()" class="searchicon  input-group-text" id="searchby_id"><i class="fas fa-search"></i></span>
 </div>
-<div class="d-flex ms-auto">
-  <div class="me-4">
+<div class="d-flex align-items-center ms-auto">
+  <div>
     <span>Paid</span>
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="paid" @change="fetchPaidStudents($event)">
   <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
-  <div class="me-4">
+  <div class="ms-4">
     <span>UnPaid</span>
    <select class="form-select form-select-sm" aria-label="Default select example" v-model="unpaid" @change="fetchUnpaidStudents($event)">
   <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
-  <div>
+  <div class="ms-4">
     <button @click="printStudentFeeList()" class="btn me-1 addbtn p-1 mt-3">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>
@@ -271,21 +271,6 @@ rowNumber(newValue){
            this.queryObject.academic_year_id = this.acYearId
           this.degreeStudentsPaid(this.queryObject)
            
-          // try{
-          //   console.log('paid students outside')
-          //    var response = await apiClient.get(`api/degree_paid_students?page=${this.queryObject.page}&per_page=${this.queryObject.per_page}&search_id${this.queryObject.search_id}&academic_year_id=${this.queryObject.academic_year_id}&month_query=${this.queryObject.month_query}`)
-          //   if(response.status ===200){
-          //     console.log(response.data)
-          //       this.$store. commit('registrar/setDegreeStudentFees', response.data)
-          //       console.log('paid students')
-          //   }
-          // }
-          // catch(e){
-          //   console.log('error')
-          // }
-          // finally{
-          //    this.$store.commit('setIsItemLoading',false)
-          // }
           }
           else{
             

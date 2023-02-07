@@ -1,16 +1,16 @@
 <template>
   <div class="row">
-    <div class="col-sm col-md-2 pe-0 sidbar-wrapper">
+    <div class="col-sm-12 col-md-2">
       <div
         class="header d-flex justify-content-between py-1 shadow-sm text-white px-2 md-px-3 mx-0"
       >
-        <span class=" fw-bold">
+        <span class="fw-bold">
           <img
             src="../../assets/logo.png"
             class=" align-self-center"
             height="51"
           />
-          Gilgelabbay College
+          Gilgelabbay
         </span>
         <span
           role="button"
@@ -25,7 +25,7 @@
         <sidebar @linkClicked="toggleMenu"></sidebar>
       </div>
     </div>
-    <div class="col-sm col-md-10 content px-0 ">
+    <div class="col-sm-12 col-md-9 content px-0 ">
       <div
         class="bg-white py-sm-4 py-md-3 px-3 shadow-sm fw-bold d-flex justify-content-between"
       >

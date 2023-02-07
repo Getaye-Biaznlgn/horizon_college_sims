@@ -11,25 +11,25 @@
     </button>
     </div>
     </div>
-    <div class="d-flex justify-content-between mt-4">
+    <div class="d-flex mt-4">
      <div class="input-group mt-3 search">
   <input type="text" class="form-control form-control-sm px-0" placeholder="Search By ID" aria-label="Username" aria-describedby="addon-wrapping" v-model.trim="searchValue">
    <span class="searchicon input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
   <div class="d-flex ms-3">
-  <div class="mb-3 me-4">
+  <div class="mb-3 me-2">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="departmentForFilter">
   <option value="all">All Department</option>
   <option v-for="department in degreeDepartments" :key="department.id" :value="department.id">{{department.name}}</option>
   </select>
 </div>
- <div class="mb-3 me-4">
+ <div class="mb-3 me-2">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="programForFilter">
   <option value="all">All Program</option>
   <option v-for="program in degreePrograms" :key="program.id" :value="program.id">{{program.name}}</option>
   </select>
 </div>
- <div class="mb-3 me-4">
+ <div class="mb-3 me-2">
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="yearForFilter">
   <option value="1">First year</option>
   <option value="2">Second year</option>
@@ -45,7 +45,7 @@
    <option value="3">Semester 3</option>
   </select>
 </div>
- <div class="ms-2 mb-3 me-3">
+ <div class="ms-2 mb-3 me-2">
           <select
             class="form-select form-select-sm"
             aria-label="Default select example"

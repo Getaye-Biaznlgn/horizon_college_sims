@@ -8,39 +8,39 @@
             </div> 
         </div>
         <div class="cards d-flex position-relative justify-content-between mx-2">
-            <div class=" bg-cyan-light shadow rounded rounded-lg">
+            <div class=" bg-cyan-light shadow rounded rounded-lg px-1">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">Total TVET Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.total_tvet_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadowrounded rounded-lg">
+             <div class=" bg-cyan-light shadowrounded rounded-lg px-1">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">Total Degree Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.total_degree_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadow rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg px-1">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">New TVET Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.new_tvet_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadow rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg px-1">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">New Degree Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.new_degree_student}}</span>
             </div>
-             <div class=" bg-cyan-light shadow rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg px-1">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1 mx-4">Total COC</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.total_coc}}</span>
             </div>
-             <div class=" bg-cyan-light shadow rounded rounded-lg">
+             <div class=" bg-cyan-light shadow rounded rounded-lg px-1">
                 <span class="d-block text-center fs-2"><i class="fas fa-user-graduate pe-2 fw-bold"></i></span>
                 <span class="d-block text-center small my-1">Current COC Students</span>
                 <span class="fw-bold d-block text-center">{{dashboardDatas.current_coc_students}}</span>
             </div>
         </div>
-        <div class="row  my-3">
-          <div class="col-lg-6"> 
+        <div class="d-lg-flex  my-3">
+          <div class="flex-fill"> 
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>Degree Scholarship Students</span>
@@ -69,7 +69,7 @@
                  </div>
               </base-card>
           </div>
-           <div class="col-lg-6"> 
+           <div class="flex-fill"> 
               <base-card>
               <div class="d-flex justify-content-between mb-2">
                 <span>TVET Scholarship Students</span>
@@ -99,8 +99,8 @@
               </base-card>
           </div>
         </div>
-                <div class="row">
-          <div class="col-lg-6">
+                <div class="d-lg-flex">
+          <div class="flex-fill">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
                 <span v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} un paid Degree Students</span>
@@ -127,7 +127,7 @@
                  </div>
                </base-card>
           </div>
-          <div class="col-lg-6">
+          <div class="flex-fill">
                <base-card>
                 <div class="d-flex justify-content-between mb-2">
                 <span  v-if="dashboardDatas.active_month?.length">{{dashboardDatas.active_month+' '}} Unpaid TVET Students</span>

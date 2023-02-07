@@ -5,22 +5,22 @@
   <input type="text" class="form-control p-1" placeholder="Search By studdent ID" aria-label="Username" aria-describedby="addon-wrapping" v-model="studentId" @keyup.enter="searchByIdNo()">
    <span @click="searchByIdNo()" class="searchicon  input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
 </div>
-<div class="d-flex">
- <div class="mb-3 me-4">
+<div class="d-flex align-items-center">
+ <div class="mb-3">
     <span>paid Students</span>
 <select class="form-select form-select-sm" aria-label="Default select example" v-model="paid" @change="fetchPaidStudents($event)">
   <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
-  <div class="mb-3 me-4">
+  <div class="mb-3 ms-4">
     <span>Unpaid Students</span>
    <select class="form-select form-select-sm" aria-label="Default select example" v-model="unpaid" @change="fetchUnpaidStudents($event)">
   <option value="all">All</option>
   <option v-for="month in months" :key="month.id" :value="month.id">{{month.name}}</option>
   </select>
 </div>
-  <div>
+  <div class="ms-4">
     <button @click="exportTvetStudent()" class="btn me-1 addbtn">
     <span class="me-3"><i class="fas fa-upload"></i></span>
     <span>Export</span>

@@ -12,7 +12,7 @@
     "@vuelidate/core": "^2.0.0-alpha.32",
     "@vuelidate/validators": "^2.0.0-alpha.25",
     "axios": "^0.24.0",
-    "bootstrap": "^5.1.3",
+    "bootstrap": "^5.2.3",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-html-to-paper": "^1.4.4",

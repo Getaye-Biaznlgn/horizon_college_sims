@@ -9,7 +9,7 @@
         <span>Export</span>
       </button>
     </div>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex">
       <div class="input-group mt-5 search w-25">
         <input type="text" class="form-control form-control-sm mt-3"
           placeholder="Search By Student ID"
@@ -18,7 +18,7 @@
           v-model.trim="searchValue"/>
         <span class="input-group-text mt-3 searchbtn" id="addon-wrapping"><i class="fas fa-search"></i></span>
       </div>
-      <div class="d-flex justify-content-end ms-4 mt-3">
+      <div class="d-flex ms-2 mt-3">
         <div class="mb-3">
           <select
             class="form-select form-select-sm"
