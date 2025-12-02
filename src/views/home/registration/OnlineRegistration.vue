@@ -2,7 +2,7 @@
   <base-card>
     <div class="d-flex container">
       <div class="ms-md-5 me-md-3 p-md-2 text-md-center textTitle">
-        Gilgelabbay College OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATION
+        Horizon College OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATION
         FORM FOR DEGREE AND TVET STUDENTS
       </div>
     </div>

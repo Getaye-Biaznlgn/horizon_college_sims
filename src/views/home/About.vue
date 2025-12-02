@@ -2,7 +2,7 @@
   <div class="pt-4 pb-5">
     <div class="container mb-0 ">
       <p>
-        Gilgelabbay College was established in Bahir Dar town, Ethiopia, in
+        Horizon College was established in Bahir Dar town, Ethiopia, in
         August of 2003 by a team of professionals who have many years of
         teaching experience at university and business consultancy service. Some
         of the share members are PhD holders and others are at master level in
@@ -13,18 +13,18 @@
         twelve years. Since its establishment, it has graduated thousands of
         competent professionals in various fields, programs, and levels; and as
         a result, has contributed its best to overall development endeavours of
-        the country. To realize its vision: “Gilgelabbay College aspires to be
+        the country. To realize its vision: "Horizon College aspires to be
         the top ten universities in Ethiopia by 2027,” the College has designed
         a five year’s Strategic Plan which would enable it to run several
         things.
       </p>
       <!-- values -->
       <section class="mt-5">
-        <strong>Mission, Vision & Values Of Gilgelabbay College</strong>
+        <strong>Mission, Vision & Values Of Horizon College</strong>
         <div class="mt-2">
           <strong>Vision</strong>
           <p class="py-2">
-            Gilgelabbay College envisions becoming one of the top ten
+            Horizon College envisions becoming one of the top ten
             Universities in Ethiopia by the year 2030 G.C.
           </p>
         </div>
@@ -32,7 +32,7 @@
           <strong>Mission</strong>
           <ul class="py-2">
             <li>
-              Gilgelabbay College envisions becoming one of the top ten
+              Horizon College envisions becoming one of the top ten
               Universities in Ethiopia by the year 2030 G.C.
             </li>
             <li>

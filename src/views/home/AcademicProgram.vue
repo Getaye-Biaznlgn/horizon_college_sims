@@ -1,7 +1,7 @@
 <template>
   <div class="container py-4">
     <p>
-      Gilgelabbay College provides the following field of studies with distance,
+      Horizon College provides the following field of studies with distance,
       regular and extension program
     </p>
     <div class="d-lg-flex my-3 justify-content-around">

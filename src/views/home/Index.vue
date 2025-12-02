@@ -5,7 +5,7 @@
     <div class="d-flex">
         <span class="small mx-3 d-none d-lg-block"><i class="fas fa-map-marker-alt pe-2"></i>Bahir Dar, Ethiopia</span>
         <span class="small mx-3 "><i class="fas fa-phone pe-2"></i>+2519(01/03/04/05/07)332211</span>
-        <span class="small mx-3 d-none d-lg-block"><i class="fas fa-envelope pe-2"></i>info@gilgelabbay.com</span>
+        <span class="small mx-3 d-none d-lg-block"><i class="fas fa-envelope pe-2"></i>info@horizoncollege.com</span>
     </div>
     <div>
         <a href="https://www.facebook.com" target="_blank"  class="small text-white  mx-1 mx-md-2"><i class="fab fa-facebook-square"></i></a>
@@ -62,7 +62,7 @@
      <div class="d-flex px-3 py-4 text-white quick-link justify-content-between">
         <div class=" align-self-center">
             <img src="../../assets/logo.png" class="rounded-circle" width="80" height="70" alt="">
-             <span class="fw-bold mx-2 lead">GILGELABBAY COLLEGE</span>
+             <span class="fw-bold mx-2 lead">HORIZON COLLEGE</span>
              <span class="d-block mt-2">FOR QUALITY WE STRIVE TOGETHER !</span>
         </div>
         <div class="d-flex flex-column">
@@ -76,7 +76,7 @@
         <div class="d-flex flex-column">
            <div class="fw-bold fs-5">Contact Us</div>
            <div class="pt-2"><span><i class="fas fa-phone pe-2"></i></span>+2519(01/03/04/05/07)332211</div>
-           <div class="pt-2"><span><i class="fas fa-envelope pe-2"></i></span>info@gilgelabbay.com</div>
+           <div class="pt-2"><span><i class="fas fa-envelope pe-2"></i></span>info@horizoncollege.com</div>
            <div class="pt-2"><span><i class="fas fa-map-marker-alt pe-2"></i></span>Bahir Dar, Ethiopia</div>
         </div>
         <div class="mt-3">
@@ -114,7 +114,7 @@
       <div id="collapseContact" class="accordion-collapse bg-accordion collapse" aria-labelledby="headingContact" data-bs-parent="#accordionContact">
         <div class="accordion-body">
            <div class="pt-2"><span><i class="fas fa-phone pe-2"></i></span>+2519(01/03/04/05/07)332211</div>
-           <div class="pt-2"><span><i class="fas fa-envelope pe-2"></i></span>info@gilgelabbay.com</div>
+           <div class="pt-2"><span><i class="fas fa-envelope pe-2"></i></span>info@horizoncollege.com</div>
            <div class="pt-2"><span><i class="fas fa-map-marker-alt pe-2"></i></span>Bahir Dar, Ethiopia</div>
         </div>
       </div>
@@ -129,7 +129,7 @@
 </section>
   <footer >
       <div class="py-3 text-center  main-color text-white">
-        Website Designed and Developed by <a href="http://merahitechnologies.com/">MERAHI TECHNOLOGIES</a> . Copyright &copy;{{new Date().toString().split(' ').slice(3,4).join(' ')}} Gilgelabbay College 
+        Website Designed and Developed by <a href="https://pixeladdis.com/">Pixel Addis Solutions</a> . Copyright &copy;{{new Date().toString().split(' ').slice(3,4).join(' ')}} Horizon College 
       </div>
   </footer>
    <div v-if="isItemLoading" class="loading-screen route-loading p-0  bg-white position-fixed top-0 start-0 bottom-0 end-0">

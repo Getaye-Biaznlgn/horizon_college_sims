@@ -17,7 +17,7 @@
     </div>
     <div id="paymentPage">
       <div class="sr-only  text-center">
-        Gilgelabbay College {{ getYear?.year }} Payment Amount
+        Horizon College {{ getYear?.year }} Payment Amount
       </div>
       <table class="mt-3">
         <tr>

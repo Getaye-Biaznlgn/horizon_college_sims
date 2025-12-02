@@ -4,7 +4,7 @@
       ><i class="fas fa-arrow-left"></i>Back</span
     >
     <div class="ms-3 me-3 p-2 text-center">
-      Gilgelabbay College OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATIONS
+      Horizon College OFFICE OF REGISTRAR TRAINEE'S ADMISSION APPLICATIONS
     </div>
     <div class="text-center mb-3">FORM FOR DEGREE STUDENT</div>
     <div class="d-flex justify-content-center mt-3">

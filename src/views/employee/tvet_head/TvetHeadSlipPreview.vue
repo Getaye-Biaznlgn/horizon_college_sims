@@ -21,7 +21,7 @@
         style="height: 256mm; overflow-y:hidden;"
       >
         <div class="text-center fw-bold py-0 my-0">
-          Gilgelabbay College Registration Slip
+          Horizon College Registration Slip
         </div>
         <div class="d-flex justify-content-between">
           <div>

@@ -539,11 +539,11 @@ export default {
             this.student_id = response.data.id;
             this.isCheck = true;
             this.isTheStudentFromHorizon =
-              "the searched student is from Gilgelabbay College";
+              "the searched student is from Horizon College";
           } else if (response.status === 201) {
             this.isCheck = true;
             this.isTheStudentFromHorizon =
-              "the searched student is out of Gilgelabbay College";
+              "the searched student is out of Horizon College";
           }
         } catch (e) {
           console.log("error occur");

@@ -1,6 +1,6 @@
 import axios from "axios";
 let apiClient = axios.create({
-    baseURL: 'https://backend-laravel.gilgelabbay.com/',
+    baseURL: 'https://backend-laravel.horizoncollege.com/',
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

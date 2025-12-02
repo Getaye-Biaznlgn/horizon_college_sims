@@ -10,7 +10,7 @@
             class=" align-self-center"
             height="51"
           />
-          Gilgelabbay
+          Horizon College
         </span>
         <span
           role="button"

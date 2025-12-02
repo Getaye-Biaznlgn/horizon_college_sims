@@ -24,14 +24,14 @@
       >
         <div class="d-flex justify-content-between fw-bold">
           <div>
-            Gilgelabbay College<br />
+            Horizon College<br />
             College of the Registrar <br />
             Student Academic Record
           </div>
           <div>
             P.O.Box:927 Bahir Dar, Ethiopia<br />
             Tel: +251901332211<br />
-            E-mail: info@gilgelabbay.com <br />
+            E-mail: info@horizoncollege.com <br />
             Medium of Instruction: English
           </div>
         </div>

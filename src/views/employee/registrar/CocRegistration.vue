@@ -55,7 +55,7 @@
             v-model="studType"
           >
             <option value="all">All</option>
-            <option value="internal">From Gilgelabbay College</option>
+            <option value="internal">From Horizon College</option>
             <option value="external">From Other College</option>
           </select>
         </div>

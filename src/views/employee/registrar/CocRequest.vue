@@ -42,16 +42,16 @@
         <div>
           <img
             src="../../../assets/logo.png"
-            alt="gilgelabbay logo"
+            alt="horizon college logo"
             width="80"
             height="80"
             class="me-5"
           />
         </div>
         <div class="ms-5">
-          <h3>Gilgelabbay College</h3>
+          <h3>Horizon College</h3>
           <h4>Fax:058-3208997</h4>
-          <h4>E-mail:<i>info@gilgelabbay.com</i></h4>
+          <h4>E-mail:<i>info@horizoncollege.com</i></h4>
         </div>
       </div>
       <hr class="w-100 mt-3 sr-only" />

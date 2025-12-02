@@ -23,7 +23,7 @@
       >
         <div v-for="n in 2" :key="n">
           <div class="text-center fw-bold py-0 my-0">
-            Gilgelabbay College Registration Slip
+            Horizon College Registration Slip
           </div>
           <div class="d-flex justify-content-between">
             <div>
